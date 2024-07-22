@@ -13,7 +13,7 @@ export type Link = {
     preload?: boolean;
 }
 
-export default ({icon, iconProps, rightIcon, rightIconProps, children, preload = false}: Link) => {
+const BaseButton = ({icon, iconProps, rightIcon, rightIconProps, children, preload = false}: Link) => {
     return (
         <>
             {preload ?
@@ -25,3 +25,5 @@ export default ({icon, iconProps, rightIcon, rightIconProps, children, preload =
         </>
     );
 }
+
+export default BaseButton;
