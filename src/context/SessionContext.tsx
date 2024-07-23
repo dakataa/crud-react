@@ -7,7 +7,7 @@ export type Session = {
 }
 
 const initialState: Session = {
-    locale: process.env.REACT_APP_LOCALE || 'en',
+    locale: import.meta.env.VIEW_LOCALE || 'en',
     // accessToken: null,
     // user: null,
     // branch: null,

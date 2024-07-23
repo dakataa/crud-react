@@ -7,7 +7,7 @@ import {ActionType} from "@src/type/ActionType";
 import ViewLoader from "@src/component/ViewLoader";
 
 Requester.defaults = {
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
         Accept: 'application/json'
     }
