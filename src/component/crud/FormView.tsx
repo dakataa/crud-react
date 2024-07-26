@@ -3,7 +3,7 @@ import {FormWidget} from "@src/component/form/FormWidget";
 import {titlize} from "@src/helper/StingUtils";
 import React from "react";
 
-const FormView = ({view, ...props}: { view: FormViewType }) => {
+const FormView = ({view}: { view: FormViewType }) => {
     return (
         <>
             {Object.values(view.children || []).map((child, index) => (

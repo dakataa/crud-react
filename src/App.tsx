@@ -5,6 +5,7 @@ import Default from "@src/layout/default";
 import {crudToReactPath} from "@src/component/Router";
 import {ActionType} from "@src/type/ActionType";
 import ViewLoader from "@src/component/ViewLoader";
+import {useActions} from "@src/context/ActionContext.tsx";
 
 Requester.defaults = {
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -15,31 +16,20 @@ Requester.defaults = {
 
 function App() {
 
-    const [actions, setActions] = useState<ActionType[]>([]);
-    useEffect(() => {
-        (new Requester()).get('/_crud/actions', {}).then((response) => {
-            if (response.status !== 200) {
-                return;
-            }
-
-            response.getData().then((data) => {
-                setActions(data);
-            });
-        }).catch((e) => {
-            console.log('error', e);
-        }).finally(() => {
-
-        });
-    }, []);
+    const [actions] = useActions();
 
     return (
         <Default>
             <Routes>
-                {actions.filter(a => a.route !== undefined).map((action, index) => {
-                    return (
-                        <Route key={index} path={crudToReactPath(action.route?.path || '')}
-                               element={<><ViewLoader action={action}/></>}/>
-                    )
+                {Object.entries(actions || {}).map(([entity, list]) => {
+                    return list.filter((a: ActionType) => a.route !== undefined).map((action: ActionType, index: number) => {
+                        return (
+                            <Route key={index}
+                                   path={crudToReactPath(action.route?.path || '')}
+                                   element={<ViewLoader controller={entity} action={action}/>}
+                            />
+                        )
+                    })
                 })}
             </Routes>
         </Default>

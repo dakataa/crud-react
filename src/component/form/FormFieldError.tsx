@@ -8,8 +8,6 @@ export const FormFieldError = ({name, className}: { name: string, className?: st
     if (!errorMessages.length)
         return <></>;
 
-    console.log(errorMessages);
-
     return (<div className={className}>
             {errorMessages.map((error: FormError, i: number) => <span key={i}>{error.message}</span>)}
         </div>

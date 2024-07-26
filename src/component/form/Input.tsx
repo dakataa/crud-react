@@ -43,7 +43,6 @@ export const Input = ({
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
 
-    console.log(view.full_name, view.data);
     return <input
         ref={fieldRef}
         id={view.id || nameToId(view.full_name)}

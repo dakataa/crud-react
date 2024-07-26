@@ -1,7 +1,7 @@
 import React from "react";
 import {FormError, useForm} from "@src/component/form/Form";
 
-export const FormErrorAlert = ({name = 'global'}: { name: string; }) => {
+export const FormAlert = ({name = 'global'}: { name: string; }) => {
     const [[form]] = useForm();
     const errorMessages = form?.errors[name] || [];
 

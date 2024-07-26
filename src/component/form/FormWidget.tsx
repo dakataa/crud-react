@@ -5,8 +5,7 @@ import React from "react";
 import {FormViewType} from "@src/type/FormViewType";
 
 export const FormWidget = ({
-                               view,
-                               ...props
+                               view
                            }: {
     view: FormViewType,
 } & FormGroupProps):

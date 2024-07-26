@@ -4,6 +4,7 @@ import {ColumnType} from "@src/type/ColumnType";
 import React, {ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
 import {generateRoute} from "@src/component/Router";
+import {useActions} from "@src/context/ActionContext.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -38,9 +39,13 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
     const objectActions = actions.filter(a => a.object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
     const hasBatchActions = data?.form?.batch !== undefined && primaryColumn;
-    const currentIds: number[] = (data?.entity.data.items || []).map(row => row[primaryColumn?.field || 0] || null);
+    const currentIds: number[] = (data?.entity.data.items || []).map(row => row[primaryColumn?.field] || 0);
     const batchSelectedIds = useRef<number[]>([]);
     const batchIsSelectedAll = currentIds.reduce((v: boolean, id) => v && batchSelectedIds.current.includes(id), true);
+
+    const [, controller] = useActions();
+
+    console.log('controller', controller);
 
     const batchToggleItem = (id: number, add: boolean = false) => {
         if (add) {
@@ -103,11 +108,11 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
                                             {columnIndex === 0 && hasBatchActions &&
                                                 (
                                                     <input
-                                                        checked={batchSelectedIds.current.includes(row[primaryColumn.field])}
+                                                        checked={batchSelectedIds.current.includes(row[primaryColumn?.field])}
                                                         className={"me-2"} type="checkbox"
                                                         name={data.form.batch.view.full_name}
-                                                        value={row[primaryColumn.field]}
-                                                        onChange={(e) => batchToggleItem(row[primaryColumn.field], e.target.checked)}
+                                                        value={row[primaryColumn?.field]}
+                                                        onChange={(e) => batchToggleItem(row[primaryColumn?.field], e.target.checked)}
                                                     />
                                                 )
                                             }
@@ -122,7 +127,7 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
                                                 key={index}
                                                 onClick={(event) => onClick && onClick({
                                                     action: action,
-                                                    parameters: {id: row[primaryColumn.field]}
+                                                    parameters: {id: row[primaryColumn?.field]}
                                                 }, event)}
                                                 className={"btn"}
                                                 to={generateRoute(action.route, {

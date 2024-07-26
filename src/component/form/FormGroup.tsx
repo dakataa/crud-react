@@ -1,7 +1,7 @@
-import React from "react";
 import {FormFieldError} from "@src/component/form/FormFieldError";
 import {FormViewType} from "@src/type/FormViewType";
 import {titlize} from "@src/helper/StingUtils";
+import React from "react";
 
 export type FormGroupProps = {
     view: FormViewType
