@@ -36,6 +36,9 @@ export function ActionProvider(props: PropsWithChildren) {
 
     const [actions, setActions] = useState<ControllerActionType | null>(initActions);
     useEffect(() => {
+        if(initActions)
+            return;
+
         (new Requester()).get('/_crud/actions', {}).then((response) => {
             if (response.status !== 200) {
                 return;

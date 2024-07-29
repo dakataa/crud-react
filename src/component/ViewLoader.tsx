@@ -18,22 +18,8 @@ const DefaultComponent = ({action}: { action: ActionType }) => {
 }
 
 export default ({controller, action}: { controller: string, action: ActionType }): any => {
-
-
-    useEffect(() => {
-
-    }, []);
-
-    const viewName = capitalize(action.name || 'Unknown');
-    // const DynamicView = lazy((): any => import('./../../crud/view/' + controller + '/' + viewName+'.tsx').catch((error) => {
-    //     console.log('error', error);
-    //     return ({
-    //         default: () => createDefaultComponent(action)
-    //     })
-    // }));
-
     return (
-        <DynamicView viewName={action.name}>
+        <DynamicView view={action.name || 'list'}>
             <DefaultComponent action={action}/>
         </DynamicView>
     );

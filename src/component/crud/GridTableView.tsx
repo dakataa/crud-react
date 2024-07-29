@@ -5,6 +5,7 @@ import React, {ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
 import {generateRoute} from "@src/component/Router";
 import {useActions} from "@src/context/ActionContext.tsx";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -39,7 +40,7 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
     const objectActions = actions.filter(a => a.object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
     const hasBatchActions = data?.form?.batch !== undefined && primaryColumn;
-    const currentIds: number[] = (data?.entity.data.items || []).map(row => row[primaryColumn?.field] || 0);
+    const currentIds: number[] = (data?.entity.data.items || []).map(row => (row[primaryColumn?.field || ''] || 0));
     const batchSelectedIds = useRef<number[]>([]);
     const batchIsSelectedAll = currentIds.reduce((v: boolean, id) => v && batchSelectedIds.current.includes(id), true);
 
@@ -116,7 +117,9 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
                                                     />
                                                 )
                                             }
-                                            {row[column.field]}
+                                            <DynamicView data={row} prefix={"list"} view={column.field}>
+                                                {row[column.field]}
+                                            </DynamicView>
                                         </td>
                                     )
                                 )}

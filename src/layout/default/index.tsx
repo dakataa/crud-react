@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {memo, startTransition, useEffect, useRef, useState} from "react";
 import './assets/style/theme.scss';
 import MainNavigation, {MainNavigationRef, MenuItem} from "@src/layout/default/component/MainNavigation";
 import Dropdown from "@src/component/Dropdown";
@@ -6,12 +6,14 @@ import Icon from "@src/component/Icon";
 import Link from "@src/component/Link";
 import Requester from 'requester';
 
-const Index = ({children}: {
+const Index = memo(({children}: {
     children: any
 }) => {
 
-    const mainMenuRef = useRef<MainNavigationRef>(null);
+    const mainMenuRef = useRef<MainNavigationRef | null>(null);
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
+
+    console.log('index');
 
     useEffect(() => {
         (new Requester()).get('/_crud/navigation', {}).then((response) => {
@@ -20,7 +22,9 @@ const Index = ({children}: {
             }
 
             response.getData().then((data) => {
-                setNavigationItems(data);
+                startTransition(() => {
+                    setNavigationItems(data);
+                })
             });
         }).catch((e) => {
             console.log('error', e);
@@ -69,6 +73,6 @@ const Index = ({children}: {
             </main>
         </>
     );
-}
+});
 
 export default Index;

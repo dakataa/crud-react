@@ -9,12 +9,17 @@ export default defineConfig(() => {
 			outDir: 'build',
 		},
 		plugins: [react(), tsconfigPaths()],
+        envPrefix: 'CRUD_',
 		resolve: {
 			alias: [
 				{
 					find: /~(.+)/,
 					replacement: join(process.cwd(), 'node_modules/$1'),
-				}
+				},
+                {
+                    find: /@crud\/(.+)/,
+                    replacement: join(process.cwd(), '/crud/$1'),
+                }
 			]
 		}
 	};

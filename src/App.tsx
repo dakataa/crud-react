@@ -8,7 +8,7 @@ import ViewLoader from "@src/component/ViewLoader";
 import {useActions} from "@src/context/ActionContext.tsx";
 
 Requester.defaults = {
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.CRUD_API_BASE_URL,
     headers: {
         Accept: 'application/json'
     }

@@ -1,23 +1,34 @@
-import {lazy, Suspense, useEffect, useState} from "react";
+import {lazy, memo, Suspense, useEffect, useState} from "react";
 import {useActions} from "@src/context/ActionContext.tsx";
 
-
-const DynamicView = ({viewName, children}: { viewName: string }) => {
+const DynamicView = memo(({view, prefix, children, data, ...props}: {
+    view: string,
+    prefix?: string,
+    children: any,
+    data?: any
+}) => {
     const [, controller] = useActions();
+    const files = import.meta.glob('@crud/view/**');
+    const [, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([controller, prefix, view].filter(v => v).join('/') + '.tsx'
+    )).shift() || [];
+    if (importMethod == undefined) {
+        return children;
+    }
 
-    const LoadedView = lazy((): any => import('./../../../crud/view/' + controller + '/' + viewName + '.tsx')
-        .catch(error => {
-            console.log(error);
+    const LoadedView = lazy((): any => importMethod().catch(error => {
             return {
                 default: () => children
             };
-        }));
+        })
+    );
 
     return (
         <Suspense>
-            <LoadedView controller={controller} viewName={viewName}>{children}</LoadedView>
+            <LoadedView controller={controller} viewName={view} data={data} {...props}>
+                {children}
+            </LoadedView>
         </Suspense>
     );
-};
+});
 
 export default DynamicView;
