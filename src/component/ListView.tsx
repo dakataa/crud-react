@@ -1,5 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
-import Requester, {convertFormDataToObject, convertObjectToURLSearchParams, convertURLSearchParamsToObject} from 'requester';
+import Requester, {
+    convertFormDataToObject,
+    convertObjectToURLSearchParams,
+    convertURLSearchParamsToObject
+} from 'requester';
 import {ListType} from "@src/type/ListType";
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView";
 import PaginatorView from "@src/component/crud/PaginatorView";
@@ -10,6 +14,7 @@ import Button from "@src/component/Button";
 import {generateRoute} from "@src/component/Router";
 import FormView from "@src/component/crud/FormView";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 const ListView = () => {
     const location = useLocation();
@@ -23,7 +28,7 @@ const ListView = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const handleAction = ({action, parameters}: OnClickAction, event?: React.MouseEvent) => {
-        if(parameters !== undefined) {
+        if (parameters !== undefined) {
             parameters = objectRemoveEmpty(parameters as object);
             if (!Object.keys(parameters as object).length) {
                 parameters = undefined;
@@ -96,8 +101,13 @@ const ListView = () => {
                                 <div className="filter">
                                     <Form
                                         ref={filterFormRef}
-                                        onSubmit={(formData: FormData) => handleAction({action: { name: 'filter', object: false }, parameters: convertFormDataToObject(formData)})}
-                                        onReset={() => handleAction({action: { name: 'filter', object: false }})}
+                                        onSubmit={(formData: FormData) => handleAction({
+                                            action: {
+                                                name: 'filter',
+                                                object: false
+                                            }, parameters: convertFormDataToObject(formData)
+                                        })}
+                                        onReset={() => handleAction({action: {name: 'filter', object: false}})}
                                     >
                                         {
                                             data?.form?.filter && (
@@ -118,10 +128,14 @@ const ListView = () => {
                 </div>
             </div>
 
-            <div className={"table-responsive"}>
-                <GridTableView onClick={handleAction} data={data}/>
-            </div>
-            {data && <PaginatorView meta={data?.entity?.data.meta}/>}
+            <DynamicView prefix={"modify"} view={"content"}>
+                <>
+                    <div className={"table-responsive"}>
+                        <GridTableView onClick={handleAction} data={data}/>
+                    </div>
+                    {data && <PaginatorView meta={data?.entity?.data.meta}/>}
+                </>
+            </DynamicView>
 
         </div>
     );

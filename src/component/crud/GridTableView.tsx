@@ -44,10 +44,6 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
     const batchSelectedIds = useRef<number[]>([]);
     const batchIsSelectedAll = currentIds.reduce((v: boolean, id) => v && batchSelectedIds.current.includes(id), true);
 
-    const [, controller] = useActions();
-
-    console.log('controller', controller);
-
     const batchToggleItem = (id: number, add: boolean = false) => {
         if (add) {
             batchSelectedIds.current.push(id);
@@ -78,7 +74,7 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
                 <tr>
                     {columns.map((column, index) => (
                         <th key={index}>
-                            {column.label}
+                            <DynamicView data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
                             {column.sortable && data?.sort[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({
