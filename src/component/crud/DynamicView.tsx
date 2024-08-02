@@ -1,36 +1,39 @@
-import {lazy, memo, Suspense, useEffect, useState} from "react";
+import {lazy, memo, ReactElement, Suspense, useEffect, useRef, useState} from "react";
 import {useActions} from "@src/context/ActionContext.tsx";
 import {capitalize} from "@src/helper/StingUtils.tsx";
 
-const DynamicView = memo(({view, prefix, children, data, ...props}: {
+const EmptyView = ({children}) => {
+    return <>{children}</>
+}
+
+const DynamicView = memo(({view, prefix, children, data}: {
+    id?: string,
     view: string,
     prefix?: string,
-    children: any,
+    children?: any,
     data?: any
 }) => {
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
     const [, controller] = useActions();
     const files = import.meta.glob('@crud/view/**');
-    const [, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([controller, prefix, view].filter(v => v).join('/') + '.tsx'
+    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([controller, prefix, view].filter(v => v).join('/') + '.tsx'
     )).shift() || [];
+    const [update, setUpdate] = useState(1);
+    const LoadedView = useRef<any>(EmptyView);
 
-    if (importMethod == undefined) {
-        return children;
-    }
+    useEffect(() => {
+        if (importMethod === undefined) {
+            return () => {};
+        }
 
-    const LoadedView = lazy((): any => importMethod().catch(error => {
-            return {
-                default: () => children
-            };
-        })
-    );
+        importMethod().then((module) => {
+            LoadedView.current = module.default;
+            setUpdate(update + 1);
+        });
+    }, []);
 
     return (
-        <Suspense>
-            <LoadedView controller={controller} viewName={view} data={data} {...props}>
-                {children}
-            </LoadedView>
-        </Suspense>
+        <LoadedView.current controller={controller} viewName={view} data={data}>{children}</LoadedView.current>
     );
 });
 

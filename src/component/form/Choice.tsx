@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {createRef, useEffect, useRef} from "react";
 import {nameToId, useForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {FormViewType} from "@src/type/FormViewType";
@@ -9,7 +9,7 @@ export type ChoiceProps = {
     choiceLabelTransform?: Function
 } & FormFieldProps;
 
-export const Choice = ({
+const Choice = ({
                            view,
                            constraints,
                            className,
@@ -22,7 +22,7 @@ export const Choice = ({
     constraints = constraints || [];
 
     const [[formState, dispatch], formRef] = useForm();
-    const fieldRef = useRef();
+    const fieldRef = useRef<HTMLSelectElement | HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[view.full_name] || [];
     const isInvalid = !!errorMessages.length;
 
@@ -89,7 +89,7 @@ export const Choice = ({
                 onChange={(e) => validate({
                     value: (view.multiple ? formRef?.current?.getFormData().getAll(view.full_name) : formRef?.current?.getFormData().get(view.full_name)) || e.target.value
                 })}
-                className={[...(className?.split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
+                className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
                 {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 defaultValue={view.data}
             >
@@ -107,3 +107,5 @@ export const Choice = ({
         )
     }
 }
+
+export default Choice;

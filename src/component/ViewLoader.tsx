@@ -19,7 +19,7 @@ const DefaultComponent = ({action}: { action: ActionType }) => {
 
 export default ({controller, action}: { controller: string, action: ActionType }): any => {
     return (
-        <DynamicView view={action.name || 'list'}>
+        <DynamicView key={controller + action.name} view={action.name || "list"}>
             <DefaultComponent action={action}/>
         </DynamicView>
     );

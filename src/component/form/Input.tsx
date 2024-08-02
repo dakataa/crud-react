@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useRef} from "react";
+import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
 import {nameToId, useForm} from "./Form";
 import {Constraint} from "./constraint/Contraint";
 import {FormViewType} from "@src/type/FormViewType";
@@ -13,7 +13,7 @@ export type FormFieldProps = {
 export type InputProps = {
 } & FormFieldProps;
 
-export const Input = ({
+const Input = ({
                          view,
                           constraints,
                           className,
@@ -22,7 +22,7 @@ export const Input = ({
     React.JSX.Element => {
 
     const [[formState, dispatch]] = useForm();
-    const fieldRef = useRef();
+    const fieldRef = useRef<HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[view.full_name] || [];
 
     useEffect(() => {
@@ -46,11 +46,12 @@ export const Input = ({
     return <input
         ref={fieldRef}
         id={view.id || nameToId(view.full_name)}
+        key={view.full_name}
         name={view.full_name}
         type={view.type}
         defaultValue={view.data}
         aria-invalid={!errorMessages.length}
-        onKeyUp={(e: ChangeEvent<HTMLInputElement>) => validate({value: e.target.value})}
+        onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => validate({value: (e.target as HTMLInputElement).value})}
         onChange={(e: ChangeEvent<HTMLInputElement>) => validate({value: e.target.value})}
         className={[defaultFieldClassName, ...(errorMessages.length ? ['is-invalid'] : [])].join(' ')}
         defaultChecked={view?.checked}
@@ -58,3 +59,4 @@ export const Input = ({
     />
 }
 
+export default Input;

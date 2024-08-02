@@ -1,7 +1,7 @@
 import {ListType} from "@src/type/ListType";
 import {Link, useLocation, useMatch} from "react-router-dom";
 import {ColumnType} from "@src/type/ColumnType";
-import React, {ReactElement, useRef, useState} from "react";
+import React, {memo, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
 import {generateRoute} from "@src/component/Router";
 import {useActions} from "@src/context/ActionContext.tsx";
@@ -16,7 +16,7 @@ export type OnClickAction = {
     parameters?: { [key: string]: any }
 };
 
-const GridTableView = ({data, columns, options, onClick, ...props}: {
+const GridTableView = memo(({data, columns, options, onClick, ...props}: {
     data?: ListType,
     columns?: ColumnType[],
     options?: {
@@ -98,7 +98,7 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
                 </tr>
                 </thead>
                 <tbody>
-                {data !== undefined && (!!data.entity.data.items.length ? data.entity.data.items.map((row, rowIndex) => (
+                {data && (!!data.entity.data.items.length ? data.entity.data.items.map((row, rowIndex) => (
                             <tr key={rowIndex}>
                                 {columns?.map((column, columnIndex) => (
                                         <td key={columnIndex}>
@@ -152,6 +152,6 @@ const GridTableView = ({data, columns, options, onClick, ...props}: {
             </table>
         </>
     );
-}
+})
 
 export default GridTableView;

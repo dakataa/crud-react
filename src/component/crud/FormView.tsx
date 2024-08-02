@@ -1,29 +1,21 @@
 import {FormViewType} from "@src/type/FormViewType";
-import {FormWidget} from "@src/component/form/FormWidget";
-import {titlize} from "@src/helper/StingUtils";
-import React from "react";
+import FormWidget from "@src/component/form/FormWidget";
+import React, {memo} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-const FormView = ({view}: { view: FormViewType }) => {
+export const FormView = memo(({view, name}: { view: FormViewType, name?: string }) => {
     return (
-        <>
-            {Object.values(view.children || []).map((child, index) => (
-                <DynamicView key={index} data={child} prefix={"modify/form"} view={child.name}>
-                    {Object.keys(child.children || []).length ? (
-                            <div className={"mb-3"}>
-                                <label>{child.label || titlize(child.name)}</label>
-                                <FormView key={index} view={child}/>
-                            </div>
-                        ) :
-                        <FormWidget
-                            view={child}
-                        />}
-                </DynamicView>
-                )
-            )}
-
-        </>
+        <DynamicView key={view.full_name} view={name || view.name} prefix={"modify/form"} data={view}>
+            {
+                Object.keys(view.children || []).length ?
+                    Object.values(view.children || []).map((child, index) => (
+                        <FormView key={child.full_name} view={child}/>
+                    ))
+                    :
+                    <FormWidget view={view}/>
+            }
+        </DynamicView>
     );
-}
+});
 
 export default FormView;

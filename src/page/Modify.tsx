@@ -7,13 +7,14 @@ import FormView from "@src/component/crud/FormView";
 import {FormViewType} from "@src/type/FormViewType";
 import Button from "@src/component/Button";
 import {generateRoute} from "@src/component/Router";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 const Modify = () => {
     const location = useLocation();
     const [data, setData] = useState<ModifyType>();
     const [preload, setPreloader] = useState(false);
     const navigate = useNavigate();
-    const formRef = useRef<FormRef>(null);
+    const formRef = useRef<FormRef | null>(null);
 
     useEffect(() => {
         (new Requester()).get(location.pathname, {}).then((response) => {
@@ -33,7 +34,7 @@ const Modify = () => {
         setPreloader(true);
         (new Requester()).post(location.pathname, formData).then((response) => response.getData()).then(data => {
 
-            if(data.redirect) {
+            if (data.redirect) {
                 navigate(generateRoute(data.redirect.route, data.redirect.parameters));
             }
 
@@ -69,22 +70,26 @@ const Modify = () => {
                         <Link to={"#"}>&larr;</Link>
                         {data?.title || 'Title'}
                     </h2>
+
                     <nav className="nav">
+                        <DynamicView view={"navigation"} prefix={"modify"}/>
                     </nav>
                 </div>
             </header>
 
             <main className="tabs">
                 <div className="wrap">
-                    {Object.keys(data?.messages || {}).map((messageType) => (
-                        <div className={['alert', 'alert-' + messageType].join(' ')}>{(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}</div>
+                    {Object.keys(data?.messages || {}).map((messageType, index) => (
+                        <div key={index} className={['alert', 'alert-' + messageType].join(' ')}>
+                            {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
+                        </div>
                     ))}
                     <Form ref={formRef} action={location.pathname} method={"POST"} onSubmit={onSubmit}>
                         <div className="tab-content">
                             <div id="edit" className="tab tab-pane active in">
                                 {
                                     data?.form?.modify && (
-                                        <FormView view={data.form.modify.view}/>
+                                            <FormView name={"form"} view={data.form.modify.view}/>
                                     )
                                 }
                             </div>

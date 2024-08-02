@@ -64,8 +64,6 @@ const ListView = () => {
     }, [redirectTo]);
 
     useEffect(() => {
-        console.log('search1', Object.fromEntries(searchParams.entries()), convertURLSearchParamsToObject(searchParams));
-
         (new Requester()).get(location.pathname, searchParams).then((response) => {
             if (response.status === 200) {
                 response.getData().then(v => setData(v));

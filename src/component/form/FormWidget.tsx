@@ -1,12 +1,12 @@
-import {Input} from "@src/component/form/Input";
-import {Choice} from "@src/component/form/Choice";
+import Choice from "@src/component/form/Choice";
 import {FormGroup, FormGroupProps} from "@src/component/form/FormGroup";
 import React from "react";
 import {FormViewType} from "@src/type/FormViewType";
+import Input from "@src/component/form/Input.tsx";
 
-export const FormWidget = ({
-                               view
-                           }: {
+const FormWidget = ({
+                        view
+                    }: {
     view: FormViewType,
 } & FormGroupProps):
     React.JSX.Element => {
@@ -29,3 +29,5 @@ export const FormWidget = ({
         </FormGroup>
     )
 }
+
+export default FormWidget;

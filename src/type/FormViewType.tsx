@@ -27,6 +27,7 @@ export type FormViewType = {
     preferred_choices?: { [key: string]: any };
     attr?: { [key: string]: string } | Function;
     data?: any;
+    rendered?: boolean;
 }
 
 export type ChoiceType = {
