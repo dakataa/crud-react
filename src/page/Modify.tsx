@@ -8,8 +8,9 @@ import {FormViewType} from "@src/type/FormViewType";
 import Button from "@src/component/Button";
 import {generateRoute} from "@src/component/Router";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import TemplateBlock from "@src/component/TemplateBlock.tsx";
 
-const Modify = () => {
+const Modify = ({children}) => {
     const location = useLocation();
     const [data, setData] = useState<ModifyType>();
     const [preload, setPreloader] = useState(false);
@@ -68,37 +69,34 @@ const Modify = () => {
                 <div className="wrap">
                     <h2 className="title">
                         <Link to={"#"}>&larr;</Link>
-                        {data?.title || 'Title'}
+                        <TemplateBlock name={"title"} content={children}>
+                            {data?.title || 'Title'}
+                        </TemplateBlock>
                     </h2>
 
                     <nav className="nav">
-                        <DynamicView view={"navigation"} prefix={"modify"}/>
+                        <TemplateBlock name={"navigation"} content={children}/>
                     </nav>
                 </div>
             </header>
 
-            <main className="tabs">
-                <div className="wrap">
-                    {Object.keys(data?.messages || {}).map((messageType, index) => (
-                        <div key={index} className={['alert', 'alert-' + messageType].join(' ')}>
-                            {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
-                        </div>
-                    ))}
-                    <Form ref={formRef} action={location.pathname} method={"POST"} onSubmit={onSubmit}>
-                        <div className="tab-content">
-                            <div id="edit" className="tab tab-pane active in">
-                                {
-                                    data?.form?.modify && (
-                                            <FormView name={"form"} view={data.form.modify.view}/>
-                                    )
-                                }
-                            </div>
-                        </div>
-                        <div className="actions">
-                            <Button className="btn btn-primary btn-save" preload={preload} type="submit">Save</Button>
-                        </div>
-                    </Form>
-                </div>
+            <main>
+                {Object.keys(data?.messages || {}).map((messageType, index) => (
+                    <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
+                        {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
+                    </div>
+                ))}
+
+                <Form ref={formRef} action={location.pathname} method={"POST"} onSubmit={onSubmit}>
+                    {
+                        data?.form?.modify && (
+                            <FormView name={"form"} view={data.form.modify.view}/>
+                        )
+                    }
+                    <div className="actions">
+                        <Button className="btn btn-primary btn-save" preload={preload} type="submit">Save</Button>
+                    </div>
+                </Form>
             </main>
         </section>
     );
