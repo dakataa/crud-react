@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, useTransition} from "react";
 import {Link, matchRoutes, useLocation, useNavigate, useParams} from "react-router-dom";
 import Requester from "requester";
 import {ModifyType} from "@src/type/ModifyType";
@@ -30,9 +30,9 @@ const Modify = ({children}) => {
         });
     }, [location]);
 
-
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
+
         (new Requester()).post(location.pathname, formData).then((response) => response.getData()).then(data => {
 
             if (data.redirect) {
@@ -69,13 +69,13 @@ const Modify = ({children}) => {
                 <div className="wrap">
                     <h2 className="title">
                         <Link to={"#"}>&larr;</Link>
-                        <TemplateBlock name={"title"} content={children}>
+                        <TemplateBlock name={"title"} content={children} data={data}>
                             {data?.title || 'Title'}
                         </TemplateBlock>
                     </h2>
 
                     <nav className="nav">
-                        <TemplateBlock name={"navigation"} content={children}/>
+                        <TemplateBlock name={"navigation"} content={children} data={data}/>
                     </nav>
                 </div>
             </header>
@@ -87,16 +87,18 @@ const Modify = ({children}) => {
                     </div>
                 ))}
 
-                <Form ref={formRef} action={location.pathname} method={"POST"} onSubmit={onSubmit}>
-                    {
-                        data?.form?.modify && (
-                            <FormView name={"form"} view={data.form.modify.view}/>
-                        )
-                    }
-                    <div className="actions">
-                        <Button className="btn btn-primary btn-save" preload={preload} type="submit">Save</Button>
-                    </div>
-                </Form>
+                <TemplateBlock name={"content"} content={children} data={data}>
+                    <Form ref={formRef} action={location.pathname} method={"POST"} onSubmit={onSubmit}>
+                        {
+                            data?.form?.modify && (
+                                <FormView name={"form"} view={data.form.modify.view}/>
+                            )
+                        }
+                        <div className="actions">
+                            <Button className="btn btn-primary btn-save" preload={preload} type="submit">Save</Button>
+                        </div>
+                    </Form>
+                </TemplateBlock>
             </main>
         </section>
     );
