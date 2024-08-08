@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useTransition} from "react";
+import React, {memo, useEffect, useRef, useState, useTransition} from "react";
 import {Link, matchRoutes, useLocation, useNavigate, useParams} from "react-router-dom";
 import Requester from "requester";
 import {ModifyType} from "@src/type/ModifyType";
@@ -7,10 +7,9 @@ import FormView from "@src/component/crud/FormView";
 import {FormViewType} from "@src/type/FormViewType";
 import Button from "@src/component/Button";
 import {generateRoute} from "@src/component/Router";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 
-const Modify = ({children}) => {
+const Modify = memo(({children}) => {
     const location = useLocation();
     const [data, setData] = useState<ModifyType>();
     const [preload, setPreloader] = useState(false);
@@ -102,6 +101,6 @@ const Modify = ({children}) => {
             </main>
         </section>
     );
-}
+})
 
 export default Modify;

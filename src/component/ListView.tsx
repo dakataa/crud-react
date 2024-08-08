@@ -126,13 +126,11 @@ const ListView = () => {
                 </div>
             </div>
 
-            <DynamicView prefix={"modify"} view={"content"}>
-                <>
-                    <div className={"table-responsive"}>
-                        <GridTableView onClick={handleAction} data={data}/>
-                    </div>
-                    {data && <PaginatorView meta={data?.entity?.data.meta}/>}
-                </>
+            <DynamicView key={"modify"} prefix={"modify"} view={"content"} data={data}>
+                <div className={"table-responsive"}>
+                    <GridTableView onClick={handleAction} data={data}/>
+                </div>
+                {data && <PaginatorView meta={data.entity.data.meta}/>}
             </DynamicView>
 
         </div>

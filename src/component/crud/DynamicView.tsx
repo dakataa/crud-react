@@ -1,6 +1,7 @@
-import {lazy, memo, ReactElement, Suspense, useEffect, useRef, useState} from "react";
+import React, {memo, useEffect, useRef, useState} from "react";
 import {useActions} from "@src/context/ActionContext.tsx";
 import {capitalize} from "@src/helper/StingUtils.tsx";
+import List from "@src/page/List.tsx";
 
 const EmptyView = ({children}) => {
     return <>{children}</>
@@ -21,6 +22,7 @@ const DynamicView = memo(({view, prefix, children, data}: {
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
 
+
     useEffect(() => {
         if (importMethod === undefined) {
             return () => {};
@@ -33,7 +35,9 @@ const DynamicView = memo(({view, prefix, children, data}: {
     }, []);
 
     return (
-        <LoadedView.current controller={controller} viewName={view} data={data}>{children}</LoadedView.current>
+        <LoadedView.current view={view} controller={controller} viewName={view} data={data}>
+            { (!importMethod || LoadedView.current !== EmptyView) && children }
+        </LoadedView.current>
     );
 });
 
