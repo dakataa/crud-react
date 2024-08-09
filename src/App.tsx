@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Route, Routes} from "react-router";
 import Requester from 'requester';
 import Default from "@src/layout/default";
-import {crudToReactPath} from "@src/component/Router";
+import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType";
 import ViewLoader from "@src/component/ViewLoader";
 import {useActions} from "@src/context/ActionContext.tsx";
@@ -26,7 +26,7 @@ function App() {
                         return (
                             <Route key={index}
                                    path={crudToReactPath(action.route?.path || '')}
-                                   element={<ViewLoader controller={entity} action={action}/>}
+                                   element={<ViewLoader entity={entity} action={action}/>}
                             />
                         )
                     })

@@ -22,7 +22,6 @@ const DynamicView = memo(({view, prefix, children, data}: {
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
 
-
     useEffect(() => {
         if (importMethod === undefined) {
             return () => {};

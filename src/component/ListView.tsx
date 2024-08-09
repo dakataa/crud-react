@@ -1,31 +1,32 @@
-import React, {useEffect, useRef, useState} from "react";
-import Requester, {
-    convertFormDataToObject,
-    convertObjectToURLSearchParams,
-    convertURLSearchParamsToObject
-} from 'requester';
-import {ListType} from "@src/type/ListType";
+import React, {memo, useEffect, useRef, useState} from "react";
+import {convertFormDataToObject, convertObjectToURLSearchParams, convertURLSearchParamsToObject} from 'requester';
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView";
 import PaginatorView from "@src/component/crud/PaginatorView";
-import {Link, useLocation, useMatch, useNavigate, useSearchParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {Form, FormRef} from "@src/component/form/Form";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown";
 import Button from "@src/component/Button";
-import {generateRoute} from "@src/component/Router";
+import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import FormView from "@src/component/crud/FormView";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import {useActions} from "@src/context/ActionContext.tsx";
+import GetData from "@src/component/GetData.tsx";
+import {ListType} from "@src/type/ListType.tsx";
 
-const ListView = () => {
+const ListView = memo(() => {
     const location = useLocation();
-    const [data, setData] = useState<ListType>();
+    const [searchParams, setSearchParams] = useSearchParams();
     const sort = useRef<{ [key: string]: any } | undefined>();
     const filter = useRef<{ [key: string]: any } | undefined>();
-    const actions = Object.values(data?.action || []);
     const navigate = useNavigate();
-    const filterFormRef = useRef<FormRef>(null);
+    const filterFormRef = useRef<FormRef|null>(null);
     const [redirectTo, setRedirectTo] = useState<string>();
-    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [,entity] = useActions();
+    const {results, setQueryParameters}: {results: ListType | null} = GetData(entity || '', 'list', {}, convertURLSearchParamsToObject(searchParams));
+    const actions = Object.values(results?.action ?? []);
+
 
     const handleAction = ({action, parameters}: OnClickAction, event?: React.MouseEvent) => {
         if (parameters !== undefined) {
@@ -53,9 +54,13 @@ const ListView = () => {
         };
 
         const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
-
         setSearchParams(searchQuery);
+
     }
+
+    useEffect(() => {
+        setQueryParameters(searchParams);
+    }, [location]);
 
     useEffect(() => {
         if (redirectTo) {
@@ -63,23 +68,11 @@ const ListView = () => {
         }
     }, [redirectTo]);
 
-    useEffect(() => {
-        (new Requester()).get(location.pathname, searchParams).then((response) => {
-            if (response.status === 200) {
-                response.getData().then(v => setData(v));
-            }
-        }).catch((e) => {
-            console.log('error', e);
-        }).finally(() => {
-
-        });
-    }, [location]);
-
     return (
         <div className={"list"}>
             <div className="content-header d-md-flex mb-3 justify-content-between align-items-center">
                 <h2>
-                    {data?.title}
+                    {results?.title}
                 </h2>
                 <div>
                     {actions && (
@@ -108,8 +101,8 @@ const ListView = () => {
                                         onReset={() => handleAction({action: {name: 'filter', object: false}})}
                                     >
                                         {
-                                            data?.form?.filter && (
-                                                <FormView view={data.form.filter.view}/>
+                                            results?.form?.filter && (
+                                                <FormView view={results.form.filter.view}/>
                                             )
                                         }
                                         <button className={"btn btn-primary me-2"} type={"submit"}>Submit</button>
@@ -126,15 +119,15 @@ const ListView = () => {
                 </div>
             </div>
 
-            <DynamicView key={"modify"} prefix={"modify"} view={"content"} data={data}>
+            <DynamicView key={"modify"} prefix={"modify"} view={"content"} data={results}>
                 <div className={"table-responsive"}>
-                    <GridTableView onClick={handleAction} data={data}/>
+                    <GridTableView onClick={handleAction} data={results}/>
                 </div>
-                {data && <PaginatorView meta={data.entity.data.meta}/>}
+                {results && <PaginatorView meta={results.entity.data.meta}/>}
             </DynamicView>
 
         </div>
     );
-}
+})
 
 export default ListView;

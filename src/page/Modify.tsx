@@ -1,12 +1,12 @@
-import React, {memo, useEffect, useRef, useState, useTransition} from "react";
-import {Link, matchRoutes, useLocation, useNavigate, useParams} from "react-router-dom";
+import React, {memo, useEffect, useRef, useState} from "react";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Requester from "requester";
 import {ModifyType} from "@src/type/ModifyType";
 import {Form, FormRef} from "@src/component/form/Form";
 import FormView from "@src/component/crud/FormView";
 import {FormViewType} from "@src/type/FormViewType";
 import Button from "@src/component/Button";
-import {generateRoute} from "@src/component/Router";
+import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 
 const Modify = memo(({children}) => {

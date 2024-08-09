@@ -1,5 +1,5 @@
 import {generatePath} from "react-router-dom";
-import {RouteType} from "@src/type/RouteType";
+import {RouteType} from "@src/type/RouteType.tsx";
 
 const crudToReactPath = (path: string) => {
     return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');

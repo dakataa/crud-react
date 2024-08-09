@@ -1,6 +1,5 @@
-import {Link} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import {ListMetaType} from "@src/type/ListMetaType";
-import {OnClickAction} from "@src/component/crud/GridTableView";
 import {RouteType} from "@src/type/RouteType";
 
 const PageItem = ({route, page, active = false, title, children}: {
@@ -10,14 +9,17 @@ const PageItem = ({route, page, active = false, title, children}: {
     title?: string,
     children?: any
 }) => {
-    const location = document.location;
-    const queryParameters = new URLSearchParams(location.search);
-    queryParameters.set('page', page.toString());
+    const [searchParam, setSearchParams] = useSearchParams();
+    const setPage = (page) => {
+        searchParam.set('page', page.toString());
+        setSearchParams(searchParam);
+    }
 
     return (
         <li className={`page-item ${active ? 'active' : ''}`}>
             <Link
-                to={{pathname: location.pathname, search: queryParameters.toString()}}
+                to={"javascript:void()"}
+                onClick={() => setPage(page)}
                 className="page-link"
                 title={title}>
                 {children || page}

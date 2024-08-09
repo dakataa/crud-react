@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import {IconDefinitionType} from "@src/component/Icon";
 import {Link} from "react-router-dom";
-import {generateRoute} from "@src/component/Router";
+import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {RouteType} from "@src/type/RouteType";
 
 export type MenuItem = {

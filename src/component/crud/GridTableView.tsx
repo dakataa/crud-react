@@ -3,7 +3,7 @@ import {Link, useLocation, useMatch} from "react-router-dom";
 import {ColumnType} from "@src/type/ColumnType";
 import React, {memo, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
-import {generateRoute} from "@src/component/Router";
+import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {useActions} from "@src/context/ActionContext.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
@@ -17,7 +17,7 @@ export type OnClickAction = {
 };
 
 const GridTableView = memo(({data, columns, options, onClick, ...props}: {
-    data?: ListType,
+    data?: ListType | null,
     columns?: ColumnType[],
     options?: {
         columns: ColumnType[]
