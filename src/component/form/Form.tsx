@@ -3,7 +3,7 @@ import {Constraint} from "@src/component/form/constraint/Contraint";
 
 export type FormError = {
     message: string;
-    messageParameters?: {[key: string]: string};
+    messageParameters?: { [key: string]: string };
     messageTemplate?: string;
 }
 
@@ -26,7 +26,7 @@ type FormStatePayload = {
 type FormState = {
     response?: any;
     constraints?: any;
-    errors?: {[key: string] : FormError[]};
+    errors?: { [key: string]: FormError[] };
 }
 
 type FormProps = {
@@ -44,7 +44,8 @@ type FormProps = {
 export type FormRef = {
     getFormData: Function,
     setErrors: Function,
-    reset: Function
+    reset: Function,
+    submit: Function
 };
 
 export const nameToId = (name: string, index: number | null = null) => (name.replace(/[\[\]]/gi, '_').replace(/_+/gi, '_') + (index && index));
@@ -64,15 +65,16 @@ export const Form = forwardRef(({
         errors: {}
     };
 
-    const handler = {
+    const handler: FormRef = {
         getFormData: () => new FormData(formElementRef.current || undefined),
-        setErrors: (errors: {[key: string]: FormError[]}) => {
+        setErrors: (errors: { [key: string]: FormError[] }) => {
             const [, dispatch] = context;
             dispatch({action: 'errors', payload: errors});
         },
         reset: () => {
             formElementRef.current?.reset();
-        }
+        },
+        submit: () => formElementRef.current?.requestSubmit()
     };
 
     useImperativeHandle(ref, (): FormRef => handler);
@@ -122,7 +124,7 @@ export const Form = forwardRef(({
                     errors[formName] = [...(errors[formName] || []), {message: message || 'Error'}];
                 }
 
-                if(!Object.keys(errors).length) {
+                if (!Object.keys(errors).length) {
                     return state;
                 }
 
@@ -153,7 +155,7 @@ export const Form = forwardRef(({
         }
 
         return state;
-    }, initialState);
+    }, initialState as FormState);
     const onSubmit = (e: any) => {
         e.preventDefault();
         const [form, dispatch] = context;
@@ -165,7 +167,6 @@ export const Form = forwardRef(({
             }
         }
 
-        console.log("errors", errors);
         if (Object.values(errors).length) {
             dispatch({action: 'errors', payload: errors});
             return;

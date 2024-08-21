@@ -9,17 +9,13 @@ const PageItem = ({route, page, active = false, title, children}: {
     title?: string,
     children?: any
 }) => {
-    const [searchParam, setSearchParams] = useSearchParams();
-    const setPage = (page) => {
-        searchParam.set('page', page.toString());
-        setSearchParams(searchParam);
-    }
+    const url = new URL(document.location.href);
+    url.searchParams.set('page', page.toString());
 
     return (
         <li className={`page-item ${active ? 'active' : ''}`}>
             <Link
-                to={"javascript:void()"}
-                onClick={() => setPage(page)}
+                to={url.toString()}
                 className="page-link"
                 title={title}>
                 {children || page}

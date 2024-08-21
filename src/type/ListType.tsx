@@ -7,6 +7,7 @@ import {FormType} from "@src/type/FormType";
 export type ListType = {
     title: string | null;
     entity: {
+        name: string;
         columns: ColumnType[];
         primaryColumn: ColumnType;
         data: {

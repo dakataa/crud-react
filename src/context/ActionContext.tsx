@@ -13,16 +13,30 @@ type EntityActionType = {
 export function useActions() {
     const context = React.useContext<EntityActionType | null>(ActionContext);
 
+    const getActionByPath = (path: string): ActionType | undefined => {
+        const action = Object.entries(context || {}).map(([entity, list]) => {
+            return list.filter((a) => a.route?.path && matchPath(crudToReactPath(a.route.path), path));
+        }).filter(v => v.length);
+
+        return action.shift()?.shift();
+    };
+
+    const getAction = (entity: string, actionName: string): ActionType | undefined => {
+        return (context ? context[entity] : []).filter(a => a.name === actionName).shift();
+    }
+
     const getEntity = (): string | null => {
         return (Object.entries(context || {}).filter(([entity, list]) => {
             return list.filter((r) => r.route?.path && matchPath(crudToReactPath(r.route.path), document.location.pathname)).length;
         }).shift() || [null])[0];
     }
 
-    return [
-        context,
-        getEntity(),
-    ];
+    return {
+        actions: context,
+        getEntity,
+        getActionByPath,
+        getAction
+    };
 }
 
 export function ActionProvider(props: PropsWithChildren) {
@@ -36,7 +50,7 @@ export function ActionProvider(props: PropsWithChildren) {
 
     const [actions, setActions] = useState<EntityActionType | null>(initActions);
     useEffect(() => {
-        if(initActions)
+        if (initActions)
             return;
 
         (new Requester()).get('/_crud/actions', {}).then((response) => {

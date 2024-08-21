@@ -32,15 +32,16 @@
 		"noUnusedParameters": false,
 		"noFallthroughCasesInSwitch": true,
 		/* Paths */
-		"baseUrl": "./src",
+		"baseUrl": ".",
 		"paths": {
 			"@src/*": [
-				"./*"
+				"./src/*"
 			]
 		},
 		"allowSyntheticDefaultImports": true
 	},
 	"include": [
-		"src"
+		"src",
+		"crud"
 	]
 }

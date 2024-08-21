@@ -11,7 +11,7 @@ import FormView from "@src/component/crud/FormView";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {useActions} from "@src/context/ActionContext.tsx";
-import GetData from "@src/component/GetData.tsx";
+import GetData from "@src/component/hooks/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
 
 const ListView = memo(() => {
@@ -23,8 +23,8 @@ const ListView = memo(() => {
     const filterFormRef = useRef<FormRef|null>(null);
     const [redirectTo, setRedirectTo] = useState<string>();
 
-    const [,entity] = useActions();
-    const {results, setQueryParameters}: {results: ListType | null} = GetData(entity || '', 'list', {}, convertURLSearchParamsToObject(searchParams));
+    const {getEntity} = useActions();
+    const {results, setQueryParameters}: {results: ListType | null} = GetData(getEntity() || '', 'list', {}, convertURLSearchParamsToObject(searchParams));
     const actions = Object.values(results?.action ?? []);
 
 
@@ -119,7 +119,7 @@ const ListView = memo(() => {
                 </div>
             </div>
 
-            <DynamicView key={"modify"} prefix={"modify"} view={"content"} data={results}>
+            <DynamicView entity={results?.entity.name || 'unknown'} key={"modify"} prefix={"modify"} view={"content"} data={results}>
                 <div className={"table-responsive"}>
                     <GridTableView onClick={handleAction} data={results}/>
                 </div>

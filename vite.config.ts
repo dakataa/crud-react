@@ -19,6 +19,10 @@ export default defineConfig(() => {
                 {
                     find: /^@crud\/(.+)/,
                     replacement: join(process.cwd(), '/crud/$1'),
+                },
+                {
+                    find: /^@src\/(.+)/,
+                    replacement: join(process.cwd(), '/src/$1'),
                 }
 			]
 		}

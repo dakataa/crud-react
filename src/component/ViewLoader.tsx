@@ -17,7 +17,7 @@ const DefaultViewComponent = ({action}: { action: ActionType }) => {
 
 const ViewLoader = ({entity, action}: { entity: string, action: ActionType }): any => {
     return (
-        <DynamicView key={entity + action.name} view={action.name || "list"}>
+        <DynamicView entity={entity} key={entity + action.name} view={action.name || "list"}>
            <DefaultViewComponent action={action}/>
         </DynamicView>
     );

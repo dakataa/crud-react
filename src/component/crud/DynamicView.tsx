@@ -7,7 +7,8 @@ const EmptyView = ({children}) => {
     return <>{children}</>
 }
 
-const DynamicView = memo(({view, prefix, children, data}: {
+const DynamicView = memo(({entity, view, prefix, children, data}: {
+    entity: string,
     id?: string,
     view: string,
     prefix?: string,
@@ -15,9 +16,8 @@ const DynamicView = memo(({view, prefix, children, data}: {
     data?: any
 }) => {
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
-    const [, controller] = useActions();
     const files = import.meta.glob('@crud/view/**');
-    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([controller, prefix, view].filter(v => v).join('/') + '.tsx'
+    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([entity, prefix, view].filter(v => v).join('/') + '.tsx'
     )).shift() || [];
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
@@ -34,7 +34,7 @@ const DynamicView = memo(({view, prefix, children, data}: {
     }, []);
 
     return (
-        <LoadedView.current view={view} controller={controller} viewName={view} data={data}>
+        <LoadedView.current view={view} controller={entity} viewName={view} data={data}>
             { (!importMethod || LoadedView.current !== EmptyView) && children }
         </LoadedView.current>
     );

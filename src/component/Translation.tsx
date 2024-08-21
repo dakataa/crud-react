@@ -1,6 +1,6 @@
 import {memo} from "react";
 
-const Translation = memo(({children}: {children: string}) => {
+const Translation = memo(({children}: {children?: string}) => {
     return <>{children}</>
 })
 

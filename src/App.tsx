@@ -16,7 +16,7 @@ Requester.defaults = {
 
 function App() {
 
-    const [actions] = useActions();
+    const {actions} = useActions();
 
     return (
         <Default>

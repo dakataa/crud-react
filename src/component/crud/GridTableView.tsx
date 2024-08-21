@@ -1,10 +1,9 @@
 import {ListType} from "@src/type/ListType";
-import {Link, useLocation, useMatch} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {ColumnType} from "@src/type/ColumnType";
-import React, {memo, ReactElement, useRef, useState} from "react";
+import React, {forwardRef, memo, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
-import {useActions} from "@src/context/ActionContext.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 type GridViewHeaderColumnAttributes = {
@@ -16,7 +15,7 @@ export type OnClickAction = {
     parameters?: { [key: string]: any }
 };
 
-const GridTableView = memo(({data, columns, options, onClick, ...props}: {
+type GridTableViewType = {
     data?: ListType | null,
     columns?: ColumnType[],
     options?: {
@@ -30,8 +29,11 @@ const GridTableView = memo(({data, columns, options, onClick, ...props}: {
             }
         }
     },
-    onClick?: (props: OnClickAction, event: React.MouseEvent) => void
-}) => {
+    onClick?: (props: OnClickAction, event: React.MouseEvent) => void,
+    routeParams?: {[key: string]: any}
+};
+
+const GridTableView = forwardRef(({data, columns, options, onClick, routeParams, ...props}: GridTableViewType, ref) => {
     columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
 
     const [, updateState] = useState<any>();
@@ -74,7 +76,7 @@ const GridTableView = memo(({data, columns, options, onClick, ...props}: {
                 <tr>
                     {columns.map((column, index) => (
                         <th key={index}>
-                            <DynamicView data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
+                            <DynamicView entity={data?.entity.name || 'unknown'} data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
                             {column.sortable && data?.sort[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({
@@ -82,7 +84,7 @@ const GridTableView = memo(({data, columns, options, onClick, ...props}: {
                                             name: 'sort',
                                             object: false
                                         },
-                                        parameters: {[column.field]: data.sort[column.field] ? (data.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
+                                        parameters: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
                                     }, event)}
                                     className={"btn"}
                                     to={"#"}
@@ -113,7 +115,7 @@ const GridTableView = memo(({data, columns, options, onClick, ...props}: {
                                                     />
                                                 )
                                             }
-                                            <DynamicView data={row} prefix={"list"} view={column.field}>
+                                            <DynamicView entity={data?.entity.name || 'unknown'} data={row} prefix={"list"} view={column.field}>
                                                 {row[column.field]}
                                             </DynamicView>
                                         </td>
@@ -130,7 +132,8 @@ const GridTableView = memo(({data, columns, options, onClick, ...props}: {
                                                 }, event)}
                                                 className={"btn"}
                                                 to={generateRoute(action.route, {
-                                                    id: row[primaryColumn.field]
+                                                    id: row[primaryColumn.field],
+                                                    ...(routeParams || {})
                                                 })}
                                             >
                                                 {action.title}
@@ -152,6 +155,6 @@ const GridTableView = memo(({data, columns, options, onClick, ...props}: {
             </table>
         </>
     );
-})
+});
 
 export default GridTableView;

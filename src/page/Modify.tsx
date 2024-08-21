@@ -1,102 +1,52 @@
-import React, {memo, useEffect, useRef, useState} from "react";
-import {Link, useLocation, useNavigate} from "react-router-dom";
-import Requester from "requester";
-import {ModifyType} from "@src/type/ModifyType";
-import {Form, FormRef} from "@src/component/form/Form";
-import FormView from "@src/component/crud/FormView";
-import {FormViewType} from "@src/type/FormViewType";
-import Button from "@src/component/Button";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
+import React, {memo, ReactNode, useRef} from "react";
+import {Link, useParams} from "react-router-dom";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
+import {useActions} from "@src/context/ActionContext.tsx";
+import ModifyForm, {ModifyFormRefType} from "@src/component/ModifyForm.tsx";
+import {generateRoute} from "@src/helper/RouterUtils.tsx";
 
-const Modify = memo(({children}) => {
-    const location = useLocation();
-    const [data, setData] = useState<ModifyType>();
-    const [preload, setPreloader] = useState(false);
-    const navigate = useNavigate();
-    const formRef = useRef<FormRef | null>(null);
+const Modify = memo(({id, entity, params, children}: {
+    entity?: string | null,
+    id?: string | number,
+    params?: { [key: string]: any },
+    children?: ReactNode
+}) => {
 
-    useEffect(() => {
-        (new Requester()).get(location.pathname, {}).then((response) => {
-            if (response.status === 200) {
-                response.getData().then(v => setData(v));
-            }
+    const {getEntity, getAction, getActionByPath} = useActions();
+    const action = getActionByPath(location.pathname);
+    if(!action)
+        throw new Error('Invalid Location Path');
 
-        }).catch((e) => {
-            console.log('error', e);
-        }).finally(() => {
+    const routeParams = useParams();
+    entity = entity || getEntity();
+    const modifyTemplateRef = useRef<ModifyFormRefType>();
+    const results = modifyTemplateRef.current?.getData();
 
-        });
-    }, [location]);
-
-    const onSubmit = (formData: FormData) => {
-        setPreloader(true);
-
-        (new Requester()).post(location.pathname, formData).then((response) => response.getData()).then(data => {
-
-            if (data.redirect) {
-                navigate(generateRoute(data.redirect.route, data.redirect.parameters));
-            }
-
-            const getFormErrors = (view: FormViewType): { [key: string]: any } => {
-                let result: { [key: string]: any } = {};
-                for (let [, value] of Object.entries(view?.children || [])) {
-                    if (Object.values(value?.children || []).length) {
-                        result = {...result, ...getFormErrors(value)};
-                    } else if (value.errors?.length) {
-                        result[value.full_name] = value.errors;
-                    }
-                }
-
-                return result;
-            };
-
-            formRef.current?.setErrors(getFormErrors(data.form.modify.view));
-
-            setData(data);
-
-        }).catch((e: any) => {
-            console.log('error', e);
-        }).finally(() => {
-            setPreloader(false);
-        });
+    if (!entity) {
+        throw new Error('Missing Entity.')
     }
+
 
     return (
         <section className="edit-items">
             <header>
                 <div className="wrap">
                     <h2 className="title">
-                        <Link to={"#"}>&larr;</Link>
-                        <TemplateBlock name={"title"} content={children} data={data}>
-                            {data?.title || 'Title'}
+                        <Link to={generateRoute(getAction(entity, 'list')?.route, routeParams)}>&larr;</Link>
+                        <TemplateBlock name={"title"} content={children} data={results}>
+                            {results?.title || 'Title'}
                         </TemplateBlock>
                     </h2>
 
                     <nav className="nav">
-                        <TemplateBlock name={"navigation"} content={children} data={data}/>
+                        <TemplateBlock name={"navigation"} content={children} data={results}/>
                     </nav>
                 </div>
             </header>
 
             <main>
-                {Object.keys(data?.messages || {}).map((messageType, index) => (
-                    <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
-                        {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
-                    </div>
-                ))}
-
-                <TemplateBlock name={"content"} content={children} data={data}>
-                    <Form ref={formRef} action={location.pathname} method={"POST"} onSubmit={onSubmit}>
-                        {
-                            data?.form?.modify && (
-                                <FormView name={"form"} view={data.form.modify.view}/>
-                            )
-                        }
-                        <div className="actions">
-                            <Button className="btn btn-primary btn-save" preload={preload} type="submit">Save</Button>
-                        </div>
-                    </Form>
+                <TemplateBlock name={"content"} content={children} data={results}>
+                    <ModifyForm ref={modifyTemplateRef} action={action} entity={entity} id={id} parameters={{...routeParams, ...(params ?? {})}} />
                 </TemplateBlock>
             </main>
         </section>
