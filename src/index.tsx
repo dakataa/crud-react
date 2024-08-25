@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import Crud from './Crud.tsx';
 import {BrowserRouter} from "react-router-dom";
 import {SessionProvider} from "@src/context/SessionContext";
 import {ActionProvider} from "@src/context/ActionContext.tsx";
@@ -13,7 +13,7 @@ root.render(
     <BrowserRouter>
         <ActionProvider>
             <SessionProvider>
-                <App/>
+                <Crud/>
             </SessionProvider>
         </ActionProvider>
     </BrowserRouter>

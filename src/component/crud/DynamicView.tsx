@@ -1,23 +1,22 @@
-import React, {memo, useEffect, useRef, useState} from "react";
-import {useActions} from "@src/context/ActionContext.tsx";
+import React, {memo, ReactNode, useEffect, useRef, useState} from "react";
 import {capitalize} from "@src/helper/StingUtils.tsx";
-import List from "@src/page/List.tsx";
 
-const EmptyView = ({children}) => {
+const EmptyView = ({children}: {children: ReactNode}) => {
     return <>{children}</>
 }
 
-const DynamicView = memo(({entity, view, prefix, children, data}: {
-    entity: string,
+const DynamicView = memo(({namespace, view, prefix, children, data}: {
+    namespace?: string,
     id?: string,
     view: string,
     prefix?: string,
     children?: any,
     data?: any
 }) => {
+
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
-    const files = import.meta.glob('@crud/view/**');
-    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([entity, prefix, view].filter(v => v).join('/') + '.tsx'
+    const files = import.meta.glob('@crud/**');
+    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([namespace, prefix, view].filter(v => v).join('/') + '.tsx'
     )).shift() || [];
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
@@ -27,14 +26,14 @@ const DynamicView = memo(({entity, view, prefix, children, data}: {
             return () => {};
         }
 
-        importMethod().then((module) => {
+        importMethod().then((module: any) => {
             LoadedView.current = module.default;
             setUpdate(update + 1);
         });
     }, []);
 
     return (
-        <LoadedView.current view={view} controller={entity} viewName={view} data={data}>
+        <LoadedView.current view={view} controller={namespace} viewName={view} data={data}>
             { (!importMethod || LoadedView.current !== EmptyView) && children }
         </LoadedView.current>
     );

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Route, Routes} from "react-router";
 import Requester from 'requester';
 import Default from "@src/layout/default";
@@ -14,27 +14,26 @@ Requester.defaults = {
     }
 };
 
-function App() {
+function Crud() {
 
     const {actions} = useActions();
 
     return (
         <Default>
             <Routes>
-                {Object.entries(actions || {}).map(([entity, list]) => {
-                    return list.filter((a: ActionType) => a.route !== undefined).map((action: ActionType, index: number) => {
+                {actions?.filter((a: ActionType) => a.route !== undefined).map((action: ActionType, index: number) => {
                         return (
                             <Route key={index}
                                    path={crudToReactPath(action.route?.path || '')}
-                                   element={<ViewLoader entity={entity} action={action}/>}
+                                   element={<ViewLoader action={action}/>}
                             />
                         )
                     })
-                })}
+                }
             </Routes>
         </Default>
     );
 }
 
 
-export default App;
+export default Crud;

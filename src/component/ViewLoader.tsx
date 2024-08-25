@@ -15,9 +15,9 @@ const DefaultViewComponent = ({action}: { action: ActionType }) => {
     return React.createElement(defaultComponents[(action.name || '')] || EmptyView);
 }
 
-const ViewLoader = ({entity, action}: { entity: string, action: ActionType }): any => {
+const ViewLoader = ({action}: { action: ActionType }): any => {
     return (
-        <DynamicView entity={entity} key={entity + action.name} view={action.name || "list"}>
+        <DynamicView namespace={action.namespace} key={action.namespace + action.name} view={action.name || "list"}>
            <DefaultViewComponent action={action}/>
         </DynamicView>
     );

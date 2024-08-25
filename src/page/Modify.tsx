@@ -4,35 +4,29 @@ import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import {useActions} from "@src/context/ActionContext.tsx";
 import ModifyForm, {ModifyFormRefType} from "@src/component/ModifyForm.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
+import {ModifyType} from "@src/type/ModifyType.tsx";
+import GetData from "@src/component/hooks/GetData.tsx";
 
-const Modify = memo(({id, entity, params, children}: {
-    entity?: string | null,
-    id?: string | number,
-    params?: { [key: string]: any },
+const Modify = memo(({children}: {
     children?: ReactNode
 }) => {
 
-    const {getEntity, getAction, getActionByPath} = useActions();
+    const {getAction, getActionByPath} = useActions();
     const action = getActionByPath(location.pathname);
-    if(!action)
+    if (!action)
         throw new Error('Invalid Location Path');
 
     const routeParams = useParams();
-    entity = entity || getEntity();
     const modifyTemplateRef = useRef<ModifyFormRefType>();
-    const results = modifyTemplateRef.current?.getData();
-
-    if (!entity) {
-        throw new Error('Missing Entity.')
-    }
-
+    const {results}: any & { results: ModifyType } = GetData({entityAction: action, initParameters: routeParams});
 
     return (
         <section className="edit-items">
             <header>
                 <div className="wrap">
                     <h2 className="title">
-                        <Link to={generateRoute(getAction(entity, 'list')?.route, routeParams)}>&larr;</Link>
+                        <Link
+                            to={generateRoute(getAction(action.entity, 'list', action.namespace)?.route, routeParams)}>&larr;</Link>
                         <TemplateBlock name={"title"} content={children} data={results}>
                             {results?.title || 'Title'}
                         </TemplateBlock>
@@ -46,7 +40,12 @@ const Modify = memo(({id, entity, params, children}: {
 
             <main>
                 <TemplateBlock name={"content"} content={children} data={results}>
-                    <ModifyForm ref={modifyTemplateRef} action={action} entity={entity} id={id} parameters={{...routeParams, ...(params ?? {})}} />
+                    <ModifyForm
+                        ref={modifyTemplateRef}
+                        name={"form"}
+                        data={results}
+                        action={action} parameters={{...routeParams}}
+                    />
                 </TemplateBlock>
             </main>
         </section>

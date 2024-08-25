@@ -5,30 +5,21 @@ import {matchPath} from "react-router-dom";
 import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
 
 const STORAGE_KEY = 'actions';
-const ActionContext = React.createContext<EntityActionType | null>(null);
-type EntityActionType = {
-    [key: string]: ActionType[]
-}
+const ActionContext = React.createContext<ActionType[] | null>(null);
 
 export function useActions() {
-    const context = React.useContext<EntityActionType | null>(ActionContext);
+    const context = React.useContext<ActionType[] | null>(ActionContext);
 
     const getActionByPath = (path: string): ActionType | undefined => {
-        const action = Object.entries(context || {}).map(([entity, list]) => {
-            return list.filter((a) => a.route?.path && matchPath(crudToReactPath(a.route.path), path));
-        }).filter(v => v.length);
-
-        return action.shift()?.shift();
+        return context?.find((a) => a.route?.path && matchPath(crudToReactPath(a.route.path), path));
     };
 
-    const getAction = (entity: string, actionName: string): ActionType | undefined => {
-        return (context ? context[entity] : []).filter(a => a.name === actionName).shift();
+    const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
+        return context?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
     }
 
-    const getEntity = (): string | null => {
-        return (Object.entries(context || {}).filter(([entity, list]) => {
-            return list.filter((r) => r.route?.path && matchPath(crudToReactPath(r.route.path), document.location.pathname)).length;
-        }).shift() || [null])[0];
+    const getEntity = (): string | undefined => {
+        return getActionByPath(document.location.pathname)?.entity;
     }
 
     return {
@@ -40,15 +31,15 @@ export function useActions() {
 }
 
 export function ActionProvider(props: PropsWithChildren) {
-    let initActions: EntityActionType | null = null;
+    let initActions: ActionType[] | null = null;
     try {
         const data = sessionStorage.getItem(STORAGE_KEY);
-        initActions = JSON.parse(atob(data || '')) as EntityActionType;
+        initActions = JSON.parse(atob(data || '')) as ActionType[];
     } catch (e) {
 
     }
 
-    const [actions, setActions] = useState<EntityActionType | null>(initActions);
+    const [actions, setActions] = useState<ActionType[] | null>(initActions);
     useEffect(() => {
         if (initActions)
             return;

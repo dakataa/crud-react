@@ -11,8 +11,9 @@ import FormView from "@src/component/crud/FormView";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {useActions} from "@src/context/ActionContext.tsx";
-import GetData from "@src/component/hooks/GetData.tsx";
+import GetData, {GetDataType} from "@src/component/hooks/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
+import {ActionType} from "@src/type/ActionType.tsx";
 
 const ListView = memo(() => {
     const location = useLocation();
@@ -20,12 +21,18 @@ const ListView = memo(() => {
     const sort = useRef<{ [key: string]: any } | undefined>();
     const filter = useRef<{ [key: string]: any } | undefined>();
     const navigate = useNavigate();
-    const filterFormRef = useRef<FormRef|null>(null);
+    const filterFormRef = useRef<FormRef | null>(null);
     const [redirectTo, setRedirectTo] = useState<string>();
 
-    const {getEntity} = useActions();
-    const {results, setQueryParameters}: {results: ListType | null} = GetData(getEntity() || '', 'list', {}, convertURLSearchParamsToObject(searchParams));
-    const actions = Object.values(results?.action ?? []);
+    const {getActionByPath, getAction} = useActions();
+    const action = getActionByPath(document.location.pathname);
+    const entity = action?.entity || 'unknown';
+    const filterAction = getAction(entity, 'filter', action?.namespace);
+
+    const {results, setQueryParameters}: GetDataType & {
+        results: ListType | null
+    } = GetData({entityAction: action, initQueryParameters: convertURLSearchParamsToObject(searchParams)});
+    const actions = Object.values(results?.action ?? []) as ActionType[];
 
 
     const handleAction = ({action, parameters}: OnClickAction, event?: React.MouseEvent) => {
@@ -98,11 +105,16 @@ const ListView = memo(() => {
                                                 object: false
                                             }, parameters: convertFormDataToObject(formData)
                                         })}
-                                        onReset={() => handleAction({action: {name: 'filter', object: false}})}
+                                        onReset={() => handleAction({
+                                            action: {
+                                                name: 'reset',
+                                                object: false
+                                            }
+                                        })}
                                     >
                                         {
                                             results?.form?.filter && (
-                                                <FormView view={results.form.filter.view}/>
+                                                <FormView entity={entity} view={results.form.filter.view}/>
                                             )
                                         }
                                         <button className={"btn btn-primary me-2"} type={"submit"}>Submit</button>
@@ -119,7 +131,7 @@ const ListView = memo(() => {
                 </div>
             </div>
 
-            <DynamicView entity={results?.entity.name || 'unknown'} key={"modify"} prefix={"modify"} view={"content"} data={results}>
+            <DynamicView namespace={action?.namespace || 'unknown'} key={"modify"} prefix={"modify"} view={"content"} data={results}>
                 <div className={"table-responsive"}>
                     <GridTableView onClick={handleAction} data={results}/>
                 </div>

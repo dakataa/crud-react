@@ -1,6 +1,6 @@
-import React from "react";
+import React, {ReactNode} from "react";
 
-const TemplateParentBlock = ({children}) => {
+const TemplateParentBlock = ({children}: { children: ReactNode | undefined }) => {
     return <>{children}</>
 };
 

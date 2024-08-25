@@ -27,7 +27,7 @@ function reducer(currentState: Session, newState: Session) {
     return state;
 }
 
-export function useSession() {
+export function UseSession() {
     const context = React.useContext<any>(SessionContext);
     if (!context) {
         throw new Error("useSession must be used in SessionProvider");

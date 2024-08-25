@@ -30,10 +30,11 @@ type GridTableViewType = {
         }
     },
     onClick?: (props: OnClickAction, event: React.MouseEvent) => void,
-    routeParams?: {[key: string]: any}
+    routeParams?: {[key: string]: any},
+    namespace?: string
 };
 
-const GridTableView = forwardRef(({data, columns, options, onClick, routeParams, ...props}: GridTableViewType, ref) => {
+const GridTableView = forwardRef(({data, columns, options, onClick, routeParams, namespace}: GridTableViewType, ref) => {
     columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
 
     const [, updateState] = useState<any>();
@@ -76,7 +77,7 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
                 <tr>
                     {columns.map((column, index) => (
                         <th key={index}>
-                            <DynamicView entity={data?.entity.name || 'unknown'} data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
+                            <DynamicView namespace={data?.entity.name || 'unknown'} data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
                             {column.sortable && data?.sort[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({
@@ -115,7 +116,7 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
                                                     />
                                                 )
                                             }
-                                            <DynamicView entity={data?.entity.name || 'unknown'} data={row} prefix={"list"} view={column.field}>
+                                            <DynamicView namespace={namespace || 'unknown'} data={row} prefix={"list"} view={column.field}>
                                                 {row[column.field]}
                                             </DynamicView>
                                         </td>
