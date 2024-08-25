@@ -1,7 +1,7 @@
 import {ListType} from "@src/type/ListType";
 import {Link} from "react-router-dom";
 import {ColumnType} from "@src/type/ColumnType";
-import React, {forwardRef, memo, ReactElement, useRef, useState} from "react";
+import React, {forwardRef, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
@@ -83,7 +83,9 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
                                     onClick={(event) => onClick && onClick({
                                         action: {
                                             name: 'sort',
-                                            object: false
+                                            object: false,
+                                            namespace: namespace,
+                                            entity: data?.entity.name
                                         },
                                         parameters: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
                                     }, event)}

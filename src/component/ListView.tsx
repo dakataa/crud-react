@@ -30,7 +30,7 @@ const ListView = memo(() => {
     const filterAction = getAction(entity, 'filter', action?.namespace);
 
     const {results, setQueryParameters}: GetDataType & {
-        results: ListType | null
+        results: ListType | null;
     } = GetData({entityAction: action, initQueryParameters: convertURLSearchParamsToObject(searchParams)});
     const actions = Object.values(results?.action ?? []) as ActionType[];
 
@@ -114,7 +114,7 @@ const ListView = memo(() => {
                                     >
                                         {
                                             results?.form?.filter && (
-                                                <FormView entity={entity} view={results.form.filter.view}/>
+                                                <FormView view={results.form.filter.view}/>
                                             )
                                         }
                                         <button className={"btn btn-primary me-2"} type={"submit"}>Submit</button>

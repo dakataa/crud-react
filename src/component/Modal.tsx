@@ -16,6 +16,7 @@ type ModalType = {
 const Modal = forwardRef(({children, open = false, fade = false, backdrop = true, keyboard = true, size, onClose}: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
+    console.log('modal', isOpen)
     useImperativeHandle(ref, () => ({
         toggle: () => setIsOpen(!isOpen),
         open: () => setIsOpen(true),
@@ -45,8 +46,8 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
             modalBackdropRef?.current?.classList.add('show');
         }, fade ? 100 : 0);
 
-        modalRef.current?.removeEventListener('keydown', closeOnKeyboard)
-        modalRef.current?.addEventListener('keydown', closeOnKeyboard);
+        document.removeEventListener('keydown', closeOnKeyboard)
+        document.addEventListener('keydown', closeOnKeyboard);
     }, [isOpen]);
 
     const modalRef = useRef<HTMLDivElement | null>(null);

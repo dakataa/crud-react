@@ -1,6 +1,6 @@
 import {Form, FormRef} from "@src/component/form/Form.tsx";
 import FormView from "@src/component/crud/FormView.tsx";
-import React, {forwardRef, ReactNode, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
@@ -31,14 +31,14 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
     const actionURL = generateRoute(action.route, (parameters || {}));
     const formRef = useRef<FormRef | null>(null);
 
-    if (!data) {
-        data = (useDataProvider()?.results as ModifyType);
-    }
-
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => data,
         getFormRef: (): FormRef | null => formRef.current
     }));
+
+    if(!data) {
+        data = (useDataProvider()?.results as ModifyType);
+    }
 
     const onSubmit = (formData: FormData) => {
         setPreloader(true);

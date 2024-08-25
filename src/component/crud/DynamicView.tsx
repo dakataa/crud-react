@@ -1,16 +1,15 @@
 import React, {memo, ReactNode, useEffect, useRef, useState} from "react";
 import {capitalize} from "@src/helper/StingUtils.tsx";
 
-const EmptyView = ({children}: {children: ReactNode}) => {
+const EmptyView = ({children}: {children?: ReactNode}) => {
     return <>{children}</>
 }
 
 const DynamicView = memo(({namespace, view, prefix, children, data}: {
     namespace?: string,
-    id?: string,
     view: string,
     prefix?: string,
-    children?: any,
+    children?: ReactNode,
     data?: any
 }) => {
 
