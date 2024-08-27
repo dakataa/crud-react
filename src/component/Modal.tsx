@@ -16,7 +16,6 @@ type ModalType = {
 const Modal = forwardRef(({children, open = false, fade = false, backdrop = true, keyboard = true, size, onClose}: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
-    console.log('modal', isOpen)
     useImperativeHandle(ref, () => ({
         toggle: () => setIsOpen(!isOpen),
         open: () => setIsOpen(true),
@@ -35,6 +34,10 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
             }
         }
     };
+
+    useEffect(() => {
+        setIsOpen(open);
+    }, [open]);
 
     useEffect(() => {
         if(!isOpen) {
@@ -103,6 +106,5 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
         </>
     ), document.body);
 });
-
 
 export default Modal;

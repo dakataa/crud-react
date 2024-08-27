@@ -14,6 +14,10 @@ import {useActions} from "@src/context/ActionContext.tsx";
 import GetData, {GetDataType} from "@src/component/hooks/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
+import TemplateExtend from "@src/component/TemplateExtend.tsx";
+import Modal from "@src/component/Modal.tsx";
+import {default as T} from "@src/component/Translation.tsx";
+import {Method, default as Requester} from "requester";
 
 const ListView = memo(() => {
     const location = useLocation();
@@ -23,35 +27,63 @@ const ListView = memo(() => {
     const navigate = useNavigate();
     const filterFormRef = useRef<FormRef | null>(null);
     const [redirectTo, setRedirectTo] = useState<string>();
+    const [onClickAction, setOnClickAction] = useState<OnClickAction | null>(null)
 
-    const {getActionByPath, getAction} = useActions();
+    const {getActionByPath} = useActions();
     const action = getActionByPath(document.location.pathname);
     const entity = action?.entity || 'unknown';
-    const filterAction = getAction(entity, 'filter', action?.namespace);
 
-    const {results, setQueryParameters}: GetDataType & {
+    const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;
-    } = GetData({entityAction: action, initQueryParameters: convertURLSearchParamsToObject(searchParams)});
+    } = GetData({entityAction: action, initQueryParameters: searchParams});
     const actions = Object.values(results?.action ?? []) as ActionType[];
 
+    const closeModal = () => {
+        setOnClickAction(null);
+        refresh();
+    };
 
-    const handleAction = ({action, parameters}: OnClickAction, event?: React.MouseEvent) => {
-        if (parameters !== undefined) {
-            parameters = objectRemoveEmpty(parameters as object);
-            if (!Object.keys(parameters as object).length) {
-                parameters = undefined;
+    const deleteAction = () => {
+        if (onClickAction?.action.name !== 'delete') {
+            return;
+        }
+
+        (new Requester).fetch({
+            url: generateRoute(onClickAction.action.route, onClickAction.parameters),
+            method: Method.DELETE
+        }).then(() => {
+            closeModal();
+        }).catch((e) => {
+            console.log('error', e);
+        }).finally(() => {
+        });
+    }
+
+    const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
+        if (onClickAction.parameters !== undefined) {
+            onClickAction.parameters = objectRemoveEmpty(onClickAction.parameters as object);
+            if (!Object.keys(onClickAction.parameters as object).length) {
+                onClickAction.parameters = undefined;
             }
         }
 
-        switch (action.name) {
+        switch (onClickAction.action.name) {
             case 'filter': {
-                filter.current = parameters;
                 event?.preventDefault();
+                filter.current = onClickAction.parameters;
                 break;
             }
             case 'sort': {
-                sort.current = parameters;
                 event?.preventDefault();
+                sort.current = onClickAction.parameters;
+                break;
+            }
+            case 'delete': {
+                event?.preventDefault();
+                return setOnClickAction(onClickAction);
+            }
+            default: {
+                return;
             }
         }
 
@@ -76,69 +108,94 @@ const ListView = memo(() => {
     }, [redirectTo]);
 
     return (
-        <div className={"list"}>
-            <div className="content-header d-md-flex mb-3 justify-content-between align-items-center">
-                <h2>
-                    {results?.title}
-                </h2>
-                <div>
-                    {actions && (
-                        <div className="btn-group btn-group-sm me-2">
-                            {actions.filter(a => !a.object).map((action, index) => (
-                                <Link key={index} to={generateRoute(action.route)}
-                                      className="btn btn-outline-secondary">
-                                    {action.title || action.name}
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                    <div className={"btn-group btn-group-sm"}>
-                        <Dropdown className={"btn-group btn-group-sm"}>
-                            <DropdownButton className={"btn-outline-dark"}>Filter</DropdownButton>
-                            <DropdownContent>
-                                <div className="filter">
-                                    <Form
-                                        ref={filterFormRef}
-                                        onSubmit={(formData: FormData) => handleAction({
-                                            action: {
-                                                name: 'filter',
-                                                object: false
-                                            }, parameters: convertFormDataToObject(formData)
-                                        })}
-                                        onReset={() => handleAction({
-                                            action: {
-                                                name: 'reset',
-                                                object: false
-                                            }
-                                        })}
-                                    >
-                                        {
-                                            results?.form?.filter && (
-                                                <FormView view={results.form.filter.view}/>
-                                            )
-                                        }
-                                        <button className={"btn btn-primary me-2"} type={"submit"}>Submit</button>
-                                    </Form>
-                                </div>
-                            </DropdownContent>
-                        </Dropdown>
-                        {filter.current && (
-                            <Button onClick={() => {
-                                filterFormRef.current?.reset();
-                            }} className="btn btn-outline-dark">x</Button>
+        <>
+            <div className={"list"}>
+                <div className="content-header d-md-flex mb-3 justify-content-between align-items-center">
+                    <h2>
+                        {results?.title}
+                    </h2>
+                    <div>
+                        {actions && (
+                            <div className="btn-group btn-group-sm me-2">
+                                {actions.filter(a => !a.object).map((action, index) => (
+                                    <Link key={index} to={generateRoute(action.route)}
+                                          className="btn btn-outline-secondary">
+                                        {action.title || action.name}
+                                    </Link>
+                                ))}
+                            </div>
                         )}
+                        <div className={"btn-group btn-group-sm"}>
+                            <Dropdown className={"btn-group btn-group-sm"}>
+                                <DropdownButton className={"btn-outline-dark"}>Filter</DropdownButton>
+                                <DropdownContent>
+                                    <div className="filter">
+                                        <Form
+                                            ref={filterFormRef}
+                                            onSubmit={(formData: FormData) => handleAction({
+                                                action: {
+                                                    name: 'filter',
+                                                    object: false,
+                                                    namespace: action?.namespace,
+                                                    entity: entity
+                                                }, parameters: convertFormDataToObject(formData)
+                                            })}
+                                            onReset={() => handleAction({
+                                                action: {
+                                                    name: 'filter',
+                                                    object: false,
+                                                    namespace: action?.namespace,
+                                                    entity: entity
+                                                }
+                                            })}
+                                        >
+                                            {
+                                                results?.form?.filter && (
+                                                    <FormView view={results.form.filter.view}/>
+                                                )
+                                            }
+                                            <button className={"btn btn-primary me-2"} type={"submit"}>Submit</button>
+                                        </Form>
+                                    </div>
+                                </DropdownContent>
+                            </Dropdown>
+                            {filter.current && (
+                                <Button onClick={() => {
+                                    filterFormRef.current?.reset();
+                                }} className="btn btn-outline-dark">x</Button>
+                            )}
+                        </div>
                     </div>
                 </div>
+
+                <DynamicView namespace={action?.namespace || 'unknown'} key={"modify"} prefix={"modify"}
+                             view={"content"} data={results}>
+                    <div className={"table-responsive"}>
+                        <GridTableView data={results} onClick={handleAction} namespace={action?.namespace}/>
+                    </div>
+                    {results && <PaginatorView meta={results.entity.data.meta}/>}
+                </DynamicView>
             </div>
+            <Modal open={onClickAction?.action.name === "delete"} onClose={() => setOnClickAction(null)}
+                   fade={true} backdrop={true}>
+                <TemplateExtend name={"title"}>
+                    <T>{onClickAction?.action.title}</T>
+                </TemplateExtend>
+                <T>Are you sure?</T>
 
-            <DynamicView namespace={action?.namespace || 'unknown'} key={"modify"} prefix={"modify"} view={"content"} data={results}>
-                <div className={"table-responsive"}>
-                    <GridTableView onClick={handleAction} data={results}/>
-                </div>
-                {results && <PaginatorView meta={results.entity.data.meta}/>}
-            </DynamicView>
+                <TemplateExtend name={"footer"}>
+                    <div className={"d-flex justify-content-between w-100"}>
+                        <button className={"btn btn-secondary"} type="button" onClick={closeModal}><T>Cancel</T>
+                        </button>
+                        <button type="button" onClick={deleteAction} className="btn btn-primary">
+                            <T>Confirm</T>
+                        </button>
+                    </div>
+                </TemplateExtend>
+            </Modal>
+        </>
 
-        </div>
+
     );
 })
 
