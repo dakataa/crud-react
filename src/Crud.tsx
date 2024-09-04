@@ -5,7 +5,7 @@ import Default from "@src/layout/default";
 import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType";
 import ViewLoader from "@src/component/ViewLoader";
-import {useActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 
 Requester.defaults = {
     baseURL: import.meta.env.CRUD_API_BASE_URL,
@@ -16,7 +16,7 @@ Requester.defaults = {
 
 function Crud() {
 
-    const {actions} = useActions();
+    const {actions} = UseActions();
 
     return (
         <Default>

@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useRef, useState} from "react";
-import {convertFormDataToObject, convertObjectToURLSearchParams, convertURLSearchParamsToObject} from 'requester';
+import {convertFormDataToObject, convertObjectToURLSearchParams, default as Requester, Method} from 'requester';
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView";
 import PaginatorView from "@src/component/crud/PaginatorView";
 import {Link, useLocation, useNavigate, useSearchParams} from "react-router-dom";
@@ -10,14 +10,13 @@ import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import FormView from "@src/component/crud/FormView";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {useActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 import GetData, {GetDataType} from "@src/component/hooks/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal from "@src/component/Modal.tsx";
 import {default as T} from "@src/component/Translation.tsx";
-import {Method, default as Requester} from "requester";
 
 const ListView = memo(() => {
     const location = useLocation();
@@ -29,9 +28,17 @@ const ListView = memo(() => {
     const [redirectTo, setRedirectTo] = useState<string>();
     const [onClickAction, setOnClickAction] = useState<OnClickAction | null>(null)
 
-    const {getActionByPath} = useActions();
+    const {getActionByPath} = UseActions();
     const action = getActionByPath(document.location.pathname);
-    const entity = action?.entity || 'unknown';
+    const entity = action?.entity;
+
+    if(!action) {
+        throw new Error('Invalid Action');
+    }
+
+    if(!entity) {
+        throw new Error('Invalid Entity');
+    }
 
     const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;

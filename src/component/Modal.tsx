@@ -13,6 +13,12 @@ type ModalType = {
     size?: 'sm' | 'lg' | 'xl' | 'auto'
 };
 
+export type ModalRefType = {
+  toggle: () => void;
+  open: () => void;
+  close: () => void;
+};
+
 const Modal = forwardRef(({children, open = false, fade = false, backdrop = true, keyboard = true, size, onClose}: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
@@ -29,7 +35,7 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
 
         switch (ev.key) {
             case 'Escape': {
-                close();
+                startClosing();
                 break;
             }
         }

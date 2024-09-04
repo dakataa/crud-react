@@ -1,7 +1,7 @@
 import React, {memo, ReactNode, useRef} from "react";
 import {Link, useParams} from "react-router-dom";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
-import {useActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 import ModifyForm, {ModifyFormRefType} from "@src/component/ModifyForm.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
@@ -11,7 +11,7 @@ const Modify = memo(({children}: {
     children?: ReactNode
 }) => {
 
-    const {getAction, getActionByPath} = useActions();
+    const {getAction, getActionByPath} = UseActions();
     const action = getActionByPath(location.pathname);
     if (!action)
         throw new Error('Invalid Location Path');
@@ -44,7 +44,8 @@ const Modify = memo(({children}: {
                         ref={modifyTemplateRef}
                         name={"form"}
                         data={results}
-                        action={action} parameters={{...routeParams}}
+                        action={action}
+                        parameters={{...routeParams}}
                     />
                 </TemplateBlock>
             </main>

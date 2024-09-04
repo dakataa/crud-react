@@ -7,7 +7,7 @@ import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
 const STORAGE_KEY = 'actions';
 const ActionContext = React.createContext<ActionType[] | null>(null);
 
-export function useActions() {
+export function UseActions() {
     const context = React.useContext<ActionType[] | null>(ActionContext);
 
     const getActionByPath = (path: string): ActionType | undefined => {

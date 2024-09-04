@@ -2,7 +2,7 @@ import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import Requester, {convertObjectToURLSearchParams} from "../../../../requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {useActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 
@@ -26,7 +26,7 @@ export function useDataProvider(): GetDataType | null {
 }
 
 const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataProps): GetDataType => {
-    const {getAction} = useActions();
+    const {getAction} = UseActions();
     entityAction = getAction(entityAction.entity, entityAction.name, entityAction.namespace) || entityAction;
 
     const [results, setResults] = useState<ListType | ModifyType | null>();
@@ -93,7 +93,6 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             if (response.status === 200) {
                 response.getData().then(v => setResults(v));
             }
-
         }).catch((e) => {
             console.log('error', e);
         }).finally(() => {
@@ -110,15 +109,16 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     }
 }
 
-const DataProvider = ({entityAction, initParameters, initQueryParameters, ...props}: GetDataProps & {
-    children: ReactNode
+const DataProvider = ({entityAction, initParameters, initQueryParameters, suspense, children}: GetDataProps & {
+    children: ReactNode,
+    suspense?: ReactNode
 }) => {
 
     const data = GetData({entityAction, initParameters, initQueryParameters});
 
     return (
         <GetDataContext.Provider value={data}>
-            {props.children}
+            {suspense && !data.results ? suspense : children}
         </GetDataContext.Provider>
     );
 }
