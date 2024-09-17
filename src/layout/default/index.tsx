@@ -13,8 +13,6 @@ const Index = memo(({children}: {
     const mainMenuRef = useRef<MainNavigationRef | null>(null);
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
 
-    console.log('index');
-
     useEffect(() => {
         (new Requester()).get('/_crud/navigation', {}).then((response) => {
             if (response.status !== 200) {

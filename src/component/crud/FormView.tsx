@@ -5,7 +5,7 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 export const FormView = memo(({view, namespace, name}: { view: FormViewType, namespace?: string, name?: string }) => {
     return (
-        <DynamicView
+        view && <DynamicView
             namespace={namespace}
             key={view.id}
             view={name || view.name || 'form'}

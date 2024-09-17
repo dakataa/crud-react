@@ -1,7 +1,7 @@
 import React, {memo, ReactNode, useEffect, useRef, useState} from "react";
 import {capitalize} from "@src/helper/StingUtils.tsx";
 
-const EmptyView = ({children}: {children?: ReactNode}) => {
+const EmptyView = ({children}: { children?: ReactNode }) => {
     return <>{children}</>
 }
 
@@ -15,8 +15,9 @@ const DynamicView = memo(({namespace, view, prefix, children, data}: {
 
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
     const files = import.meta.glob('@crud/**');
-    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith([namespace, prefix, view].filter(v => v).join('/') + '.tsx'
-    )).shift() || [];
+    const templateFilePath = ['crud', namespace, prefix, view].filter(v => v).join('/') + '.tsx';
+    console.log(templateFilePath);
+    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith(templateFilePath)).shift() || [];
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
 
@@ -33,7 +34,7 @@ const DynamicView = memo(({namespace, view, prefix, children, data}: {
 
     return (
         <LoadedView.current view={view} controller={namespace} viewName={view} data={data}>
-            { (!importMethod || LoadedView.current !== EmptyView) && children }
+            {(!importMethod || LoadedView.current !== EmptyView) && children}
         </LoadedView.current>
     );
 });

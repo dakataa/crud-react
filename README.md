@@ -1,17 +1,17 @@
-# Dakataa Admin Dashboard
+# Dakataa Admin Dashboard (Frontend)
 
 ## Setup
 
 ### Install packages
 ```
-yarn install dakataa/admin-react
+yarn install dakataa/crud-react
 ```
 
 ### Configure ENV Variables
 Copy `.env` to `.env.local` and set variables
 
 ```
-REACT_APP_API_BASE_URL=https://example.com/dakataa/crud
+CRUD_API_BASE_URL=https://example.com/dakataa/crud
 ```
 
 ## Overview

@@ -97,6 +97,7 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
                     data?.form?.modify?.view !== undefined && (
                         <FormView
                             name={name}
+                            namespace={action.namespace}
                             key={data.form.modify.view.id}
                             view={data.form.modify.view}
                         />
