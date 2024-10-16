@@ -44,7 +44,6 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
         setPreloader(true);
 
         (new Requester()).post(actionURL, formData, RequestBodyType.FormData).then((response) => response.getData()).then(data => {
-
             const getFormErrors = (view: FormViewType): { [key: string]: any } => {
                 let result: { [key: string]: any } = {};
                 for (let [, value] of Object.entries(view?.children || [])) {

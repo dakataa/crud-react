@@ -25,8 +25,7 @@ const Modify = memo(({children}: {
             <header>
                 <div className="wrap">
                     <h2 className="title">
-                        <Link
-                            to={generateRoute(getAction(action.entity, 'list', action.namespace)?.route, routeParams)}>&larr;</Link>
+                        <Link to={generateRoute(getAction(action.entity, 'list', action.namespace)?.route, routeParams)}>&larr;</Link>
                         <TemplateBlock name={"title"} content={children} data={results}>
                             {results?.title || 'Title'}
                         </TemplateBlock>

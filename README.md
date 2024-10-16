@@ -1,4 +1,4 @@
-# Dakataa Admin Dashboard (Frontend)
+# CRUD Dashboard React (Frontend)
 
 ## Setup
 

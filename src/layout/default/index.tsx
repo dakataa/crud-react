@@ -58,11 +58,13 @@ const Index = memo(({children}: {
                 </div>
             </header>
             <main>
-                <div className={"navigation d-print-none"}>
-                    <nav>
-                        <MainNavigation ref={mainMenuRef} items={navigationItems} className={"item"}/>
-                    </nav>
-                </div>
+                {!!navigationItems.length && (
+                    <div className={"navigation d-print-none"}>
+                        <nav>
+                            <MainNavigation ref={mainMenuRef} items={navigationItems} className={"item"}/>
+                        </nav>
+                    </div>
+                )}
                 <div className={"content"}>
                     <div className="workspace">
                         {children}
