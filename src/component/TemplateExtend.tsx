@@ -1,5 +1,6 @@
 import React, {memo} from "react";
 import TemplateParentBlock from "@src/component/TemplateParentBlock.tsx";
+import TemplateBlock from "@src/component/TemplateBlock.tsx";
 
 const TemplateExtend = memo(({name, children, data, parent, render}: { name: string, children?: any, parent?: any, data?: any, render?: (...args: any) => void }) => {
     children = React.Children.toArray((render ? render(data, parent) : children) || []).map(x => {

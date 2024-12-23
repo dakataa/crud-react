@@ -5,18 +5,18 @@ const EmptyView = ({children}: { children?: ReactNode }) => {
     return <>{children}</>
 }
 
-const DynamicView = memo(({namespace, view, prefix, children, data}: {
+const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
     namespace?: string,
     view: string,
     prefix?: string,
     children?: ReactNode,
     data?: any
+    props?: any
 }) => {
 
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
     const files = import.meta.glob('@crud/**');
     const templateFilePath = ['crud', namespace, prefix, view].filter(v => v).join('/') + '.tsx';
-    console.log(templateFilePath);
     const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith(templateFilePath)).shift() || [];
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
@@ -33,7 +33,7 @@ const DynamicView = memo(({namespace, view, prefix, children, data}: {
     }, []);
 
     return (
-        <LoadedView.current view={view} controller={namespace} viewName={view} data={data}>
+        <LoadedView.current {...props} view={view} controller={namespace} viewName={view} data={data}>
             {(!importMethod || LoadedView.current !== EmptyView) && children}
         </LoadedView.current>
     );

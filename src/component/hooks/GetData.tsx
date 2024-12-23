@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import Requester, {convertObjectToURLSearchParams} from "../../../../requester";
+import Requester, {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
@@ -21,7 +21,7 @@ type GetDataProps = {
     initQueryParameters?: URLSearchParams | { [key: string]: any }
 }
 
-export function useDataProvider(): GetDataType | null {
+export function UseDataProvider(): GetDataType | null {
     return React.useContext<GetDataType | null>(GetDataContext);
 }
 
@@ -66,7 +66,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
         }
 
         setCache(results);
-    }, [results]);
+    }, [JSON.stringify(results)]);
 
     useEffect(() => {
         /*if(lastKey.current === key) {
@@ -97,7 +97,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             console.log('error', e);
         }).finally(() => {
         });
-    }, [parameters, queryParameters, refresh]);
+    }, [JSON.stringify(parameters), queryParameters, refresh]);
 
     return {
         results,

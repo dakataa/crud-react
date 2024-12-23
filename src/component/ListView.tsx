@@ -1,8 +1,8 @@
 import React, {memo, useEffect, useRef, useState} from "react";
-import {convertFormDataToObject, convertObjectToURLSearchParams, default as Requester, Method} from 'requester';
+import {convertFormDataToObject, convertObjectToURLSearchParams, default as Requester, Method} from '@dakataa/requester';
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView";
 import PaginatorView from "@src/component/crud/PaginatorView";
-import {Link, useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {Form, FormRef} from "@src/component/form/Form";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown";
 import Button from "@src/component/Button";
@@ -17,8 +17,13 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal from "@src/component/Modal.tsx";
 import {default as T} from "@src/component/Translation.tsx";
+import {UseModal} from "@src/context/ModalContext.tsx";
 
-const ListView = memo(() => {
+const ListView = memo(({action, routeParams, modal =  false}: {
+    action?: ActionType,
+    routeParams?: { [key: string]: any };
+    modal?: boolean
+}) => {
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const sort = useRef<{ [key: string]: any } | undefined>();
@@ -28,8 +33,11 @@ const ListView = memo(() => {
     const [redirectTo, setRedirectTo] = useState<string>();
     const [onClickAction, setOnClickAction] = useState<OnClickAction | null>(null)
 
-    const {getActionByPath} = UseActions();
-    const action = getActionByPath(document.location.pathname);
+    const {getActionByPath, getAction} = UseActions();
+    const {openModal} = UseModal()
+    action = (action && getAction(action.entity, action.name, action.namespace)) || getActionByPath(document.location.pathname);
+    routeParams = {...routeParams, ...useParams()}
+
     const entity = action?.entity;
 
     if(!action) {
@@ -42,7 +50,7 @@ const ListView = memo(() => {
 
     const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;
-    } = GetData({entityAction: action, initQueryParameters: searchParams});
+    } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: searchParams});
     const actions = Object.values(results?.action ?? []) as ActionType[];
 
     const closeModal = () => {
@@ -56,7 +64,7 @@ const ListView = memo(() => {
         }
 
         (new Requester).fetch({
-            url: generateRoute(onClickAction.action.route, onClickAction.parameters),
+            url: generateRoute(onClickAction.action.route, {...routeParams, ...onClickAction.parameters}),
             method: Method.DELETE
         }).then(() => {
             closeModal();
@@ -90,6 +98,15 @@ const ListView = memo(() => {
                 return setOnClickAction(onClickAction);
             }
             default: {
+                if(modal)
+                {
+                    event?.preventDefault();
+                    openModal({action: onClickAction, props: {
+                        onClose: () => {
+                            refresh();
+                        }
+                    }});
+                }
                 return;
             }
         }
@@ -101,7 +118,6 @@ const ListView = memo(() => {
 
         const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
         setSearchParams(searchQuery);
-
     }
 
     useEffect(() => {
@@ -116,17 +132,23 @@ const ListView = memo(() => {
 
     return (
         <>
-            <div className={"list"}>
-                <div className="content-header d-md-flex mb-3 justify-content-between align-items-center">
+            <section className={"list"}>
+                <header className="content-header d-md-flex mb-3 justify-content-between align-items-center">
                     <h2>
                         {results?.title}
                     </h2>
-                    <div>
+                    <div className={"d-flex align-items-center"}>
                         {actions && (
                             <div className="btn-group btn-group-sm me-2">
                                 {actions.filter(a => !a.object).map((action, index) => (
-                                    <Link key={index} to={generateRoute(action.route)}
-                                          className="btn btn-outline-secondary">
+                                    <Link
+                                        key={index}
+                                        to={"#"}
+                                        onClick={(event) => handleAction({
+                                            action: action,
+                                            parameters: routeParams
+                                        }, event)}
+                                        className="btn btn-outline-secondary">
                                         {action.title || action.name}
                                     </Link>
                                 ))}
@@ -173,16 +195,15 @@ const ListView = memo(() => {
                             )}
                         </div>
                     </div>
-                </div>
+                </header>
 
-                <DynamicView namespace={action?.namespace || 'unknown'} key={"modify"} prefix={"modify"}
-                             view={"content"} data={results}>
+                <DynamicView namespace={action.namespace} key={"modify"} prefix={"modify"} view={"content"} data={results}>
                     <div className={"table-responsive"}>
-                        <GridTableView data={results} onClick={handleAction} namespace={action?.namespace}/>
+                        <GridTableView data={results} onClick={handleAction} namespace={action?.namespace} routeParams={routeParams}/>
                     </div>
                     {results && <PaginatorView meta={results.entity.data.meta}/>}
                 </DynamicView>
-            </div>
+            </section>
             <Modal open={onClickAction?.action.name === "delete"} onClose={() => setOnClickAction(null)}
                    fade={true} backdrop={true}>
                 <TemplateExtend name={"title"}>

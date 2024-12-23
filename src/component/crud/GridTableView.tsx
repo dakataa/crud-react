@@ -125,18 +125,21 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
                                     )
                                 )}
                                 {primaryColumn && objectActions.length > 0 && (
-                                    <td>
+                                    <td className={"text-end text-nowrap"}>
                                         {objectActions.map((action, index) => (
                                             <Link
                                                 key={index}
                                                 onClick={(event) => onClick && onClick({
                                                     action: action,
-                                                    parameters: {id: row[primaryColumn?.field]}
+                                                    parameters: {
+                                                        ...(routeParams || {}),
+                                                        id: row[primaryColumn?.field]
+                                                    }
                                                 }, event)}
-                                                className={"btn"}
+                                                className={['btn', 'btn-sm', 'mb-1', 'ms-1', (action.route?.methods ?? []).includes('DELETE') ? 'btn-outline-danger' : 'btn-outline-secondary'].join(' ')}
                                                 to={generateRoute(action.route, {
-                                                    id: row[primaryColumn.field],
-                                                    ...(routeParams || {})
+                                                    ...(routeParams || {}),
+                                                    id: row[primaryColumn.field]
                                                 })}
                                             >
                                                 {action.title}

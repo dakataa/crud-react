@@ -1,10 +1,9 @@
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import React, {forwardRef, KeyboardEvent, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
-import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import {createPortal} from "react-dom";
 
-type ModalType = {
-    children: ReactNode,
+export type ModalType = {
+    children?: ReactNode,
     open?: boolean,
     onClose?: () => void,
     backdrop?: boolean,
@@ -14,12 +13,20 @@ type ModalType = {
 };
 
 export type ModalRefType = {
-  toggle: () => void;
-  open: () => void;
-  close: () => void;
+    toggle: () => void;
+    open: () => void;
+    close: () => void;
 };
 
-const Modal = forwardRef(({children, open = false, fade = false, backdrop = true, keyboard = true, size, onClose}: ModalType, ref) => {
+const Modal = forwardRef(({
+                              children,
+                              open = false,
+                              fade = true,
+                              backdrop = true,
+                              keyboard = true,
+                              size,
+                              onClose
+                          }: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
     useImperativeHandle(ref, () => ({
@@ -28,8 +35,12 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
         close: () => startClosing()
     }));
 
+    useEffect(() => {
+        setIsOpen(open);
+    }, [open]);
+
     const closeOnKeyboard = (ev: any & KeyboardEvent<Window>): any => {
-        if(!keyboard) {
+        if (!keyboard) {
             return;
         }
 
@@ -42,12 +53,8 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
     };
 
     useEffect(() => {
-        setIsOpen(open);
-    }, [open]);
-
-    useEffect(() => {
-        if(!isOpen) {
-           return;
+        if (!isOpen) {
+            return;
         }
 
         setTimeout(() => {
@@ -67,14 +74,14 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
         onClose && onClose();
     }
     const startClosing = () => {
-        if(!isOpen) {
+        if (!isOpen) {
             return;
         }
 
         modalRef.current?.classList.remove('show');
         modalBackdropRef?.current?.classList.remove('show');
 
-        if(fade) {
+        if (fade) {
             modalRef.current?.removeEventListener('transitionend', endClosing);
             modalRef.current?.addEventListener('transitionend', endClosing);
         } else {
@@ -84,7 +91,8 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
 
     return isOpen && createPortal((
         <>
-            <div ref={modalRef} className={["modal", (size && "modal-" + size), "d-block", (fade && "fade")].join(' ')}>
+            <div ref={modalRef}
+                 className={["modal", (size && "modal-" + size), 'd-block', fade && 'fade'].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -96,18 +104,23 @@ const Modal = forwardRef(({children, open = false, fade = false, backdrop = true
                             <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
                         </div>
                         <div className="modal-body">
-                            {React.Children.toArray(children).filter(e => React.isValidElement(e) && e.type !== TemplateExtend)}
+                            <TemplateBlock name={"content"} content={children} data={null}>
+                                {children}
+                            </TemplateBlock>
                         </div>
                         <div className="modal-footer">
-                            <TemplateBlock name={"footer"} content={children} data={null}>
-                                <button onClick={startClosing} type="button" className="btn btn-secondary">Close</button>
+                            <TemplateBlock name={"actions"} content={children} data={null}>
+                                <button onClick={startClosing} type="button" className="btn btn-secondary">
+                                    Close
+                                </button>
                             </TemplateBlock>
                         </div>
                     </div>
                 </div>
             </div>
             {backdrop && (
-                <div ref={modalBackdropRef} className={["modal-backdrop", fade && ["fade"]].join(' ')}></div>
+                <div ref={modalBackdropRef}
+                     className={["modal-backdrop", fade && ["fade"]].filter(v => v).join(' ')}></div>
             )}
         </>
     ), document.body);

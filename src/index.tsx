@@ -4,6 +4,7 @@ import Crud from './Crud.tsx';
 import {BrowserRouter} from "react-router-dom";
 import {SessionProvider} from "@src/context/SessionContext";
 import {ActionProvider} from "@src/context/ActionContext.tsx";
+import {ModalProvider} from "@src/context/ModalContext.tsx";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -13,7 +14,9 @@ root.render(
     <BrowserRouter>
         <ActionProvider>
             <SessionProvider>
+                <ModalProvider>
                 <Crud/>
+                </ModalProvider>
             </SessionProvider>
         </ActionProvider>
     </BrowserRouter>

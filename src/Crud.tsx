@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Routes} from "react-router";
-import Requester from 'requester';
+import Requester from '@dakataa/requester';
 import Default from "@src/layout/default";
 import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType";
@@ -25,7 +25,7 @@ function Crud() {
                         return (
                             <Route key={index}
                                    path={crudToReactPath(action.route?.path || '')}
-                                   element={<ViewLoader action={action}/>}
+                                   element={<ViewLoader view={action.name || ''} namespace={action.namespace || ''} props={{action}}/>}
                             />
                         )
                     })

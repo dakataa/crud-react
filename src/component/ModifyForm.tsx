@@ -5,40 +5,38 @@ import {ModifyType} from "@src/type/ModifyType.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {useNavigate} from "react-router-dom";
-import Requester, {RequestBodyType} from "requester";
+import Requester, {RequestBodyType} from "@dakataa/requester";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
-import {useDataProvider} from "@src/component/hooks/GetData.tsx";
+import {UseDataProvider} from "@src/component/hooks/GetData.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
     getFormRef: () => FormRef | null
 };
 
-const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onError, children}: {
+const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onError, onLoad, children}: {
     name?: string,
     data?: ModifyType;
     action: ActionType;
     parameters?: { [key: string]: any };
     onSuccess?: Function;
     onError?: Function;
+    onLoad?: Function;
     children?: ReactNode;
 }, ref) => {
     const [preload, setPreloader] = useState(false);
     const navigate = useNavigate();
-
     const actionURL = generateRoute(action.route, (parameters || {}));
     const formRef = useRef<FormRef | null>(null);
+    const dataProvider = UseDataProvider();
+    data = (dataProvider?.results as ModifyType) || data;
 
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => data,
         getFormRef: (): FormRef | null => formRef.current
     }));
-
-    if(!data) {
-        data = (useDataProvider()?.results as ModifyType);
-    }
 
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
@@ -83,6 +81,12 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
         });
     }
 
+    useEffect(() => {
+        if(onLoad) {
+            onLoad();
+        }
+    }, []);
+
     return data && (
         <>
             {Object.keys(data?.messages || {}).map((messageType, index) => (
@@ -91,7 +95,7 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
                 </div>
             ))}
 
-            <Form ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
+            <Form id={data?.form?.modify?.view?.id} ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
                 {
                     data?.form?.modify?.view !== undefined && (
                         <FormView

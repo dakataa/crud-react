@@ -1,10 +1,10 @@
 import React, {memo, startTransition, useEffect, useRef, useState} from "react";
-import './assets/style/theme.scss';
+import '@dakataa/crud-theme/scss/theme.scss';
 import MainNavigation, {MainNavigationRef, MenuItem} from "@src/layout/default/component/MainNavigation";
 import Dropdown from "@src/component/Dropdown";
 import Icon from "@src/component/Icon";
 import Link from "@src/component/Link";
-import Requester from 'requester';
+import Requester from '@dakataa/requester';
 
 const Index = memo(({children}: {
     children: any
@@ -35,15 +35,12 @@ const Index = memo(({children}: {
         <>
             <header>
                 <div className={"wrap"}>
-                    <button onClick={(e) => mainMenuRef.current?.toggle(e)} className={"btn btn-hamburger btn-mobile"}>
+                    <button onClick={(e) => mainMenuRef.current?.toggle(e)} className={"btn btn-mobile"}>
                         <i></i>
                     </button>
-
-                    <div className="first-nav">
-                        <nav>
-                            <Link className="logo" to="/">Admin</Link>
-                        </nav>
-                    </div>
+                    <nav className="first-nav">
+                        <Link className="logo" to="/">Admin</Link>
+                    </nav>
                     <nav className="second-nav">
                         <Dropdown className={"user"}>
                             <span className="initials">YL</span>
@@ -60,15 +57,11 @@ const Index = memo(({children}: {
             <main>
                 {!!navigationItems.length && (
                     <div className={"navigation d-print-none"}>
-                        <nav>
-                            <MainNavigation ref={mainMenuRef} items={navigationItems} className={"item"}/>
-                        </nav>
+                        <MainNavigation ref={mainMenuRef} items={navigationItems} className={"item"}/>
                     </div>
                 )}
                 <div className={"content"}>
-                    <div className="workspace">
-                        {children}
-                    </div>
+                    {children}
                 </div>
             </main>
         </>

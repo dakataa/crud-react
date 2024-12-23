@@ -49,8 +49,8 @@ const Icon = ({icon, spin = false, className, rotation}: {
         console.log('Missing Icon:', iconPrefix, iconName)
 
     const iconDefinition = IconLoaderMap[iconPrefix][iconName] || null;
-
-    return <FontAwesomeIcon {...{className, spin, rotation}} icon={iconDefinition}/>
+    return <></>
+    // return <FontAwesomeIcon {...{className, spin, rotation}} icon={iconDefinition}/>
 }
 
 export default Icon;

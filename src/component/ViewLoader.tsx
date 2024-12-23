@@ -1,24 +1,29 @@
-import {ActionType} from "@src/type/ActionType";
 import Modify from "@src/page/Modify";
 import EmptyView from "@src/component/EmptyView";
 import List from "@src/page/List";
 import React from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-const DefaultViewComponent = ({action}: { action: ActionType }) => {
+const DefaultViewComponent = ({view, props}: {
+    view: string,
+    props?: { [key: string]: any }
+}) => {
     const defaultComponents: { [key: string]: any } = {
         add: Modify,
         edit: Modify,
         list: List
     }
 
-    return React.createElement(defaultComponents[(action.name || '')] || EmptyView);
+    console.log('create', view, props);
+
+    return React.createElement(defaultComponents[view] || EmptyView, props);
 }
 
-const ViewLoader = ({action}: { action: ActionType }): any => {
+const ViewLoader = ({view, namespace, props}: { view: string; namespace: string; props?: { [key: string]: any } }): any => {
+
     return (
-        <DynamicView namespace={action.namespace} key={action.namespace + action.name} view={action.name || "list"}>
-           <DefaultViewComponent action={action}/>
+        <DynamicView namespace={namespace} view={view} key={namespace + view} props={props}>
+            <DefaultViewComponent view={view} props={props}/>
         </DynamicView>
     );
 }

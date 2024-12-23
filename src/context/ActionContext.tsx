@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
-import Requester from "requester";
+import Requester from "@dakataa/requester";
 import {matchPath} from "react-router-dom";
 import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
 

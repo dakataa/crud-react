@@ -14,11 +14,11 @@ export type InputProps = {
 } & FormFieldProps;
 
 const Input = ({
-                         view,
-                          constraints,
-                          className,
-                          onChange,
-                      }: InputProps):
+                   view,
+                   constraints,
+                   className,
+                   onChange,
+               }: InputProps):
     React.JSX.Element => {
 
     const [[formState, dispatch]] = useForm();

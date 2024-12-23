@@ -38,7 +38,8 @@ type FormProps = {
     onReset?: Function,
     action?: string,
     method?: 'GET' | 'POST',
-    className?: string
+    className?: string,
+    id?: string
 }
 
 export type FormRef = {
@@ -51,6 +52,7 @@ export type FormRef = {
 export const nameToId = (name: string, index: number | null = null) => (name.replace(/[\[\]]/gi, '_').replace(/_+/gi, '_') + (index && index));
 
 export const Form = forwardRef(({
+                                    id,
                                     children,
                                     onError,
                                     onBeforeSubmit,
@@ -187,7 +189,7 @@ export const Form = forwardRef(({
 
     return (
         <FormContext.Provider value={[context, ref, formElementRef]}>
-            <form ref={formElementRef} onSubmit={onSubmit} {...props}>{children}</form>
+            <form id={id} ref={formElementRef} onSubmit={onSubmit} {...props}>{children}</form>
         </FormContext.Provider>
     )
 });

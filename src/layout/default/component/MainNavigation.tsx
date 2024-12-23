@@ -72,7 +72,8 @@ const MainNavigation = forwardRef(({items, ...props}: {
     }
 
     useEffect(() => {
-        initiatorElement.current?.classList.toggle('active', isOpen)
+        initiatorElement.current?.classList.toggle('active', isOpen);
+        document.body.classList.toggle('toggle-nav', isOpen);
 
         if (!isOpen)
             return;
@@ -91,20 +92,21 @@ const MainNavigation = forwardRef(({items, ...props}: {
 
     return (
         <nav ref={containerRef} {...props}
-             className={"item " + (isOpen ? ['active', props.className] : [props.className]).join(' ')}>
+             className={Array.from(new Set(['item', ...(props.className?.split(' ') || []), ...(isOpen ? ['active'] : [])])).join(' ')}>
             {items
                 .map((item, index) => {
                         const active = isActiveMenuItem(item)
                         return (
                             <nav
                                 key={index}
-                                {...(active && {className: 'active'})}
+                                className={Array.from(new Set(["item", ...(active ? ['active'] : [])])).join(' ')}
                             >
                                 <Link
                                     to={generateRoute(item.route) || ''}
                                     {...(item.icon && {icon: item.icon})}
                                 >
-                                    {item.title}
+                                    <span className={"icon"}></span>
+                                    <span className={"title"}>{item.title}</span>
                                 </Link>
                                 {item.items?.length && <MainNavigation items={item.items}/>}
                             </nav>
