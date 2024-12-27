@@ -15,7 +15,8 @@ export type ModalType = {
 export type ModalRefType = {
     toggle: () => void;
     open: () => void;
-    close: () => void;
+    close: () => Promise<void>;
+    isOpen: () => boolean;
 };
 
 const Modal = forwardRef(({
@@ -32,7 +33,8 @@ const Modal = forwardRef(({
     useImperativeHandle(ref, () => ({
         toggle: () => setIsOpen(!isOpen),
         open: () => setIsOpen(true),
-        close: () => startClosing()
+        close: () => startClosing(),
+        isOpen: () => isOpen,
     }));
 
     useEffect(() => {
@@ -73,20 +75,28 @@ const Modal = forwardRef(({
         setIsOpen(false);
         onClose && onClose();
     }
-    const startClosing = () => {
-        if (!isOpen) {
-            return;
-        }
+    const startClosing = (): Promise<void> => {
+        return new Promise((resolve: Function, reject: Function) => {
+            if (!isOpen) {
+                return resolve();
+            }
 
-        modalRef.current?.classList.remove('show');
-        modalBackdropRef?.current?.classList.remove('show');
+            modalRef.current?.classList.remove('show');
+            modalBackdropRef?.current?.classList.remove('show');
 
-        if (fade) {
-            modalRef.current?.removeEventListener('transitionend', endClosing);
-            modalRef.current?.addEventListener('transitionend', endClosing);
-        } else {
-            endClosing();
-        }
+            const closeAndResolve = () => {
+                resolve();
+                endClosing();
+            };
+
+            if (fade) {
+                modalRef.current?.removeEventListener('transitionend', closeAndResolve);
+                modalRef.current?.addEventListener('transitionend', closeAndResolve);
+            } else {
+                closeAndResolve();
+            }
+        })
+
     }
 
     return isOpen && createPortal((
@@ -95,26 +105,30 @@ const Modal = forwardRef(({
                  className={["modal", (size && "modal-" + size), 'd-block', fade && 'fade'].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">
-                                <TemplateBlock name={"title"} content={children} data={null}>
-                                    Title
-                                </TemplateBlock>
-                            </h5>
-                            <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
-                        </div>
+                        <TemplateBlock name={"header"} content={children} data={null}>
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">
+                                    <TemplateBlock name={"title"} content={children} data={null}>
+                                        Title
+                                    </TemplateBlock>
+                                </h5>
+                                <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
+                            </div>
+                        </TemplateBlock>
                         <div className="modal-body">
                             <TemplateBlock name={"content"} content={children} data={null}>
                                 {children}
                             </TemplateBlock>
                         </div>
-                        <div className="modal-footer">
-                            <TemplateBlock name={"actions"} content={children} data={null}>
-                                <button onClick={startClosing} type="button" className="btn btn-secondary">
-                                    Close
-                                </button>
-                            </TemplateBlock>
-                        </div>
+                        <TemplateBlock name={"footer"} content={children} data={null}>
+                            <div className="modal-footer">
+                                <TemplateBlock name={"actions"} content={children} data={null}>
+                                    <button onClick={startClosing} type="button" className="btn btn-secondary">
+                                        Close
+                                    </button>
+                                </TemplateBlock>
+                            </div>
+                        </TemplateBlock>
                     </div>
                 </div>
             </div>

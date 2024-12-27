@@ -5,6 +5,7 @@ import {BrowserRouter} from "react-router-dom";
 import {SessionProvider} from "@src/context/SessionContext";
 import {ActionProvider} from "@src/context/ActionContext.tsx";
 import {ModalProvider} from "@src/context/ModalContext.tsx";
+import {AlertProvider} from "@src/context/AlertContext.tsx";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -15,7 +16,9 @@ root.render(
         <ActionProvider>
             <SessionProvider>
                 <ModalProvider>
-                <Crud/>
+                    <AlertProvider>
+                        <Crud/>
+                    </AlertProvider>
                 </ModalProvider>
             </SessionProvider>
         </ActionProvider>

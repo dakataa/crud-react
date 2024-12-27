@@ -1,5 +1,10 @@
 import React, {memo, useEffect, useRef, useState} from "react";
-import {convertFormDataToObject, convertObjectToURLSearchParams, default as Requester, Method} from '@dakataa/requester';
+import {
+    convertFormDataToObject,
+    convertObjectToURLSearchParams,
+    default as Requester,
+    Method
+} from '@dakataa/requester';
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView";
 import PaginatorView from "@src/component/crud/PaginatorView";
 import {Link, useLocation, useNavigate, useParams, useSearchParams} from "react-router-dom";
@@ -14,12 +19,10 @@ import {UseActions} from "@src/context/ActionContext.tsx";
 import GetData, {GetDataType} from "@src/component/hooks/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
-import TemplateExtend from "@src/component/TemplateExtend.tsx";
-import Modal from "@src/component/Modal.tsx";
-import {default as T} from "@src/component/Translation.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
+import {Result, UseAlert} from "@src/context/AlertContext.tsx";
 
-const ListView = memo(({action, routeParams, modal =  false}: {
+const ListView = memo(({action, routeParams, modal = false}: {
     action?: ActionType,
     routeParams?: { [key: string]: any };
     modal?: boolean
@@ -35,6 +38,7 @@ const ListView = memo(({action, routeParams, modal =  false}: {
 
     const {getActionByPath, getAction} = UseActions();
     const {openModal} = UseModal()
+    const {open: openAlert} = UseAlert();
     action = (action && getAction(action.entity, action.name, action.namespace)) || getActionByPath(document.location.pathname);
     routeParams = {...routeParams, ...useParams()}
 
@@ -52,27 +56,6 @@ const ListView = memo(({action, routeParams, modal =  false}: {
         results: ListType | null;
     } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: searchParams});
     const actions = Object.values(results?.action ?? []) as ActionType[];
-
-    const closeModal = () => {
-        setOnClickAction(null);
-        refresh();
-    };
-
-    const deleteAction = () => {
-        if (onClickAction?.action.name !== 'delete') {
-            return;
-        }
-
-        (new Requester).fetch({
-            url: generateRoute(onClickAction.action.route, {...routeParams, ...onClickAction.parameters}),
-            method: Method.DELETE
-        }).then(() => {
-            closeModal();
-        }).catch((e) => {
-            console.log('error', e);
-        }).finally(() => {
-        });
-    }
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
         if (onClickAction.parameters !== undefined) {
@@ -95,7 +78,22 @@ const ListView = memo(({action, routeParams, modal =  false}: {
             }
             case 'delete': {
                 event?.preventDefault();
-                return setOnClickAction(onClickAction);
+                openAlert({
+                    title: 'Are you sure',
+                    onResult: (result: Result) => {
+                        if(result.isConfirmed) {
+                            (new Requester).fetch({
+                                url: generateRoute(onClickAction.action.route, {...routeParams, ...onClickAction.parameters}),
+                                method: Method.DELETE
+                            }).catch((e) => {
+                                console.log('error', e);
+                            }).finally(() => {
+                                refresh();
+                            });
+                        }
+                    }
+                });
+                return;
             }
             default: {
                 if(modal)
@@ -143,7 +141,7 @@ const ListView = memo(({action, routeParams, modal =  false}: {
                                 {actions.filter(a => !a.object).map((action, index) => (
                                     <Link
                                         key={index}
-                                        to={"#"}
+                                        to={generateRoute(action.route, routeParams)}
                                         onClick={(event) => handleAction({
                                             action: action,
                                             parameters: routeParams
@@ -204,23 +202,6 @@ const ListView = memo(({action, routeParams, modal =  false}: {
                     {results && <PaginatorView meta={results.entity.data.meta}/>}
                 </DynamicView>
             </section>
-            <Modal open={onClickAction?.action.name === "delete"} onClose={() => setOnClickAction(null)}
-                   fade={true} backdrop={true}>
-                <TemplateExtend name={"title"}>
-                    <T>{onClickAction?.action.title}</T>
-                </TemplateExtend>
-                <T>Are you sure?</T>
-
-                <TemplateExtend name={"footer"}>
-                    <div className={"d-flex justify-content-between w-100"}>
-                        <button className={"btn btn-secondary"} type="button" onClick={closeModal}><T>Cancel</T>
-                        </button>
-                        <button type="button" onClick={deleteAction} className="btn btn-primary">
-                            <T>Confirm</T>
-                        </button>
-                    </div>
-                </TemplateExtend>
-            </Modal>
         </>
 
 

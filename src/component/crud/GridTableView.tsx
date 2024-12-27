@@ -119,7 +119,9 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
                                                 )
                                             }
                                             <DynamicView namespace={namespace || 'unknown'} data={row} prefix={"list"} view={column.field}>
-                                                {row[column.field]}
+                                                {row[column.field] !== undefined && (
+                                                    row[column.field] instanceof Object ? (row[column.field] instanceof Array ? row[column.field].join(', ') : JSON.stringify(row[column.field])): row[column.field]?.toString()
+                                                )}
                                             </DynamicView>
                                         </td>
                                     )

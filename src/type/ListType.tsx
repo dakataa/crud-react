@@ -11,7 +11,7 @@ export type ListType = {
         columns: ColumnType[];
         primaryColumn: ColumnType;
         data: {
-            items: [],
+            items: [{[key: string]: any}],
             meta: ListMetaType
         }
     },
