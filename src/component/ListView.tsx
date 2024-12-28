@@ -8,7 +8,7 @@ import {
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView";
 import PaginatorView from "@src/component/crud/PaginatorView";
 import {Link, useLocation, useNavigate, useParams, useSearchParams} from "react-router-dom";
-import {Form, FormRef} from "@src/component/form/Form";
+import {Form, FormRef, nameToId} from "@src/component/form/Form";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown";
 import Button from "@src/component/Button";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
@@ -22,10 +22,10 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 import {Result, UseAlert} from "@src/context/AlertContext.tsx";
 
-const ListView = memo(({action, routeParams, modal = false}: {
+const ListView = memo(({action, routeParams, embedded = false}: {
     action?: ActionType,
     routeParams?: { [key: string]: any };
-    modal?: boolean
+    embedded?: boolean
 }) => {
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -44,17 +44,17 @@ const ListView = memo(({action, routeParams, modal = false}: {
 
     const entity = action?.entity;
 
-    if(!action) {
+    if (!action) {
         throw new Error('Invalid Action');
     }
 
-    if(!entity) {
+    if (!entity) {
         throw new Error('Invalid Entity');
     }
 
     const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;
-    } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: searchParams});
+    } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: embedded ? searchParams : {}});
     const actions = Object.values(results?.action ?? []) as ActionType[];
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
@@ -81,7 +81,7 @@ const ListView = memo(({action, routeParams, modal = false}: {
                 openAlert({
                     title: 'Are you sure',
                     onResult: (result: Result) => {
-                        if(result.isConfirmed) {
+                        if (result.isConfirmed) {
                             (new Requester).fetch({
                                 url: generateRoute(onClickAction.action.route, {...routeParams, ...onClickAction.parameters}),
                                 method: Method.DELETE
@@ -96,14 +96,15 @@ const ListView = memo(({action, routeParams, modal = false}: {
                 return;
             }
             default: {
-                if(modal)
-                {
+                if (embedded) {
                     event?.preventDefault();
-                    openModal({action: onClickAction, props: {
-                        onClose: () => {
-                            refresh();
+                    openModal({
+                        action: onClickAction, props: {
+                            onClose: () => {
+                                refresh();
+                            }
                         }
-                    }});
+                    });
                 }
                 return;
             }
@@ -115,7 +116,12 @@ const ListView = memo(({action, routeParams, modal = false}: {
         };
 
         const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
-        setSearchParams(searchQuery);
+
+        if (embedded) {
+            setQueryParameters(searchQuery)
+        } else {
+            setSearchParams(searchQuery);
+        }
     }
 
     useEffect(() => {
@@ -158,6 +164,7 @@ const ListView = memo(({action, routeParams, modal = false}: {
                                 <DropdownContent>
                                     <div className="filter">
                                         <Form
+                                            id={"filter_" + nameToId(entity)}
                                             ref={filterFormRef}
                                             onSubmit={(formData: FormData) => handleAction({
                                                 action: {

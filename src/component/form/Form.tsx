@@ -49,7 +49,13 @@ export type FormRef = {
     submit: Function
 };
 
-export const nameToId = (name: string, index: number | null = null) => (name.replace(/[\[\]]/gi, '_').replace(/_+/gi, '_') + (index && index));
+export const nameToId = (name: string, index: number | null = null) => (
+    name
+        .replace(/[\[\]]/gi, '_')
+        .replace(/_+/gi, '_')
+        .replace(/([a-zA-Z])(?=[A-Z])/g, '$1_')
+    + (index ?? '')
+).toLowerCase();
 
 export const Form = forwardRef(({
                                     id,

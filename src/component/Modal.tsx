@@ -9,7 +9,8 @@ export type ModalType = {
     backdrop?: boolean,
     fade?: boolean,
     keyboard?: boolean,
-    size?: 'sm' | 'lg' | 'xl' | 'auto'
+    size?: 'sm' | 'lg' | 'xl' | 'auto',
+    className?: string,
 };
 
 export type ModalRefType = {
@@ -26,7 +27,8 @@ const Modal = forwardRef(({
                               backdrop = true,
                               keyboard = true,
                               size,
-                              onClose
+                              onClose,
+                              className,
                           }: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
@@ -102,7 +104,7 @@ const Modal = forwardRef(({
     return isOpen && createPortal((
         <>
             <div ref={modalRef}
-                 className={["modal", (size && "modal-" + size), 'd-block', fade && 'fade'].filter(v => v).join(' ')}>
+                 className={["modal", (size && "modal-" + size), 'd-block', fade && 'fade', className].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <TemplateBlock name={"header"} content={children} data={null}>
