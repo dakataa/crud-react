@@ -21,6 +21,8 @@ import {ListType} from "@src/type/ListType.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 import {Result, UseAlert} from "@src/context/AlertContext.tsx";
+import {default as T} from "@src/component/Translation.tsx";
+import {FormViewType} from "@src/type/FormViewType.tsx";
 
 const ListView = memo(({action, routeParams, embedded = false}: {
     action?: ActionType,
@@ -56,6 +58,25 @@ const ListView = memo(({action, routeParams, embedded = false}: {
         results: ListType | null;
     } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: embedded ? searchParams : {}});
     const actions = Object.values(results?.action ?? []) as ActionType[];
+
+    const filterData = (excludeFilterParameters?: [string]): void => {
+        excludeFilterParameters?.forEach((key) => {
+            delete filter.current?.filter?.[key];
+        })
+
+        const query = {
+            ...(filter.current && filter.current),
+            ...(sort.current && {sort: sort.current}),
+        };
+
+        const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
+
+        if (embedded) {
+            setQueryParameters(searchQuery)
+        } else {
+            setSearchParams(searchQuery);
+        }
+    }
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
         if (onClickAction.parameters !== undefined) {
@@ -110,18 +131,7 @@ const ListView = memo(({action, routeParams, embedded = false}: {
             }
         }
 
-        const query = {
-            ...(filter.current && filter.current),
-            ...(sort.current && {sort: sort.current}),
-        };
-
-        const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
-
-        if (embedded) {
-            setQueryParameters(searchQuery)
-        } else {
-            setSearchParams(searchQuery);
-        }
+        filterData();
     }
 
     useEffect(() => {
@@ -144,23 +154,23 @@ const ListView = memo(({action, routeParams, embedded = false}: {
                     <div className={"d-flex align-items-center"}>
                         {actions && (
                             <div className="btn-group btn-group-sm me-2">
-                                {actions.filter(a => !a.object).map((action, index) => (
+                                {actions.filter(a => !a.object && a.name !== action.name).map((item, index) => (
                                     <Link
                                         key={index}
-                                        to={generateRoute(action.route, routeParams)}
+                                        to={generateRoute(item.route, routeParams)}
                                         onClick={(event) => handleAction({
-                                            action: action,
+                                            action: item,
                                             parameters: routeParams
                                         }, event)}
                                         className="btn btn-outline-secondary">
-                                        {action.title || action.name}
+                                        {item.title || item.name}
                                     </Link>
                                 ))}
                             </div>
                         )}
                         <div className={"btn-group btn-group-sm"}>
                             <Dropdown className={"btn-group btn-group-sm"}>
-                                <DropdownButton className={"btn-outline-dark"}>Filter</DropdownButton>
+                                <DropdownButton className={"btn-outline-dark"}><T>Filter</T></DropdownButton>
                                 <DropdownContent>
                                     <div className="filter">
                                         <Form
@@ -188,7 +198,8 @@ const ListView = memo(({action, routeParams, embedded = false}: {
                                                     <FormView view={results.form.filter.view}/>
                                                 )
                                             }
-                                            <button className={"btn btn-primary me-2"} type={"submit"}>Submit</button>
+                                            <button className={"btn btn-primary me-2"} type={"submit"}><T>Submit</T>
+                                            </button>
                                         </Form>
                                     </div>
                                 </DropdownContent>
@@ -201,10 +212,13 @@ const ListView = memo(({action, routeParams, embedded = false}: {
                         </div>
                     </div>
                 </header>
-
+                {results?.form?.filter && (
+                    <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])} />
+                )}
                 <DynamicView namespace={action.namespace} key={"modify"} prefix={"modify"} view={"content"} data={results}>
                     <div className={"table-responsive"}>
-                        <GridTableView data={results} onClick={handleAction} namespace={action?.namespace} routeParams={routeParams}/>
+                        <GridTableView data={results} onClick={handleAction} namespace={action?.namespace}
+                                       routeParams={routeParams}/>
                     </div>
                     {results && <PaginatorView meta={results.entity.data.meta}/>}
                 </DynamicView>
@@ -214,5 +228,36 @@ const ListView = memo(({action, routeParams, embedded = false}: {
 
     );
 })
+
+const FiltersView = ({formView, onClick}: {formView: FormViewType, onClick: (key: string) => void}) => {
+
+    const getValue = (view: FormViewType) => {
+        if(view.choices !== undefined) {
+            return (view.data instanceof Object ? Object.values(view.data).join(', ') : view.data);
+        } else if(view.checked !== undefined) {
+            return view.checked ? 'Yes' : 'No';
+        }
+
+        return view.data;
+    }
+
+    return (
+        <div className={"filters d-flex mb-sm overflow-auto"}>
+            {Object.values<FormViewType>(formView.children || []).filter(item => item.data !== null).map((item, index) => (
+                <div key={index} className="filters-item d-flex text-nowrap flex-column me-2 mb-2">
+                    <small className="mb-2">{item.label}</small>
+                    <div className="btn btn-sm btn-primary me-1 mb-1">
+                        {getValue(item)}
+                        {onClick && (
+                            <span onClick={() => onClick(item.name)} className={"ms-2"}>
+                                &times;
+                            </span>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
 
 export default ListView;

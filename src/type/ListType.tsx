@@ -1,5 +1,4 @@
 import {ColumnType} from "@src/type/ColumnType";
-import {FormViewType} from "@src/type/FormViewType";
 import {ActionType} from "@src/type/ActionType";
 import {ListMetaType} from "@src/type/ListMetaType";
 import {FormType} from "@src/type/FormType";

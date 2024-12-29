@@ -184,15 +184,15 @@
 
 "@dakataa/crud-theme@^1.0.0":
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@dakataa/crud-theme/-/crud-theme-1.0.0.tgz#1fb7948db88f7b2cce7d72dee618c950f589032e"
+  resolved "https://registry.npmjs.org/@dakataa/crud-theme/-/crud-theme-1.0.0.tgz"
   integrity sha512-a3P3a4H4fYVg6m3liwz0J1RPJcpsImzXHjcgaqfLl++IcVFDDcILhJXc6h9oZDQPuoieLZbtdxdu/FdrAfoyog==
   dependencies:
     bootstrap "^5.3.3"
 
-"@dakataa/requester@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dakataa/requester/-/requester-1.0.1.tgz#dfb5a345562df09f3f773b7a7c5be65cfc5a230f"
-  integrity sha512-Ya/iUhk0FOGIpmEiOC7GCDph8wdz3Fsv/uIxyC+CSi0KWoDSrVWsFxfZyi3K1JSZOoEIZ3ELU06Fg0AO/ZtRng==
+"@dakataa/requester@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@dakataa/requester/-/requester-1.0.2.tgz#cdf64d747649b839365a6a3a222c5116148c743d"
+  integrity sha512-ewWblFEUHMFFTmHtEJllbhl9l89TFnOEM0AbXKdrgoXZc8A3ltZqy7oQfnF1U33Sx/eEkenz5+uFwCALpqyQGg==
   dependencies:
     ts-node "^10.9.2"
     typescript "^5.5.3"
@@ -710,7 +710,7 @@
 
 "@types/cookie@^0.6.0":
   version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.6.0.tgz#eac397f28bf1d6ae0ae081363eca2f425bedf0d5"
+  resolved "https://registry.npmjs.org/@types/cookie/-/cookie-0.6.0.tgz"
   integrity sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==
 
 "@types/estree@1.0.6":
@@ -890,7 +890,7 @@ balanced-match@^1.0.0:
 
 bootstrap@^5.3.3:
   version "5.3.3"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.3.tgz#de35e1a765c897ac940021900fcbb831602bac38"
+  resolved "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.3.tgz"
   integrity sha512-8HLCdWgyoMguSO9o+aH+iuZ+aht+mzW0u3HIMzVu7Srrpv7EBBxTnrFlSCskwdY1+EOFQSm7uMJhNQHkdPcmjg==
 
 brace-expansion@^1.1.7:
@@ -1012,7 +1012,7 @@ convert-source-map@^2.0.0:
 
 cookie@^1.0.1:
   version "1.0.2"
-  resolved "https://registry.yarnpkg.com/cookie/-/cookie-1.0.2.tgz#27360701532116bd3f1f9416929d176afe1e4610"
+  resolved "https://registry.npmjs.org/cookie/-/cookie-1.0.2.tgz"
   integrity sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==
 
 create-require@^1.1.0:
@@ -1846,7 +1846,7 @@ prop-types@^15.8.1:
 
 react-dom@^19.0.0:
   version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0.tgz#43446f1f01c65a4cd7f7588083e686a6726cfb57"
+  resolved "https://registry.npmjs.org/react-dom/-/react-dom-19.0.0.tgz"
   integrity sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==
   dependencies:
     scheduler "^0.25.0"
@@ -1873,14 +1873,14 @@ react-refresh@^0.14.2:
 
 react-router-dom@^7.1.1:
   version "7.1.1"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.1.1.tgz#9e76fb63a762ba5da13032f5fd9e4a24946396b6"
+  resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-7.1.1.tgz"
   integrity sha512-vSrQHWlJ5DCfyrhgo0k6zViOe9ToK8uT5XGSmnuC2R3/g261IdIMpZVqfjD6vWSXdnf5Czs4VA/V60oVR6/jnA==
   dependencies:
     react-router "7.1.1"
 
 react-router@7.1.1:
   version "7.1.1"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.1.1.tgz#88f5657fa5b8f0b918c7222ec710de0274d00b2e"
+  resolved "https://registry.npmjs.org/react-router/-/react-router-7.1.1.tgz"
   integrity sha512-39sXJkftkKWRZ2oJtHhCxmoCrBCULr/HAH4IT5DHlgu/Q0FCPV0S4Lx+abjDTx/74xoZzNYDYbOZWlJjruyuDQ==
   dependencies:
     "@types/cookie" "^0.6.0"
@@ -1890,7 +1890,7 @@ react-router@7.1.1:
 
 react@^19.0.0:
   version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0.tgz#6e1969251b9f108870aa4bff37a0ce9ddfaaabdd"
+  resolved "https://registry.npmjs.org/react/-/react-19.0.0.tgz"
   integrity sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==
 
 readdirp@^4.0.1:
@@ -1973,7 +1973,7 @@ sass@^1.81.0:
 
 scheduler@^0.25.0:
   version "0.25.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0.tgz#336cd9768e8cceebf52d3c80e3dcf5de23e7e015"
+  resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.25.0.tgz"
   integrity sha512-xFVuu11jh+xcO7JOAGJNOXld8/TcEHK/4CituBUeUb5hqxJLj9YuemAEuvm9gQ/+pgXYfbQuqAkiYu+u7YEsNA==
 
 semver@^6.3.1:
@@ -1983,7 +1983,7 @@ semver@^6.3.1:
 
 set-cookie-parser@^2.6.0:
   version "2.7.1"
-  resolved "https://registry.yarnpkg.com/set-cookie-parser/-/set-cookie-parser-2.7.1.tgz#3016f150072202dfbe90fadee053573cc89d2943"
+  resolved "https://registry.npmjs.org/set-cookie-parser/-/set-cookie-parser-2.7.1.tgz"
   integrity sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==
 
 set-function-length@^1.2.1:
@@ -2136,7 +2136,7 @@ tsconfck@^3.0.3:
 
 turbo-stream@2.4.0:
   version "2.4.0"
-  resolved "https://registry.yarnpkg.com/turbo-stream/-/turbo-stream-2.4.0.tgz#1e4fca6725e90fa14ac4adb782f2d3759a5695f0"
+  resolved "https://registry.npmjs.org/turbo-stream/-/turbo-stream-2.4.0.tgz"
   integrity sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==
 
 typescript@^5.5.3, typescript@^5.7.2:

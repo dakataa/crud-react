@@ -4,7 +4,7 @@
 	"private": false,
 	"dependencies": {
 		"@dakataa/crud-theme": "^1.0.0",
-		"@dakataa/requester": "^1.0.1",
+		"@dakataa/requester": "^1.0.2",
 		"@fortawesome/fontawesome-common-types": "^6.6.0",
 		"@fortawesome/fontawesome-svg-core": "^6.6.0",
 		"@fortawesome/free-regular-svg-icons": "^6.6.0",
