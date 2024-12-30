@@ -1,5 +1,5 @@
 import React, {ReactNode, useEffect, useRef} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import ModifyForm, {ModifyFormRefType} from "@src/component/ModifyForm.tsx";
@@ -8,16 +8,25 @@ import GetData from "@src/component/hooks/GetData.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
-import TemplateParentBlock from "@src/component/TemplateParentBlock.tsx";
+import {generateRoute} from "@src/helper/RouterUtils.tsx";
 
-const DefaultModifyTemplate = ({children, results, ...props}: {
+const DefaultModifyTemplate = ({children, action, routeParams, results, ...props}: {
     children?: ReactNode;
-    results?: any
+    action: ActionType;
+    routeParams?: { [key: string]: any };
+    results?: ModifyType;
 }) => {
+
+    const {getAction} = UseActions();
+    const listAction = getAction(action.entity, 'list', action.namespace);
+
     return (
         <section className="edit">
             <header>
                 <h2 className="title">
+                    {listAction && (
+                        <Link to={generateRoute(listAction.route, routeParams)}>&larr;</Link>
+                    )}
                     <TemplateBlock name={"title"} content={children} data={results}>
                         Title
                     </TemplateBlock>
@@ -44,7 +53,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
     modal?: boolean;
     props?: any;
 }) => {
-    const {getAction, getActionByPath} = UseActions();
+    const {getActionByPath} = UseActions();
     action = action || getActionByPath(document.location.pathname);
 
     if (!action)
@@ -70,7 +79,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 
     return (
-        <ComponentTemplate ref={modalRef} {...props}>
+        <ComponentTemplate ref={modalRef} {...props} action={action} routeParams={routeParams}>
             <TemplateExtend name={"title"}>
                 <TemplateBlock name={"title"} content={children} data={results}>
                     {results?.title || 'Title'}
@@ -98,7 +107,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
                         }}
                         parameters={routeParams}
                     >
-                        {modal &&  <TemplateExtend name={"actions"}></TemplateExtend> }
+                        {modal && <TemplateExtend name={"actions"}></TemplateExtend>}
                     </ModifyForm>
                 </TemplateBlock>
             </TemplateExtend>

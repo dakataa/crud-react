@@ -1,4 +1,4 @@
-import {Form, FormRef} from "@src/component/form/Form.tsx";
+import {Form, FormRef, useForm} from "@src/component/form/Form.tsx";
 import FormView from "@src/component/crud/FormView.tsx";
 import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
@@ -38,22 +38,27 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
         getFormRef: (): FormRef | null => formRef.current
     }));
 
+    const getFormErrors = (view: FormViewType): { [key: string]: any } => {
+        let result: { [key: string]: any } = {
+            ...(view.errors?.length ? {[view.full_name]: view.errors} : {})
+        }
+
+        for (let [, value] of Object.entries(view?.children || [])) {
+            if (Object.values(value?.children || []).length) {
+                result = {...result, ...getFormErrors(value)};
+            }
+            else if (value.errors?.length) {
+                result[value.full_name] = view.errors;
+            }
+        }
+
+        return result;
+    };
+
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
 
         (new Requester()).post(actionURL, formData, RequestBodyType.FormData).then((response) => response.getData()).then(data => {
-            const getFormErrors = (view: FormViewType): { [key: string]: any } => {
-                let result: { [key: string]: any } = {};
-                for (let [, value] of Object.entries(view?.children || [])) {
-                    if (Object.values(value?.children || []).length) {
-                        result = {...result, ...getFormErrors(value)};
-                    } else if (value.errors?.length) {
-                        result[value.full_name] = value.errors;
-                    }
-                }
-
-                return result;
-            };
 
             const errors = getFormErrors(data.form.modify.view);
             if (Object.entries(errors).length) {
