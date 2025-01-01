@@ -25,6 +25,7 @@ const Choice = ({
     const fieldRef = useRef<HTMLSelectElement | HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[view.full_name] || [];
     const isInvalid = !!errorMessages.length;
+    const key = btoa(view.full_name + JSON.stringify(view.data));
 
     useEffect(() => {
         dispatch({
@@ -44,7 +45,6 @@ const Choice = ({
     if (view?.expanded) {
         return <>
             {Object.values(view.choices || []).map((choice: ChoiceType, choiceIndex: number) => {
-
                     const elementId = nameToId(view.full_name, choiceIndex);
                     const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
                     const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
@@ -57,7 +57,7 @@ const Choice = ({
                         className={"form-check"}
                     >
                         <input
-                            key={Math.random().toString()}
+                            key={key}
                             ref={fieldRef}
                             defaultValue={choiceValue}
                             type={view?.multiple ? 'checkbox' : 'radio'}
@@ -89,7 +89,7 @@ const Choice = ({
             <>
                 <select
                     ref={fieldRef}
-                    key={view.full_name + Math.random().toString()}
+                    key={key}
                     name={view.full_name}
                     multiple={view.multiple}
                     aria-invalid={isInvalid}

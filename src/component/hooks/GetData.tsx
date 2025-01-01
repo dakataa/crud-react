@@ -31,9 +31,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
 
     const [results, setResults] = useState<ListType | ModifyType | null>();
     const [parameters, setParameters] = useState<{ [key: string]: string } | null>(initParameters || null);
-    const [queryParameters, setQueryParameters] = useState<URLSearchParams | {
-        [key: string]: string
-    }>(initQueryParameters || {});
+    const [queryParameters, setQueryParameters] = useState<URLSearchParams>(new URLSearchParams(initQueryParameters || {}));
     const lastKey = useRef<string | null>();
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
     const cache = useRef<{ [key: string]: string }>({});
@@ -97,12 +95,15 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             console.log('error', e);
         }).finally(() => {
         });
-    }, [JSON.stringify(parameters), queryParameters, refresh]);
+    }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
+
 
     return {
         results,
         setParameters,
-        setQueryParameters,
+        setQueryParameters: (value: URLSearchParams | {[key: string]: any}) => {
+            setQueryParameters(new URLSearchParams(value));
+        },
         refresh: () => {
             setRefresh(refresh + 1);
         }

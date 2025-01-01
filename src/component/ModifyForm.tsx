@@ -16,7 +16,7 @@ export type ModifyFormRefType = {
     getFormRef: () => FormRef | null
 };
 
-const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onError, onLoad, children}: {
+const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSuccess, onError, onLoad, children}: {
     name?: string,
     data?: ModifyType;
     action: ActionType;
@@ -31,7 +31,7 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
     const actionURL = generateRoute(action.route, (parameters || {}));
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
-    data = (dataProvider?.results as ModifyType) || data;
+    const [data, setData] = useState<ModifyType|undefined>();
 
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => data,
@@ -43,12 +43,11 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
             ...(view.errors?.length ? {[view.full_name]: view.errors} : {})
         }
 
-        for (let [, value] of Object.entries(view?.children || [])) {
-            if (Object.values(value?.children || []).length) {
-                result = {...result, ...getFormErrors(value)};
-            }
-            else if (value.errors?.length) {
-                result[value.full_name] = view.errors;
+        for (let [, child] of Object.entries(view?.children || [])) {
+            if (child.children?.length) {
+                result = {...result, ...getFormErrors(child)};
+            } else if (child.errors?.length) {
+                result[child.full_name] = child.errors;
             }
         }
 
@@ -59,6 +58,7 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
         setPreloader(true);
 
         (new Requester()).post(actionURL, formData, RequestBodyType.FormData).then((response) => response.getData()).then(data => {
+            setData(data);
 
             const errors = getFormErrors(data.form.modify.view);
             if (Object.entries(errors).length) {
@@ -91,6 +91,11 @@ const ModifyForm = forwardRef(({name, data, action, parameters, onSuccess, onErr
             onLoad();
         }
     }, []);
+
+    initData = (dataProvider?.results as ModifyType) ?? initData;
+    useEffect(() => {
+        setData(initData);
+    }, [JSON.stringify(initData)])
 
     return data && (
         <>

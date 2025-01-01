@@ -71,7 +71,6 @@ const ListView = memo(({action, routeParams, embedded = false}: {
         };
 
         const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
-
         if (embedded) {
             setQueryParameters(searchQuery)
         } else {

@@ -41,12 +41,12 @@ const Input = ({
 
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
-
+    const key = btoa(view.full_name + JSON.stringify(view.data));
     return <>
         <input
             ref={fieldRef}
             id={view.id || nameToId(view.full_name)}
-            key={view.full_name + Math.random().toString()}
+            key={key}
             name={view.full_name}
             type={view.type}
             defaultValue={view.data}
