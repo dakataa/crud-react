@@ -25,7 +25,7 @@ const Choice = ({
     const fieldRef = useRef<HTMLSelectElement | HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[view.full_name] || [];
     const isInvalid = !!errorMessages.length;
-    const key = btoa(view.full_name + JSON.stringify(view.data));
+    const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
 
     useEffect(() => {
         dispatch({

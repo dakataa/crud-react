@@ -41,7 +41,7 @@ const Input = ({
 
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
-    const key = btoa(view.full_name + JSON.stringify(view.data));
+    const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
     return <>
         <input
             ref={fieldRef}

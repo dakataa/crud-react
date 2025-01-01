@@ -105,6 +105,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
                             console.log('loaded');
                             // modalRef.current?.open();
                         }}
+                        embedded={modal}
                         parameters={routeParams}
                     >
                         {modal && <TemplateExtend name={"actions"}></TemplateExtend>}

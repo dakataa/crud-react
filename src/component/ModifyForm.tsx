@@ -10,13 +10,14 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/component/hooks/GetData.tsx";
+import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
     getFormRef: () => FormRef | null
 };
 
-const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSuccess, onError, onLoad, children}: {
+const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSuccess, onError, onLoad, children, embedded = false}: {
     name?: string,
     data?: ModifyType;
     action: ActionType;
@@ -25,13 +26,14 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     onError?: Function;
     onLoad?: Function;
     children?: ReactNode;
+    embedded?: boolean;
 }, ref) => {
     const [preload, setPreloader] = useState(false);
     const navigate = useNavigate();
     const actionURL = generateRoute(action.route, (parameters || {}));
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
-    const [data, setData] = useState<ModifyType|undefined>();
+    const [data, setData] = useState<ModifyType | undefined>();
 
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => data,
@@ -68,10 +70,9 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
 
             if (onSuccess) {
                 onSuccess(data);
-                return;
             }
 
-            if (data.redirect) {
+            if (data.redirect && !embedded) {
                 navigate(generateRoute(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
             }
 
@@ -87,7 +88,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     }
 
     useEffect(() => {
-        if(onLoad) {
+        if (onLoad) {
             onLoad();
         }
     }, []);
@@ -108,12 +109,15 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
             <Form id={data?.form?.modify?.view?.id} ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
                 {
                     data?.form?.modify?.view !== undefined && (
-                        <FormView
-                            name={name}
-                            namespace={action.namespace}
-                            key={data.form.modify.view.id}
-                            view={data.form.modify.view}
-                        />
+                        <>
+                            <FormView
+                                name={name}
+                                namespace={action.namespace}
+                                key={data.form.modify.view.id}
+                                view={data.form.modify.view}
+                            />
+                            <FormFieldError name={data.form.modify.view.full_name} className={"alert alert-danger"}/>
+                        </>
                     )
                 }
                 <TemplateBlock name={"actions"} content={children} data={{formRef}}>
