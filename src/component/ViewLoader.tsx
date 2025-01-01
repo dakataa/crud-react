@@ -14,8 +14,6 @@ const DefaultViewComponent = ({view, props}: {
         list: List
     }
 
-    console.log('create', view, props);
-
     return React.createElement(defaultComponents[view] || EmptyView, props);
 }
 

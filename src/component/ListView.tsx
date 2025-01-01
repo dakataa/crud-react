@@ -1,7 +1,8 @@
 import React, {memo, useEffect, useRef, useState} from "react";
 import {
     convertFormDataToObject,
-    convertObjectToURLSearchParams,
+    convertObjectToFormData,
+    convertObjectToURLSearchParams, convertURLSearchParamsToObject,
     default as Requester,
     Method
 } from '@dakataa/requester';
@@ -32,7 +33,7 @@ const ListView = memo(({action, routeParams, embedded = false}: {
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const sort = useRef<{ [key: string]: any } | undefined>();
-    const filter = useRef<{ [key: string]: any } | undefined>();
+    const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
     const navigate = useNavigate();
     const filterFormRef = useRef<FormRef | null>(null);
     const [redirectTo, setRedirectTo] = useState<string>();
@@ -56,7 +57,7 @@ const ListView = memo(({action, routeParams, embedded = false}: {
 
     const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;
-    } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: embedded ? searchParams : {}});
+    } = GetData({entityAction: action, initParameters: routeParams, initQueryParameters: filter.current});
     const actions = Object.values(results?.action ?? []) as ActionType[];
 
     const filterData = (excludeFilterParameters?: [string]): void => {
@@ -198,13 +199,14 @@ const ListView = memo(({action, routeParams, embedded = false}: {
                                                     <FormView view={results.form.filter.view}/>
                                                 )
                                             }
-                                            <button className={"btn btn-primary me-2"} type={"submit"}><T>Submit</T>
+                                            <button className={"btn btn-primary me-2"} type={"submit"}>
+                                                <T>Submit</T>
                                             </button>
                                         </Form>
                                     </div>
                                 </DropdownContent>
                             </Dropdown>
-                            {filter.current && (
+                            {!!Object.values(filter.current?.filter || []).length && (
                                 <Button onClick={() => {
                                     filterFormRef.current?.reset();
                                 }} className="btn btn-outline-dark">x</Button>
@@ -233,7 +235,7 @@ const FiltersView = ({formView, onClick}: {formView: FormViewType, onClick: (key
 
     const getValue = (view: FormViewType) => {
         if(view.choices !== undefined) {
-            return (view.data instanceof Object ? Object.values(view.data).join(', ') : view.data);
+            return (view.data instanceof Object ? Object.values(view.data).map((k:any) => view.choices?.[k]?.label ?? k).join(', ') : view.data);
         } else if(view.checked !== undefined) {
             return view.checked ? 'Yes' : 'No';
         }

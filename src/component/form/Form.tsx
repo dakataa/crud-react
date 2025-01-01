@@ -39,11 +39,13 @@ type FormProps = {
     action?: string,
     method?: 'GET' | 'POST',
     className?: string,
+    data?: FormData,
     id?: string
 }
 
 export type FormRef = {
-    getFormData: Function,
+    getFormData: () => FormData,
+    setFormData: (data: FormData) => void,
     setErrors: Function,
     reset: Function,
     submit: Function
@@ -60,6 +62,7 @@ export const nameToId = (name: string, index: number | null = null) => (
 export const Form = forwardRef(({
                                     id,
                                     children,
+                                    data,
                                     onError,
                                     onBeforeSubmit,
                                     onSubmit: onSubmitCallback,
@@ -75,6 +78,35 @@ export const Form = forwardRef(({
 
     const handler: FormRef = {
         getFormData: () => new FormData(formElementRef.current || undefined),
+        setFormData: (data: FormData) => {
+            [...formElementRef.current?.elements || []].forEach((inputEl: any) => {
+                    const value: any = data.get(inputEl.name);
+
+                    switch (inputEl.tagName.toLowerCase()) {
+                        case 'select': {
+                            if(inputEl.multiple) {
+                                [...(inputEl as HTMLSelectElement).options].forEach((element: HTMLOptionElement) => {
+                                    element.selected = data.getAll(inputEl.name).includes(element.value);
+                                })
+                            } else {
+                                inputEl.value = value;
+                            }
+                            break;
+                        }
+                        default: {
+                            switch (inputEl.type) {
+                                case 'checkbox':
+                                    inputEl.checked = !!value;
+                                    break;
+                                default:
+                                    inputEl.value = value;
+                                    break;
+                            }
+                        }
+                    }
+
+            });
+        },
         setErrors: (errors: { [key: string]: FormError[] }) => {
             const [, dispatch] = context;
             dispatch({action: 'errors', payload: errors});

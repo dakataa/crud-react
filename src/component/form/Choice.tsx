@@ -1,7 +1,7 @@
 import React, {createRef, useEffect, useRef} from "react";
 import {nameToId, useForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
-import {FormViewType} from "@src/type/FormViewType";
+import {ChoiceType, FormViewType} from "@src/type/FormViewType";
 
 export type ChoiceProps = {
     view: FormViewType,
@@ -10,14 +10,14 @@ export type ChoiceProps = {
 } & FormFieldProps;
 
 const Choice = ({
-                           view,
-                           constraints,
-                           className,
-                           onChange,
-                           choiceValueTransform,
-                           choiceLabelTransform,
-                           ...props
-                       }: ChoiceProps):
+                    view,
+                    constraints,
+                    className,
+                    onChange,
+                    choiceValueTransform,
+                    choiceLabelTransform,
+                    ...props
+                }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
 
@@ -43,24 +43,28 @@ const Choice = ({
 
     if (view?.expanded) {
         return <>
-            {(view?.choices || []).map((choice: any, choiceIndex: number) => {
+            {Object.values(view.choices || []).map((choice: ChoiceType, choiceIndex: number) => {
+
                     const elementId = nameToId(view.full_name, choiceIndex);
-                    const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value || choice;
-                    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choice;
+                    const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
+                    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
                     const attributes = {
                         id: elementId,
                         ...(view?.choice_attr && (view?.choice_attr instanceof Function ? view?.choice_attr(choice) : view?.choice_attr))
                     }
                     return <div
                         key={choiceIndex}
+                        className={"form-check"}
                     >
                         <input
+                            key={Math.random().toString()}
                             ref={fieldRef}
-                            value={choiceValue}
+                            defaultValue={choiceValue}
                             type={view?.multiple ? 'checkbox' : 'radio'}
-                            checked={view?.data === choiceValue}
-                            name={view?.full_name}
+                            defaultChecked={view?.data?.includes(choiceValue)}
+                            name={view?.full_name + '[]'}
                             id={elementId}
+                            className={"form-check-input"}
                             {...attributes}
                             onChange={(e) => {
                                 return validate({
@@ -72,6 +76,7 @@ const Choice = ({
                         />
                         <label
                             htmlFor={attributes.id}
+                            className={"form-check-label"}
                         >
                             {choiceLabel}
                         </label>
@@ -81,29 +86,32 @@ const Choice = ({
         </>
     } else {
         return (
-            <select
-                ref={fieldRef}
-                name={view.full_name}
-                multiple={view.multiple}
-                aria-invalid={isInvalid}
-                onChange={(e) => validate({
-                    value: (view.multiple ? formRef?.current?.getFormData().getAll(view.full_name) : formRef?.current?.getFormData().get(view.full_name)) || e.target.value
-                })}
-                className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
-                {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
-                defaultValue={view.data}
-            >
-                {view.placeholder && <option value={''}>{view.placeholder}</option>}
-                {Object.values(view.choices || []).map((choice: any, index: number) =>
-                    <option
-                        key={index}
-                        value={choice.value || choice.label}
-                        {...(view.choice_attr && (view.choice_attr instanceof Function ? view.choice_attr(choice) : view.choice_attr))}
-                    >
-                        {choice.label}
-                    </option>
-                )}
-            </select>
+            <>
+                <select
+                    ref={fieldRef}
+                    key={view.full_name + Math.random().toString()}
+                    name={view.full_name}
+                    multiple={view.multiple}
+                    aria-invalid={isInvalid}
+                    onChange={(e) => validate({
+                        value: (view.multiple ? formRef?.current?.getFormData().getAll(view.full_name) : formRef?.current?.getFormData().get(view.full_name)) || e.target.value
+                    })}
+                    className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
+                    {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
+                    defaultValue={view.data}
+                >
+                    {view.placeholder && <option value={''}>{view.placeholder}</option>}
+                    {Object.values(view.choices || []).map((choice: any, index: number) =>
+                        <option
+                            key={index}
+                            value={choice.value || choice.label}
+                            {...(view.choice_attr && (view.choice_attr instanceof Function ? view.choice_attr(choice) : view.choice_attr))}
+                        >
+                            {choice.label}
+                        </option>
+                    )}
+                </select>
+            </>
         )
     }
 }
