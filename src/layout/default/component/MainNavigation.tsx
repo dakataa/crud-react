@@ -9,7 +9,7 @@ import React, {
     useState
 } from "react";
 import {IconDefinitionType} from "@src/component/Icon";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {RouteType} from "@src/type/RouteType";
 
@@ -21,16 +21,26 @@ export type MenuItem = {
     target?: '_blank' | '_self',
 }
 
-const getFlat = (items: MenuItem[], current: MenuItem[] = []): any => {
-    return items.reduce((result: any, item: MenuItem) => {
+type FlatMenuItem = {
+    id: string;
+    url: string;
+    parent?: string | null;
+}
+
+const getFlatMenuItems = (items: MenuItem[], current: FlatMenuItem[] = [], parent?: MenuItem): FlatMenuItem[] => {
+    return items?.reduce((result: any, item: MenuItem) => {
         const items = [
             ...current,
-            item
+            {
+                id: btoa(encodeURIComponent(JSON.stringify(item))),
+                url: generateRoute(item.route),
+                parent: parent ? btoa(encodeURIComponent(JSON.stringify(parent))) : null,
+            }
         ];
 
         return [
             ...result,
-            ...(item.items ? getFlat(item.items, items) : [items])
+            ...(item.items ? getFlatMenuItems(item.items, items, item) : items)
         ]
     }, []);
 };
@@ -44,10 +54,11 @@ const MainNavigation = forwardRef(({items, ...props}: {
     className?: string;
     props?: any;
 }, ref: ForwardedRef<MainNavigationRef>) => {
-    const flatList = getFlat(items);
+    const flatList = getFlatMenuItems(items);
     const containerRef = useRef<any>(null);
     const [isOpen, setIsOpen] = useState(false);
     const initiatorElement = useRef<any>();
+    const location = useLocation();
 
     ref = ref || createRef<MainNavigationRef>();
 
@@ -58,17 +69,18 @@ const MainNavigation = forwardRef(({items, ...props}: {
         }
     }));
 
+    const currentPath = location.pathname.replace(/(.*?)\/?$/i, '$1');
+    const currentActiveItem = flatList.filter(v => v.url === currentPath).pop();
+    const getActiveItems = (item: FlatMenuItem): string[] => {
+        const parent = flatList.filter(v => v.id === item.parent).pop();
+        return [...(parent ? [parent.id] : []), ...(parent?.parent ? getActiveItems(parent) : [])];
+    };
+
+    const activeItems = [currentActiveItem?.id, ...(currentActiveItem ? getActiveItems(currentActiveItem) : [])];
+
     const isActiveMenuItem = (item: MenuItem): boolean => {
-        const path = document.location.pathname.replace(/(.*?)\/?$/i, '$1');
-        const itemId = btoa(JSON.stringify(item));
-        const link = generateRoute(item.route);
-
-        return flatList.filter((v: MenuItem[]) => {
-            const urls = v.map(v => generateRoute(v.route).replace(/(.*?)\/?$/i, '$1'));
-            const ids = v.map(v => btoa(JSON.stringify(v)));
-
-            return urls.includes(path) && ids.includes(itemId) && urls.indexOf(path) >= urls.indexOf(link);
-        }).length > 0;
+        const itemId = btoa(encodeURIComponent(JSON.stringify(item)));
+        return activeItems.includes(itemId);
     }
 
     useEffect(() => {
@@ -92,14 +104,14 @@ const MainNavigation = forwardRef(({items, ...props}: {
 
     return (
         <nav ref={containerRef} {...props}
-             className={Array.from(new Set(['item', ...(props.className?.split(' ') || []), ...(isOpen ? ['active'] : [])])).join(' ')}>
+             className={['item', ...(props.className?.split(' ') || []), ...(isOpen ? ['active'] : [])].join(' ')}>
             {items
                 .map((item, index) => {
                         const active = isActiveMenuItem(item)
                         return (
                             <nav
                                 key={index}
-                                className={Array.from(new Set(["item", ...(active ? ['active'] : [])])).join(' ')}
+                                className={["item", ...(active ? ['active'] : [])].join(' ')}
                             >
                                 <Link
                                     to={generateRoute(item.route) || ''}
