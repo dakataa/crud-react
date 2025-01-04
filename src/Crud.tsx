@@ -15,7 +15,6 @@ Requester.defaults = {
 };
 
 function Crud() {
-
     const {actions} = UseActions();
 
     return (

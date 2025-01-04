@@ -76,7 +76,7 @@ const Modal = forwardRef(({
         };
 
         setTimeout(() => {
-            modalRef.current?.classList.add(...['d-block']);
+            modalRef.current?.classList.add(...['d-block', 'show']);
             modalBackdropRef?.current?.classList.add('show');
         }, animation ? 100 : 0);
 
@@ -109,10 +109,20 @@ const Modal = forwardRef(({
                 endClosing();
             };
 
+
             if (animation) {
+                const closeTimeout = setTimeout(() => {
+                    closeAndResolve();
+                }, animation ? 50 : 0);
+
+                modalRef.current?.addEventListener('animationstart', () => {
+                    console.log('timeout');
+                    clearTimeout(closeTimeout);
+                    modalRef.current?.removeEventListener('animationend', closeAndResolve);
+                    modalRef.current?.addEventListener('animationend', closeAndResolve);
+                });
+
                 modalRef.current?.classList.add(...[animation, 'close']);
-                modalRef.current?.removeEventListener('animationend', closeAndResolve);
-                modalRef.current?.addEventListener('animationend', closeAndResolve);
             } else {
                 closeAndResolve();
             }

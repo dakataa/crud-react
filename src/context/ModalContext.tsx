@@ -2,6 +2,7 @@ import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import ViewLoader from "@src/component/ViewLoader.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
+import CrudContext from "@src/CrudContext.tsx";
 
 type ModalActionType = {
     action: OnClickAction;
@@ -36,17 +37,19 @@ export function ModalProvider(props: PropsWithChildren) {
         <ModalContext.Provider value={{setModal}}>
             {props.children}
             {modal && (
-                <ViewLoader
-                    key={updates.current}
-                    view={modal.action.action.name || 'list'}
-                    namespace={modal.action.action.namespace || ''}
-                    props={{
-                        action: modal.action.action,
-                        routeParams: modal.action.parameters,
-                        modal: true,
-                        props: modal.props
-                    }}
-                />
+                <CrudContext>
+                    <ViewLoader
+                        key={updates.current}
+                        view={modal.action.action.name || 'list'}
+                        namespace={modal.action.action.namespace || ''}
+                        props={{
+                            action: modal.action.action,
+                            routeParams: modal.action.parameters,
+                            modal: true,
+                            props: modal.props
+                        }}
+                    />
+                </CrudContext>
             )}
         </ModalContext.Provider>
     );

@@ -2,10 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Crud from './Crud.tsx';
 import {BrowserRouter} from "react-router-dom";
-import {SessionProvider} from "@src/context/SessionContext";
-import {ActionProvider} from "@src/context/ActionContext.tsx";
-import {ModalProvider} from "@src/context/ModalContext.tsx";
-import {AlertProvider} from "@src/context/AlertContext.tsx";
+import CrudContext from "@src/CrudContext.tsx";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -13,15 +10,9 @@ const root = ReactDOM.createRoot(
 root.render(
     // <React.StrictMode>
     <BrowserRouter>
-        <ActionProvider>
-            <SessionProvider>
-                <ModalProvider>
-                    <AlertProvider>
-                        <Crud/>
-                    </AlertProvider>
-                </ModalProvider>
-            </SessionProvider>
-        </ActionProvider>
+        <CrudContext>
+            <Crud/>
+        </CrudContext>
     </BrowserRouter>
     // </React.StrictMode>
 );

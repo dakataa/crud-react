@@ -1,11 +1,20 @@
 import {useEffect, useRef} from "react";
 import {default as LottiePlayer, AnimationConfigWithData, AnimationConfigWithPath, AnimationConfig} from "lottie-web";
 
-const Animation = ({animationData, path, options, width, height, className, ...props}: AnimationConfigWithPath & AnimationConfigWithData & {
-    width?: number | `${number}%`,
-    height?: number | `${number}%`,
-    className?: string,
-    options?: AnimationConfig
+const Animation = ({
+                       animationData,
+                       path,
+                       options,
+                       width,
+                       height,
+                       className,
+                       ...props
+                   }: Omit<AnimationConfigWithPath, "container"> & Omit<AnimationConfigWithData, "container"> & {
+    width?: number | `${number}%`;
+    height?: number | `${number}%`;
+    className?: string;
+    options?: AnimationConfig;
+
 }) => {
     const elementRef = useRef<HTMLDivElement | null>(null);
 

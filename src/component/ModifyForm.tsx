@@ -11,6 +11,7 @@ import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/component/hooks/GetData.tsx";
 import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
+import {default as T} from "@src/component/Translation.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -22,9 +23,9 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     data?: ModifyType;
     action: ActionType;
     parameters?: { [key: string]: any };
-    onSuccess?: Function;
-    onError?: Function;
-    onLoad?: Function;
+    onSuccess?: (data: any) => void;
+    onError?: (data: any) => void;
+    onLoad?: () => void;
     children?: ReactNode;
     embedded?: boolean;
 }, ref) => {
@@ -75,10 +76,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
             if (data.redirect && !embedded) {
                 navigate(generateRoute(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
             }
-
         }).catch((e: any) => {
-            console.log('error', e);
-
             if (onError) {
                 onError(data);
             }
@@ -121,7 +119,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
                     )
                 }
                 <TemplateBlock name={"actions"} content={children} data={{formRef}}>
-                    <Button type={"submit"} className={"btn btn-primary"}>Save</Button>
+                    <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
                 </TemplateBlock>
             </Form>
         </>

@@ -8,7 +8,6 @@ import React, {
     useRef,
     useState
 } from "react";
-import {IconDefinitionType} from "@src/component/Icon";
 import {Link, useLocation} from "react-router-dom";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {RouteType} from "@src/type/RouteType";
@@ -16,7 +15,7 @@ import {RouteType} from "@src/type/RouteType";
 export type MenuItem = {
     title: string;
     route?: RouteType;
-    icon?: IconDefinitionType;
+    icon?: any;
     items?: MenuItem[];
     target?: '_blank' | '_self',
 }

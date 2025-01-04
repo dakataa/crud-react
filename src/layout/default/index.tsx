@@ -2,14 +2,12 @@ import React, {memo, startTransition, useEffect, useRef, useState} from "react";
 import '@dakataa/crud-theme/scss/theme.scss';
 import MainNavigation, {MainNavigationRef, MenuItem} from "@src/layout/default/component/MainNavigation";
 import Dropdown from "@src/component/Dropdown";
-import Icon from "@src/component/Icon";
 import Link from "@src/component/Link";
 import Requester from '@dakataa/requester';
 
 const Index = memo(({children}: {
     children: any
 }) => {
-
     const mainMenuRef = useRef<MainNavigationRef | null>(null);
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
 
@@ -48,7 +46,7 @@ const Index = memo(({children}: {
                                 Yordan Lazarov
                             </Link>
                             <Link to={"#"}>
-                                <Icon icon={['fas', 'power-off']}/> Logout
+                               Logout
                             </Link>
                         </Dropdown>
                     </nav>

@@ -9,6 +9,7 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
+import {UseAlert, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
 
 const DefaultModifyTemplate = ({children, action, routeParams, results, ...props}: {
     children?: ReactNode;
@@ -27,19 +28,15 @@ const DefaultModifyTemplate = ({children, action, routeParams, results, ...props
                     {listAction && (
                         <Link to={generateRoute(listAction.route, routeParams)}>&larr;</Link>
                     )}
-                    <TemplateBlock name={"title"} content={children} data={results}>
-                        Title
-                    </TemplateBlock>
+                    <TemplateBlock name={"title"} content={children} data={results}/>
                 </h2>
                 <nav>
-                    <TemplateBlock name={"navigation"} content={children} data={results}>
-                        Nav
-                    </TemplateBlock>
+                    <TemplateBlock name={"navigation"} content={children} data={results}/>
                 </nav>
             </header>
 
             <main>
-                <TemplateBlock name={"content"} content={children} data={results}></TemplateBlock>
+                <TemplateBlock name={"content"} content={children} data={results}/>
             </main>
         </section>
     )
@@ -67,6 +64,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
         entityAction: action,
         initParameters: routeParams
     });
+    const {open: openAlert} = UseAlert();
 
     useEffect(() => {
         setParameters(routeParams);
@@ -97,9 +95,20 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
                         ref={modifyFormRef}
                         data={results}
                         action={action}
-                        onSuccess={() => {
+                        onSuccess={(data: ModifyType) => {
                             modalRef.current?.close();
                             onSuccess && onSuccess();
+
+                            openAlert({
+                                title: 'Success',
+                                text: Object.values(data.messages?.success ?? []).join(' ') ?? 'Item was saved successful!',
+                                icon: AlertIcon.success,
+                                actions: {
+                                    close: {
+                                        label: 'OK'
+                                    }
+                                }
+                            });
                         }}
                         onLoad={() => {
                             console.log('loaded');
