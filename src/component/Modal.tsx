@@ -7,7 +7,7 @@ export type ModalType = {
     open?: boolean,
     onClose?: () => void,
     backdrop?: boolean,
-    fade?: boolean,
+    animation?: Animation | string,
     keyboard?: boolean,
     size?: 'sm' | 'lg' | 'xl' | 'auto',
     className?: string,
@@ -20,10 +20,14 @@ export type ModalRefType = {
     isOpen: () => boolean;
 };
 
+export enum Animation {
+    fade = 'fade'
+}
+
 const Modal = forwardRef(({
                               children,
                               open = false,
-                              fade = true,
+                              animation = Animation.fade,
                               backdrop = true,
                               keyboard = true,
                               size,
@@ -61,13 +65,29 @@ const Modal = forwardRef(({
             return;
         }
 
-        setTimeout(() => {
-            modalRef.current?.classList.add('show');
-            modalBackdropRef?.current?.classList.add('show');
-        }, fade ? 100 : 0);
+        const onAnimationStart = () => {
+            modalRef.current?.addEventListener('animationend', onAnimationEnd);
+        };
 
-        document.removeEventListener('keydown', closeOnKeyboard)
+        const onAnimationEnd = () => {
+            modalRef.current?.classList.remove(animation);
+            modalRef.current?.removeEventListener('animationstart', onAnimationStart)
+            modalRef.current?.removeEventListener('animationend', onAnimationEnd);
+        };
+
+        setTimeout(() => {
+            modalRef.current?.classList.add(...['d-block']);
+            modalBackdropRef?.current?.classList.add('show');
+        }, animation ? 100 : 0);
+
         document.addEventListener('keydown', closeOnKeyboard);
+        modalRef.current?.addEventListener('animationstart', onAnimationStart);
+
+        return () => {
+            document.removeEventListener('keydown', closeOnKeyboard)
+            modalRef.current?.removeEventListener('animationstart', onAnimationStart)
+            modalRef.current?.removeEventListener('animationend', onAnimationEnd)
+        }
     }, [isOpen]);
 
     const modalRef = useRef<HTMLDivElement | null>(null);
@@ -83,17 +103,16 @@ const Modal = forwardRef(({
                 return resolve();
             }
 
-            modalRef.current?.classList.remove('show');
-            modalBackdropRef?.current?.classList.remove('show');
-
             const closeAndResolve = () => {
+                modalRef?.current?.classList.remove(...['show', 'd-block']);
                 resolve();
                 endClosing();
             };
 
-            if (fade) {
-                modalRef.current?.removeEventListener('transitionend', closeAndResolve);
-                modalRef.current?.addEventListener('transitionend', closeAndResolve);
+            if (animation) {
+                modalRef.current?.classList.add(...[animation, 'close']);
+                modalRef.current?.removeEventListener('animationend', closeAndResolve);
+                modalRef.current?.addEventListener('animationend', closeAndResolve);
             } else {
                 closeAndResolve();
             }
@@ -104,7 +123,7 @@ const Modal = forwardRef(({
     return isOpen && createPortal((
         <>
             <div ref={modalRef}
-                 className={["modal", (size && "modal-" + size), 'd-block', fade && 'fade', className].filter(v => v).join(' ')}>
+                 className={["modal", (size && "modal-" + size), animation && animation, className].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <TemplateBlock name={"header"} content={children} data={null}>
@@ -136,7 +155,7 @@ const Modal = forwardRef(({
             </div>
             {backdrop && (
                 <div ref={modalBackdropRef}
-                     className={["modal-backdrop", fade && ["fade"]].filter(v => v).join(' ')}></div>
+                     className={["modal-backdrop", "fade", ...(animation && ['show'])].filter(v => v).join(' ')}></div>
             )}
         </>
     ), document.body);

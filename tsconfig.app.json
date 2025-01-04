@@ -13,8 +13,7 @@
 		"skipLibCheck": true,
 		"types": [
 			"react",
-			"vite/client",
-			"requester"
+			"vite/client"
 		],
 
 		/* Bundler mode */
