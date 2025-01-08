@@ -229,7 +229,7 @@ const FiltersView = ({formView, onClick}: { formView: FormViewType, onClick: (ke
 
     const getValue = (view: FormViewType) => {
         if (view.choices !== undefined) {
-            return (view.data instanceof Object ? Object.values(view.data).map((k: any) => view.choices?.[k]?.label ?? k).join(', ') : view.data);
+            return (view.choices ? Object.values(view.data instanceof Object ? view.data : [view.data]).map((k: any) => view.choices?.[k]?.label ?? k).join(', ') : view.data);
         } else if (view.checked !== undefined) {
             return view.checked ? 'Yes' : 'No';
         }

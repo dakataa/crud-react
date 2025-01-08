@@ -88,9 +88,15 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
         }
 
         (new Requester()).get(generateRoute(entityAction.route, parameters ?? null), queryParameters).then((response) => {
-            if (response.status === 200) {
-                response.getData().then(v => setResults(v));
-            }
+            response.getData().then(v => {
+                switch (response.status) {
+                    case 201:
+                    case 200: {
+                        setResults(v);
+                        break;
+                    }
+                }
+            });
         }).catch((e) => {
             console.log('error', e);
         }).finally(() => {
