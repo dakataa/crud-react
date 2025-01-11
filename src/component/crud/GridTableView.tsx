@@ -5,6 +5,7 @@ import React, {forwardRef, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -30,11 +31,12 @@ type GridTableViewType = {
         }
     },
     onClick?: (props: OnClickAction, event: React.MouseEvent) => void,
+    onBatchClick?: (method: string, ids: any, data: FormData) => void,
     routeParams?: {[key: string]: any},
     namespace?: string
 };
 
-const GridTableView = forwardRef(({data, columns, options, onClick, routeParams, namespace}: GridTableViewType, ref) => {
+const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick, routeParams, namespace}: GridTableViewType, ref) => {
     columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
 
     const [, updateState] = useState<any>();
@@ -42,10 +44,11 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
     const actions = Object.values(data?.action || []);
     const objectActions = actions.filter(a => a.object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
-    const hasBatchActions = data?.form?.batch !== undefined && primaryColumn;
     const currentIds: number[] = (data?.entity.data.items || []).map(row => (row[primaryColumn?.field || ''] || 0));
     const batchSelectedIds = useRef<number[]>([]);
-    const batchIsSelectedAll = currentIds.reduce((v: boolean, id) => v && batchSelectedIds.current.includes(id), true);
+    const batchIsSelectedAll = !!currentIds.length && currentIds.reduce<boolean>((result: boolean, id) => result && batchSelectedIds.current.includes(id), true);
+    const batchActions = data?.form?.batch.view.children?.method?.choices;
+    const hasBatchActions = !!batchActions?.length && primaryColumn;
 
     const batchToggleItem = (id: number, add: boolean = false) => {
         if (add) {
@@ -61,15 +64,44 @@ const GridTableView = forwardRef(({data, columns, options, onClick, routeParams,
         updateState({});
     };
 
+    const batchHandle = (method: string) => {
+        if(!onBatchClick) {
+            return;
+        }
+
+        const batchFormView = data?.form.batch.view;
+        if(!hasBatchActions) {
+            return;
+        }
+
+        const formData = new FormData()
+        batchSelectedIds.current.forEach((value) => {
+            formData.append(`${batchFormView?.children?.ids.full_name}[]`, value.toString());
+        })
+        formData.append(batchFormView?.children?.method.full_name || 'method', method)
+
+        onBatchClick(method, batchSelectedIds.current, formData);
+    }
+
     return (
         <>
-            {data?.form?.batch !== undefined && (
-                <label>
-                    <input
-                        checked={batchIsSelectedAll}
-                        onChange={(e) => batchToggleAll(e.target.checked)}
-                        type={"checkbox"}/> Select all
-                </label>
+            {hasBatchActions && (
+                <div className={"btn-group btn-group-sm mb-2"}>
+                    <label className={"btn btn-outline-light"}>
+                        <input
+                            checked={batchIsSelectedAll}
+                            onChange={(e) => batchToggleAll(e.target.checked)}
+                            type={"checkbox"}/>
+                    </label>
+                    <Dropdown className={"btn-group btn-group-sm"}>
+                        <DropdownButton></DropdownButton>
+                        <DropdownContent>
+                            {(data.form.batch.view.children?.method.choices?.map((choice) => (
+                                <div onClick={() => batchHandle(choice.value instanceof Function ? choice.value() : choice.value)} className={"dropdown-item"}>{(choice.label instanceof Function ? choice.label() : choice.label)}</div>
+                            )))}
+                        </DropdownContent>
+                    </Dropdown>
+                </div>
             )}
 
             <table className="table table-striped table-hover table-bordered">

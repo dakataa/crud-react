@@ -58,7 +58,7 @@ const List = memo(({action, embedded = false}: {
     const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;
     } = GetData({entityAction: action.action, initParameters: action.parameters, initQueryParameters: filter.current});
-    const actions = Object.values(results?.action ?? []) as ActionType[];
+    const actions = (Object.values(results?.action ?? []) as ActionType[]).filter(a => !a.object && a.name !== action.action.name);
 
     const filterData = (excludeFilterParameters?: [string]): void => {
         excludeFilterParameters?.forEach((key) => {
@@ -76,6 +76,25 @@ const List = memo(({action, embedded = false}: {
         } else {
             setSearchParams(searchQuery);
         }
+    }
+
+    const handleBatchAction = (method: string, ids: any, data: FormData) => {
+        console.log('method', ids, data);
+
+        openAlert({
+            title: 'Are you sure?',
+            icon: Icon.confirm,
+            onResult: (result: Result) => {
+                if (result.isConfirmed) {
+                    (new Requester).post(generateRoute(entityAction.route, action.parameters), data).catch((e:any) => {
+                        console.log('error', e);
+                    }).finally(() => {
+                        console.log('done');
+                        refresh();
+                    });
+                }
+            }
+        });
     }
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
@@ -147,9 +166,9 @@ const List = memo(({action, embedded = false}: {
                         {results?.title}
                     </h2>
                     <div className={"d-flex align-items-center"}>
-                        {actions && (
+                        {!!actions.length && (
                             <div className="btn-group btn-group-sm me-2">
-                                {actions.filter(a => !a.object && a.name !== action.action.name).map((item, index) => (
+                                {actions.map((item, index) => (
                                     <Link
                                         key={index}
                                         to={generateRoute(item.route, action.parameters)}
@@ -213,15 +232,17 @@ const List = memo(({action, embedded = false}: {
                 )}
                 <DynamicView namespace={action.action.namespace} key={"modify"} prefix={"modify"} view={"content"} data={results}>
                     <div className={"table-responsive"}>
-                        <GridTableView data={results} onClick={handleAction} namespace={action.action.namespace}
-                                       routeParams={action.parameters}/>
+                        <GridTableView
+                            data={results}
+                            onClick={handleAction}
+                            onBatchClick={handleBatchAction}
+                            namespace={action.action.namespace}
+                            routeParams={action.parameters}/>
                     </div>
                     {results && <PaginatorView meta={results.entity.data.meta}/>}
                 </DynamicView>
             </section>
         </>
-
-
     );
 })
 

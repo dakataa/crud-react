@@ -55,7 +55,7 @@ const Index = memo(({children}: {
             <main>
                 {!!navigationItems.length && (
                     <div className={"navigation d-print-none"}>
-                        <MainNavigation ref={mainMenuRef} items={navigationItems} className={"item"}/>
+                        <MainNavigation ref={mainMenuRef} items={navigationItems}/>
                     </div>
                 )}
                 <div className={"content"}>

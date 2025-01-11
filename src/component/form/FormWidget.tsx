@@ -15,6 +15,7 @@ const FormWidget = ({
         switch (view.type) {
             case 'entity':
             case 'choice':
+            case 'collection':
             case 'enum': {
                 return <Choice view={view}/>
             }

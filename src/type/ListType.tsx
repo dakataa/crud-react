@@ -10,11 +10,11 @@ export type ListType = {
         columns: ColumnType[];
         primaryColumn: ColumnType;
         data: {
-            items: [{[key: string]: any}],
+            items: [{ [key: string]: any }],
             meta: ListMetaType
         }
     },
-    form: { [key: string]: FormType },
+    form: { [key: string]: FormType, filter: FormType, batch: FormType },
     sort: { [key: string]: 'ASC' | 'DESC' | null },
     action: { [key: string]: ActionType }
 }

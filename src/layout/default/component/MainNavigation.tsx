@@ -48,7 +48,7 @@ export type MainNavigationRef = {
     toggle: (e: UIEvent) => void;
 };
 
-const MainNavigation = forwardRef(({items, ...props}: {
+const MainNavigation = forwardRef(({items, className, ...props}: {
     items: MenuItem[];
     className?: string;
     props?: any;
@@ -89,7 +89,7 @@ const MainNavigation = forwardRef(({items, ...props}: {
         if (!isOpen)
             return;
 
-        function handleClickOutside(event: Event) {
+        const handleClickOutside = (event: Event)  => {
             if (containerRef.current && !containerRef.current.contains(event.target) && (!initiatorElement.current || !initiatorElement.current.contains(event.target))) {
                 setIsOpen(false);
             }
@@ -103,7 +103,7 @@ const MainNavigation = forwardRef(({items, ...props}: {
 
     return (
         <nav ref={containerRef} {...props}
-             className={['item', ...(props.className?.split(' ') || []), ...(isOpen ? ['active'] : [])].join(' ')}>
+             className={[...(className?.split(' ') || []), ...(isOpen ? ['active'] : [])].join(' ')}>
             {items
                 .map((item, index) => {
                         const active = isActiveMenuItem(item)
@@ -113,13 +113,18 @@ const MainNavigation = forwardRef(({items, ...props}: {
                                 className={["item", ...(active ? ['active'] : [])].join(' ')}
                             >
                                 <Link
-                                    to={generateRoute(item.route) || ''}
+                                    to={generateRoute(item.route)}
                                     {...(item.icon && {icon: item.icon})}
+                                    {...(item.items?.length) && {
+                                        onClick: () => {
+                                            alert('Collapsing')
+                                        }
+                                    }}
                                 >
                                     <span className={"icon"}></span>
                                     <span className={"title"}>{item.title}</span>
                                 </Link>
-                                {item.items?.length && <MainNavigation items={item.items}/>}
+                                {item.items?.length && <MainNavigation items={item.items} className={"item"}/>}
                             </nav>
                         );
                     }

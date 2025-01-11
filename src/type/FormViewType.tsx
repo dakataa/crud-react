@@ -32,6 +32,6 @@ export type FormViewType = {
 
 export type ChoiceType = {
     value: string | number | null | Function;
-    label: string | Function;
+    label: string | (() => string);
     attr?: {[key: string]: {[key: string]: string}} | Function;
 }
