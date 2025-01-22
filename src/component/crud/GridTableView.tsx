@@ -74,6 +74,10 @@ const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick
             return;
         }
 
+        if(!batchSelectedIds.current?.length) {
+            return;
+        }
+
         const formData = new FormData()
         batchSelectedIds.current.forEach((value) => {
             formData.append(`${batchFormView?.children?.ids.full_name}[]`, value.toString());
@@ -87,18 +91,19 @@ const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick
         <>
             {hasBatchActions && (
                 <div className={"btn-group btn-group-sm mb-2"}>
-                    <label className={"btn btn-outline-light"}>
+                    <label className={"btn btn-light"}>
                         <input
                             checked={batchIsSelectedAll}
                             onChange={(e) => batchToggleAll(e.target.checked)}
                             type={"checkbox"}/>
                     </label>
                     <Dropdown className={"btn-group btn-group-sm"}>
-                        <DropdownButton></DropdownButton>
+                        <DropdownButton disabled={!batchSelectedIds.current.length} className={"btn-light"}></DropdownButton>
                         <DropdownContent>
-                            {(data.form.batch.view.children?.method.choices?.map((choice) => (
-                                <div onClick={() => batchHandle(choice.value instanceof Function ? choice.value() : choice.value)} className={"dropdown-item"}>{(choice.label instanceof Function ? choice.label() : choice.label)}</div>
-                            )))}
+                            {(data.form.batch.view.children?.method.choices?.map((choice) => {
+                                const value = choice.value instanceof Function ? choice.value() : choice.value;
+                                return (<Link key={value} to={"#"} onClick={() => batchHandle(value)} className={"dropdown-item"}>{(choice.label instanceof Function ? choice.label() : choice.label)}</Link>
+                            )}))}
                         </DropdownContent>
                     </Dropdown>
                 </div>

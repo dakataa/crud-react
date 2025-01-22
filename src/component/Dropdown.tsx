@@ -6,7 +6,7 @@ import {default as BootstrapDropdown} from "bootstrap/js/src/dropdown"
 import {LinkProps} from "react-router-dom";
 import {IconName, IconPrefix} from "@fortawesome/fontawesome-common-types";
 
-const DropdownButton = ({children, className}: PropsWithChildren<{className?: string}>) => {
+const DropdownButton = ({children, disabled, className}: PropsWithChildren<{className?: string, disabled?: boolean}>) => {
     return <>
         {children}
     </>

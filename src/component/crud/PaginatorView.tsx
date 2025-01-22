@@ -29,11 +29,15 @@ const Paginator = ({meta}: { meta: ListMetaType, route?: RouteType }) => {
     const lastPage = meta.totalPages;
     const page = meta.page || firstPage;
     const link = meta.links;
+    const hasPagination = !!meta.totalPages;
 
     return (
         <div className="d-flex flex-column justiry-content-center">
-            <small className="mb-2">{meta.totalResults} Results - Page {page} of {meta.totalPages}</small>
-            {meta.totalPages > 1 &&
+            <small className="mb-2">
+                {meta.totalResults} Results
+                {hasPagination && (<> - Page {page} of {meta.totalPages}</>)}
+            </small>
+            {hasPagination &&
 				<nav aria-label="Page navigation" className="m-auto text-center d-inline">
 					<ul className="pagination pagination-sm">
                         {page > firstPage && (

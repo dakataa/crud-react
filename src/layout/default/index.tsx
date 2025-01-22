@@ -1,14 +1,15 @@
 import React, {memo, startTransition, useEffect, useRef, useState} from "react";
 import '@dakataa/crud-theme/scss/theme.scss';
-import MainNavigation, {MainNavigationRef, MenuItem} from "@src/layout/default/component/MainNavigation";
+import NavigationGroup, {NavigationItemContextType, MenuItem} from "@src/layout/default/component/Navigation.tsx";
 import Dropdown from "@src/component/Dropdown";
 import Link from "@src/component/Link";
 import Requester from '@dakataa/requester';
+import Navigation from "@src/layout/default/component/Navigation.tsx";
 
 const Index = memo(({children}: {
     children: any
 }) => {
-    const mainMenuRef = useRef<MainNavigationRef | null>(null);
+    const mainMenuRef = useRef<NavigationItemContextType | null>(null);
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const Index = memo(({children}: {
         <>
             <header>
                 <div className={"wrap"}>
-                    <button onClick={(e) => mainMenuRef.current?.toggle(e)} className={"btn btn-mobile"}>
+                    <button onClick={(e) => mainMenuRef.current?.toggle()} className={"btn btn-mobile"}>
                         <i></i>
                     </button>
                     <nav className="first-nav">
@@ -55,7 +56,7 @@ const Index = memo(({children}: {
             <main>
                 {!!navigationItems.length && (
                     <div className={"navigation d-print-none"}>
-                        <MainNavigation ref={mainMenuRef} items={navigationItems}/>
+                        <Navigation ref={mainMenuRef} items={navigationItems}/>
                     </div>
                 )}
                 <div className={"content"}>
