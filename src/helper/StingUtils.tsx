@@ -8,7 +8,7 @@ export const capitalize = (value: string): string => {
 }
 
 export const titlize = (value: string): string => {
-    let parts = value.split(new RegExp('(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])'));
+    let parts = value.replace(new RegExp('[-_]', 'gi'), ' ').split(new RegExp('(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])'));
     const firstWord = parts.shift();
     const lastWord = parts.pop();
     parts = parts.map((v) => v.toLowerCase());

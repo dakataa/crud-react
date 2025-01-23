@@ -12,6 +12,7 @@ import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/component/hooks/GetData.tsx";
 import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import {default as T} from "@src/component/Translation.tsx";
+import {ExceptionType} from "@src/type/ExceptionType.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -24,7 +25,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     action: ActionType;
     parameters?: { [key: string]: any };
     onSuccess?: (data: any) => void;
-    onError?: (data: any) => void;
+    onError?: (data: ExceptionType) => void;
     onLoad?: () => void;
     children?: ReactNode;
     embedded?: boolean;
@@ -47,7 +48,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
         }
 
         for (let [, child] of Object.entries(view?.children || [])) {
-            if (child.children?.length) {
+            if (child.children && Object.values(child.children).length) {
                 result = {...result, ...getFormErrors(child)};
             } else if (child.errors?.length) {
                 result[child.full_name] = child.errors;
@@ -60,7 +61,16 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
 
-        (new Requester()).post(actionURL, formData, RequestBodyType.FormData).then((response) => response.getData()).then(data => {
+        (new Requester()).post(actionURL, formData, RequestBodyType.FormData).then(response => {
+            return response.getData().then((data) => {
+                if (![200, 201, 400].includes(response.status)) {
+                    return Promise.reject(data);
+                }
+
+                return data;
+            })
+
+        }).then(data => {
             setData(data);
 
             const errors = getFormErrors(data.form.modify.view);
@@ -76,9 +86,9 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
             if (data.redirect && !embedded) {
                 navigate(generateRoute(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
             }
-        }).catch((e: any) => {
+        }).catch((error: ExceptionType) => {
             if (onError) {
-                onError(data);
+                onError(error);
             }
         }).finally(() => {
             setPreloader(false);

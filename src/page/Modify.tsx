@@ -10,6 +10,7 @@ import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {UseAlert, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
+import {ExceptionType} from "@src/type/ExceptionType.tsx";
 
 const DefaultModifyTemplate = ({children, action, routeParams, results, ...props}: {
     children?: ReactNode;
@@ -46,7 +47,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
     action?: ActionType;
     routeParams?: { [key: string]: any };
     children?: ReactNode;
-    onSuccess?: () => void;
+    onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
     props?: any;
 }) => {
@@ -97,12 +98,29 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
                         action={action}
                         onSuccess={(data: ModifyType) => {
                             modalRef.current?.close();
-                            onSuccess && onSuccess();
+                            const event = new CustomEvent('success', { detail: data })
+                            onSuccess && onSuccess(event, data);
+
+                            if(event.defaultPrevented) {
+                                return;
+                            }
 
                             openAlert({
                                 title: 'Success',
                                 text: Object.values(data.messages?.success ?? []).join(' ') ?? 'Item was saved successful!',
                                 icon: AlertIcon.success,
+                                actions: {
+                                    close: {
+                                        label: 'OK'
+                                    }
+                                }
+                            });
+                        }}
+                        onError={(error: ExceptionType) => {
+                            openAlert({
+                                title: error.status + ' ' + error.title,
+                                text: error.detail,
+                                icon: AlertIcon.denied,
                                 actions: {
                                     close: {
                                         label: 'OK'

@@ -159,7 +159,7 @@ export function AlertProvider(props: PropsWithChildren) {
                                 <LottieAnimation className={"modal-alert-icon"} animationData={animationData} />
                             )}
                             <h3 className={"modal-alert-title"}>{alert.title}</h3>
-                            {alert.text?.length && (
+                            {!!alert.text?.length && (
                                 <p className={"modal-alert-text"}>{alert.text}</p>
                             )}
                             {alert.actions && (
