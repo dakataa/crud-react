@@ -38,7 +38,7 @@ const MainNavigationItem = ({item, open = false}: {
     const location = useLocation();
     const currentLocationPath = location.pathname.replace(/(.*?)\/?$/i, '$1');
     const itemPath = generateRoute(item.route);
-    const isActive = currentLocationPath === itemPath;
+    const isActive = currentLocationPath.includes(itemPath, 0);
     const [active, setActive] = React.useState(isActive);
     const parentNavigationMenu = UseParentNavigationItem();
     const containerRef = useRef<HTMLElement | null>(null);

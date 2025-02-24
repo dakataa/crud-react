@@ -5,6 +5,7 @@ import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
+import {ExceptionType} from "@src/type/ExceptionType.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -32,7 +33,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     const [results, setResults] = useState<ListType | ModifyType | null>();
     const [parameters, setParameters] = useState<{ [key: string]: string } | null>(initParameters || null);
     const [queryParameters, setQueryParameters] = useState<URLSearchParams>(new URLSearchParams(initQueryParameters || {}));
-    const lastKey = useRef<string | null>();
+    const lastKey = useRef<string | null>(null);
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
     const cache = useRef<{ [key: string]: string }>({});
     const [refresh, setRefresh] = useState(1);
@@ -94,6 +95,9 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                     case 200: {
                         setResults(v);
                         break;
+                    }
+                    default: {
+                        const error = (response.data as ExceptionType);
                     }
                 }
             });

@@ -39,9 +39,10 @@ const List = memo(({action, embedded = false}: {
     const {openModal} = UseModal()
     const {open: openAlert} = UseAlert();
 
-    const entityAction = (action?.action && getAction(action.action.entity, action.action.name, action.action.namespace)) || getActionByPath(document.location.pathname);
+    const entityAction = action?.action ? getAction(action.action.entity, action.action.name, action.action.namespace) : getActionByPath(document.location.pathname);
+
     if (!entityAction) {
-        throw new Error('Invalid Action');
+        throw new Error('Invalid Action in List route');
     }
 
     action = {
@@ -182,7 +183,8 @@ const List = memo(({action, embedded = false}: {
                                 ))}
                             </div>
                         )}
-                        <div className={"btn-group btn-group-sm"}>
+                        {results?.form?.filter && (
+                            <div className={"btn-group btn-group-sm"}>
                             <Dropdown className={"btn-group btn-group-sm"}>
                                 <DropdownButton className={"btn-outline-dark"}><T>Filter</T></DropdownButton>
                                 <DropdownContent>
@@ -225,6 +227,7 @@ const List = memo(({action, embedded = false}: {
                                 }} className="btn btn-outline-dark">x</Button>
                             )}
                         </div>
+                        )}
                     </div>
                 </header>
                 {results?.form?.filter && (

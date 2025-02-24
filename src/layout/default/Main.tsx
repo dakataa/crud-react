@@ -5,9 +5,10 @@ import Dropdown from "@src/component/Dropdown";
 import Link from "@src/component/Link";
 import Requester from '@dakataa/requester';
 import Navigation from "@src/layout/default/component/Navigation.tsx";
+import {Outlet} from "react-router-dom";
 
-const Index = memo(({children}: {
-    children: any
+const Main = memo(({children}: {
+    children?: any
 }) => {
     const mainMenuRef = useRef<NavigationItemContextType | null>(null);
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
@@ -60,11 +61,11 @@ const Index = memo(({children}: {
                     </div>
                 )}
                 <div className={"content"}>
-                    {children}
+                    <Outlet/>
                 </div>
             </main>
         </>
     );
 });
 
-export default Index;
+export default Main;
