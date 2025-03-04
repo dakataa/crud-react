@@ -3,6 +3,7 @@ import EmptyView from "@src/component/EmptyView";
 import List from "@src/page/List";
 import React from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import Exception from "@src/component/error/Exception.tsx";
 
 const DefaultViewComponent = ({view, props}: {
     view: string,
@@ -13,6 +14,9 @@ const DefaultViewComponent = ({view, props}: {
         edit: Modify,
         list: List
     }
+
+    if(defaultComponents[view] === undefined)
+        throw new Exception(404, 'View not found');
 
     return React.createElement(defaultComponents[view] || EmptyView, props);
 }

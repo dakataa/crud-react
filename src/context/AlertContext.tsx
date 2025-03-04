@@ -73,7 +73,7 @@ export function AlertProvider(props: PropsWithChildren) {
     const [alert, setAlert] = useState<AlertConfigType>();
 
     const updates = useRef(0);
-    const modalRef = useRef<ModalRefType>();
+    const modalRef = useRef<ModalRefType>(undefined);
     const [animationData, setAnimationData] = useState(null);
 
     useEffect(() => {

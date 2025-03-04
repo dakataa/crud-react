@@ -1,10 +1,11 @@
-import React, {ReactNode, useEffect, useRef, useState} from "react";
+import React, {ReactNode, use, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import Requester, {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
+import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
@@ -59,13 +60,13 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     //     return null;
     // }
 
-    useEffect(() => {
-        if (!results) {
-            return;
-        }
-
-        setCache(results);
-    }, [JSON.stringify(results)]);
+    // useEffect(() => {
+    //     if (!results) {
+    //         return;
+    //     }
+    //
+    //     setCache(results);
+    // }, [JSON.stringify(results)]);
 
     useEffect(() => {
         /*if(lastKey.current === key) {
@@ -88,30 +89,35 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             return;
         }
 
-        (new Requester()).get(generateRoute(entityAction.route, parameters ?? null), queryParameters).then((response) => {
-            response.getData().then(v => {
-                switch (response.status) {
-                    case 201:
-                    case 200: {
-                        setResults(v);
-                        break;
+        (new Requester())
+            .get(generateRoute(entityAction.route, parameters ?? null), queryParameters)
+            .then((response) => {
+                return response.getData().then(v => {
+                    switch (response.status) {
+                        case 201:
+                        case 200: {
+                            setResults(v);
+                            break;
+                        }
+                        default: {
+                            const exception = (v as ExceptionType);
+                            throw new HttpException(exception.status, exception.detail, exception.trace);
+                        }
                     }
-                    default: {
-                        const error = (response.data as ExceptionType);
-                    }
-                }
-            });
-        }).catch((e) => {
-            console.log('error', e);
-        }).finally(() => {
-        });
-    }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
+                });
+            })
+            .catch((e) => {
+                throw new HttpException(0, e.message);
+            })
+        ;
 
+
+    }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
 
     return {
         results,
         setParameters,
-        setQueryParameters: (value: URLSearchParams | {[key: string]: any}) => {
+        setQueryParameters: (value: URLSearchParams | { [key: string]: any }) => {
             setQueryParameters(new URLSearchParams(value));
         },
         refresh: () => {

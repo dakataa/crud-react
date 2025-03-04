@@ -12,7 +12,7 @@ import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {UseAlert, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 
-const DefaultModifyTemplate = ({children, action, routeParams, results, ...props}: {
+const DefaultModifyTemplate = ({children, action, routeParams, results}: {
     children?: ReactNode;
     action: ActionType;
     routeParams?: { [key: string]: any };
@@ -59,8 +59,8 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
 
     routeParams = {...routeParams, ...useParams()}
 
-    const modifyFormRef = useRef<ModifyFormRefType>();
-    const modalRef = useRef<ModalRefType>();
+    const modifyFormRef = useRef<ModifyFormRefType>(undefined);
+    const modalRef = useRef<ModalRefType>(undefined);
     const {results, setParameters}: any & { results: ModifyType } = GetData({
         entityAction: action,
         initParameters: routeParams
@@ -118,7 +118,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
                         }}
                         onError={(error: ExceptionType) => {
                             openAlert({
-                                title: error.status + ' ' + error.title,
+                                title: error.status + ' ' + error.detail,
                                 text: error.detail,
                                 icon: AlertIcon.denied,
                                 actions: {

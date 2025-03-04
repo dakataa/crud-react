@@ -1,11 +1,10 @@
 import React, {memo, startTransition, useEffect, useRef, useState} from "react";
-import '@dakataa/crud-theme/scss/theme.scss';
-import NavigationGroup, {NavigationItemContextType, MenuItem} from "@src/layout/default/component/Navigation.tsx";
+import Navigation, {MenuItem, NavigationItemContextType} from "@src/layout/default/component/Navigation.tsx";
 import Dropdown from "@src/component/Dropdown";
 import Link from "@src/component/Link";
 import Requester from '@dakataa/requester';
-import Navigation from "@src/layout/default/component/Navigation.tsx";
 import {Outlet} from "react-router-dom";
+import Base from "@src/layout/default/Base.tsx";
 
 const Main = memo(({children}: {
     children?: any
@@ -32,7 +31,7 @@ const Main = memo(({children}: {
     }, []);
 
     return (
-        <>
+        <Base>
             <header>
                 <div className={"wrap"}>
                     <button onClick={(e) => mainMenuRef.current?.toggle()} className={"btn btn-mobile"}>
@@ -64,7 +63,7 @@ const Main = memo(({children}: {
                     <Outlet/>
                 </div>
             </main>
-        </>
+        </Base>
     );
 });
 

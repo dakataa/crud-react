@@ -23,7 +23,7 @@ const Dropdown = ({items, className, children, icon}: PropsWithChildren<{
     items?: (LinkProps & LinkType)[],
     icon?: [IconPrefix, IconName] | false
 }>) => {
-    const ref = useRef<HTMLButtonElement>();
+    const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {
         const dropdown = new BootstrapDropdown(ref.current);
         return () => {
@@ -35,7 +35,7 @@ const Dropdown = ({items, className, children, icon}: PropsWithChildren<{
     const linkElements = React.Children.toArray(children).filter(x => React.isValidElement(x) && x.type === Link);
     const buttonElement = React.Children.toArray(children).find(x => React.isValidElement(x) && x.type === DropdownButton);
     const buttonElements = React.Children.toArray(children).filter(x => !React.isValidElement(x) || (x.type !== Link && x.type !== DropdownContent && x.type !== DropdownButton));
-    const buttonProps = React.isValidElement(buttonElement) ? buttonElement.props : {};
+    const buttonProps: any = React.isValidElement(buttonElement) ? buttonElement.props : {};
 
     return (
         <div className={[...(className || '').split(' '), 'dropdown'].filter((v, i, self) => self.indexOf(v) === i).join(' ')}>

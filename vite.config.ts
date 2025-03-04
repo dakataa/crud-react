@@ -25,6 +25,9 @@ export default defineConfig(() => {
                     replacement: join(process.cwd(), '/src/$1'),
                 }
 			]
-		}
+		},
+        optimizeDeps: {
+            exclude: ['@dakataa/requester']
+        }
 	};
 });

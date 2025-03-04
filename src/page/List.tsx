@@ -31,7 +31,7 @@ const List = memo(({action, embedded = false}: {
 }) => {
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
-    const sort = useRef<{ [key: string]: any } | undefined>();
+    const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
     const filterFormRef = useRef<FormRef | null>(null);
 
@@ -250,7 +250,6 @@ const List = memo(({action, embedded = false}: {
 })
 
 const FiltersView = ({formView, onClick}: { formView: FormViewType, onClick: (key: string) => void }) => {
-
     const getValue = (view: FormViewType) => {
         if (view.choices !== undefined) {
             return (view.choices ? Object.values(view.data instanceof Object ? view.data : [view.data]).map((k: any) => view.choices?.[k]?.label ?? k).join(', ') : view.data);

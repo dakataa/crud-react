@@ -1,5 +1,7 @@
+import {ExceptionTraceType} from "@src/component/error/HttpException.tsx";
+
 export type ExceptionType = {
     status: number;
-    title: string;
     detail: string;
+    trace?: ExceptionTraceType[]
 }
