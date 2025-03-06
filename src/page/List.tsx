@@ -34,20 +34,11 @@ const List = memo(({action, embedded = false}: {
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
     const filterFormRef = useRef<FormRef | null>(null);
-
-    const {getActionByPath, getAction} = UseActions();
     const {openModal} = UseModal()
     const {open: openAlert} = UseAlert();
 
-    const entityAction = action?.action ? getAction(action.action.entity, action.action.name, action.action.namespace) : getActionByPath(document.location.pathname);
-
-    if (!entityAction) {
+    if (!action) {
         throw new Error('Invalid Action in List route');
-    }
-
-    action = {
-        action: entityAction,
-        parameters: {...(action?.parameters ?? {}), ...useParams()}
     }
 
     const entity = action?.action.entity;
@@ -87,7 +78,7 @@ const List = memo(({action, embedded = false}: {
             icon: Icon.confirm,
             onResult: (result: Result) => {
                 if (result.isConfirmed) {
-                    (new Requester).post(generateRoute(entityAction.route, action.parameters), data).catch((e:any) => {
+                    (new Requester).post(generateRoute(action.action.route, action.parameters), data).catch((e:any) => {
                         console.log('error', e);
                     }).finally(() => {
                         console.log('done');

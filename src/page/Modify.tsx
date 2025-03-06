@@ -9,8 +9,9 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
-import {UseAlert, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
+import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
+import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 
 const DefaultModifyTemplate = ({children, action, routeParams, results}: {
     children?: ReactNode;
@@ -43,26 +44,21 @@ const DefaultModifyTemplate = ({children, action, routeParams, results}: {
     )
 }
 
-const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
-    action?: ActionType;
-    routeParams?: { [key: string]: any };
+const Modify = ({action, children, onSuccess, modal, props}: {
+    action?: OnClickAction;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
     props?: any;
 }) => {
-    const {getActionByPath} = UseActions();
-    action = action || getActionByPath(document.location.pathname);
-
     if (!action)
         throw new Error('Invalid Location Path');
 
-    routeParams = {...routeParams, ...useParams()}
-
+    const routeParams = {...(action.parameters || {}), ...useParams()}
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);
     const {results, setParameters}: any & { results: ModifyType } = GetData({
-        entityAction: action,
+        entityAction: action.action,
         initParameters: routeParams
     });
     const {open: openAlert} = UseAlert();
@@ -95,7 +91,7 @@ const Modify = ({action, routeParams, children, onSuccess, modal, props}: {
                     <ModifyForm
                         ref={modifyFormRef}
                         data={results}
-                        action={action}
+                        action={action.action}
                         onSuccess={(data: ModifyType) => {
                             modalRef.current?.close();
                             const event = new CustomEvent('success', { detail: data })

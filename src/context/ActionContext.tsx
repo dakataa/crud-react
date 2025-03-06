@@ -2,7 +2,8 @@ import React, {PropsWithChildren, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
 import Requester from "@dakataa/requester";
 import {matchPath} from "react-router-dom";
-import {crudToReactPath} from "@src/helper/RouterUtils.tsx";
+import {crudToReactPathPattern} from "@src/helper/RouterUtils.tsx";
+import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 
 const STORAGE_KEY = 'actions';
 const ActionContext = React.createContext<ActionType[] | null>(null);
@@ -10,23 +11,32 @@ const ActionContext = React.createContext<ActionType[] | null>(null);
 export function UseActions() {
     const context = React.useContext<ActionType[] | null>(ActionContext);
 
-    const getActionByPath = (path: string): ActionType | undefined => {
-        return context?.find((a) => a.route?.path && matchPath(crudToReactPath(a.route.path), path));
-    };
-
     const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
         return context?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
     }
 
-    const getEntity = (): string | undefined => {
-        return getActionByPath(document.location.pathname)?.entity;
+    const getActionByPath = (path: string): ActionType | undefined => {
+        return context?.find((a) => a.route?.path && matchPath(crudToReactPathPattern(a.route.path), path));
+    };
+
+    const getOnClickActionByPath = (path: string): OnClickAction | undefined => {
+        const action = getActionByPath(path);
+        if(!action) {
+            return;
+        }
+
+        const match = matchPath(crudToReactPathPattern(action.route?.path || ''), path)
+        return {
+            action,
+            parameters: match?.params
+        };
     }
 
     return {
         actions: context,
-        getEntity,
+        getAction,
         getActionByPath,
-        getAction
+        getOnClickActionByPath
     };
 }
 
