@@ -7,7 +7,7 @@ const crudToReactPathPattern = (path: string) => {
 }
 
 
-const generateRoute = (route?: RouteType, parameters: {} | undefined = undefined): string => {
+const generateRoute = (route?: RouteType, parameters?: {[key: string]: string} | null): string => {
     return route ? generatePath(crudToReactPathPattern(route.path), {...route.defaults || {}, ...parameters}) : '#';
 }
 

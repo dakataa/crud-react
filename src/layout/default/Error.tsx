@@ -12,7 +12,7 @@ const Error = memo(({error}: {
         <Base>
             <main>
                 <div className={"content d-flex flex-column"}>
-                    <h1 className={"display-1"}>{error.status}</h1>
+                    <h1 className={"display-1"}>{error.status || 'Error'}</h1>
                     <p className={"text-secondary"}>{error.detail}</p>
                     <br/>
                     <div>

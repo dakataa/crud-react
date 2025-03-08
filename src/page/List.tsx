@@ -8,7 +8,7 @@ import {
 } from "@dakataa/requester";
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import PaginatorView from "@src/component/crud/PaginatorView.tsx";
-import {Link, useLocation, useParams, useSearchParams} from "react-router-dom";
+import {Link, useLocation, useSearchParams} from "react-router-dom";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Button from "@src/component/Button.tsx";
@@ -16,7 +16,6 @@ import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import FormView from "@src/component/crud/FormView.tsx";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
 import GetData, {GetDataType} from "@src/component/hooks/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
@@ -26,7 +25,7 @@ import {default as T} from "@src/component/Translation.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 
 const List = memo(({action, embedded = false}: {
-    action?: OnClickAction,
+    action: OnClickAction,
     embedded?: boolean
 }) => {
     const location = useLocation();
@@ -37,11 +36,7 @@ const List = memo(({action, embedded = false}: {
     const {openModal} = UseModal()
     const {open: openAlert} = UseAlert();
 
-    if (!action) {
-        throw new Error('Invalid Action in List route');
-    }
-
-    const entity = action?.action.entity;
+    const entity = action.action.entity;
 
     if (!entity) {
         throw new Error('Invalid Entity');

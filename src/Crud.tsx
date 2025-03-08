@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import Requester from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
@@ -16,11 +16,13 @@ Requester.defaults = {
 const Crud = () => {
 
     return (
-        <ErrorBoundary fallback={<Error/>}>
-            <CrudContext>
-                <CrudLoader/>
-            </CrudContext>
-        </ErrorBoundary>
+        <CrudContext>
+            <ErrorBoundary fallback={<Error/>}>
+            <Suspense fallback={<>Loading</>}>
+                    <CrudLoader/>
+            </Suspense>
+            </ErrorBoundary>
+        </CrudContext>
     );
 }
 

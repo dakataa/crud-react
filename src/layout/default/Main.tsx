@@ -19,15 +19,9 @@ const Main = memo(({children}: {
             }
 
             response.getData().then((data) => {
-                startTransition(() => {
-                    setNavigationItems(data);
-                })
+                setNavigationItems(data);
             });
-        }).catch((e) => {
-            console.log('error', e);
-        }).finally(() => {
-
-        });
+        })
     }, []);
 
     return (

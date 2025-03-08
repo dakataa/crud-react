@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": false,
 	"dependencies": {
-		"@dakataa/crud-theme": "^1.0.0",
+		"@dakataa/crud-theme": "^1.0.1",
 		"@dakataa/requester": "^1.0.3",
 		"@fortawesome/fontawesome-common-types": "^6.7.2",
 		"@popperjs/core": "^2.11.8",

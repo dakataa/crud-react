@@ -1,5 +1,5 @@
 import ViewLoader from "@src/component/ViewLoader.tsx";
-import React from "react";
+import React, {use} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {UseCurrentReactRoute} from "@src/helper/RouterUtils.tsx";
@@ -10,9 +10,9 @@ const CrudLoader = ({path}: { path?: string }) => {
     path ??= document.location.pathname.replace(new RegExp('^' + currentRoute?.pathnameBase + '(/)?'), '/');
 
     const {getOnClickActionByPath} = UseActions();
-    const onClickAction = getOnClickActionByPath(path);
+    const onClickAction = use(getOnClickActionByPath(path));
     if (!onClickAction) {
-        throw new HttpException(404, 'Invalid Route');
+        throw new HttpException(404, 'Missing Route');
     }
 
     return (

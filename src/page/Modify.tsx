@@ -12,10 +12,11 @@ import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-const DefaultModifyTemplate = ({children, action, routeParams, results}: {
-    children?: ReactNode;
+const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     action: ActionType;
+    children?: ReactNode;
     routeParams?: { [key: string]: any };
     results?: ModifyType;
 }) => {
@@ -45,15 +46,12 @@ const DefaultModifyTemplate = ({children, action, routeParams, results}: {
 }
 
 const Modify = ({action, children, onSuccess, modal, props}: {
-    action?: OnClickAction;
+    action: OnClickAction;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
     props?: any;
 }) => {
-    if (!action)
-        throw new Error('Invalid Location Path');
-
     const routeParams = {...(action.parameters || {}), ...useParams()}
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);
@@ -82,58 +80,63 @@ const Modify = ({action, children, onSuccess, modal, props}: {
             </TemplateExtend>
 
             <TemplateExtend name={"navigation"}>
-                <TemplateBlock name={"navigation"} content={children} data={results}>
-                </TemplateBlock>
+                <DynamicView namespace={action.action.namespace} view={"navigation"} prefix={"modify"}>
+                    <TemplateBlock name={"navigation"} content={children} data={results}>
+                        original {action.action.namespace}
+                    </TemplateBlock>
+                </DynamicView>
             </TemplateExtend>
 
             <TemplateExtend name={"content"}>
-                <TemplateBlock name={"content"} content={children} data={results}>
-                    <ModifyForm
-                        ref={modifyFormRef}
-                        data={results}
-                        action={action.action}
-                        onSuccess={(data: ModifyType) => {
-                            modalRef.current?.close();
-                            const event = new CustomEvent('success', { detail: data })
-                            onSuccess && onSuccess(event, data);
+                <DynamicView namespace={action.action.namespace} view={"content"} prefix={"modify"}>
+                    <TemplateBlock name={"content"} content={children} data={results}>
+                        <ModifyForm
+                            ref={modifyFormRef}
+                            data={results}
+                            action={action.action}
+                            onSuccess={(data: ModifyType) => {
+                                modalRef.current?.close();
+                                const event = new CustomEvent('success', {detail: data})
+                                onSuccess && onSuccess(event, data);
 
-                            if(event.defaultPrevented) {
-                                return;
-                            }
+                                if (event.defaultPrevented) {
+                                    return;
+                                }
 
-                            openAlert({
-                                title: 'Success',
-                                text: Object.values(data.messages?.success ?? []).join(' ') ?? 'Item was saved successful!',
-                                icon: AlertIcon.success,
-                                actions: {
-                                    close: {
-                                        label: 'OK'
+                                openAlert({
+                                    title: 'Success',
+                                    text: Object.values(data.messages?.success ?? []).join(' ') ?? 'Item was saved successful!',
+                                    icon: AlertIcon.success,
+                                    actions: {
+                                        close: {
+                                            label: 'OK'
+                                        }
                                     }
-                                }
-                            });
-                        }}
-                        onError={(error: ExceptionType) => {
-                            openAlert({
-                                title: error.status + ' ' + error.detail,
-                                text: error.detail,
-                                icon: AlertIcon.denied,
-                                actions: {
-                                    close: {
-                                        label: 'OK'
+                                });
+                            }}
+                            onError={(error: ExceptionType) => {
+                                openAlert({
+                                    title: error.status + ' ' + error.detail,
+                                    text: error.detail,
+                                    icon: AlertIcon.denied,
+                                    actions: {
+                                        close: {
+                                            label: 'OK'
+                                        }
                                     }
-                                }
-                            });
-                        }}
-                        onLoad={() => {
-                            console.log('loaded');
-                            // modalRef.current?.open();
-                        }}
-                        embedded={modal}
-                        parameters={routeParams}
-                    >
-                        {modal && <TemplateExtend name={"actions"}></TemplateExtend>}
-                    </ModifyForm>
-                </TemplateBlock>
+                                });
+                            }}
+                            onLoad={() => {
+                                console.log('loaded');
+                                // modalRef.current?.open();
+                            }}
+                            embedded={modal}
+                            parameters={routeParams}
+                        >
+                            {modal && <TemplateExtend name={"actions"}></TemplateExtend>}
+                        </ModifyForm>
+                    </TemplateBlock>
+                </DynamicView>
             </TemplateExtend>
             <TemplateExtend name={"actions"}>
                 <TemplateBlock name={"actions"} content={children} data={results}>

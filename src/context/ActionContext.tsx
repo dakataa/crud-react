@@ -4,6 +4,7 @@ import Requester from "@dakataa/requester";
 import {matchPath} from "react-router-dom";
 import {crudToReactPathPattern} from "@src/helper/RouterUtils.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
+import HttpException from "@src/component/error/HttpException.tsx";
 
 const STORAGE_KEY = 'actions';
 const ActionContext = React.createContext<ActionType[] | null>(null);
@@ -19,21 +20,41 @@ export function UseActions() {
         return context?.find((a) => a.route?.path && matchPath(crudToReactPathPattern(a.route.path), path));
     };
 
-    const getOnClickActionByPath = (path: string): OnClickAction | undefined => {
-        const action = getActionByPath(path);
-        if(!action) {
-            return;
+    const getOnClickActionByPath = (path: string): Promise<OnClickAction> => {
+        const getOnClickAction = () => {
+            const action = getActionByPath(path);
+
+            if(!action)
+                throw new HttpException(404, 'Page not found.');
+
+            const match = matchPath(crudToReactPathPattern(action.route?.path || ''), path)
+            return {
+                action,
+                parameters: match?.params
+            };
         }
 
-        const match = matchPath(crudToReactPathPattern(action.route?.path || ''), path)
-        return {
-            action,
-            parameters: match?.params
-        };
+        return new Promise<OnClickAction>((resolve, reject) => {
+            let retries = 0;
+            const timeout = () => {
+                if(retries > 10) {
+                    throw new HttpException(500, 'Cannot load routes');
+                }
+
+                if(context) {
+                    return resolve(getOnClickAction());
+                }
+
+                setTimeout(timeout, 200);
+                retries++;
+            }
+
+            timeout();
+        });
+
     }
 
     return {
-        actions: context,
         getAction,
         getActionByPath,
         getOnClickActionByPath
