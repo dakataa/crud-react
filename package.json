@@ -1,9 +1,25 @@
 {
-	"name": "admin-react",
-	"version": "0.1.0",
-	"private": false,
+	"name": "@dakataa/crud-react",
+	"version": "1.0.0",
+	"description": "Dakataa CRUD React",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dakataa/crud-react.git"
+	},
+	"keywords": [
+		"CRUD",
+		"React",
+		"Frontend",
+		"Dashboard"
+	],
+	"author": "Yordan Lazarov",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/dakataa/crud-react/issues"
+	},
+	"homepage": "https://github.com/dakataa/crud-react#readme",
 	"dependencies": {
-		"@dakataa/crud-theme": "^1.0.0",
+		"@dakataa/crud-theme": "^1.0.1",
 		"@dakataa/requester": "^1.0.3",
 		"@fortawesome/fontawesome-common-types": "^6.7.2",
 		"@popperjs/core": "^2.11.8",

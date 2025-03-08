@@ -33,7 +33,7 @@ const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
     }, []);
 
     return (
-        <LoadedView.current {...props} view={view} controller={namespace} viewName={view} data={data}>
+        <LoadedView.current {...props} view={view} controller={namespace} viewName={view} data={data} parent={children}>
             {(!importMethod || LoadedView.current !== EmptyView) && children}
         </LoadedView.current>
     );

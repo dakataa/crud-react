@@ -182,10 +182,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@dakataa/crud-theme@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@dakataa/crud-theme/-/crud-theme-1.0.0.tgz"
-  integrity sha512-a3P3a4H4fYVg6m3liwz0J1RPJcpsImzXHjcgaqfLl++IcVFDDcILhJXc6h9oZDQPuoieLZbtdxdu/FdrAfoyog==
+"@dakataa/crud-theme@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@dakataa/crud-theme/-/crud-theme-1.0.1.tgz"
+  integrity sha512-OwnJG5cVHoEoho0Yn+hVdAKt9GvtB5LDNpWbKItUiSFrEjDHG08f50wbmLSQMRwTulpNzcIqIvtX7a+6iTP3bw==
   dependencies:
     bootstrap "^5.3.3"
 

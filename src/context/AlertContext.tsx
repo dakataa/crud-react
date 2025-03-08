@@ -142,6 +142,7 @@ export function AlertProvider(props: PropsWithChildren) {
 
         alert?.onResult && alert.onResult(result);
         modalRef.current?.close().then(() => {
+            setAnimationData(null);
             setAlert(undefined);
         });
     };

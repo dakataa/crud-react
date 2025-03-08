@@ -105,13 +105,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                         }
                     }
                 });
-            })
-            .catch((e) => {
-                throw new HttpException(0, e.message);
-            })
-        ;
-
-
+            });
     }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
 
     return {

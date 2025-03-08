@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# Test crud
+/crud
+
 # production
 /build
 
