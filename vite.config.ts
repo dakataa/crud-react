@@ -5,6 +5,7 @@ import dts from 'vite-plugin-dts'
 import { fileURLToPath } from 'node:url'
 import {globSync} from "node:fs";
 import pkg from './package.json';
+import tsconfigPaths from "vite-tsconfig-paths";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
