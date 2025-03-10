@@ -29,7 +29,9 @@
 		"@dakataa/crud-theme": "^1.0.1",
 		"@dakataa/requester": "^1.0.3",
 		"@fortawesome/fontawesome-common-types": "^6.7.2",
-		"@popperjs/core": "^2.11.8",
+		"@popperjs/core": "^2.11.8"
+	},
+	"peerDependencies": {
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.1.0",
 		"@testing-library/user-event": "^14.5.2",
