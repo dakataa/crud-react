@@ -1,10 +1,9 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
-import {join, resolve, relative, extname, dirname} from "path";
+import {dirname, extname, join, relative, resolve} from "path";
 import dts from 'vite-plugin-dts'
-import { fileURLToPath } from 'node:url'
+import {fileURLToPath} from 'node:url'
 import {globSync} from "node:fs";
-import pkg from './package.json';
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -19,7 +18,7 @@ export default defineConfig(() => {
             }
         },
         rollupOptions: {
-            external: Object.keys(pkg.dependencies || {}),
+            external: ['react', 'react-dom', 'react/jsx-runtime'],
             input: Object.fromEntries(
                 globSync(['lib/main.ts']).map((file) => {
                     const entryName = relative(
@@ -36,7 +35,7 @@ export default defineConfig(() => {
                     'react-dom': 'React-dom',
                     'react/jsx-runtime': 'react/jsx-runtime',
                 },
-            },
+            }
         },
         plugins: [
             react(),
