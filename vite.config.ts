@@ -5,6 +5,7 @@ import dts from 'vite-plugin-dts'
 import {fileURLToPath} from 'node:url'
 import {globSync} from "node:fs";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -18,7 +19,7 @@ export default defineConfig(() => {
             }
         },
         rollupOptions: {
-            external: ['react', 'react-dom', 'react/jsx-runtime'],
+            external: ['react', 'react-dom', 'react-router', 'react/jsx-runtime'],
             input: Object.fromEntries(
                 globSync(['lib/main.ts']).map((file) => {
                     const entryName = relative(
@@ -28,21 +29,15 @@ export default defineConfig(() => {
                     const entryUrl = fileURLToPath(new URL(file, import.meta.url))
                     return [entryName, entryUrl]
                 })
-            ),
-            output: {
-                globals: {
-                    react: 'React',
-                    'react-dom': 'React-dom',
-                    'react/jsx-runtime': 'react/jsx-runtime',
-                },
-            }
+            )
         },
         plugins: [
             react(),
             dts({
                 tsconfigPath: 'tsconfig.build.json',
             }),
-            tsconfigPaths()
+            tsconfigPaths(),
+            externalizeDeps()
         ],
         envPrefix: 'CRUD_',
         resolve: {
