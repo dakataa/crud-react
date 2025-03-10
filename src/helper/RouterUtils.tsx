@@ -1,4 +1,4 @@
-import {generatePath, UNSAFE_RouteContext} from "react-router-dom";
+import {generatePath, UNSAFE_RouteContext} from "react-router";
 import {RouteType} from "@src/type/RouteType.tsx";
 import {useContext} from "react";
 

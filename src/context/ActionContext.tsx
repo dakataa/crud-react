@@ -1,7 +1,7 @@
 import React, {PropsWithChildren, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
 import Requester from "@dakataa/requester";
-import {matchPath} from "react-router-dom";
+import {matchPath} from "react-router";
 import {crudToReactPathPattern} from "@src/helper/RouterUtils.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";

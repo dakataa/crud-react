@@ -1,4 +1,4 @@
-import {Link, useSearchParams} from "react-router-dom";
+import {Link, useSearchParams} from "react-router";
 import {ListMetaType} from "@src/type/ListMetaType";
 import {RouteType} from "@src/type/RouteType";
 

@@ -3,7 +3,7 @@ import Navigation, {MenuItem, NavigationItemContextType} from "@src/layout/defau
 import Dropdown from "@src/component/Dropdown";
 import Link from "@src/component/Link";
 import Requester from '@dakataa/requester';
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import Base from "@src/layout/default/Base.tsx";
 
 const Main = memo(({children}: {

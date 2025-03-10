@@ -7,7 +7,7 @@ import React, {
     useImperativeHandle,
     useRef
 } from "react";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {RouteType} from "@src/type/RouteType";
 

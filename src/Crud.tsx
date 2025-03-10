@@ -15,12 +15,13 @@ Requester.defaults = {
 
 const Crud = () => {
 
+    console.log('crud');
     return (
         <CrudContext>
             <ErrorBoundary fallback={<Error/>}>
-            <Suspense fallback={<>Loading</>}>
+                <Suspense fallback={<>Loading</>}>
                     <CrudLoader/>
-            </Suspense>
+                </Suspense>
             </ErrorBoundary>
         </CrudContext>
     );

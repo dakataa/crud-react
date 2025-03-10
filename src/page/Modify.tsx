@@ -1,5 +1,5 @@
 import React, {ReactNode, useEffect, useRef} from "react";
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams} from "react-router";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import ModifyForm, {ModifyFormRefType} from "@src/component/ModifyForm.tsx";

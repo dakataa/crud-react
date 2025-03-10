@@ -8,7 +8,7 @@ import {
 } from "@dakataa/requester";
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import PaginatorView from "@src/component/crud/PaginatorView.tsx";
-import {Link, useLocation, useSearchParams} from "react-router-dom";
+import {Link, useLocation, useSearchParams} from "react-router";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Button from "@src/component/Button.tsx";

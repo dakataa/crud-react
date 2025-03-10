@@ -4,12 +4,12 @@ import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
 import CrudContext from "@src/CrudContext.tsx";
 
-type ModalActionType = {
+export type ModalActionType = {
     action: OnClickAction;
     props?: ModalType
 }
 
-type ModalContextType = {
+export type ModalContextType = {
     setModal?: (modal: ModalActionType) => void;
 }
 
@@ -26,7 +26,7 @@ export function UseModal() {
 }
 
 export function ModalProvider(props: PropsWithChildren) {
-    const [modal, setModal] = useState<ModalActionType | null>(null);
+    const [modal, setModal] = useState<ModalActionType | undefined>();
 
     const updates = useRef(0);
     useEffect(() => {

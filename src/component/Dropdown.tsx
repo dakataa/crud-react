@@ -3,7 +3,7 @@ import {Link as LinkType} from "./BaseButton";
 import Button from "./Button";
 import Link from "./Link";
 import {default as BootstrapDropdown} from "bootstrap/js/src/dropdown"
-import {LinkProps} from "react-router-dom";
+import {LinkProps} from "react-router";
 import {IconName, IconPrefix} from "@fortawesome/fontawesome-common-types";
 
 const DropdownButton = ({children, disabled, className}: PropsWithChildren<{className?: string, disabled?: boolean}>) => {

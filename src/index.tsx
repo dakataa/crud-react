@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Crud from './Crud.tsx';
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter} from "react-router";
 import {Route, Routes} from "react-router";
 import Main from "@src/layout/default/Main.tsx";
 

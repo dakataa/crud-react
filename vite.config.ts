@@ -1,21 +1,56 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths'
-import path, {join} from "path";
+import {join, resolve, relative, extname, dirname} from "path";
+import dts from 'vite-plugin-dts'
+import { fileURLToPath } from 'node:url'
+import {globSync} from "node:fs";
+import pkg from './package.json';
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig(() => {
-	return {
-		build: {
-			outDir: 'build',
-		},
-		plugins: [react(), tsconfigPaths()],
+    return {
+        build: {
+            lib: {
+                name: "crud",
+                formats: ["es"],
+                entry: resolve(__dirname, 'lib/main.ts'),
+            }
+        },
+        rollupOptions: {
+            external: Object.keys(pkg.dependencies || {}),
+            input: Object.fromEntries(
+                globSync(['lib/main.ts']).map((file) => {
+                    const entryName = relative(
+                        'src',
+                        file.slice(0, file.length - extname(file).length)
+                    )
+                    const entryUrl = fileURLToPath(new URL(file, import.meta.url))
+                    return [entryName, entryUrl]
+                })
+            ),
+            output: {
+                globals: {
+                    react: 'React',
+                    'react-dom': 'React-dom',
+                    'react/jsx-runtime': 'react/jsx-runtime',
+                },
+            },
+        },
+        plugins: [
+            react(),
+            dts({
+                tsconfigPath: 'tsconfig.build.json',
+            }),
+            tsconfigPaths()
+        ],
         envPrefix: 'CRUD_',
-		resolve: {
-			alias: [
-				{
-					find: /~(.+)/,
-					replacement: join(process.cwd(), 'node_modules/$1'),
-				},
+        resolve: {
+            alias: [
+                {
+                    find: /~(.+)/,
+                    replacement: join(process.cwd(), 'node_modules/$1'),
+                },
                 {
                     find: /^@crud\/(.+)/,
                     replacement: join(process.cwd(), '/crud/$1'),
@@ -24,10 +59,10 @@ export default defineConfig(() => {
                     find: /^@src\/(.+)/,
                     replacement: join(process.cwd(), '/src/$1'),
                 }
-			]
-		},
+            ]
+        },
         optimizeDeps: {
             exclude: ['@dakataa/requester']
         }
-	};
+    };
 });

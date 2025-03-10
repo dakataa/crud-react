@@ -4,7 +4,7 @@ import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, us
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import Requester, {RequestBodyType} from "@dakataa/requester";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";

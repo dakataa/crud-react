@@ -1,5 +1,5 @@
 import {ListType} from "@src/type/ListType";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import {ColumnType} from "@src/type/ColumnType";
 import React, {forwardRef, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
