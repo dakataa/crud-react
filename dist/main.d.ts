@@ -1,4 +1,4 @@
-export { default as Crud } from '../src/Crud.tsx';
+export { default as Crud, CrudConfiguration } from '../src/Crud.tsx';
 export { default as CrudContext } from '../src/CrudContext.tsx';
 export { default as CrudLoader } from '../src/CrudLoader.tsx';
 export { default as Modify } from '../src/page/Modify.tsx';

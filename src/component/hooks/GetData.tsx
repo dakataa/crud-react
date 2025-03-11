@@ -1,12 +1,13 @@
-import React, {ReactNode, use, useEffect, useRef, useState} from "react";
+import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import Requester, {convertObjectToURLSearchParams} from "@dakataa/requester";
+import {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
+import {CrudRequester} from "@src/Crud.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -89,7 +90,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             return;
         }
 
-        (new Requester())
+        CrudRequester()
             .get(generateRoute(entityAction.route, parameters ?? null), queryParameters)
             .then((response) => {
                 return response.getData().then(v => {

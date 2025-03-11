@@ -12,7 +12,7 @@
 /crud
 
 # production
-/build
+/dist
 
 # phpstorm project files
 .idea

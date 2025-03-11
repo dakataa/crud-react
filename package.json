@@ -1,6 +1,6 @@
 {
 	"name": "@dakataa/crud-react",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Dakataa CRUD React",
 	"private": false,
 	"type": "module",
@@ -25,22 +25,6 @@
 		"url": "https://github.com/dakataa/crud-react/issues"
 	},
 	"homepage": "https://github.com/dakataa/crud-react#readme",
-	"dependencies": {
-		"@dakataa/crud-theme": "^1.0.1",
-		"@dakataa/requester": "^1.0.3",
-		"@fortawesome/fontawesome-common-types": "^6.7.2",
-		"@popperjs/core": "^2.11.8"
-	},
-	"peerDependencies": {
-		"@testing-library/jest-dom": "^6.6.3",
-		"@testing-library/react": "^16.1.0",
-		"@testing-library/user-event": "^14.5.2",
-		"lottie-web": "^5.12.2",
-		"path": "^0.12.7",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
-		"react-router": "^7.3.0"
-	},
 	"scripts": {
 		"start": "vite",
 		"build": "tsc --p ./tsconfig.build.json && vite build",
@@ -66,19 +50,36 @@
 			"last 1 safari version"
 		]
 	},
+	"dependencies": {
+		"@dakataa/crud-theme": "^1.0.1",
+		"@fortawesome/fontawesome-common-types": "^6.7.2",
+		"@popperjs/core": "^2.11.8"
+	},
+	"peerDependencies": {
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"react-router": "^7.3.0",
+		"lottie-web": "^5.12.2",
+		"dotenv": "^16.4.5",
+		"@dakataa/requester": "^1.0.4"
+	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.1.0",
+		"@testing-library/user-event": "^14.5.2",
 		"@types/jest": "^29.5.14",
 		"@types/node": "^22.10.1",
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
 		"@vitejs/plugin-react": "^4.3.4",
 		"babel-plugin-transform-imports": "^2.0.0",
-		"dotenv": "^16.4.5",
+		"path": "^0.12.7",
 		"sass": "^1.81.0",
 		"source-map-explorer": "^2.5.3",
 		"typescript": "^5.7.2",
-		"vite": "^6.0.1",
+		"vite": "^6.2.1",
 		"vite-plugin-dts": "^4.5.3",
+		"vite-plugin-externalize-deps": "^0.9.0",
 		"vite-tsconfig-paths": "^5.1.3"
 	}
 }

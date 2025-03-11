@@ -5,7 +5,7 @@ import {ModifyType} from "@src/type/ModifyType.tsx";
 import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {useNavigate} from "react-router";
-import Requester, {RequestBodyType} from "@dakataa/requester";
+import {RequestBodyType} from "@dakataa/requester";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
@@ -13,6 +13,7 @@ import {UseDataProvider} from "@src/component/hooks/GetData.tsx";
 import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
+import {CrudRequester} from "@src/Crud.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -61,7 +62,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
 
-        (new Requester()).post(actionURL, formData, RequestBodyType.FormData).then(response => {
+        CrudRequester().post(actionURL, formData, RequestBodyType.FormData).then(response => {
             return response.getData().then((data) => {
                 if (![200, 201, 400].includes(response.status)) {
                     return Promise.reject(data);

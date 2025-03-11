@@ -4,14 +4,33 @@
 
 ### Install packages
 ```
-yarn install dakataa/crud-react
+yarn install @dakataa/crud-react
 ```
 
-### Configure ENV Variables
-Copy `.env` to `.env.local` and set variables
 
-```
-CRUD_API_BASE_URL=https://example.com/dakataa/crud
+### Configuration
+Base way to configure and use it.
+
+main.tsx
+```jsx
+import {StrictMode} from 'react'
+import {createRoot} from 'react-dom/client'
+import {BrowserRouter, Route, Routes} from "react-router";
+import {Crud, CrudConfiguration} from "@dakataa/crud-react";
+
+CrudConfiguration('https://rent.local');
+
+createRoot(document.getElementById('root')!).render(
+	<StrictMode>
+		<BrowserRouter>
+			<Routes>
+				<Route element={<YourLayout/>}>
+					<Route path={"*"} element={<Crud/>}/>
+				</Route>
+			</Routes>
+		</BrowserRouter>
+	</StrictMode>
+)
 ```
 
 ## Overview
