@@ -3,7 +3,6 @@ import {
     convertFormDataToObject,
     convertObjectToURLSearchParams,
     convertURLSearchParamsToObject,
-    default as Requester,
     Method
 } from "@dakataa/requester";
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView.tsx";
@@ -23,6 +22,7 @@ import {UseModal} from "@src/context/ModalContext.tsx";
 import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
+import {CrudRequester} from "@src/Crud.tsx";
 
 const List = memo(({action, embedded = false}: {
     action: OnClickAction,
@@ -73,7 +73,7 @@ const List = memo(({action, embedded = false}: {
             icon: Icon.confirm,
             onResult: (result: Result) => {
                 if (result.isConfirmed) {
-                    (new Requester).post(generateRoute(action.action.route, action.parameters), data).catch((e:any) => {
+                    CrudRequester().post(generateRoute(action.action.route, action.parameters), data).catch((e:any) => {
                         console.log('error', e);
                     }).finally(() => {
                         console.log('done');
@@ -110,7 +110,7 @@ const List = memo(({action, embedded = false}: {
                     icon: Icon.confirm,
                     onResult: (result: Result) => {
                         if (result.isConfirmed) {
-                            (new Requester).fetch({
+                            CrudRequester().fetch({
                                 url: generateRoute(onClickAction.action.route, {...action.parameters, ...onClickAction.parameters}),
                                 method: Method.DELETE
                             }).catch((e:any) => {

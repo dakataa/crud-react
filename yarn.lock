@@ -189,10 +189,10 @@
   dependencies:
     bootstrap "^5.3.3"
 
-"@dakataa/requester@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/@dakataa/requester/-/requester-1.0.3.tgz"
-  integrity sha512-cks7j27zeY1hRfsq1sEV4xiQtsgP81DA5q5Xm7fBVEy8OszmI4bYO0ArN1vctvbMedfQZr8UcG3DuV4Hmbpfyw==
+"@dakataa/requester@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/@dakataa/requester/-/requester-1.0.4.tgz"
+  integrity sha512-thvUo7BdMB5cR+9oVbYriL3zvPaMMibUwW1CUl+XcG5IzczjZVAO63csV8rtd1Wuce6WS0k8zEyEHL+HmmVUeg==
   dependencies:
     ts-node "^10.9.2"
     typescript "^5.5.3"

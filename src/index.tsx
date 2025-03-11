@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Crud from './Crud.tsx';
+import Crud, {CrudConfiguration} from './Crud.tsx';
 import {BrowserRouter} from "react-router";
 import {Route, Routes} from "react-router";
 import Main from "@src/layout/default/Main.tsx";
+import Requester from "@dakataa/requester";
+
+CrudConfiguration(import.meta.env.CRUD_API_BASE_URL);
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
+
 root.render(
     // <React.StrictMode>
         <BrowserRouter>
