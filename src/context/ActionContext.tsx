@@ -12,12 +12,20 @@ const ActionContext = React.createContext<ActionType[] | null>(null);
 export function UseActions() {
     const context = React.useContext<ActionType[] | null>(ActionContext);
 
+    const getContext = (): ActionType[] | undefined => {
+        if(!Array.isArray(context)) {
+            return;
+        }
+
+        return context;
+    }
+
     const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
-        return context?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
+        return getContext()?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
     }
 
     const getActionByPath = (path: string): ActionType | undefined => {
-        return context?.find((a) => a.route?.path && matchPath(crudToReactPathPattern(a.route.path), path));
+        return getContext()?.find((a) => a.route?.path && matchPath(crudToReactPathPattern(a.route.path), path));
     };
 
     const getOnClickActionByPath = (path: string): Promise<OnClickAction> => {
@@ -80,7 +88,7 @@ export function ActionProvider(props: PropsWithChildren) {
                 return;
             }
 
-            response.getData().then((data) => {
+            response.getData().then((data: ActionType[]) => {
                 sessionStorage.setItem(STORAGE_KEY, btoa(JSON.stringify(data)));
                 setActions(data);
             });

@@ -4,7 +4,6 @@ import Button from "./Button";
 import Link from "./Link";
 import {default as BootstrapDropdown} from "bootstrap/js/src/dropdown"
 import {LinkProps} from "react-router";
-import {IconName, IconPrefix} from "@fortawesome/fontawesome-common-types";
 
 const DropdownButton = ({children, disabled, className}: PropsWithChildren<{className?: string, disabled?: boolean}>) => {
     return <>
@@ -21,7 +20,7 @@ const DropdownContent = ({children, ...props}: { children: any }) => {
 const Dropdown = ({items, className, children, icon}: PropsWithChildren<{
     className?: string,
     items?: (LinkProps & LinkType)[],
-    icon?: [IconPrefix, IconName] | false
+    icon?: any
 }>) => {
     const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {

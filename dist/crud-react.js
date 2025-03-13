@@ -1,16 +1,16 @@
 var Dt = Object.defineProperty;
 var Lt = (e, t, n) => t in e ? Dt(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
 var ee = (e, t, n) => Lt(e, typeof t != "symbol" ? t + "" : t, n);
-import { jsx as s, Fragment as x, jsxs as _ } from "react/jsx-runtime";
+import { jsx as s, Fragment as k, jsxs as _ } from "react/jsx-runtime";
 import * as Be from "react";
-import S, { memo as W, useContext as jt, useState as $, useEffect as v, forwardRef as ie, useRef as R, useImperativeHandle as je, useReducer as kt, use as xt, Suspense as Rt } from "react";
-import ke, { convertObjectToURLSearchParams as nt, RequestBodyType as Mt, convertURLSearchParamsToObject as vt, convertFormDataToObject as Ft, Method as It } from "@dakataa/requester";
+import S, { memo as W, useContext as jt, useState as $, useEffect as v, forwardRef as ie, useRef as R, useImperativeHandle as je, useReducer as xt, use as kt, Suspense as Rt } from "react";
+import xe, { convertObjectToURLSearchParams as nt, RequestBodyType as Mt, convertURLSearchParamsToObject as vt, convertFormDataToObject as Ft, Method as It } from "@dakataa/requester";
 import "@dakataa/crud-theme/scss/theme.scss";
 import { generatePath as Vt, UNSAFE_RouteContext as $t, matchPath as Ke, useNavigate as Ut, useParams as Bt, Link as z, useLocation as Kt, useSearchParams as Ht } from "react-router";
 import { createPortal as wt } from "react-dom";
-import Yt from "lottie-web";
+import Yt from "lottie-web/build/player/esm/lottie.min.js";
 import * as He from "@popperjs/core";
-class xe {
+class ke {
   constructor(t = 0, n, r) {
     ee(this, "code");
     ee(this, "detail");
@@ -18,7 +18,7 @@ class xe {
     this.code = t, this.detail = n, this.trace = r;
   }
 }
-class Q extends xe {
+class Q extends ke {
   constructor(n, r, o) {
     super(0, r, o);
     ee(this, "status", 400);
@@ -29,7 +29,7 @@ class Wt extends Be.Component {
   constructor(n) {
     super(n);
     ee(this, "promiseRejectionHandler", (n) => {
-      n.reason instanceof xe && this.setState({
+      n.reason instanceof ke && this.setState({
         ...this.state,
         hasError: !0,
         error: n.reason
@@ -63,48 +63,57 @@ class Wt extends Be.Component {
     ) : this.props.children;
   }
 }
-const qt = W(({ children: e }) => /* @__PURE__ */ s(x, { children: e })), zt = W(({ error: e }) => (e ?? (e = new Q(404, "Page not found.")), /* @__PURE__ */ s(qt, { children: /* @__PURE__ */ s("main", { children: /* @__PURE__ */ _("div", { className: "content d-flex flex-column", children: [
+const qt = W(({ children: e }) => /* @__PURE__ */ s(k, { children: e })), zt = W(({ error: e }) => (e ?? (e = new Q(404, "Page not found.")), /* @__PURE__ */ s(qt, { children: /* @__PURE__ */ s("main", { children: /* @__PURE__ */ _("div", { className: "content d-flex flex-column", children: [
   /* @__PURE__ */ s("h1", { className: "display-1", children: e.status || "Error" }),
   /* @__PURE__ */ s("p", { className: "text-secondary", children: e.detail }),
   /* @__PURE__ */ s("br", {}),
   /* @__PURE__ */ s("div", { children: /* @__PURE__ */ s("a", { className: "btn btn-primary", href: "#", children: "Back to home" }) })
-] }) }) }))), Jt = ({ children: e }) => /* @__PURE__ */ s(x, { children: e }), B = W(({ name: e, children: t, data: n, parent: r, render: o }) => (t = S.Children.toArray((o ? o(n, r) : t) || []).map((a) => (S.isValidElement(a) && a.type === Jt && (a = S.cloneElement(a, { children: r })), a)), /* @__PURE__ */ s(x, { children: t }))), V = W(({ name: e, content: t, children: n, data: r }) => {
+] }) }) }))), Jt = ({ children: e }) => /* @__PURE__ */ s(k, { children: e }), B = W(({ name: e, children: t, data: n, parent: r, render: o }) => (t = S.Children.toArray((o ? o(n, r) : t) || []).map((a) => (S.isValidElement(a) && a.type === Jt && (a = S.cloneElement(a, { children: r })), a)), /* @__PURE__ */ s(k, { children: t }))), V = W(({ name: e, content: t, children: n, data: r }) => {
   const o = S.Children.toArray(t).find((u) => S.isValidElement(u) && u.type === B && u.props.name === e);
   let a = null;
   o && S.isValidElement(o) && (a = S.cloneElement(o, { parent: n, data: r }));
   const c = S.Children.toArray(n).filter((u) => S.isValidElement(u) && u.type !== B);
-  return /* @__PURE__ */ s(x, { children: a || (c.length ? c : n) });
+  return /* @__PURE__ */ s(k, { children: a || (c.length ? c : n) });
 }), _e = (e) => e.replaceAll(new RegExp("{(.*?)}", "gi"), ":$1"), Y = (e, t) => e ? Vt(_e(e.path), { ...e.defaults || {}, ...t }) : "#", Qt = () => jt($t).matches.pop(), we = "actions", rt = S.createContext(null);
 function Re() {
-  const e = S.useContext(rt), t = (o, a, c) => e == null ? void 0 : e.filter((u) => u.entity === o && u.name === a && (c === void 0 || u.namespace === c)).shift(), n = (o) => e == null ? void 0 : e.find((a) => {
+  const e = S.useContext(rt), t = () => {
+    if (Array.isArray(e))
+      return e;
+  }, n = (a, c, u) => {
+    var h;
+    return (h = t()) == null ? void 0 : h.filter((i) => i.entity === a && i.name === c && (u === void 0 || i.namespace === u)).shift();
+  }, r = (a) => {
     var c;
-    return ((c = a.route) == null ? void 0 : c.path) && Ke(_e(a.route.path), o);
-  });
+    return (c = t()) == null ? void 0 : c.find((u) => {
+      var h;
+      return ((h = u.route) == null ? void 0 : h.path) && Ke(_e(u.route.path), a);
+    });
+  };
   return {
-    getAction: t,
-    getActionByPath: n,
-    getOnClickActionByPath: (o) => {
-      const a = () => {
-        var h;
-        const c = n(o);
-        if (!c)
+    getAction: n,
+    getActionByPath: r,
+    getOnClickActionByPath: (a) => {
+      const c = () => {
+        var i;
+        const u = r(a);
+        if (!u)
           throw new Q(404, "Page not found.");
-        const u = Ke(_e(((h = c.route) == null ? void 0 : h.path) || ""), o);
+        const h = Ke(_e(((i = u.route) == null ? void 0 : i.path) || ""), a);
         return {
-          action: c,
-          parameters: u == null ? void 0 : u.params
+          action: u,
+          parameters: h == null ? void 0 : h.params
         };
       };
-      return new Promise((c, u) => {
-        let h = 0;
-        const l = () => {
-          if (h > 10)
+      return new Promise((u, h) => {
+        let i = 0;
+        const m = () => {
+          if (i > 10)
             throw new Q(500, "Cannot load routes");
           if (e)
-            return c(a());
-          setTimeout(l, 200), h++;
+            return u(c());
+          setTimeout(m, 200), i++;
         };
-        l();
+        m();
       });
     }
   };
@@ -145,15 +154,15 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
   onReset: c,
   ...u
 }, h) => {
-  const l = R(null), p = {
+  const i = R(null), m = {
     response: null,
     constraints: {},
     errors: {}
   }, f = {
-    getFormData: () => new FormData(l.current || void 0),
+    getFormData: () => new FormData(i.current || void 0),
     setFormData: (d) => {
-      var m;
-      [...((m = l.current) == null ? void 0 : m.elements) || []].forEach((C) => {
+      var p;
+      [...((p = i.current) == null ? void 0 : p.elements) || []].forEach((C) => {
         const N = d.get(C.name);
         switch (C.tagName.toLowerCase()) {
           case "select": {
@@ -175,34 +184,34 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
       });
     },
     setErrors: (d) => {
-      const [, m] = b;
-      m({ action: "errors", payload: d });
+      const [, p] = b;
+      p({ action: "errors", payload: d });
     },
     reset: () => {
       var d;
-      (d = l.current) == null || d.reset();
+      (d = i.current) == null || d.reset();
     },
     submit: () => {
       var d;
-      return (d = l.current) == null ? void 0 : d.requestSubmit();
+      return (d = i.current) == null ? void 0 : d.requestSubmit();
     }
   };
   je(h, () => f), v(() => {
     const d = () => {
       c && c();
-    }, m = l == null ? void 0 : l.current;
-    return m == null || m.addEventListener("reset", d), () => {
-      m == null || m.removeEventListener("reset", d);
+    }, p = i == null ? void 0 : i.current;
+    return p == null || p.addEventListener("reset", d), () => {
+      p == null || p.removeEventListener("reset", d);
     };
   }, []);
-  const i = (d, m) => {
+  const l = (d, p) => {
     const C = f.getFormData();
-    for (const N of m)
+    for (const N of p)
       if (!N.isValid(C.get(d) || null))
         return { valid: !1, message: N.getMessage() };
     return { valid: !0, message: null };
-  }, b = kt((d, m) => {
-    const { action: C, payload: N } = m;
+  }, b = xt((d, p) => {
+    const { action: C, payload: N } = p;
     switch (C) {
       case "constraints": {
         const { name: A, constraints: P } = N;
@@ -215,7 +224,7 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
         };
       }
       case "validate": {
-        const { valid: A, message: P } = i(N, d.constraints[N] || []), D = d.errors || {}, y = N;
+        const { valid: A, message: P } = l(N, d.constraints[N] || []), D = d.errors || {}, y = N;
         return A ? delete D[y] : D[y] = [...D[y] || [], { message: P || "Error" }], Object.keys(D).length ? {
           ...d,
           errors: D
@@ -240,25 +249,25 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
       }
     }
     return d;
-  }, p), E = (d) => {
+  }, m), E = (d) => {
     d.preventDefault();
-    const [m, C] = b;
+    const [p, C] = b;
     let N = {};
-    for (const [P, D] of Object.entries(m.constraints)) {
-      const { valid: y, message: O } = i(P, D);
+    for (const [P, D] of Object.entries(p.constraints)) {
+      const { valid: y, message: O } = l(P, D);
       y || (N[P] = [O]);
     }
     if (Object.values(N).length) {
       C({ action: "errors", payload: N });
       return;
     }
-    const A = new FormData((l == null ? void 0 : l.current) || void 0);
+    const A = new FormData((i == null ? void 0 : i.current) || void 0);
     if (o && o(A), a) {
       a(A);
       return;
     }
   };
-  return /* @__PURE__ */ s(st.Provider, { value: [b, h, l], children: /* @__PURE__ */ s("form", { id: e, ref: l, onSubmit: E, ...u, children: t }) });
+  return /* @__PURE__ */ s(st.Provider, { value: [b, h, i], children: /* @__PURE__ */ s("form", { id: e, ref: i, onSubmit: E, ...u, children: t }) });
 }), Zt = ({
   view: e,
   constraints: t,
@@ -269,7 +278,7 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
   ...c
 }) => {
   t = t || [];
-  const [[u, h], l] = Me(), p = R(null), i = !!((u == null ? void 0 : u.errors[e.full_name]) || []).length, b = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  const [[u, h], i] = Me(), m = R(null), l = !!((u == null ? void 0 : u.errors[e.full_name]) || []).length, b = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
   v(() => {
     h({
       action: "constraints",
@@ -282,10 +291,10 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
   const E = (d) => {
     h({ action: "validate", payload: e.full_name }), r && r(d);
   };
-  return e != null && e.expanded ? /* @__PURE__ */ s(x, { children: Object.values(e.choices || []).map(
-    (d, m) => {
+  return e != null && e.expanded ? /* @__PURE__ */ s(k, { children: Object.values(e.choices || []).map(
+    (d, p) => {
       var D;
-      const C = ve(e.full_name, m), N = o ? o(d) : d.value, A = a ? a(d) : d.label || N, P = {
+      const C = ve(e.full_name, p), N = o ? o(d) : d.value, A = a ? a(d) : d.label || N, P = {
         id: C,
         ...(e == null ? void 0 : e.choice_attr) && ((e == null ? void 0 : e.choice_attr) instanceof Function ? e == null ? void 0 : e.choice_attr(d) : e == null ? void 0 : e.choice_attr)
       };
@@ -297,7 +306,7 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
             /* @__PURE__ */ s(
               "input",
               {
-                ref: p,
+                ref: m,
                 defaultValue: N,
                 type: e != null && e.multiple ? "checkbox" : "radio",
                 defaultChecked: (D = e == null ? void 0 : e.data) == null ? void 0 : D.includes(N),
@@ -308,7 +317,7 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
                 onChange: (y) => {
                   var O, M;
                   return E({
-                    value: (e != null && e.multiple ? (O = l == null ? void 0 : l.current) == null ? void 0 : O.getFormData().getAll(e == null ? void 0 : e.full_name) : (M = l == null ? void 0 : l.current) == null ? void 0 : M.getFormData().get(e == null ? void 0 : e.full_name)) || y.target.value,
+                    value: (e != null && e.multiple ? (O = i == null ? void 0 : i.current) == null ? void 0 : O.getFormData().getAll(e == null ? void 0 : e.full_name) : (M = i == null ? void 0 : i.current) == null ? void 0 : M.getFormData().get(e == null ? void 0 : e.full_name)) || y.target.value,
                     targetValue: y.target.value,
                     checked: y.target.checked
                   });
@@ -326,36 +335,36 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
             )
           ]
         },
-        m
+        p
       );
     }
-  ) }) : /* @__PURE__ */ s(x, { children: /* @__PURE__ */ _(
+  ) }) : /* @__PURE__ */ s(k, { children: /* @__PURE__ */ _(
     "select",
     {
-      ref: p,
+      ref: m,
       name: e.full_name,
       multiple: e.multiple,
-      "aria-invalid": i,
+      "aria-invalid": l,
       onChange: (d) => {
-        var m, C;
+        var p, C;
         return E({
-          value: (e.multiple ? (m = l == null ? void 0 : l.current) == null ? void 0 : m.getFormData().getAll(e.full_name) : (C = l == null ? void 0 : l.current) == null ? void 0 : C.getFormData().get(e.full_name)) || d.target.value
+          value: (e.multiple ? (p = i == null ? void 0 : i.current) == null ? void 0 : p.getFormData().getAll(e.full_name) : (C = i == null ? void 0 : i.current) == null ? void 0 : C.getFormData().get(e.full_name)) || d.target.value
         });
       },
-      className: [...(n || "").split(" ") || [], "form-control", ...i ? ["is-invalid"] : []].join(" "),
+      className: [...(n || "").split(" ") || [], "form-control", ...l ? ["is-invalid"] : []].join(" "),
       ...e.attr && (e.attr instanceof Function ? e.attr() : e.attr),
       defaultValue: e.data,
       children: [
         e.placeholder && /* @__PURE__ */ s("option", { value: "", children: e.placeholder }),
         Object.values(e.choices || []).map(
-          (d, m) => /* @__PURE__ */ s(
+          (d, p) => /* @__PURE__ */ s(
             "option",
             {
               value: d.value || d.label,
               ...e.choice_attr && (e.choice_attr instanceof Function ? e.choice_attr(d) : e.choice_attr),
               children: d.label
             },
-            m
+            p
           )
         )
       ]
@@ -364,7 +373,7 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
   ) });
 }, at = ({ name: e, className: t }) => {
   const [[n]] = Me(), r = (n == null ? void 0 : n.errors[e]) || [];
-  return r.length ? /* @__PURE__ */ s("div", { className: t, children: r.map((o, a) => /* @__PURE__ */ s("span", { children: o.message }, a)) }) : /* @__PURE__ */ s(x, {});
+  return r.length ? /* @__PURE__ */ s("div", { className: t, children: r.map((o, a) => /* @__PURE__ */ s("span", { children: o.message }, a)) }) : /* @__PURE__ */ s(k, {});
 }, Ne = (e) => e.toLowerCase().replace(new RegExp("^.{1,1}"), (t) => t.toUpperCase()), Xt = (e) => {
   let t = e.replace(new RegExp("[-_]", "gi"), " ").split(new RegExp("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])"));
   const n = t.shift(), r = t.pop();
@@ -427,10 +436,10 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
       }
     });
   }, []);
-  const h = (i) => {
-    a({ action: "validate", payload: e.full_name }), r && r(i);
-  }, p = ["checkbox", "radio"].includes(e.type) ? "form-check-input" : "form-control", f = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
-  return /* @__PURE__ */ s(x, { children: /* @__PURE__ */ s(
+  const h = (l) => {
+    a({ action: "validate", payload: e.full_name }), r && r(l);
+  }, m = ["checkbox", "radio"].includes(e.type) ? "form-check-input" : "form-control", f = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  return /* @__PURE__ */ s(k, { children: /* @__PURE__ */ s(
     "input",
     {
       ref: c,
@@ -439,9 +448,9 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
       type: e.type,
       defaultValue: e.data,
       "aria-invalid": !u.length,
-      onKeyUp: (i) => h({ value: i.target.value }),
-      onChange: (i) => h({ value: i.target.value }),
-      className: [p, ...u.length ? ["is-invalid"] : []].join(" "),
+      onKeyUp: (l) => h({ value: l.target.value }),
+      onChange: (l) => h({ value: l.target.value }),
+      className: [m, ...u.length ? ["is-invalid"] : []].join(" "),
       defaultChecked: e == null ? void 0 : e.checked,
       ...e.attr && (e.attr instanceof Function ? e.attr() : e.attr)
     },
@@ -459,17 +468,17 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
     default:
       return /* @__PURE__ */ s(tn, { view: e });
   }
-})() }), Ye = ({ children: e }) => /* @__PURE__ */ s(x, { children: e }), G = W(({ namespace: e, view: t, prefix: n, children: r, props: o, data: a }) => {
+})() }), Ye = ({ children: e }) => /* @__PURE__ */ s(k, { children: e }), G = W(({ namespace: e, view: t, prefix: n, children: r, props: o, data: a }) => {
   t = t.split(/[._]/).map((b) => Ne(b)).join("");
-  const c = /* @__PURE__ */ Object.assign({}), u = ["crud", e, n, t].filter((b) => b).join("/") + ".tsx", [h, l] = Object.entries(c).filter(([b, E]) => b.endsWith(u)).shift() || [], [p, f] = $(1), i = R(Ye);
+  const c = /* @__PURE__ */ Object.assign({}), u = ["crud", e, n, t].filter((b) => b).join("/") + ".tsx", [h, i] = Object.entries(c).filter(([b, E]) => b.endsWith(u)).shift() || [], [m, f] = $(1), l = R(Ye);
   return v(() => {
-    if (l === void 0)
+    if (i === void 0)
       return () => {
       };
-    l().then((b) => {
-      i.current = b.default, f(p + 1);
+    i().then((b) => {
+      l.current = b.default, f(m + 1);
     });
-  }, []), /* @__PURE__ */ s(i.current, { ...o, view: t, controller: e, viewName: t, data: a, parent: r, children: (!l || i.current !== Ye) && r });
+  }, []), /* @__PURE__ */ s(l.current, { ...o, view: t, controller: e, viewName: t, data: a, parent: r, children: (!i || l.current !== Ye) && r });
 }), Fe = W(({ view: e, namespace: t, name: n }) => e && /* @__PURE__ */ s(
   G,
   {
@@ -480,7 +489,7 @@ const ve = (e, t = null) => (e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").rep
     children: Object.keys(e.children || []).length ? Object.values(e.children || []).map((r) => /* @__PURE__ */ s(Fe, { namespace: t, view: r }, r.id)) : /* @__PURE__ */ s(nn, { view: e }, e.id)
   },
   e.id
-)), ct = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: o = !1 }) => /* @__PURE__ */ s(x, { children: r && r }), me = ie(({
+)), ct = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: o = !1 }) => /* @__PURE__ */ s(k, { children: r && r }), me = ie(({
   children: e,
   preload: t,
   ...n
@@ -491,12 +500,12 @@ function sn() {
 const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   const { getAction: r } = Re();
   e = r(e.entity, e.name, e.namespace) || e;
-  const [o, a] = $(), [c, u] = $(t || null), [h, l] = $(new URLSearchParams(n || {}));
-  R(null), btoa(encodeURIComponent([e.entity, e.name, e.namespace, ...Object.entries(c || {}).map(([i, b]) => i + "-" + b), (h instanceof URLSearchParams ? h : nt(h)).toString()].filter((i) => i).join("."))), R({});
-  const [p, f] = $(1);
+  const [o, a] = $(), [c, u] = $(t || null), [h, i] = $(new URLSearchParams(n || {}));
+  R(null), btoa(encodeURIComponent([e.entity, e.name, e.namespace, ...Object.entries(c || {}).map(([l, b]) => l + "-" + b), (h instanceof URLSearchParams ? h : nt(h)).toString()].filter((l) => l).join("."))), R({});
+  const [m, f] = $(1);
   return v(() => {
-    e && ce().get(Y(e.route, c ?? null), h).then((i) => i.getData().then((b) => {
-      switch (i.status) {
+    e && ce().get(Y(e.route, c ?? null), h).then((l) => l.getData().then((b) => {
+      switch (l.status) {
         case 201:
         case 200: {
           a(b);
@@ -508,33 +517,33 @@ const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
         }
       }
     }));
-  }, [JSON.stringify(c), h.toString(), p]), {
+  }, [JSON.stringify(c), h.toString(), m]), {
     results: o,
     setParameters: u,
-    setQueryParameters: (i) => {
-      l(new URLSearchParams(i));
+    setQueryParameters: (l) => {
+      i(new URLSearchParams(l));
     },
     refresh: () => {
-      f(p + 1);
+      f(m + 1);
     }
   };
-}, Ce = W(({ children: e }) => /* @__PURE__ */ s(x, { children: e })), on = ie(({ name: e, data: t, action: n, parameters: r, onSuccess: o, onError: a, onLoad: c, children: u, embedded: h = !1 }, l) => {
+}, Ce = W(({ children: e }) => /* @__PURE__ */ s(k, { children: e })), on = ie(({ name: e, data: t, action: n, parameters: r, onSuccess: o, onError: a, onLoad: c, children: u, embedded: h = !1 }, i) => {
   var P, D, y, O, M;
-  const [p, f] = $(!1), i = Ut(), b = Y(n.route, r || {}), E = R(null), d = sn(), [m, C] = $();
-  je(l, () => ({
-    getData: () => m,
+  const [m, f] = $(!1), l = Ut(), b = Y(n.route, r || {}), E = R(null), d = sn(), [p, C] = $();
+  je(i, () => ({
+    getData: () => p,
     getFormRef: () => E.current
   }));
-  const N = (k) => {
+  const N = (x) => {
     var F, g;
     let L = {
-      ...(F = k.errors) != null && F.length ? { [k.full_name]: k.errors } : {}
+      ...(F = x.errors) != null && F.length ? { [x.full_name]: x.errors } : {}
     };
-    for (let [, T] of Object.entries((k == null ? void 0 : k.children) || []))
+    for (let [, T] of Object.entries((x == null ? void 0 : x.children) || []))
       T.children && Object.values(T.children).length ? L = { ...L, ...N(T) } : (g = T.errors) != null && g.length && (L[T.full_name] = T.errors);
     return L;
-  }, A = (k) => {
-    f(!0), ce().post(b, k, Mt.FormData).then((L) => L.getData().then((F) => [200, 201, 400].includes(L.status) ? F : Promise.reject(F))).then((L) => {
+  }, A = (x) => {
+    f(!0), ce().post(b, x, Mt.FormData).then((L) => L.getData().then((F) => [200, 201, 400].includes(L.status) ? F : Promise.reject(F))).then((L) => {
       var g;
       C(L);
       const F = N(L.form.modify.view);
@@ -542,7 +551,7 @@ const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
         (g = E.current) == null || g.setErrors(F);
         return;
       }
-      o && o(L), L.redirect && !h && i(Y(L.redirect.route, { ...r || {}, ...L.redirect.parameters }));
+      o && o(L), L.redirect && !h && l(Y(L.redirect.route, { ...r || {}, ...L.redirect.parameters }));
     }).catch((L) => {
       a && a(L);
     }).finally(() => {
@@ -553,20 +562,20 @@ const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
     c && c();
   }, []), t = (d == null ? void 0 : d.results) ?? t, v(() => {
     C(t);
-  }, [JSON.stringify(t)]), m && /* @__PURE__ */ _(x, { children: [
-    Object.keys((m == null ? void 0 : m.messages) || {}).map((k, L) => /* @__PURE__ */ s("div", { className: ["alert", "alert-" + k].join(" "), children: ((m == null ? void 0 : m.messages[k]) || ["Item was saved successful."]).join(" ") }, "alert-" + k)),
-    /* @__PURE__ */ _(ot, { id: (y = (D = (P = m == null ? void 0 : m.form) == null ? void 0 : P.modify) == null ? void 0 : D.view) == null ? void 0 : y.id, ref: E, action: b, method: "POST", onSubmit: A, children: [
-      ((M = (O = m == null ? void 0 : m.form) == null ? void 0 : O.modify) == null ? void 0 : M.view) !== void 0 && /* @__PURE__ */ _(x, { children: [
+  }, [JSON.stringify(t)]), p && /* @__PURE__ */ _(k, { children: [
+    Object.keys((p == null ? void 0 : p.messages) || {}).map((x, L) => /* @__PURE__ */ s("div", { className: ["alert", "alert-" + x].join(" "), children: ((p == null ? void 0 : p.messages[x]) || ["Item was saved successful."]).join(" ") }, "alert-" + x)),
+    /* @__PURE__ */ _(ot, { id: (y = (D = (P = p == null ? void 0 : p.form) == null ? void 0 : P.modify) == null ? void 0 : D.view) == null ? void 0 : y.id, ref: E, action: b, method: "POST", onSubmit: A, children: [
+      ((M = (O = p == null ? void 0 : p.form) == null ? void 0 : O.modify) == null ? void 0 : M.view) !== void 0 && /* @__PURE__ */ _(k, { children: [
         /* @__PURE__ */ s(
           Fe,
           {
             name: e,
             namespace: n.namespace,
-            view: m.form.modify.view
+            view: p.form.modify.view
           },
-          m.form.modify.view.id
+          p.form.modify.view.id
         ),
-        /* @__PURE__ */ s(at, { name: m.form.modify.view.full_name, className: "alert alert-danger" })
+        /* @__PURE__ */ s(at, { name: p.form.modify.view.full_name, className: "alert alert-danger" })
       ] }),
       /* @__PURE__ */ s(V, { name: "actions", content: u, data: { formRef: E }, children: /* @__PURE__ */ s(me, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ s(Ce, { children: "Save" }) }) })
     ] })
@@ -581,18 +590,18 @@ const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   onClose: c,
   className: u
 }, h) => {
-  const [l, p] = $(t);
+  const [i, m] = $(t);
   je(h, () => ({
-    toggle: () => p(!l),
-    open: () => p(!0),
+    toggle: () => m(!i),
+    open: () => m(!0),
     close: () => d(),
-    isOpen: () => l
+    isOpen: () => i
   })), v(() => {
-    p(t);
+    m(t);
   }, [t]);
-  const f = (m) => {
+  const f = (p) => {
     if (o)
-      switch (m.key) {
+      switch (p.key) {
         case "Escape": {
           d();
           break;
@@ -601,50 +610,50 @@ const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   };
   v(() => {
     var N;
-    if (!l)
+    if (!i)
       return;
-    const m = () => {
+    const p = () => {
       var A;
-      (A = i.current) == null || A.addEventListener("animationend", C);
+      (A = l.current) == null || A.addEventListener("animationend", C);
     }, C = () => {
       var A, P, D;
-      (A = i.current) == null || A.classList.remove(n), (P = i.current) == null || P.removeEventListener("animationstart", m), (D = i.current) == null || D.removeEventListener("animationend", C);
+      (A = l.current) == null || A.classList.remove(n), (P = l.current) == null || P.removeEventListener("animationstart", p), (D = l.current) == null || D.removeEventListener("animationend", C);
     };
     return setTimeout(() => {
       var A, P;
-      (A = i.current) == null || A.classList.add("d-block", "show"), (P = b == null ? void 0 : b.current) == null || P.classList.add("show");
-    }, n ? 100 : 0), document.addEventListener("keydown", f), (N = i.current) == null || N.addEventListener("animationstart", m), () => {
+      (A = l.current) == null || A.classList.add("d-block", "show"), (P = b == null ? void 0 : b.current) == null || P.classList.add("show");
+    }, n ? 100 : 0), document.addEventListener("keydown", f), (N = l.current) == null || N.addEventListener("animationstart", p), () => {
       var A, P;
-      document.removeEventListener("keydown", f), (A = i.current) == null || A.removeEventListener("animationstart", m), (P = i.current) == null || P.removeEventListener("animationend", C);
+      document.removeEventListener("keydown", f), (A = l.current) == null || A.removeEventListener("animationstart", p), (P = l.current) == null || P.removeEventListener("animationend", C);
     };
-  }, [l]);
-  const i = R(null), b = R(null), E = () => {
-    p(!1), c && c();
-  }, d = () => new Promise((m, C) => {
+  }, [i]);
+  const l = R(null), b = R(null), E = () => {
+    m(!1), c && c();
+  }, d = () => new Promise((p, C) => {
     var A, P;
-    if (!l)
-      return m();
+    if (!i)
+      return p();
     const N = () => {
       var D;
-      (D = i == null ? void 0 : i.current) == null || D.classList.remove("show", "d-block"), m(), E();
+      (D = l == null ? void 0 : l.current) == null || D.classList.remove("show", "d-block"), p(), E();
     };
     if (n) {
       const D = setTimeout(() => {
         N();
       }, n ? 50 : 0);
-      (A = i.current) == null || A.addEventListener("animationstart", () => {
+      (A = l.current) == null || A.addEventListener("animationstart", () => {
         var y, O;
-        console.log("timeout"), clearTimeout(D), (y = i.current) == null || y.removeEventListener("animationend", N), (O = i.current) == null || O.addEventListener("animationend", N);
-      }), (P = i.current) == null || P.classList.add(n, "close");
+        console.log("timeout"), clearTimeout(D), (y = l.current) == null || y.removeEventListener("animationend", N), (O = l.current) == null || O.addEventListener("animationend", N);
+      }), (P = l.current) == null || P.classList.add(n, "close");
     } else
       N();
   });
-  return l && wt(/* @__PURE__ */ _(x, { children: [
+  return i && wt(/* @__PURE__ */ _(k, { children: [
     /* @__PURE__ */ s(
       "div",
       {
-        ref: i,
-        className: ["modal", a && "modal-" + a, n && n, u].filter((m) => m).join(" "),
+        ref: l,
+        className: ["modal", a && "modal-" + a, n && n, u].filter((p) => p).join(" "),
         children: /* @__PURE__ */ s("div", { className: "modal-dialog modal-dialog-centered", role: "document", children: /* @__PURE__ */ _("div", { className: "modal-content", children: [
           /* @__PURE__ */ s(V, { name: "header", content: e, data: null, children: /* @__PURE__ */ _("div", { className: "modal-header", children: [
             /* @__PURE__ */ s("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ s(V, { name: "title", content: e, data: null, children: "Title" }) }),
@@ -659,7 +668,7 @@ const it = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
       "div",
       {
         ref: b,
-        className: ["modal-backdrop", "fade", ...n && ["show"]].filter((m) => m).join(" ")
+        className: ["modal-backdrop", "fade", ...n && ["show"]].filter((p) => p).join(" ")
       }
     )
   ] }), document.body);
@@ -701,14 +710,14 @@ function dt() {
   return e;
 }
 function cn(e) {
-  var p;
+  var m;
   const [t, n] = $(), r = R(0), o = R(void 0), [a, c] = $(null);
   v(() => {
     r.current += 1;
   }, [t]);
   const u = /* @__PURE__ */ Object.assign({ "/src/assets/images/alert/denied.json": () => import("./denied-CgoMpaA7.js"), "/src/assets/images/alert/info.json": () => import("./info-D-NzIEYs.js"), "/src/assets/images/alert/success.json": () => import("./success-Bu_BJcf1.js"), "/src/assets/images/alert/warning.json": () => import("./warning-B1nr7TsB.js") }), h = (f) => {
     var E, d;
-    let i = {
+    let l = {
       title: "Are you confirm?",
       icon: 0,
       animation: "scale",
@@ -724,13 +733,13 @@ function cn(e) {
       3: "info.json",
       4: "info.json"
     };
-    if (Object.hasOwn(b, i.icon)) {
-      const m = b[i.icon], C = Object.keys(u).filter((N) => N.endsWith(m)).pop();
+    if (Object.hasOwn(b, l.icon)) {
+      const p = b[l.icon], C = Object.keys(u).filter((N) => N.endsWith(p)).pop();
       C && u[C]().then((N) => {
         c(N.default);
       });
     }
-    !i.actions && !i.timeoutProgress && (i.actions = {
+    !l.actions && !l.timeoutProgress && (l.actions = {
       cancel: {
         label: "Cancel",
         classList: ["btn-outline-primary"]
@@ -739,17 +748,17 @@ function cn(e) {
         label: "Confirm"
       }
     }), (E = o.current) != null && E.isOpen() ? (d = o.current) == null || d.close().finally(() => {
-      n(i);
-    }) : n(i);
-  }, l = (f) => {
+      n(l);
+    }) : n(l);
+  }, i = (f) => {
     var b;
-    const i = {
+    const l = {
       [f]: !0,
       isConfirmed: f === "confirm",
       isCancelled: f === "cancel",
       isDenied: f === "deny"
     };
-    t != null && t.onResult && t.onResult(i), (b = o.current) == null || b.close().then(() => {
+    t != null && t.onResult && t.onResult(l), (b = o.current) == null || b.close().then(() => {
       c(null), n(void 0);
     });
   };
@@ -761,14 +770,14 @@ function cn(e) {
       /* @__PURE__ */ s(B, { name: "content", children: /* @__PURE__ */ _("div", { className: "d-flex flex-column align-items-center", children: [
         a !== null && /* @__PURE__ */ s(an, { className: "modal-alert-icon", animationData: a }),
         /* @__PURE__ */ s("h3", { className: "modal-alert-title", children: t.title }),
-        !!((p = t.text) != null && p.length) && /* @__PURE__ */ s("p", { className: "modal-alert-text", children: t.text }),
+        !!((m = t.text) != null && m.length) && /* @__PURE__ */ s("p", { className: "modal-alert-text", children: t.text }),
         t.actions && /* @__PURE__ */ s("div", { className: "d-flex justify-content-center align-items-center", children: Object.keys(t.actions).map((f) => {
-          var i, b, E;
+          var l, b, E;
           return /* @__PURE__ */ s(
             me,
             {
-              className: "btn btn-lg mx-2 " + (((i = t.actions) == null ? void 0 : i[f].classList) ?? ["btn-primary"]).join(" "),
-              onClick: () => l(f),
+              className: "btn btn-lg mx-2 " + (((l = t.actions) == null ? void 0 : l[f].classList) ?? ["btn-primary"]).join(" "),
+              onClick: () => i(f),
               children: ((E = ((b = t.actions) == null ? void 0 : b[f]) ?? null) == null ? void 0 : E.label) || f
             },
             f
@@ -791,15 +800,15 @@ const ln = ({ action: e, children: t, routeParams: n, results: r }) => {
     /* @__PURE__ */ s("main", { children: /* @__PURE__ */ s(V, { name: "content", content: t, data: r }) })
   ] });
 }, We = ({ action: e, children: t, onSuccess: n, modal: r, props: o }) => {
-  const a = { ...e.parameters || {}, ...Bt() }, c = R(void 0), u = R(void 0), { results: h, setParameters: l } = it({
+  const a = { ...e.parameters || {}, ...Bt() }, c = R(void 0), u = R(void 0), { results: h, setParameters: i } = it({
     entityAction: e.action,
     initParameters: a
-  }), { open: p } = dt();
+  }), { open: m } = dt();
   return v(() => {
-    l(a);
+    i(a);
   }, [JSON.stringify(a)]), v(() => {
-    var i;
-    (i = u.current) == null || i.open();
+    var l;
+    (l = u.current) == null || l.open();
   }, [JSON.stringify(h)]), /* @__PURE__ */ _(r ? lt : ln, { ref: u, ...o, action: e, routeParams: a, children: [
     /* @__PURE__ */ s(B, { name: "title", children: /* @__PURE__ */ s(V, { name: "title", content: t, data: h, children: (h == null ? void 0 : h.title) || "Title" }) }),
     /* @__PURE__ */ s(B, { name: "navigation", children: /* @__PURE__ */ s(G, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ _(V, { name: "navigation", content: t, data: h, children: [
@@ -812,13 +821,13 @@ const ln = ({ action: e, children: t, routeParams: n, results: r }) => {
         ref: c,
         data: h,
         action: e.action,
-        onSuccess: (i) => {
+        onSuccess: (l) => {
           var E, d;
           (E = u.current) == null || E.close();
-          const b = new CustomEvent("success", { detail: i });
-          n && n(b, i), !b.defaultPrevented && p({
+          const b = new CustomEvent("success", { detail: l });
+          n && n(b, l), !b.defaultPrevented && m({
             title: "Success",
-            text: Object.values(((d = i.messages) == null ? void 0 : d.success) ?? []).join(" ") ?? "Item was saved successful!",
+            text: Object.values(((d = l.messages) == null ? void 0 : d.success) ?? []).join(" ") ?? "Item was saved successful!",
             icon: ae.success,
             actions: {
               close: {
@@ -827,10 +836,10 @@ const ln = ({ action: e, children: t, routeParams: n, results: r }) => {
             }
           });
         },
-        onError: (i) => {
-          p({
-            title: i.status + " " + i.detail,
-            text: i.detail,
+        onError: (l) => {
+          m({
+            title: l.status + " " + l.detail,
+            text: l.detail,
             icon: ae.denied,
             actions: {
               close: {
@@ -853,8 +862,8 @@ const ln = ({ action: e, children: t, routeParams: n, results: r }) => {
         type: "submit",
         className: "btn btn-primary",
         onClick: () => {
-          var i, b;
-          return (b = (i = c.current) == null ? void 0 : i.getFormRef()) == null ? void 0 : b.submit();
+          var l, b;
+          return (b = (l = c.current) == null ? void 0 : l.getFormRef()) == null ? void 0 : b.submit();
         },
         children: "Submit"
       }
@@ -1020,13 +1029,13 @@ function Qe(e, t, n, r, o) {
     if (!d.relatedTarget || d.relatedTarget !== d.delegateTarget && !d.delegateTarget.contains(d.relatedTarget))
       return E.call(this, d);
   })(c));
-  const h = bt(e), l = h[u] || (h[u] = {}), p = yt(l, c, a ? n : null);
-  if (p) {
-    p.oneOff = p.oneOff && o;
+  const h = bt(e), i = h[u] || (h[u] = {}), m = yt(i, c, a ? n : null);
+  if (m) {
+    m.oneOff = m.oneOff && o;
     return;
   }
-  const f = gt(c, t.replace(En, "")), i = a ? On(e, n, c) : An(e, c);
-  i.delegationSelector = a ? n : null, i.callable = c, i.oneOff = o, i.uidEvent = f, l[f] = i, e.addEventListener(u, i, a);
+  const f = gt(c, t.replace(En, "")), l = a ? On(e, n, c) : An(e, c);
+  l.delegationSelector = a ? n : null, l.callable = c, l.oneOff = o, l.uidEvent = f, i[f] = l, e.addEventListener(u, l, a);
 }
 function Te(e, t, n, r, o) {
   const a = yt(t[n], r, o);
@@ -1050,29 +1059,29 @@ const I = {
   off(e, t, n, r) {
     if (typeof t != "string" || !e)
       return;
-    const [o, a, c] = Et(t, n, r), u = c !== t, h = bt(e), l = h[c] || {}, p = t.startsWith(".");
+    const [o, a, c] = Et(t, n, r), u = c !== t, h = bt(e), i = h[c] || {}, m = t.startsWith(".");
     if (typeof a < "u") {
-      if (!Object.keys(l).length)
+      if (!Object.keys(i).length)
         return;
       Te(e, h, c, a, o ? n : null);
       return;
     }
-    if (p)
+    if (m)
       for (const f of Object.keys(h))
         Sn(e, h, f, t.slice(1));
-    for (const [f, i] of Object.entries(l)) {
+    for (const [f, l] of Object.entries(i)) {
       const b = f.replace(Nn, "");
-      (!u || t.includes(b)) && Te(e, h, c, i.callable, i.delegationSelector);
+      (!u || t.includes(b)) && Te(e, h, c, l.callable, l.delegationSelector);
     }
   },
   trigger(e, t, n) {
     if (typeof t != "string" || !e)
       return null;
     const r = pt(), o = _t(t), a = t !== o;
-    let c = null, u = !0, h = !0, l = !1;
-    a && r && (c = r.Event(t, n), r(e).trigger(c), u = !c.isPropagationStopped(), h = !c.isImmediatePropagationStopped(), l = c.isDefaultPrevented());
-    const p = Ie(new Event(t, { bubbles: u, cancelable: !0 }), n);
-    return l && p.preventDefault(), h && e.dispatchEvent(p), p.defaultPrevented && c && c.preventDefault(), p;
+    let c = null, u = !0, h = !0, i = !1;
+    a && r && (c = r.Event(t, n), r(e).trigger(c), u = !c.isPropagationStopped(), h = !c.isImmediatePropagationStopped(), i = c.isDefaultPrevented());
+    const m = Ie(new Event(t, { bubbles: u, cancelable: !0 }), n);
+    return i && m.preventDefault(), h && e.dispatchEvent(m), m.defaultPrevented && c && c.preventDefault(), m;
   }
 };
 function Ie(e, t = {}) {
@@ -1273,7 +1282,7 @@ const ye = (e) => {
     const t = ye(e);
     return t ? U.find(t) : [];
   }
-}, Ze = "dropdown", Ln = "bs.dropdown", Z = `.${Ln}`, Ve = ".data-api", jn = "Escape", Xe = "Tab", kn = "ArrowUp", et = "ArrowDown", xn = 2, Rn = `hide${Z}`, Mn = `hidden${Z}`, vn = `show${Z}`, Fn = `shown${Z}`, Nt = `click${Z}${Ve}`, Ct = `keydown${Z}${Ve}`, In = `keyup${Z}${Ve}`, te = "show", Vn = "dropup", $n = "dropend", Un = "dropstart", Bn = "dropup-center", Kn = "dropdown-center", q = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Hn = `${q}.${te}`, le = ".dropdown-menu", wn = ".navbar", Yn = ".navbar-nav", Wn = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", qn = ne() ? "top-end" : "top-start", zn = ne() ? "top-start" : "top-end", Jn = ne() ? "bottom-end" : "bottom-start", Qn = ne() ? "bottom-start" : "bottom-end", Gn = ne() ? "left-start" : "right-start", Zn = ne() ? "right-start" : "left-start", Xn = "top", er = "bottom", tr = {
+}, Ze = "dropdown", Ln = "bs.dropdown", Z = `.${Ln}`, Ve = ".data-api", jn = "Escape", Xe = "Tab", xn = "ArrowUp", et = "ArrowDown", kn = 2, Rn = `hide${Z}`, Mn = `hidden${Z}`, vn = `show${Z}`, Fn = `shown${Z}`, Nt = `click${Z}${Ve}`, Ct = `keydown${Z}${Ve}`, In = `keyup${Z}${Ve}`, te = "show", Vn = "dropup", $n = "dropend", Un = "dropstart", Bn = "dropup-center", Kn = "dropdown-center", q = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Hn = `${q}.${te}`, le = ".dropdown-menu", wn = ".navbar", Yn = ".navbar-nav", Wn = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", qn = ne() ? "top-end" : "top-start", zn = ne() ? "top-start" : "top-end", Jn = ne() ? "bottom-end" : "bottom-start", Qn = ne() ? "bottom-start" : "bottom-end", Gn = ne() ? "left-start" : "right-start", Zn = ne() ? "right-start" : "left-start", Xn = "top", er = "bottom", tr = {
   autoClose: !0,
   boundary: "clippingParents",
   display: "dynamic",
@@ -1420,7 +1429,7 @@ let X = class ue extends Dn {
     });
   }
   static clearMenus(t) {
-    if (t.button === xn || t.type === "keyup" && t.key !== Xe)
+    if (t.button === kn || t.type === "keyup" && t.key !== Xe)
       return;
     const n = U.find(Hn);
     for (const r of n) {
@@ -1435,7 +1444,7 @@ let X = class ue extends Dn {
     }
   }
   static dataApiKeydownHandler(t) {
-    const n = /input|textarea/i.test(t.target.tagName), r = t.key === jn, o = [kn, et].includes(t.key);
+    const n = /input|textarea/i.test(t.target.tagName), r = t.key === jn, o = [xn, et].includes(t.key);
     if (!o && !r || n && !r)
       return;
     t.preventDefault();
@@ -1455,23 +1464,23 @@ I.on(document, Nt, q, function(e) {
   e.preventDefault(), X.getOrCreateInstance(this).toggle();
 });
 gn(X);
-const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, { children: e }), oe = ({ children: e, ...t }) => /* @__PURE__ */ s("div", { className: "dropdown-menu", children: e }), At = ({ items: e, className: t, children: n, icon: r }) => {
+const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(k, { children: e }), oe = ({ children: e, ...t }) => /* @__PURE__ */ s("div", { className: "dropdown-menu", children: e }), At = ({ items: e, className: t, children: n, icon: r }) => {
   const o = R(null);
   v(() => {
-    const p = new X(o.current);
+    const m = new X(o.current);
     return () => {
-      p.dispose();
+      m.dispose();
     };
   }, []);
-  const a = S.Children.toArray(n).find((p) => S.isValidElement(p) && p.type === oe), c = S.Children.toArray(n).filter((p) => S.isValidElement(p) && p.type === qe), u = S.Children.toArray(n).find((p) => S.isValidElement(p) && p.type === fe), h = S.Children.toArray(n).filter((p) => !S.isValidElement(p) || p.type !== qe && p.type !== oe && p.type !== fe), l = S.isValidElement(u) ? u.props : {};
-  return /* @__PURE__ */ _("div", { className: [...(t || "").split(" "), "dropdown"].filter((p, f, i) => i.indexOf(p) === f).join(" "), children: [
-    /* @__PURE__ */ s(me, { ref: o, "data-bs-toggle": "dropdown", ...l, className: [...(l.className || "").split(" "), "btn", "dropdown-toggle"].filter((p, f, i) => i.indexOf(p) === f).join(" "), children: l.children ? l.children : h }),
+  const a = S.Children.toArray(n).find((m) => S.isValidElement(m) && m.type === oe), c = S.Children.toArray(n).filter((m) => S.isValidElement(m) && m.type === qe), u = S.Children.toArray(n).find((m) => S.isValidElement(m) && m.type === fe), h = S.Children.toArray(n).filter((m) => !S.isValidElement(m) || m.type !== qe && m.type !== oe && m.type !== fe), i = S.isValidElement(u) ? u.props : {};
+  return /* @__PURE__ */ _("div", { className: [...(t || "").split(" "), "dropdown"].filter((m, f, l) => l.indexOf(m) === f).join(" "), children: [
+    /* @__PURE__ */ s(me, { ref: o, "data-bs-toggle": "dropdown", ...i, className: [...(i.className || "").split(" "), "btn", "dropdown-toggle"].filter((m, f, l) => l.indexOf(m) === f).join(" "), children: i.children ? i.children : h }),
     a || /* @__PURE__ */ s(oe, { children: c })
   ] });
 }, rr = ie(({ data: e, columns: t, options: n, onClick: r, onBatchClick: o, routeParams: a, namespace: c }, u) => {
-  var D, y, O, M, k, L, F;
+  var D, y, O, M, x, L, F;
   t = (t || ((D = e == null ? void 0 : e.entity) == null ? void 0 : D.columns) || []).filter((g) => g.group !== !1);
-  const [, h] = $(), l = (y = e == null ? void 0 : e.entity) == null ? void 0 : y.primaryColumn, p = Object.values((e == null ? void 0 : e.action) || []), f = p.filter((g) => g.object), i = t.length + (p.length ? 1 : 0), b = ((e == null ? void 0 : e.entity.data.items) || []).map((g) => g[(l == null ? void 0 : l.field) || ""] || 0), E = R([]), d = !!b.length && b.reduce((g, T) => g && E.current.includes(T), !0), m = (k = (M = (O = e == null ? void 0 : e.form) == null ? void 0 : O.batch.view.children) == null ? void 0 : M.method) == null ? void 0 : k.choices, C = !!(m != null && m.length) && l, N = (g, T = !1) => {
+  const [, h] = $(), i = (y = e == null ? void 0 : e.entity) == null ? void 0 : y.primaryColumn, m = Object.values((e == null ? void 0 : e.action) || []), f = m.filter((g) => g.object), l = t.length + (m.length ? 1 : 0), b = ((e == null ? void 0 : e.entity.data.items) || []).map((g) => g[(i == null ? void 0 : i.field) || ""] || 0), E = R([]), d = !!b.length && b.reduce((g, T) => g && E.current.includes(T), !0), p = (x = (M = (O = e == null ? void 0 : e.form) == null ? void 0 : O.batch.view.children) == null ? void 0 : M.method) == null ? void 0 : x.choices, C = !!(p != null && p.length) && i, N = (g, T = !1) => {
     T ? E.current.push(g) : E.current = E.current.filter((j) => j !== g), h({});
   }, A = (g = !1) => {
     E.current = (g ? E.current.concat(b) : E.current.filter((T) => !b.includes(T))).filter((T, j, K) => K.indexOf(T) === j), h({});
@@ -1488,7 +1497,7 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
       j.append(`${(Ue = T == null ? void 0 : T.children) == null ? void 0 : Ue.ids.full_name}[]`, re.toString());
     }), j.append(((H = T == null ? void 0 : T.children) == null ? void 0 : H.method.full_name) || "method", g), o(g, E.current, j);
   };
-  return /* @__PURE__ */ _(x, { children: [
+  return /* @__PURE__ */ _(k, { children: [
     C && /* @__PURE__ */ _("div", { className: "btn-group btn-group-sm mb-2", children: [
       /* @__PURE__ */ s("label", { className: "btn btn-light", children: /* @__PURE__ */ s(
         "input",
@@ -1528,7 +1537,7 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
             }
           )
         ] }, T)),
-        l && f.length > 0 && /* @__PURE__ */ s("th", { className: "text-end", children: "Actions" })
+        i && f.length > 0 && /* @__PURE__ */ s("th", { className: "text-end", children: "Actions" })
       ] }) }),
       /* @__PURE__ */ s("tbody", { children: e && (e.entity.data.items.length ? e.entity.data.items.map(
         (g, T) => /* @__PURE__ */ _("tr", { children: [
@@ -1539,19 +1548,19 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
                 K === 0 && C && /* @__PURE__ */ s(
                   "input",
                   {
-                    checked: E.current.includes(g[l == null ? void 0 : l.field]),
+                    checked: E.current.includes(g[i == null ? void 0 : i.field]),
                     className: "me-2",
                     type: "checkbox",
                     name: e.form.batch.view.full_name,
-                    value: g[l == null ? void 0 : l.field],
-                    onChange: (re) => N(g[l == null ? void 0 : l.field], re.target.checked)
+                    value: g[i == null ? void 0 : i.field],
+                    onChange: (re) => N(g[i == null ? void 0 : i.field], re.target.checked)
                   }
                 ),
                 /* @__PURE__ */ s(G, { namespace: c || "unknown", data: g, prefix: "list", view: j.field, children: g[j.field] !== void 0 && (g[j.field] instanceof Object ? g[j.field] instanceof Array ? g[j.field].join(", ") : JSON.stringify(g[j.field]) : (H = g[j.field]) == null ? void 0 : H.toString()) })
               ] }, K);
             }
           ),
-          l && f.length > 0 && /* @__PURE__ */ s("td", { className: "text-end text-nowrap", children: f.map((j, K) => {
+          i && f.length > 0 && /* @__PURE__ */ s("td", { className: "text-end text-nowrap", children: f.map((j, K) => {
             var H;
             return /* @__PURE__ */ s(
               z,
@@ -1560,13 +1569,13 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
                   action: j,
                   parameters: {
                     ...a || {},
-                    id: g[l == null ? void 0 : l.field]
+                    id: g[i == null ? void 0 : i.field]
                   }
                 }, re),
                 className: ["btn", "btn-sm", "mb-1", "ms-1", (((H = j.route) == null ? void 0 : H.methods) ?? []).includes("DELETE") ? "btn-outline-danger" : "btn-outline-secondary"].join(" "),
                 to: Y(j.route, {
                   ...a || {},
-                  id: g[l.field]
+                  id: g[i.field]
                 }),
                 children: j.title
               },
@@ -1574,7 +1583,7 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
             );
           }) })
         ] }, T)
-      ) : /* @__PURE__ */ s("tr", { children: /* @__PURE__ */ s("td", { colSpan: i, children: "Not results found." }) })) })
+      ) : /* @__PURE__ */ s("tr", { children: /* @__PURE__ */ s("td", { colSpan: l, children: "Not results found." }) })) })
     ] })
   ] });
 }), se = ({ route: e, page: t, active: n = !1, title: r, children: o }) => {
@@ -1594,7 +1603,7 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
     /* @__PURE__ */ _("small", { className: "mb-2", children: [
       e.totalResults,
       " Results",
-      a && /* @__PURE__ */ _(x, { children: [
+      a && /* @__PURE__ */ _(k, { children: [
         " - Page ",
         r,
         " of ",
@@ -1603,12 +1612,12 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
     ] }),
     a && /* @__PURE__ */ s("nav", { "aria-label": "Page navigation", className: "m-auto text-center d-inline", children: /* @__PURE__ */ _("ul", { className: "pagination pagination-sm", children: [
       r > 1 && /* @__PURE__ */ s(se, { page: r - 1, title: "Go to First Page", children: "«" }),
-      e.links[0] !== 1 && /* @__PURE__ */ _(x, { children: [
+      e.links[0] !== 1 && /* @__PURE__ */ _(k, { children: [
         /* @__PURE__ */ s(se, { page: 1, active: r === 1, children: 1 }, 1),
         /* @__PURE__ */ s("div", { className: "page-item", children: /* @__PURE__ */ s("a", { className: "page-link", children: "..." }) })
       ] }),
       (o || []).map((c, u) => /* @__PURE__ */ s(se, { page: c, active: c === r }, u)),
-      [...e.links].reverse()[0] !== n && /* @__PURE__ */ _(x, { children: [
+      [...e.links].reverse()[0] !== n && /* @__PURE__ */ _(k, { children: [
         /* @__PURE__ */ s("div", { className: "page-item", children: /* @__PURE__ */ s("a", { className: "page-link", children: "..." }) }),
         /* @__PURE__ */ s(
           se,
@@ -1682,28 +1691,28 @@ function ir(e) {
 }
 const lr = W(({ action: e, embedded: t = !1 }) => {
   var N, A, P, D;
-  const n = Kt(), [r, o] = Ht(), a = R(void 0), c = R(vt(r)), u = R(null), { openModal: h } = cr(), { open: l } = dt(), p = e.action.entity;
-  if (!p)
+  const n = Kt(), [r, o] = Ht(), a = R(void 0), c = R(vt(r)), u = R(null), { openModal: h } = cr(), { open: i } = dt(), m = e.action.entity;
+  if (!m)
     throw new Error("Invalid Entity");
-  const { results: f, refresh: i, setQueryParameters: b } = it({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: c.current }), E = Object.values((f == null ? void 0 : f.action) ?? []).filter((y) => !y.object && y.name !== e.action.name), d = (y) => {
-    y == null || y.forEach((k) => {
+  const { results: f, refresh: l, setQueryParameters: b } = it({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: c.current }), E = Object.values((f == null ? void 0 : f.action) ?? []).filter((y) => !y.object && y.name !== e.action.name), d = (y) => {
+    y == null || y.forEach((x) => {
       var L, F;
-      (F = (L = c.current) == null ? void 0 : L.filter) == null || delete F[k];
+      (F = (L = c.current) == null ? void 0 : L.filter) == null || delete F[x];
     });
     const O = {
       ...c.current && c.current,
       ...a.current && { sort: a.current }
     }, M = nt(De(O));
     t ? b(M) : o(M);
-  }, m = (y, O, M) => {
-    console.log("method", O, M), l({
+  }, p = (y, O, M) => {
+    console.log("method", O, M), i({
       title: "Are you sure?",
       icon: ae.confirm,
-      onResult: (k) => {
-        k.isConfirmed && ce().post(Y(e.action.route, e.parameters), M).catch((L) => {
+      onResult: (x) => {
+        x.isConfirmed && ce().post(Y(e.action.route, e.parameters), M).catch((L) => {
           console.log("error", L);
         }).finally(() => {
-          console.log("done"), i();
+          console.log("done"), l();
         });
       }
     });
@@ -1718,17 +1727,17 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
         break;
       }
       case "delete": {
-        O == null || O.preventDefault(), l({
+        O == null || O.preventDefault(), i({
           title: "Are you sure?",
           icon: ae.confirm,
           onResult: (M) => {
             M.isConfirmed && ce().fetch({
               url: Y(y.action.route, { ...e.parameters, ...y.parameters }),
               method: It.DELETE
-            }).catch((k) => {
-              console.log("error", k);
+            }).catch((x) => {
+              console.log("error", x);
             }).finally(() => {
-              i();
+              l();
             });
           }
         });
@@ -1739,7 +1748,7 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
           action: y,
           props: {
             onClose: () => {
-              i();
+              l();
             }
           }
         }));
@@ -1750,7 +1759,7 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
   };
   return v(() => {
     b(r);
-  }, [n]), /* @__PURE__ */ s(x, { children: /* @__PURE__ */ _("section", { className: "list", children: [
+  }, [n]), /* @__PURE__ */ s(k, { children: /* @__PURE__ */ _("section", { className: "list", children: [
     /* @__PURE__ */ _("header", { className: "content-header d-md-flex mb-3 justify-content-between align-items-center", children: [
       /* @__PURE__ */ s("h2", { children: f == null ? void 0 : f.title }),
       /* @__PURE__ */ _("div", { className: "d-flex align-items-center", children: [
@@ -1773,14 +1782,14 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
             /* @__PURE__ */ s(oe, { children: /* @__PURE__ */ s("div", { className: "filter", children: /* @__PURE__ */ _(
               ot,
               {
-                id: "filter_" + ve(p),
+                id: "filter_" + ve(m),
                 ref: u,
                 onSubmit: (y) => C({
                   action: {
                     name: "filter",
                     object: !1,
                     namespace: e.action.namespace,
-                    entity: p
+                    entity: m
                   },
                   parameters: Ft(y)
                 }),
@@ -1789,7 +1798,7 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
                     name: "filter",
                     object: !1,
                     namespace: e.action.namespace,
-                    entity: p
+                    entity: m
                   }
                 }),
                 children: [
@@ -1813,7 +1822,7 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
         {
           data: f,
           onClick: C,
-          onBatchClick: m,
+          onBatchClick: p,
           namespace: e.action.namespace,
           routeParams: e.parameters
         }
@@ -1845,7 +1854,7 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
 }, Tt = ({ view: e, namespace: t, props: n }) => /* @__PURE__ */ s(G, { namespace: t, view: e, props: n, children: /* @__PURE__ */ s(dr, { view: e, props: n }) }, t + e), fr = ({ path: e }) => {
   const t = Qt();
   e ?? (e = document.location.pathname.replace(new RegExp("^" + (t == null ? void 0 : t.pathnameBase) + "(/)?"), "/"));
-  const { getOnClickActionByPath: n } = Re(), r = xt(n(e));
+  const { getOnClickActionByPath: n } = Re(), r = kt(n(e));
   if (!r)
     throw new Q(404, "Missing Route");
   return /* @__PURE__ */ s(
@@ -1859,16 +1868,16 @@ const lr = W(({ action: e, embedded: t = !1 }) => {
 };
 let Ee;
 const $e = "dakataa_crud", Nr = (e) => {
-  ke.namespace[$e] = {
+  xe.namespace[$e] = {
     baseURL: e,
     headers: {
       Accept: "application/json"
     }
   };
-}, ce = () => (Ee || (Ee = new ke({}, $e)), Ee), Cr = () => {
-  if (!ke.namespace[$e])
-    throw new xe(500, "Invalid Configuration.");
-  return /* @__PURE__ */ s(St, { children: /* @__PURE__ */ s(Wt, { fallback: /* @__PURE__ */ s(zt, {}), children: /* @__PURE__ */ s(Rt, { fallback: /* @__PURE__ */ s(x, { children: "Loading" }), children: /* @__PURE__ */ s(fr, {}) }) }) });
+}, ce = () => (Ee || (Ee = new xe({}, $e)), Ee), Cr = () => {
+  if (!xe.namespace[$e])
+    throw new ke(500, "Invalid Configuration.");
+  return /* @__PURE__ */ s(St, { children: /* @__PURE__ */ s(Wt, { fallback: /* @__PURE__ */ s(zt, {}), children: /* @__PURE__ */ s(Rt, { fallback: /* @__PURE__ */ s(k, { children: "Loading" }), children: /* @__PURE__ */ s(fr, {}) }) }) });
 };
 export {
   cn as AlertProvider,
