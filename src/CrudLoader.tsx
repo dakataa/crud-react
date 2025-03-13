@@ -12,7 +12,7 @@ const CrudLoader = ({path}: { path?: string }) => {
     const {getOnClickActionByPath} = UseActions();
     const onClickAction = use(getOnClickActionByPath(path));
     if (!onClickAction) {
-        throw new HttpException(404, 'Missing Route');
+        throw new HttpException(404, 'Page Not Found');
     }
 
     return (

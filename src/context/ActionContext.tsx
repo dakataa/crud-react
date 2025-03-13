@@ -5,6 +5,7 @@ import {crudToReactPathPattern} from "@src/helper/RouterUtils.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
+import Exception from "@src/component/error/Exception.tsx";
 
 const STORAGE_KEY = 'actions';
 const ActionContext = React.createContext<ActionType[] | null>(null);
@@ -28,12 +29,13 @@ export function UseActions() {
         return getContext()?.find((a) => a.route?.path && matchPath(crudToReactPathPattern(a.route.path), path));
     };
 
-    const getOnClickActionByPath = (path: string): Promise<OnClickAction> => {
+    const getOnClickActionByPath = (path: string): Promise<OnClickAction|null> => {
         const getOnClickAction = () => {
             const action = getActionByPath(path);
 
-            if(!action)
-                throw new HttpException(404, 'Page not found.');
+            if(!action) {
+                return null;
+            }
 
             const match = matchPath(crudToReactPathPattern(action.route?.path || ''), path)
             return {
@@ -42,11 +44,11 @@ export function UseActions() {
             };
         }
 
-        return new Promise<OnClickAction>((resolve, reject) => {
+        return new Promise<OnClickAction|null>((resolve, reject) => {
             let retries = 0;
             const timeout = () => {
                 if(retries > 10) {
-                    throw new HttpException(500, 'Cannot load routes');
+                    throw new Exception(0, 'Cannot load routes');
                 }
 
                 if(context) {

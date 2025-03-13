@@ -26,7 +26,6 @@ const CrudRequester = (): Requester => {
 }
 
 const Crud = () => {
-
     if (!Requester.namespace[CRUD_NAMESPACE])
         throw new Exception(500, 'Invalid Configuration.');
 
