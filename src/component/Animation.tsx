@@ -1,5 +1,7 @@
 import {useEffect, useRef} from "react";
-import {default as LottiePlayer, AnimationConfigWithData, AnimationConfigWithPath, AnimationConfig} from "lottie-web";
+import LottiePlayer from "lottie-web/build/player/esm/lottie.min.js";
+import {AnimationConfigWithData, AnimationConfigWithPath, AnimationConfig} from "lottie-web";
+
 
 const Animation = ({
                        animationData,

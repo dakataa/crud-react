@@ -11,9 +11,6 @@
 # Test crud
 /crud
 
-# production
-/dist
-
 # phpstorm project files
 .idea
 

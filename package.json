@@ -1,10 +1,11 @@
 {
 	"name": "@dakataa/crud-react",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Dakataa CRUD React",
 	"private": false,
 	"type": "module",
 	"main": "dist/crud-react.js",
+	"module": "dist/crud-react.js",
 	"types": "dist/main.d.ts",
 	"files": [
 		"dist"
@@ -50,18 +51,14 @@
 			"last 1 safari version"
 		]
 	},
-	"dependencies": {
-		"@dakataa/crud-theme": "^1.0.1",
-		"@fortawesome/fontawesome-common-types": "^6.7.2",
-		"@popperjs/core": "^2.11.8"
-	},
 	"peerDependencies": {
+		"@dakataa/crud-theme": "^1.0.1",
+		"@dakataa/requester": "^1.0.4",
+		"@popperjs/core": "^2.11.8",
+		"lottie-web": "^5.12.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"react-router": "^7.3.0",
-		"lottie-web": "^5.12.2",
-		"dotenv": "^16.4.5",
-		"@dakataa/requester": "^1.0.4"
+		"react-router": "^7.3.0"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.6.3",
@@ -73,6 +70,7 @@
 		"@types/react-dom": "^19.0.4",
 		"@vitejs/plugin-react": "^4.3.4",
 		"babel-plugin-transform-imports": "^2.0.0",
+		"dotenv": "^16.4.5",
 		"path": "^0.12.7",
 		"sass": "^1.81.0",
 		"source-map-explorer": "^2.5.3",
