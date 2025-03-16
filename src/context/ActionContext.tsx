@@ -3,7 +3,6 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import {matchPath} from "react-router";
 import {crudToReactPathPattern} from "@src/helper/RouterUtils.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
-import HttpException from "@src/component/error/HttpException.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Exception from "@src/component/error/Exception.tsx";
 

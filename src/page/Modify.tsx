@@ -82,7 +82,6 @@ const Modify = ({action, children, onSuccess, modal, props}: {
             <TemplateExtend name={"navigation"}>
                 <DynamicView namespace={action.action.namespace} view={"navigation"} prefix={"modify"}>
                     <TemplateBlock name={"navigation"} content={children} data={results}>
-                        original {action.action.namespace}
                     </TemplateBlock>
                 </DynamicView>
             </TemplateExtend>

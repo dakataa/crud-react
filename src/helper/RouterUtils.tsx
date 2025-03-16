@@ -14,9 +14,10 @@ const generateRoutePath = (path: string, parameters: {} | undefined = undefined)
     return generatePath(crudToReactPathPattern(path), parameters);
 }
 
-const UseCurrentReactRoute = () => {
+const UseParentReactRoute = () => {
     const routeContext = useContext(UNSAFE_RouteContext);
-    return routeContext.matches[0] ?? null;
+
+    return routeContext.matches.reverse()[1] ?? null;
 }
 
-export {generateRoutePath, generateRoute, crudToReactPathPattern, UseCurrentReactRoute};
+export {generateRoutePath, generateRoute, crudToReactPathPattern, UseParentReactRoute};
