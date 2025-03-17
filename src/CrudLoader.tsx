@@ -1,4 +1,4 @@
-import ViewLoader from "@src/component/ViewLoader.tsx";
+import {ViewLoader} from "@src/component/ViewLoader.tsx";
 import React, {use} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";

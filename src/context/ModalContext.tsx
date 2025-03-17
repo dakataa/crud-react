@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
-import ViewLoader from "@src/component/ViewLoader.tsx";
+import {ViewLoader} from "@src/component/ViewLoader.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
 import CrudContext from "@src/CrudContext.tsx";

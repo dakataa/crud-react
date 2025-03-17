@@ -1,4 +1,4 @@
-import React, {createRef, useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {nameToId, useForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {ChoiceType, FormViewType} from "@src/type/FormViewType";
