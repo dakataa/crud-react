@@ -13,14 +13,12 @@ const Main = memo(({children}: {
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
 
     useEffect(() => {
-        CrudRequester().get('/_crud/navigation', {}).then((response) => {
-            if (response.status !== 200) {
+        CrudRequester().get({url: '/_crud/navigation'}).then(({status, data}) => {
+            if (status !== 200) {
                 return;
             }
 
-            response.getData().then((data) => {
-                setNavigationItems(data);
-            });
+            setNavigationItems(data);
         })
     }, []);
 

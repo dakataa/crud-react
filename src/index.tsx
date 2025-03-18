@@ -3,9 +3,16 @@ import ReactDOM from 'react-dom/client';
 import Crud, {CrudConfiguration} from './Crud.tsx';
 import {BrowserRouter, Route, Routes} from "react-router";
 import Main from "@src/layout/default/Main.tsx";
+import Requester from "@dakataa/requester";
+
+Requester.defaults = {
+    headers: {
+        Accept: 'application/json',
+    }
+};
 
 CrudConfiguration({
-    baseUrl: import.meta.env.CRUD_API_BASE_URL
+    baseURL: import.meta.env.CRUD_API_BASE_URL
 });
 
 const root = ReactDOM.createRoot(

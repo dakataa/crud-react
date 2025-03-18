@@ -92,21 +92,19 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
         }
 
         CrudRequester()
-            .get(generateRoute(entityAction.route, parameters ?? null), queryParameters)
-            .then((response) => {
-                return response.getData().then(v => {
-                    switch (response.status) {
-                        case 201:
-                        case 200: {
-                            setResults(v);
-                            break;
-                        }
-                        default: {
-                            const exception = (v as ExceptionType);
-                            throw new HttpException(exception.status, exception.detail, exception.trace);
-                        }
+            .get({url: generateRoute(entityAction.route, parameters ?? null), query: queryParameters})
+            .then(({status, data}) => {
+                switch (status) {
+                    case 201:
+                    case 200: {
+                        setResults(data);
+                        break;
                     }
-                });
+                    default: {
+                        const exception = (data as ExceptionType);
+                        throw new HttpException(exception.status, exception.detail, exception.trace);
+                    }
+                }
             });
     }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
 

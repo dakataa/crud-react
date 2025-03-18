@@ -18,7 +18,12 @@ import {createRoot} from 'react-dom/client'
 import {BrowserRouter, Route, Routes} from "react-router";
 import {Crud, CrudConfiguration} from "@dakataa/crud-react";
 
-CrudConfiguration('https://rent.local');
+CrudConfiguration({
+	baseURL: 'https://project.local',
+	headers: {
+		Accept: 'application/json'
+	}
+});
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>

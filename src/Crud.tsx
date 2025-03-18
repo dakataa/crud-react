@@ -15,7 +15,7 @@ const CrudConfiguration = (config: Config) => {
 
 const CrudRequester = (): Requester => {
     if(!requester) {
-        requester = new Requester({}, CRUD_NAMESPACE);
+        requester = Requester.instance({namespace: CRUD_NAMESPACE});
     }
     return requester;
 }

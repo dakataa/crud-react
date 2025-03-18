@@ -73,7 +73,7 @@ const List = memo(({action, embedded = false}: {
             icon: Icon.confirm,
             onResult: (result: Result) => {
                 if (result.isConfirmed) {
-                    CrudRequester().post(generateRoute(action.action.route, action.parameters), data).catch((e:any) => {
+                    CrudRequester().post({url: generateRoute(action.action.route, action.parameters), body: data}).catch((e:any) => {
                         console.log('error', e);
                     }).finally(() => {
                         console.log('done');

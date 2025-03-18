@@ -62,16 +62,11 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
 
-        CrudRequester().post(actionURL, formData, RequestBodyType.FormData).then(response => {
-            return response.getData().then((data) => {
-                if (![200, 201, 400].includes(response.status)) {
-                    return Promise.reject(data);
-                }
+        CrudRequester().post({url: actionURL, body: formData, bodyType: RequestBodyType.FormData}).then(({status, data}) => {
+            if (![200, 201, 400].includes(status)) {
+                return Promise.reject(data);
+            }
 
-                return data;
-            })
-
-        }).then(data => {
             setData(data);
 
             const errors = getFormErrors(data.form.modify.view);

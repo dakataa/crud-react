@@ -43,7 +43,7 @@ export function UseActions() {
             };
         }
 
-        return new Promise<OnClickAction|null>((resolve, reject) => {
+        return new Promise<OnClickAction|null>((resolve) => {
             let retries = 0;
             const timeout = () => {
                 if(retries > 10) {
@@ -84,15 +84,13 @@ export function ActionProvider(props: PropsWithChildren) {
         if (initActions)
             return;
 
-        CrudRequester().get('/_crud/actions', {}).then((response) => {
-            if (response.status !== 200) {
+        CrudRequester().get({url: '/_crud/actions'}).then(({status, data}) => {
+            if (status !== 200) {
                 return;
             }
 
-            response.getData().then((data: ActionType[]) => {
-                sessionStorage.setItem(STORAGE_KEY, btoa(JSON.stringify(data)));
-                setActions(data);
-            });
+            sessionStorage.setItem(STORAGE_KEY, btoa(JSON.stringify(data)));
+            setActions(data);
         }).catch((e) => {
             console.log('error', e);
         }).finally(() => {

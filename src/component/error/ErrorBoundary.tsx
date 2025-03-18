@@ -63,7 +63,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             // You can render any custom fallback UI
             return React.cloneElement<any>(
                 this.props.fallback, {
-                    error: this.state.error
+                    error: this.state.error,
+                    children: this.props.children
                 }
             );
         }
