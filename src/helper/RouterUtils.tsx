@@ -6,7 +6,6 @@ const crudToReactPathPattern = (path: string) => {
     return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');
 }
 
-
 const generateRoute = (route?: RouteType, parameters?: {[key: string]: string} | null): string => {
     return route ? generatePath(crudToReactPathPattern(route.path), {...route.defaults || {}, ...parameters}) : '#';
 }
@@ -15,10 +14,10 @@ const generateRoutePath = (path: string, parameters: {} | undefined = undefined)
     return generatePath(crudToReactPathPattern(path), parameters);
 }
 
-
-const UseCurrentReactRoute = () => {
+const UseParentReactRoute = () => {
     const routeContext = useContext(UNSAFE_RouteContext);
-    return routeContext.matches.pop();
+
+    return routeContext.matches.reverse()[1] ?? null;
 }
 
-export {generateRoutePath, generateRoute, crudToReactPathPattern, UseCurrentReactRoute};
+export {generateRoutePath, generateRoute, crudToReactPathPattern, UseParentReactRoute};

@@ -1,19 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Crud, {CrudConfiguration} from './Crud.tsx';
-import {BrowserRouter} from "react-router";
-import {Route, Routes} from "react-router";
+import {BrowserRouter, Route, Routes} from "react-router";
 import Main from "@src/layout/default/Main.tsx";
-import Requester from "@dakataa/requester";
 
-CrudConfiguration(import.meta.env.CRUD_API_BASE_URL);
+CrudConfiguration({
+    baseUrl: import.meta.env.CRUD_API_BASE_URL
+});
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 
 root.render(
-    // <React.StrictMode>
+    <React.StrictMode>
         <BrowserRouter>
             <Routes>
                 <Route element={<Main/>}>
@@ -21,7 +21,7 @@ root.render(
                 </Route>
             </Routes>
         </BrowserRouter>
-    // </React.StrictMode>
+    </React.StrictMode>
 );
 
 // TODO: Add Google WebVitals to measure performance

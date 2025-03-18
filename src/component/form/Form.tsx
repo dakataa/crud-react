@@ -31,11 +31,11 @@ type FormState = {
 
 type FormProps = {
     children?: any,
-    onComplete?: Function,
+    onComplete?: () => void,
     onError?: Function,
-    onSubmit?: Function,
-    onBeforeSubmit?: Function,
-    onReset?: Function,
+    onSubmit?: (data: FormData) => void,
+    onBeforeSubmit?: (data: FormData) => void,
+    onReset?: () => void,
     action?: string,
     method?: 'GET' | 'POST',
     className?: string,
@@ -52,8 +52,7 @@ export type FormRef = {
 };
 
 export const nameToId = (name: string, index: number | null = null) => (
-    name
-        .replace(/[\[\]]/gi, '_')
+    name?.replace(/[\[\]]/gi, '_')
         .replace(/_+/gi, '_')
         .replace(/([a-zA-Z])(?=[A-Z])/g, '$1_')
     + (index ?? '')

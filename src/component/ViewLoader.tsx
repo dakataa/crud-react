@@ -30,4 +30,4 @@ const ViewLoader = ({view, namespace, props}: { view: string; namespace: string;
     );
 }
 
-export {ViewLoader as default, DefaultViewComponent};
+export {ViewLoader, DefaultViewComponent};

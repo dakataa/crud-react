@@ -1,6 +1,7 @@
 import {FormFieldError} from "@src/component/form/FormFieldError";
 import {FormViewType} from "@src/type/FormViewType";
 import {titlize} from "@src/helper/StingUtils";
+import {nameToId} from "@src/component/form/Form.tsx";
 import React from "react";
 
 export type FormGroupProps = {
@@ -14,7 +15,6 @@ export const FormGroup = ({
     className: string,
     children: React.JSX.Element
 }): React.JSX.Element => {
-    const nameToId = (name: string, index: number | null = null) => (name.replace(/[\[\]]/gi, '_').replace(/_+/gi, '_') + (index && index));
     const label = view.label || titlize(view.name);
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
 
