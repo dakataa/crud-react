@@ -7,11 +7,9 @@ import {
 } from "@dakataa/requester";
 import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import PaginatorView from "@src/component/crud/PaginatorView.tsx";
-import {Link, useLocation, useSearchParams} from "react-router";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Button from "@src/component/Button.tsx";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import FormView from "@src/component/crud/FormView.tsx";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
@@ -23,13 +21,15 @@ import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
+import Link from "@src/component/Link.tsx";
+import {UseRouter} from "@src/context/RouterContext.tsx";
 
 const List = memo(({action, embedded = false}: {
     action: OnClickAction,
     embedded?: boolean
 }) => {
-    const location = useLocation();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const {generateLink, generateRoute, location, navigate} = UseRouter()
+    let searchParams = new URLSearchParams(location.search);
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
     const filterFormRef = useRef<FormRef | null>(null);
@@ -57,11 +57,14 @@ const List = memo(({action, embedded = false}: {
             ...(sort.current && {sort: sort.current}),
         };
 
-        const searchQuery = convertObjectToURLSearchParams(objectRemoveEmpty(query));
+        searchParams = convertObjectToURLSearchParams(objectRemoveEmpty(query));
         if (embedded) {
-            setQueryParameters(searchQuery)
+            setQueryParameters(searchParams)
         } else {
-            setSearchParams(searchQuery);
+            const url = new URL(document.location.href);
+            url.search = searchParams.toString();
+            navigate(url.toString())
+
         }
     }
 
@@ -73,7 +76,10 @@ const List = memo(({action, embedded = false}: {
             icon: Icon.confirm,
             onResult: (result: Result) => {
                 if (result.isConfirmed) {
-                    CrudRequester().post({url: generateRoute(action.action.route, action.parameters), body: data}).catch((e:any) => {
+                    CrudRequester().post({
+                        url: generateRoute(action.action.route, action.parameters),
+                        body: data
+                    }).catch((e:any) => {
                         console.log('error', e);
                     }).finally(() => {
                         console.log('done');
@@ -143,7 +149,7 @@ const List = memo(({action, embedded = false}: {
 
     useEffect(() => {
         setQueryParameters(searchParams);
-    }, [location]);
+    }, [location.search]);
 
     return (
         <>
@@ -158,7 +164,7 @@ const List = memo(({action, embedded = false}: {
                                 {actions.map((item, index) => (
                                     <Link
                                         key={index}
-                                        to={generateRoute(item.route, action.parameters)}
+                                        to={generateLink(item.route, action.parameters)}
                                         onClick={(event) => handleAction({
                                             action: item,
                                             parameters: action.parameters
@@ -172,7 +178,9 @@ const List = memo(({action, embedded = false}: {
                         {results?.form?.filter && (
                             <div className={"btn-group btn-group-sm"}>
                             <Dropdown className={"btn-group btn-group-sm"}>
-                                <DropdownButton className={"btn-outline-dark"}><T>Filter</T></DropdownButton>
+                                <DropdownButton className={"btn-outline-dark"}>
+                                    <T>Filter</T>
+                                </DropdownButton>
                                 <DropdownContent>
                                     <div className="filter">
                                         <Form

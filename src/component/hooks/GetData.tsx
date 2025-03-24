@@ -3,11 +3,11 @@ import {ListType} from "@src/type/ListType.tsx";
 import {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
+import {UseRouter} from "@src/context/RouterContext.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -30,13 +30,14 @@ export function UseDataProvider(): GetDataType | null {
 
 const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataProps): GetDataType => {
     const {getAction} = UseActions();
+    const {generateRoute} = UseRouter();
     entityAction = getAction(entityAction.entity, entityAction.name, entityAction.namespace) || entityAction;
 
     const [results, setResults] = useState<ListType | ModifyType | null>();
     const [parameters, setParameters] = useState<{ [key: string]: string } | null>(initParameters || null);
 
-    const [queryParameters, setQueryParameters] = useState<URLSearchParams>(initQueryParameters instanceof URLSearchParams ? initQueryParameters : convertObjectToURLSearchParams(initQueryParameters || {}));
     const lastKey = useRef<string | null>(null);
+    const [queryParameters, setQueryParameters] = useState<URLSearchParams>(initQueryParameters instanceof URLSearchParams ? initQueryParameters : convertObjectToURLSearchParams(initQueryParameters || {}));
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
     const cache = useRef<{ [key: string]: string }>({});
     const [refresh, setRefresh] = useState(1);
@@ -92,7 +93,10 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
         }
 
         CrudRequester()
-            .get({url: generateRoute(entityAction.route, parameters ?? null), query: queryParameters})
+            .get({
+                url: generateRoute(entityAction.route, parameters ?? null),
+                query: queryParameters
+            })
             .then(({status, data}) => {
                 switch (status) {
                     case 201:

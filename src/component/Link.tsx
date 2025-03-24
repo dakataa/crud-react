@@ -1,11 +1,36 @@
-import React from "react";
-import {Link, LinkProps} from "react-router";
+import React, {MouseEvent, useEffect, useRef} from "react";
 import BaseButton, {Link as LinkType} from "./BaseButton";
+import {UseRouter} from "@src/context/RouterContext.tsx";
+export default ({to, children, ...props}:  {to: string} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & LinkType) => {
 
-export default ({to, children, ...props}: LinkProps & React.RefAttributes<HTMLAnchorElement> & LinkType) => {
+    const {navigate} = UseRouter();
+    const anchorRef = useRef<HTMLAnchorElement>(null);
+
+    useEffect(() => {
+        const onClick = (event: Event) => {
+
+            if(event.defaultPrevented) {
+                return;
+            }
+
+            if(!anchorRef?.current?.href) {
+                return;
+            }
+
+            event.preventDefault();
+            navigate(anchorRef.current.href);
+        };
+
+        anchorRef?.current?.addEventListener('click', onClick);
+
+        return () => {
+            anchorRef?.current?.removeEventListener('click', onClick);
+        };
+    }, []);
+
     return (
-        <Link to={to} {...props}>
+        <a ref={anchorRef} href={to} {...props}>
             <BaseButton {...props}>{children && children}</BaseButton>
-        </Link>
+        </a>
     );
 }

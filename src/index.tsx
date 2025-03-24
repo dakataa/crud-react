@@ -12,7 +12,9 @@ Requester.defaults = {
 };
 
 CrudConfiguration({
-    baseURL: import.meta.env.CRUD_API_BASE_URL
+    connection: {
+        baseURL: import.meta.env.CRUD_API_BASE_URL
+    }
 });
 
 const root = ReactDOM.createRoot(
@@ -24,7 +26,7 @@ root.render(
         <BrowserRouter>
             <Routes>
                 <Route element={<Main/>}>
-                    <Route path={"*"} element={<Crud/>}/>
+                    <Route path={"*"} element={<Crud includeParentRoutePath={false}/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

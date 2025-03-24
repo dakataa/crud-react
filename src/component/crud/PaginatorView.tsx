@@ -1,6 +1,6 @@
-import {Link, useSearchParams} from "react-router";
 import {ListMetaType} from "@src/type/ListMetaType";
 import {RouteType} from "@src/type/RouteType";
+import Link from "@src/component/Link.tsx";
 
 const PageItem = ({route, page, active = false, title, children}: {
     route?: RouteType,

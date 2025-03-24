@@ -1,35 +1,35 @@
-var Pt = Object.defineProperty;
-var Tt = (e, t, n) => t in e ? Pt(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
-var X = (e, t, n) => Tt(e, typeof t != "symbol" ? t + "" : t, n);
-import { jsx as s, Fragment as x, jsxs as N } from "react/jsx-runtime";
+var Dt = Object.defineProperty;
+var Lt = (e, t, n) => t in e ? Dt(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
+var ee = (e, t, n) => Lt(e, typeof t != "symbol" ? t + "" : t, n);
+import { jsx as s, Fragment as j, jsxs as E } from "react/jsx-runtime";
+import je, { convertObjectToURLSearchParams as Ae, RequestBodyType as kt, convertURLSearchParamsToObject as xt, convertFormDataToObject as jt, Method as Rt } from "@dakataa/requester";
 import * as Be from "react";
-import S, { memo as W, useContext as St, useState as $, useEffect as v, forwardRef as ce, useRef as k, useImperativeHandle as ke, useReducer as Dt, use as Lt, Suspense as jt } from "react";
-import Re, { convertObjectToURLSearchParams as Ce, RequestBodyType as xt, convertURLSearchParamsToObject as kt, convertFormDataToObject as Rt, Method as Mt } from "@dakataa/requester";
+import P, { memo as W, useContext as vt, useState as V, useEffect as v, forwardRef as ce, useRef as R, useImperativeHandle as Re, useReducer as Mt } from "react";
 import "@dakataa/crud-theme/scss/theme.scss";
-import { generatePath as vt, UNSAFE_RouteContext as Ft, matchPath as Ke, useNavigate as It, useParams as Vt, Link as z, useLocation as $t, useSearchParams as Ut } from "react-router";
+import { UNSAFE_RouteContext as Ft, useNavigate as It, generatePath as $t, matchPath as Ke, useParams as Vt, Link as et, useLocation as tt, useSearchParams as Ut } from "react-router";
 import { createPortal as Bt } from "react-dom";
 import Kt from "lottie-web/build/player/esm/lottie.min.js";
 import * as He from "@popperjs/core";
-class me {
+class pe {
   constructor(t = 0, n, r) {
-    X(this, "code");
-    X(this, "detail");
-    X(this, "trace");
+    ee(this, "code");
+    ee(this, "detail");
+    ee(this, "trace");
     this.code = t, this.detail = n, this.trace = r;
   }
 }
-class ie extends me {
+class le extends pe {
   constructor(n, r, o) {
     super(0, r, o);
-    X(this, "status", 400);
+    ee(this, "status", 400);
     this.status = n;
   }
 }
 class Ht extends Be.Component {
   constructor(n) {
     super(n);
-    X(this, "promiseRejectionHandler", (n) => {
-      n.reason instanceof me && this.setState({
+    ee(this, "promiseRejectionHandler", (n) => {
+      n.reason instanceof pe && this.setState({
         ...this.state,
         hasError: !0,
         error: n.reason
@@ -47,7 +47,7 @@ class Ht extends Be.Component {
     window.removeEventListener("unhandledrejection", this.promiseRejectionHandler);
   }
   static getDerivedStateFromError(n) {
-    return n instanceof Error && (n = new ie(0, n.message)), {
+    return n instanceof Error && (n = new le(0, n.message)), {
       hasError: !0,
       error: n
     };
@@ -65,55 +65,81 @@ class Ht extends Be.Component {
     ) : this.props.children;
   }
 }
-const Yt = W(({ children: e }) => /* @__PURE__ */ s(x, { children: e })), wt = W(({ error: e }) => (e ?? (e = new ie(404, "Page not found.")), /* @__PURE__ */ s(Yt, { children: /* @__PURE__ */ s("main", { children: /* @__PURE__ */ N("div", { className: "content d-flex flex-column", children: [
+const wt = W(({ children: e }) => /* @__PURE__ */ s(j, { children: e })), Yt = W(({ error: e }) => (e ?? (e = new le(404, "Page not found.")), /* @__PURE__ */ s(wt, { children: /* @__PURE__ */ s("main", { children: /* @__PURE__ */ E("div", { className: "content d-flex flex-column", children: [
   /* @__PURE__ */ s("h1", { className: "display-1", children: e.status || "Error" }),
   /* @__PURE__ */ s("p", { className: "text-secondary", children: e.detail }),
   /* @__PURE__ */ s("br", {}),
   /* @__PURE__ */ s("div", { children: /* @__PURE__ */ s("a", { className: "btn btn-primary", href: "#", children: "Back to home" }) })
-] }) }) }))), Wt = ({ children: e }) => /* @__PURE__ */ s(x, { children: e }), B = W(({ name: e, children: t, data: n, parent: r, render: o }) => (t = S.Children.toArray((o ? o(n, r) : t) || []).map((a) => (S.isValidElement(a) && a.type === Wt && (a = S.cloneElement(a, { children: r })), a)), /* @__PURE__ */ s(x, { children: t }))), V = W(({ name: e, content: t, children: n, data: r }) => {
-  const o = S.Children.toArray(t).find((u) => S.isValidElement(u) && u.type === B && u.props.name === e);
+] }) }) }))), Wt = ({ children: e }) => /* @__PURE__ */ s(j, { children: e }), K = W(({ name: e, children: t, data: n, parent: r, render: o }) => (t = P.Children.toArray((o ? o(n, r) : t) || []).map((a) => (P.isValidElement(a) && a.type === Wt && (a = P.cloneElement(a, { children: r })), a)), /* @__PURE__ */ s(j, { children: t }))), U = W(({ name: e, content: t, children: n, data: r }) => {
+  const o = P.Children.toArray(t).find((f) => P.isValidElement(f) && f.type === K && f.props.name === e);
   let a = null;
-  o && S.isValidElement(o) && (a = S.cloneElement(o, { parent: n, data: r }));
-  const c = S.Children.toArray(n).filter((u) => S.isValidElement(u) && u.type !== B);
-  return /* @__PURE__ */ s(x, { children: a || (c.length ? c : n) });
-}), Ae = (e) => e.replaceAll(new RegExp("{(.*?)}", "gi"), ":$1"), w = (e, t) => e ? vt(Ae(e.path), { ...e.defaults || {}, ...t }) : "#", qt = () => St(Ft).matches.reverse()[1] ?? null, Ye = "actions", tt = S.createContext(null);
-function Me() {
-  const e = S.useContext(tt), t = () => {
+  o && P.isValidElement(o) && (a = P.cloneElement(o, { parent: n, data: r }));
+  const c = P.Children.toArray(n).filter((f) => P.isValidElement(f) && f.type !== K);
+  return /* @__PURE__ */ s(j, { children: a || (c.length ? c : n) });
+}), nt = P.createContext({});
+function rt() {
+  return P.useContext(nt);
+}
+function qt({ config: e, ...t }) {
+  return /* @__PURE__ */ s(nt.Provider, { value: e, children: t.children });
+}
+const Q = () => {
+  const e = vt(Ft), t = It(), n = rt(), r = (i) => i.replaceAll(new RegExp("{(.*?)}", "gi"), ":$1"), o = (i, b = void 0) => $t(r(i), b), a = (i, b) => i ? o(i.path, { ...i.defaults || {}, ...b }) : "#", c = (i, b) => {
+    let l = a(i, b);
+    return f(l);
+  }, f = (i) => {
+    var b;
+    return (b = n.link) != null && b.prefix && (i = "/" + n.link.prefix.replaceAll(new RegExp("^/|/$", "g"), "") + i), i;
+  };
+  return {
+    navigate: (i) => t(i),
+    generateRoute: a,
+    generateLink: c,
+    generateRoutePath: o,
+    crudToReactPathPattern: r,
+    getParentReactRoute: () => e.matches.reverse()[1] ?? null
+  };
+}, we = "actions", st = P.createContext(void 0);
+function ve() {
+  const e = P.useContext(st), { crudToReactPathPattern: t } = Q();
+  if (e === void 0)
+    throw new Error("UseActions should be used inside ActionProvider");
+  const n = () => {
     if (Array.isArray(e))
       return e;
-  }, n = (a, c, u) => {
-    var m;
-    return (m = t()) == null ? void 0 : m.filter((i) => i.entity === a && i.name === c && (u === void 0 || i.namespace === u)).shift();
-  }, r = (a) => {
-    var c;
-    return (c = t()) == null ? void 0 : c.find((u) => {
-      var m;
-      return ((m = u.route) == null ? void 0 : m.path) && Ke(Ae(u.route.path), a);
+  }, r = (c, f, p) => {
+    var d;
+    return (d = n()) == null ? void 0 : d.filter((i) => i.entity === c && i.name === f && (p === void 0 || i.namespace === p)).shift();
+  }, o = (c) => {
+    var f;
+    return (f = n()) == null ? void 0 : f.find((p) => {
+      var d;
+      return ((d = p.route) == null ? void 0 : d.path) && Ke(t(p.route.path), c);
     });
   };
   return {
-    getAction: n,
-    getActionByPath: r,
-    getOnClickActionByPath: (a) => {
-      const c = () => {
+    getAction: r,
+    getActionByPath: o,
+    getOnClickActionByPath: (c) => {
+      const f = () => {
         var i;
-        const u = r(a);
-        if (!u)
+        const p = o(c);
+        if (!p)
           return null;
-        const m = Ke(Ae(((i = u.route) == null ? void 0 : i.path) || ""), a);
+        const d = Ke(t(((i = p.route) == null ? void 0 : i.path) || ""), c);
         return {
-          action: u,
-          parameters: m == null ? void 0 : m.params
+          action: p,
+          parameters: d == null ? void 0 : d.params
         };
       };
-      return new Promise((u) => {
-        let m = 0;
+      return new Promise((p) => {
+        let d = 0;
         const i = () => {
-          if (m > 10)
-            throw new me(0, "Cannot load routes");
+          if (d > 10)
+            throw new pe(0, "Cannot load routes");
           if (e)
-            return u(c());
-          setTimeout(i, 200), m++;
+            return p(f());
+          setTimeout(i, 200), d++;
         };
         i();
       });
@@ -123,28 +149,28 @@ function Me() {
 function zt(e) {
   let t = null;
   try {
-    const o = sessionStorage.getItem(Ye);
+    const o = sessionStorage.getItem(we);
     t = JSON.parse(atob(o || ""));
   } catch {
   }
-  const [n, r] = $(t);
+  const [n, r] = V(t);
   return v(() => {
-    t || ae().get({ url: "/_crud/actions" }).then(({ status: o, data: a }) => {
-      o === 200 && (sessionStorage.setItem(Ye, btoa(JSON.stringify(a))), r(a));
+    t || ie().get({ url: "/_crud/actions" }).then(({ status: o, data: a }) => {
+      o === 200 && (sessionStorage.setItem(we, btoa(JSON.stringify(a))), r(a));
     }).catch((o) => {
       console.log("error", o);
     }).finally(() => {
     });
-  }, []), /* @__PURE__ */ s(tt.Provider, { value: n, children: e.children });
+  }, []), /* @__PURE__ */ s(st.Provider, { value: n, children: e.children });
 }
-const nt = S.createContext(null);
-function ve() {
-  const e = S.useContext(nt);
+const ot = P.createContext(null);
+function Me() {
+  const e = P.useContext(ot);
   if (!e)
     throw new Error("useForm must be used in Form");
   return e;
 }
-const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").replace(/([a-zA-Z])(?=[A-Z])/g, "$1_")) + (t ?? "")).toLowerCase(), rt = ce(({
+const he = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").replace(/([a-zA-Z])(?=[A-Z])/g, "$1_")) + (t ?? "")).toLowerCase(), at = ce(({
   id: e,
   children: t,
   data: n,
@@ -152,122 +178,122 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
   onBeforeSubmit: o,
   onSubmit: a,
   onReset: c,
-  ...u
-}, m) => {
-  const i = k(null), h = {
+  ...f
+}, p) => {
+  const d = R(null), i = {
     response: null,
     constraints: {},
     errors: {}
-  }, f = {
-    getFormData: () => new FormData(i.current || void 0),
-    setFormData: (d) => {
-      var p;
-      [...((p = i.current) == null ? void 0 : p.elements) || []].forEach((C) => {
-        const _ = d.get(C.name);
-        switch (C.tagName.toLowerCase()) {
+  }, b = {
+    getFormData: () => new FormData(d.current || void 0),
+    setFormData: (u) => {
+      var y;
+      [...((y = d.current) == null ? void 0 : y.elements) || []].forEach((_) => {
+        const g = u.get(_.name);
+        switch (_.tagName.toLowerCase()) {
           case "select": {
-            C.multiple ? [...C.options].forEach((A) => {
-              A.selected = d.getAll(C.name).includes(A.value);
-            }) : C.value = _;
+            _.multiple ? [..._.options].forEach((C) => {
+              C.selected = u.getAll(_.name).includes(C.value);
+            }) : _.value = g;
             break;
           }
           default:
-            switch (C.type) {
+            switch (_.type) {
               case "checkbox":
-                C.checked = !!_;
+                _.checked = !!g;
                 break;
               default:
-                C.value = _;
+                _.value = g;
                 break;
             }
         }
       });
     },
-    setErrors: (d) => {
-      const [, p] = b;
-      p({ action: "errors", payload: d });
+    setErrors: (u) => {
+      const [, y] = m;
+      y({ action: "errors", payload: u });
     },
     reset: () => {
-      var d;
-      (d = i.current) == null || d.reset();
+      var u;
+      (u = d.current) == null || u.reset();
     },
     submit: () => {
-      var d;
-      return (d = i.current) == null ? void 0 : d.requestSubmit();
+      var u;
+      return (u = d.current) == null ? void 0 : u.requestSubmit();
     }
   };
-  ke(m, () => f), v(() => {
-    const d = () => {
+  Re(p, () => b), v(() => {
+    const u = () => {
       c && c();
-    }, p = i == null ? void 0 : i.current;
-    return p == null || p.addEventListener("reset", d), () => {
-      p == null || p.removeEventListener("reset", d);
+    }, y = d == null ? void 0 : d.current;
+    return y == null || y.addEventListener("reset", u), () => {
+      y == null || y.removeEventListener("reset", u);
     };
   }, []);
-  const l = (d, p) => {
-    const C = f.getFormData();
-    for (const _ of p)
-      if (!_.isValid(C.get(d) || null))
-        return { valid: !1, message: _.getMessage() };
+  const l = (u, y) => {
+    const _ = b.getFormData();
+    for (const g of y)
+      if (!g.isValid(_.get(u) || null))
+        return { valid: !1, message: g.getMessage() };
     return { valid: !0, message: null };
-  }, b = Dt((d, p) => {
-    const { action: C, payload: _ } = p;
-    switch (C) {
+  }, m = Mt((u, y) => {
+    const { action: _, payload: g } = y;
+    switch (_) {
       case "constraints": {
-        const { name: A, constraints: T } = _;
+        const { name: C, constraints: T } = g;
         return {
-          ...d,
+          ...u,
           constraints: {
-            ...d.constraints || {},
-            [A]: T
+            ...u.constraints || {},
+            [C]: T
           }
         };
       }
       case "validate": {
-        const { valid: A, message: T } = l(_, d.constraints[_] || []), D = d.errors || {}, y = _;
-        return A ? delete D[y] : D[y] = [...D[y] || [], { message: T || "Error" }], Object.keys(D).length ? {
-          ...d,
+        const { valid: C, message: T } = l(g, u.constraints[g] || []), D = u.errors || {}, k = g;
+        return C ? delete D[k] : D[k] = [...D[k] || [], { message: T || "Error" }], Object.keys(D).length ? {
+          ...u,
           errors: D
-        } : d;
+        } : u;
       }
       case "response":
         return {
-          ...d,
-          response: _
+          ...u,
+          response: g
         };
       case "errors":
         return {
-          ...d,
-          errors: _ || []
+          ...u,
+          errors: g || []
         };
       case "error": {
-        const A = { ...d.errors, ..._ };
+        const C = { ...u.errors, ...g };
         return {
-          ...d,
-          errors: A
+          ...u,
+          errors: C
         };
       }
     }
-    return d;
-  }, h), E = (d) => {
-    d.preventDefault();
-    const [p, C] = b;
-    let _ = {};
-    for (const [T, D] of Object.entries(p.constraints)) {
-      const { valid: y, message: O } = l(T, D);
-      y || (_[T] = [O]);
+    return u;
+  }, i), A = (u) => {
+    u.preventDefault();
+    const [y, _] = m;
+    let g = {};
+    for (const [T, D] of Object.entries(y.constraints)) {
+      const { valid: k, message: F } = l(T, D);
+      k || (g[T] = [F]);
     }
-    if (Object.values(_).length) {
-      C({ action: "errors", payload: _ });
+    if (Object.values(g).length) {
+      _({ action: "errors", payload: g });
       return;
     }
-    const A = new FormData((i == null ? void 0 : i.current) || void 0);
-    if (o && o(A), a) {
-      a(A);
+    const C = new FormData((d == null ? void 0 : d.current) || void 0);
+    if (o && o(C), a) {
+      a(C);
       return;
     }
   };
-  return /* @__PURE__ */ s(nt.Provider, { value: [b, m, i], children: /* @__PURE__ */ s("form", { id: e, ref: i, onSubmit: E, ...u, children: t }) });
+  return /* @__PURE__ */ s(ot.Provider, { value: [m, p, d], children: /* @__PURE__ */ s("form", { id: e, ref: d, onSubmit: A, ...f, children: t }) });
 }), Gt = ({
   view: e,
   constraints: t,
@@ -278,9 +304,9 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
   ...c
 }) => {
   t = t || [];
-  const [[u, m], i] = ve(), h = k(null), l = !!((u == null ? void 0 : u.errors[e.full_name]) || []).length, b = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  const [[f, p], d] = Me(), i = R(null), l = !!((f == null ? void 0 : f.errors[e.full_name]) || []).length, m = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
   v(() => {
-    m({
+    p({
       action: "constraints",
       payload: {
         name: e.full_name,
@@ -288,17 +314,17 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       }
     });
   }, []);
-  const E = (d) => {
-    m({ action: "validate", payload: e.full_name }), r && r(d);
+  const A = (u) => {
+    p({ action: "validate", payload: e.full_name }), r && r(u);
   };
-  return e != null && e.expanded ? /* @__PURE__ */ s(x, { children: Object.values(e.choices || []).map(
-    (d, p) => {
+  return e != null && e.expanded ? /* @__PURE__ */ s(j, { children: Object.values(e.choices || []).map(
+    (u, y) => {
       var D;
-      const C = pe(e.full_name, p), _ = o ? o(d) : d.value, A = a ? a(d) : d.label || _, T = {
-        id: C,
-        ...(e == null ? void 0 : e.choice_attr) && ((e == null ? void 0 : e.choice_attr) instanceof Function ? e == null ? void 0 : e.choice_attr(d) : e == null ? void 0 : e.choice_attr)
+      const _ = he(e.full_name, y), g = o ? o(u) : u.value, C = a ? a(u) : u.label || g, T = {
+        id: _,
+        ...(e == null ? void 0 : e.choice_attr) && ((e == null ? void 0 : e.choice_attr) instanceof Function ? e == null ? void 0 : e.choice_attr(u) : e == null ? void 0 : e.choice_attr)
       };
-      return /* @__PURE__ */ N(
+      return /* @__PURE__ */ E(
         "div",
         {
           className: "form-check",
@@ -306,49 +332,49 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
             /* @__PURE__ */ s(
               "input",
               {
-                ref: h,
-                defaultValue: _,
+                ref: i,
+                defaultValue: g,
                 type: e != null && e.multiple ? "checkbox" : "radio",
-                defaultChecked: (D = e == null ? void 0 : e.data) == null ? void 0 : D.includes(_),
+                defaultChecked: (D = e == null ? void 0 : e.data) == null ? void 0 : D.includes(g),
                 name: (e == null ? void 0 : e.full_name) + "[]",
-                id: C,
+                id: _,
                 className: "form-check-input",
                 ...T,
-                onChange: (y) => {
-                  var O, R;
-                  return E({
-                    value: (e != null && e.multiple ? (O = i == null ? void 0 : i.current) == null ? void 0 : O.getFormData().getAll(e == null ? void 0 : e.full_name) : (R = i == null ? void 0 : i.current) == null ? void 0 : R.getFormData().get(e == null ? void 0 : e.full_name)) || y.target.value,
-                    targetValue: y.target.value,
-                    checked: y.target.checked
+                onChange: (k) => {
+                  var F, N;
+                  return A({
+                    value: (e != null && e.multiple ? (F = d == null ? void 0 : d.current) == null ? void 0 : F.getFormData().getAll(e == null ? void 0 : e.full_name) : (N = d == null ? void 0 : d.current) == null ? void 0 : N.getFormData().get(e == null ? void 0 : e.full_name)) || k.target.value,
+                    targetValue: k.target.value,
+                    checked: k.target.checked
                   });
                 }
               },
-              b
+              m
             ),
             /* @__PURE__ */ s(
               "label",
               {
                 htmlFor: T.id,
                 className: "form-check-label",
-                children: A
+                children: C
               }
             )
           ]
         },
-        p
+        y
       );
     }
-  ) }) : /* @__PURE__ */ s(x, { children: /* @__PURE__ */ N(
+  ) }) : /* @__PURE__ */ s(j, { children: /* @__PURE__ */ E(
     "select",
     {
-      ref: h,
+      ref: i,
       name: e.full_name,
       multiple: e.multiple,
       "aria-invalid": l,
-      onChange: (d) => {
-        var p, C;
-        return E({
-          value: (e.multiple ? (p = i == null ? void 0 : i.current) == null ? void 0 : p.getFormData().getAll(e.full_name) : (C = i == null ? void 0 : i.current) == null ? void 0 : C.getFormData().get(e.full_name)) || d.target.value
+      onChange: (u) => {
+        var y, _;
+        return A({
+          value: (e.multiple ? (y = d == null ? void 0 : d.current) == null ? void 0 : y.getFormData().getAll(e.full_name) : (_ = d == null ? void 0 : d.current) == null ? void 0 : _.getFormData().get(e.full_name)) || u.target.value
         });
       },
       className: [...(n || "").split(" ") || [], "form-control", ...l ? ["is-invalid"] : []].join(" "),
@@ -357,23 +383,23 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       children: [
         e.placeholder && /* @__PURE__ */ s("option", { value: "", children: e.placeholder }),
         Object.values(e.choices || []).map(
-          (d, p) => /* @__PURE__ */ s(
+          (u, y) => /* @__PURE__ */ s(
             "option",
             {
-              value: d.value || d.label,
-              ...e.choice_attr && (e.choice_attr instanceof Function ? e.choice_attr(d) : e.choice_attr),
-              children: d.label
+              value: u.value || u.label,
+              ...e.choice_attr && (e.choice_attr instanceof Function ? e.choice_attr(u) : e.choice_attr),
+              children: u.label
             },
-            p
+            y
           )
         )
       ]
     },
-    b
+    m
   ) });
-}, st = ({ name: e, className: t }) => {
-  const [[n]] = ve(), r = (n == null ? void 0 : n.errors[e]) || [];
-  return r.length ? /* @__PURE__ */ s("div", { className: t, children: r.map((o, a) => /* @__PURE__ */ s("span", { children: o.message }, a)) }) : /* @__PURE__ */ s(x, {});
+}, it = ({ name: e, className: t }) => {
+  const [[n]] = Me(), r = (n == null ? void 0 : n.errors[e]) || [];
+  return r.length ? /* @__PURE__ */ s("div", { className: t, children: r.map((o, a) => /* @__PURE__ */ s("span", { children: o.message }, a)) }) : /* @__PURE__ */ s(j, {});
 }, Oe = (e) => e.toLowerCase().replace(new RegExp("^.{1,1}"), (t) => t.toUpperCase()), Jt = (e) => {
   let t = e.replace(new RegExp("[-_]", "gi"), " ").split(new RegExp("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])"));
   const n = t.shift(), r = t.pop();
@@ -384,7 +410,7 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
   className: n
 }) => {
   const r = e.label || Jt(e.name), o = ["checkbox", "radio"].includes(e.type || "input");
-  return /* @__PURE__ */ N(
+  return /* @__PURE__ */ E(
     "div",
     {
       className: [...(n == null ? void 0 : n.split(" ")) || [], "mb-3", o && "form-check"].filter((a) => a).join(" "),
@@ -403,12 +429,12 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
           "label",
           {
             className: "form-check-label",
-            htmlFor: e.id || pe(e.full_name),
+            htmlFor: e.id || he(e.full_name),
             ...e.label_attr && (e.label_attr instanceof Function ? e.label_attr() : e.label_attr),
             children: r
           }
         ),
-        /* @__PURE__ */ s(st, { name: e.full_name, className: "invalid-feedback" }),
+        /* @__PURE__ */ s(it, { name: e.full_name, className: "invalid-feedback" }),
         e.help && /* @__PURE__ */ s(
           "div",
           {
@@ -426,7 +452,7 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
   className: n,
   onChange: r
 }) => {
-  const [[o, a]] = ve(), c = k(null), u = (o == null ? void 0 : o.errors[e.full_name]) || [];
+  const [[o, a]] = Me(), c = R(null), f = (o == null ? void 0 : o.errors[e.full_name]) || [];
   v(() => {
     a({
       action: "constraints",
@@ -436,25 +462,25 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       }
     });
   }, []);
-  const m = (l) => {
+  const p = (l) => {
     a({ action: "validate", payload: e.full_name }), r && r(l);
-  }, h = ["checkbox", "radio"].includes(e.type) ? "form-check-input" : "form-control", f = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
-  return /* @__PURE__ */ s(x, { children: /* @__PURE__ */ s(
+  }, i = ["checkbox", "radio"].includes(e.type) ? "form-check-input" : "form-control", b = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  return /* @__PURE__ */ s(j, { children: /* @__PURE__ */ s(
     "input",
     {
       ref: c,
-      id: e.id || pe(e.full_name),
+      id: e.id || he(e.full_name),
       name: e.full_name,
       type: e.type,
       defaultValue: e.data,
-      "aria-invalid": !u.length,
-      onKeyUp: (l) => m({ value: l.target.value }),
-      onChange: (l) => m({ value: l.target.value }),
-      className: [h, ...u.length ? ["is-invalid"] : []].join(" "),
+      "aria-invalid": !f.length,
+      onKeyUp: (l) => p({ value: l.target.value }),
+      onChange: (l) => p({ value: l.target.value }),
+      className: [i, ...f.length ? ["is-invalid"] : []].join(" "),
       defaultChecked: e == null ? void 0 : e.checked,
       ...e.attr && (e.attr instanceof Function ? e.attr() : e.attr)
     },
-    f
+    b
   ) });
 }, Xt = ({
   view: e
@@ -468,17 +494,17 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
     default:
       return /* @__PURE__ */ s(Zt, { view: e });
   }
-})() }), we = ({ children: e }) => /* @__PURE__ */ s(x, { children: e }), J = W(({ namespace: e, view: t, prefix: n, children: r, props: o, data: a }) => {
-  t = t.split(/[._]/).map((b) => Oe(b)).join("");
-  const c = /* @__PURE__ */ Object.assign({}), u = ["crud", e, n, t].filter((b) => b).join("/") + ".tsx", [m, i] = Object.entries(c).filter(([b, E]) => b.endsWith(u)).shift() || [], [h, f] = $(1), l = k(we);
+})() }), Ye = ({ children: e }) => /* @__PURE__ */ s(j, { children: e }), J = W(({ namespace: e, view: t, prefix: n, children: r, props: o, data: a }) => {
+  t = t.split(/[._]/).map((m) => Oe(m)).join("");
+  const c = /* @__PURE__ */ Object.assign({}), f = ["crud", e, n, t].filter((m) => m).join("/") + ".tsx", [p, d] = Object.entries(c).filter(([m, A]) => m.endsWith(f)).shift() || [], [i, b] = V(1), l = R(Ye);
   return v(() => {
-    if (i === void 0)
+    if (d === void 0)
       return () => {
       };
-    i().then((b) => {
-      l.current = b.default, f(h + 1);
+    d().then((m) => {
+      l.current = m.default, b(i + 1);
     });
-  }, []), /* @__PURE__ */ s(l.current, { ...o, view: t, controller: e, viewName: t, data: a, parent: r, children: (!i || l.current !== we) && r });
+  }, []), /* @__PURE__ */ s(l.current, { ...o, view: t, controller: e, viewName: t, data: a, parent: r, children: (!d || l.current !== Ye) && r });
 }), Fe = W(({ view: e, namespace: t, name: n }) => e && /* @__PURE__ */ s(
   J,
   {
@@ -489,100 +515,105 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
     children: Object.keys(e.children || []).length ? Object.values(e.children || []).map((r) => /* @__PURE__ */ s(Fe, { namespace: t, view: r }, r.id)) : /* @__PURE__ */ s(Xt, { view: e }, e.id)
   },
   e.id
-)), ot = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: o = !1 }) => /* @__PURE__ */ s(x, { children: r && r }), he = ce(({
+)), ct = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: o = !1 }) => /* @__PURE__ */ s(j, { children: r && r }), ge = ce(({
   children: e,
   preload: t,
   ...n
-}, r) => /* @__PURE__ */ s("button", { disabled: t, ...n, ref: r, children: /* @__PURE__ */ s(ot, { preload: t, ...n, children: e }) })), en = S.createContext(null);
+}, r) => /* @__PURE__ */ s("button", { disabled: t, ...n, ref: r, children: /* @__PURE__ */ s(ct, { preload: t, ...n, children: e }) })), en = P.createContext(null);
 function tn() {
-  return S.useContext(en);
+  return P.useContext(en);
 }
-const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
-  const { getAction: r } = Me();
+const lt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
+  const { getAction: r } = ve(), { generateRoute: o } = Q();
   e = r(e.entity, e.name, e.namespace) || e;
-  const [o, a] = $(), [c, u] = $(t || null), [m, i] = $(n instanceof URLSearchParams ? n : Ce(n || {}));
-  k(null), btoa(encodeURIComponent([e.entity, e.name, e.namespace, ...Object.entries(c || {}).map(([l, b]) => l + "-" + b), (m instanceof URLSearchParams ? m : Ce(m)).toString()].filter((l) => l).join("."))), k({});
-  const [h, f] = $(1);
+  const [a, c] = V(), [f, p] = V(t || null);
+  R(null);
+  const [d, i] = V(n instanceof URLSearchParams ? n : Ae(n || {}));
+  btoa(encodeURIComponent([e.entity, e.name, e.namespace, ...Object.entries(f || {}).map(([m, A]) => m + "-" + A), (d instanceof URLSearchParams ? d : Ae(d)).toString()].filter((m) => m).join("."))), R({});
+  const [b, l] = V(1);
   return v(() => {
-    e && ae().get({ url: w(e.route, c ?? null), query: m }).then(({ status: l, data: b }) => {
-      switch (l) {
+    e && ie().get({
+      url: o(e.route, f ?? null),
+      query: d
+    }).then(({ status: m, data: A }) => {
+      switch (m) {
         case 201:
         case 200: {
-          a(b);
+          c(A);
           break;
         }
         default: {
-          const E = b;
-          throw new ie(E.status, E.detail, E.trace);
+          const u = A;
+          throw new le(u.status, u.detail, u.trace);
         }
       }
     });
-  }, [JSON.stringify(c), m.toString(), h]), {
-    results: o,
-    setParameters: u,
-    setQueryParameters: (l) => {
-      i(new URLSearchParams(l));
+  }, [JSON.stringify(f), d.toString(), b]), {
+    results: a,
+    setParameters: p,
+    setQueryParameters: (m) => {
+      i(new URLSearchParams(m));
     },
     refresh: () => {
-      f(h + 1);
+      l(b + 1);
     }
   };
-}, Pe = W(({ children: e }) => /* @__PURE__ */ s(x, { children: e })), nn = ce(({ name: e, data: t, action: n, parameters: r, onSuccess: o, onError: a, onLoad: c, children: u, embedded: m = !1 }, i) => {
-  var T, D, y, O, R;
-  const [h, f] = $(!1), l = It(), b = w(n.route, r || {}), E = k(null), d = tn(), [p, C] = $();
-  ke(i, () => ({
-    getData: () => p,
-    getFormRef: () => E.current
+}, Pe = W(({ children: e }) => /* @__PURE__ */ s(j, { children: e })), nn = ce(({ name: e, data: t, action: n, parameters: r, onSuccess: o, onError: a, onLoad: c, children: f, embedded: p = !1 }, d) => {
+  var k, F, N, L, I;
+  const [i, b] = V(!1), { navigate: l, generateLink: m, generateRoute: A } = Q(), u = A(n.route, r || {}), y = R(null), _ = tn(), [g, C] = V();
+  Re(d, () => ({
+    getData: () => g,
+    getFormRef: () => y.current
   }));
-  const _ = (j) => {
-    var F, g;
+  const T = (x) => {
+    var h, S;
     let M = {
-      ...(F = j.errors) != null && F.length ? { [j.full_name]: j.errors } : {}
+      ...(h = x.errors) != null && h.length ? { [x.full_name]: x.errors } : {}
     };
-    for (let [, P] of Object.entries((j == null ? void 0 : j.children) || []))
-      P.children && Object.values(P.children).length ? M = { ...M, ..._(P) } : (g = P.errors) != null && g.length && (M[P.full_name] = P.errors);
+    for (let [, O] of Object.entries((x == null ? void 0 : x.children) || []))
+      O.children && Object.values(O.children).length ? M = { ...M, ...T(O) } : (S = O.errors) != null && S.length && (M[O.full_name] = O.errors);
     return M;
-  }, A = (j) => {
-    f(!0), ae().post({ url: b, body: j, bodyType: xt.FormData }).then(({ status: M, data: F }) => {
-      var P;
+  }, D = (x) => {
+    b(!0), ie().post({ url: u, body: x, bodyType: kt.FormData }).then(({ status: M, data: h }) => {
+      var O;
       if (![200, 201, 400].includes(M))
-        return Promise.reject(F);
-      C(F);
-      const g = _(F.form.modify.view);
-      if (Object.entries(g).length) {
-        (P = E.current) == null || P.setErrors(g);
+        return Promise.reject(h);
+      C(h);
+      const S = T(h.form.modify.view);
+      if (Object.entries(S).length) {
+        (O = y.current) == null || O.setErrors(S);
         return;
       }
-      o && o(F), F.redirect && !m && l(w(F.redirect.route, { ...r || {}, ...F.redirect.parameters }));
+      o && o(h), h.redirect && !p && l(m(h.redirect.route, { ...r || {}, ...h.redirect.parameters }));
     }).catch((M) => {
       a && a(M);
     }).finally(() => {
-      f(!1);
+      b(!1);
     });
   };
   return v(() => {
     c && c();
-  }, []), t = (d == null ? void 0 : d.results) ?? t, v(() => {
+  }, []), t = (_ == null ? void 0 : _.results) ?? t, v(() => {
     C(t);
-  }, [JSON.stringify(t)]), p && /* @__PURE__ */ N(x, { children: [
-    Object.keys((p == null ? void 0 : p.messages) || {}).map((j, M) => /* @__PURE__ */ s("div", { className: ["alert", "alert-" + j].join(" "), children: ((p == null ? void 0 : p.messages[j]) || ["Item was saved successful."]).join(" ") }, "alert-" + j)),
-    /* @__PURE__ */ N(rt, { id: (y = (D = (T = p == null ? void 0 : p.form) == null ? void 0 : T.modify) == null ? void 0 : D.view) == null ? void 0 : y.id, ref: E, action: b, method: "POST", onSubmit: A, children: [
-      ((R = (O = p == null ? void 0 : p.form) == null ? void 0 : O.modify) == null ? void 0 : R.view) !== void 0 && /* @__PURE__ */ N(x, { children: [
+  }, [JSON.stringify(t)]), g && /* @__PURE__ */ E(j, { children: [
+    Object.keys((g == null ? void 0 : g.messages) || {}).map((x, M) => /* @__PURE__ */ s("div", { className: ["alert", "alert-" + x].join(" "), children: ((g == null ? void 0 : g.messages[x]) || ["Item was saved successful."]).join(" ") }, "alert-" + x)),
+    /* @__PURE__ */ E(at, { id: (N = (F = (k = g == null ? void 0 : g.form) == null ? void 0 : k.modify) == null ? void 0 : F.view) == null ? void 0 : N.id, ref: y, action: u, method: "POST", onSubmit: D, children: [
+      ((I = (L = g == null ? void 0 : g.form) == null ? void 0 : L.modify) == null ? void 0 : I.view) !== void 0 && /* @__PURE__ */ E(j, { children: [
         /* @__PURE__ */ s(
           Fe,
           {
             name: e,
             namespace: n.namespace,
-            view: p.form.modify.view
+            view: g.form.modify.view
           },
-          p.form.modify.view.id
+          g.form.modify.view.id
         ),
-        /* @__PURE__ */ s(st, { name: p.form.modify.view.full_name, className: "alert alert-danger" })
+        /* @__PURE__ */ s(it, { name: g.form.modify.view.full_name, className: "alert alert-danger" })
       ] }),
-      /* @__PURE__ */ s(V, { name: "actions", content: u, data: { formRef: E }, children: /* @__PURE__ */ s(he, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ s(Pe, { children: "Save" }) }) })
+      /* @__PURE__ */ s(U, { name: "actions", content: f, data: { formRef: y }, children: /* @__PURE__ */ s(ge, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ s(Pe, { children: "Save" }) }) })
     ] })
   ] });
-}), ct = ce(({
+}), ut = ce(({
   children: e,
   open: t = !1,
   animation: n = "fade",
@@ -590,87 +621,87 @@ const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   keyboard: o = !0,
   size: a,
   onClose: c,
-  className: u
-}, m) => {
-  const [i, h] = $(t);
-  ke(m, () => ({
-    toggle: () => h(!i),
-    open: () => h(!0),
-    close: () => d(),
-    isOpen: () => i
+  className: f
+}, p) => {
+  const [d, i] = V(t);
+  Re(p, () => ({
+    toggle: () => i(!d),
+    open: () => i(!0),
+    close: () => u(),
+    isOpen: () => d
   })), v(() => {
-    h(t);
+    i(t);
   }, [t]);
-  const f = (p) => {
+  const b = (y) => {
     if (o)
-      switch (p.key) {
+      switch (y.key) {
         case "Escape": {
-          d();
+          u();
           break;
         }
       }
   };
   v(() => {
-    var _;
-    if (!i)
+    var g;
+    if (!d)
       return;
-    const p = () => {
-      var A;
-      (A = l.current) == null || A.addEventListener("animationend", C);
-    }, C = () => {
-      var A, T, D;
-      (A = l.current) == null || A.classList.remove(n), (T = l.current) == null || T.removeEventListener("animationstart", p), (D = l.current) == null || D.removeEventListener("animationend", C);
+    const y = () => {
+      var C;
+      (C = l.current) == null || C.addEventListener("animationend", _);
+    }, _ = () => {
+      var C, T, D;
+      (C = l.current) == null || C.classList.remove(n), (T = l.current) == null || T.removeEventListener("animationstart", y), (D = l.current) == null || D.removeEventListener("animationend", _);
     };
     return setTimeout(() => {
-      var A, T;
-      (A = l.current) == null || A.classList.add("d-block", "show"), (T = b == null ? void 0 : b.current) == null || T.classList.add("show");
-    }, n ? 100 : 0), document.addEventListener("keydown", f), (_ = l.current) == null || _.addEventListener("animationstart", p), () => {
-      var A, T;
-      document.removeEventListener("keydown", f), (A = l.current) == null || A.removeEventListener("animationstart", p), (T = l.current) == null || T.removeEventListener("animationend", C);
+      var C, T;
+      (C = l.current) == null || C.classList.add("d-block", "show"), (T = m == null ? void 0 : m.current) == null || T.classList.add("show");
+    }, n ? 100 : 0), document.addEventListener("keydown", b), (g = l.current) == null || g.addEventListener("animationstart", y), () => {
+      var C, T;
+      document.removeEventListener("keydown", b), (C = l.current) == null || C.removeEventListener("animationstart", y), (T = l.current) == null || T.removeEventListener("animationend", _);
     };
-  }, [i]);
-  const l = k(null), b = k(null), E = () => {
-    h(!1), c && c();
-  }, d = () => new Promise((p, C) => {
-    var A, T;
-    if (!i)
-      return p();
-    const _ = () => {
+  }, [d]);
+  const l = R(null), m = R(null), A = () => {
+    i(!1), c && c();
+  }, u = () => new Promise((y, _) => {
+    var C, T;
+    if (!d)
+      return y();
+    const g = () => {
       var D;
-      (D = l == null ? void 0 : l.current) == null || D.classList.remove("show", "d-block"), p(), E();
+      (D = l == null ? void 0 : l.current) == null || D.classList.remove("show", "d-block"), y(), A();
     };
     if (n) {
       const D = setTimeout(() => {
-        _();
+        g();
       }, n ? 50 : 0);
-      (A = l.current) == null || A.addEventListener("animationstart", () => {
-        var y, O;
-        console.log("timeout"), clearTimeout(D), (y = l.current) == null || y.removeEventListener("animationend", _), (O = l.current) == null || O.addEventListener("animationend", _);
+      (C = l.current) == null || C.addEventListener("animationstart", () => {
+        var k, F;
+        console.log("timeout"), clearTimeout(D), (k = l.current) == null || k.removeEventListener("animationend", g), (F = l.current) == null || F.addEventListener("animationend", g);
       }), (T = l.current) == null || T.classList.add(n, "close");
     } else
-      _();
+      g();
   });
-  return i && Bt(/* @__PURE__ */ N(x, { children: [
+  return d && Bt(/* @__PURE__ */ E(j, { children: [
     /* @__PURE__ */ s(
       "div",
       {
         ref: l,
-        className: ["modal", a && "modal-" + a, n && n, u].filter((p) => p).join(" "),
-        children: /* @__PURE__ */ s("div", { className: "modal-dialog modal-dialog-centered", role: "document", children: /* @__PURE__ */ N("div", { className: "modal-content", children: [
-          /* @__PURE__ */ s(V, { name: "header", content: e, data: null, children: /* @__PURE__ */ N("div", { className: "modal-header", children: [
-            /* @__PURE__ */ s("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ s(V, { name: "title", content: e, data: null, children: "Title" }) }),
-            /* @__PURE__ */ s("button", { onClick: d, type: "button", className: "btn-close", "aria-label": "Close" })
+        className: ["modal", a && "modal-" + a, n && n, f].filter((y) => y).join(" "),
+        children: /* @__PURE__ */ s("div", { className: "modal-dialog modal-dialog-centered", role: "document", children: /* @__PURE__ */ E("div", { className: "modal-content", children: [
+          /* @__PURE__ */ s(U, { name: "header", content: e, data: null, children: /* @__PURE__ */ E("div", { className: "modal-header", children: [
+            /* @__PURE__ */ s("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ s(U, { name: "title", content: e, data: null, children: "Title" }) }),
+            /* @__PURE__ */ s("button", { onClick: u, type: "button", className: "btn-close", "aria-label": "Close" })
           ] }) }),
-          /* @__PURE__ */ s("div", { className: "modal-body", children: /* @__PURE__ */ s(V, { name: "content", content: e, data: null, children: e }) }),
-          /* @__PURE__ */ s(V, { name: "footer", content: e, data: null, children: /* @__PURE__ */ s("div", { className: "modal-footer", children: /* @__PURE__ */ s(V, { name: "actions", content: e, data: null, children: /* @__PURE__ */ s("button", { onClick: d, type: "button", className: "btn btn-secondary", children: "Close" }) }) }) })
+          /* @__PURE__ */ s("div", { className: "modal-body", children: /* @__PURE__ */ s(U, { name: "content", content: e, data: null, children: e }) }),
+          /* @__PURE__ */ s(U, { name: "footer", content: e, data: null, children: /* @__PURE__ */ s("div", { className: "modal-footer", children: /* @__PURE__ */ s(U, { name: "actions", content: e, data: null, children: /* @__PURE__ */ s("button", { onClick: u, type: "button", className: "btn btn-secondary", children: "Close" }) }) }) })
         ] }) })
       }
     ),
     r && /* @__PURE__ */ s(
       "div",
       {
-        ref: b,
-        className: ["modal-backdrop", "fade", ...n && ["show"]].filter((p) => p).join(" ")
+        ref: m,
+        className: ["modal-backdrop", "fade", ...n && ["show"]].filter((y) => y).join(" ")
       }
     )
   ] }), document.body);
@@ -683,11 +714,11 @@ const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   className: a,
   ...c
 }) => {
-  const u = k(null);
+  const f = R(null);
   return v(() => {
-    if (!u.current)
+    if (!f.current)
       return;
-    const m = Kt.loadAnimation({
+    const p = Kt.loadAnimation({
       renderer: "svg",
       loop: !1,
       autoplay: !0,
@@ -696,29 +727,29 @@ const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
       },
       animationData: e,
       path: t,
-      container: u.current,
+      container: f.current,
       ...n || {}
     });
     return () => {
-      m.destroy();
+      p.destroy();
     };
-  }, []), /* @__PURE__ */ s("div", { className: a, ref: u, style: { width: r, height: o } });
-}, it = S.createContext(void 0);
-var oe = /* @__PURE__ */ ((e) => (e[e.success = 0] = "success", e[e.denied = 1] = "denied", e[e.warning = 2] = "warning", e[e.info = 3] = "info", e[e.confirm = 4] = "confirm", e))(oe || {});
-function lt() {
-  const e = S.useContext(it);
+  }, []), /* @__PURE__ */ s("div", { className: a, ref: f, style: { width: r, height: o } });
+}, dt = P.createContext(void 0);
+var ae = /* @__PURE__ */ ((e) => (e[e.success = 0] = "success", e[e.denied = 1] = "denied", e[e.warning = 2] = "warning", e[e.info = 3] = "info", e[e.confirm = 4] = "confirm", e))(ae || {});
+function ft() {
+  const e = P.useContext(dt);
   if (e === void 0)
     throw new Error("UseAlert must be within AlertProvider");
   return e;
 }
 function sn(e) {
-  var h;
-  const [t, n] = $(), r = k(0), o = k(void 0), [a, c] = $(null);
+  var i;
+  const [t, n] = V(), r = R(0), o = R(void 0), [a, c] = V(null);
   v(() => {
     r.current += 1;
   }, [t]);
-  const u = /* @__PURE__ */ Object.assign({ "/src/assets/images/alert/denied.json": () => import("./denied-CgoMpaA7.js"), "/src/assets/images/alert/info.json": () => import("./info-D-NzIEYs.js"), "/src/assets/images/alert/success.json": () => import("./success-Bu_BJcf1.js"), "/src/assets/images/alert/warning.json": () => import("./warning-B1nr7TsB.js") }), m = (f) => {
-    var E, d;
+  const f = /* @__PURE__ */ Object.assign({ "/src/assets/images/alert/denied.json": () => import("./denied-CgoMpaA7.js"), "/src/assets/images/alert/info.json": () => import("./info-D-NzIEYs.js"), "/src/assets/images/alert/success.json": () => import("./success-Bu_BJcf1.js"), "/src/assets/images/alert/warning.json": () => import("./warning-B1nr7TsB.js") }), p = (b) => {
+    var A, u;
     let l = {
       title: "Are you confirm?",
       icon: 0,
@@ -726,19 +757,19 @@ function sn(e) {
       size: "auto",
       allowClose: !1,
       timeoutProgress: !1,
-      ...f || {}
+      ...b || {}
     };
-    const b = {
+    const m = {
       0: "success.json",
       1: "denied.json",
       2: "warning.json",
       3: "info.json",
       4: "info.json"
     };
-    if (Object.hasOwn(b, l.icon)) {
-      const p = b[l.icon], C = Object.keys(u).filter((_) => _.endsWith(p)).pop();
-      C && u[C]().then((_) => {
-        c(_.default);
+    if (Object.hasOwn(m, l.icon)) {
+      const y = m[l.icon], _ = Object.keys(f).filter((g) => g.endsWith(y)).pop();
+      _ && f[_]().then((g) => {
+        c(g.default);
       });
     }
     !l.actions && !l.timeoutProgress && (l.actions = {
@@ -749,40 +780,40 @@ function sn(e) {
       confirm: {
         label: "Confirm"
       }
-    }), (E = o.current) != null && E.isOpen() ? (d = o.current) == null || d.close().finally(() => {
+    }), (A = o.current) != null && A.isOpen() ? (u = o.current) == null || u.close().finally(() => {
       n(l);
     }) : n(l);
-  }, i = (f) => {
-    var b;
+  }, d = (b) => {
+    var m;
     const l = {
-      [f]: !0,
-      isConfirmed: f === "confirm",
-      isCancelled: f === "cancel",
-      isDenied: f === "deny"
+      [b]: !0,
+      isConfirmed: b === "confirm",
+      isCancelled: b === "cancel",
+      isDenied: b === "deny"
     };
-    t != null && t.onResult && t.onResult(l), (b = o.current) == null || b.close().then(() => {
+    t != null && t.onResult && t.onResult(l), (m = o.current) == null || m.close().then(() => {
       c(null), n(void 0);
     });
   };
-  return /* @__PURE__ */ N(it.Provider, { value: { open: m }, children: [
+  return /* @__PURE__ */ E(dt.Provider, { value: { open: p }, children: [
     e.children,
-    t && /* @__PURE__ */ N(ct, { size: t.size, className: "modal-alert", animation: t.animation, open: !0, ref: o, children: [
-      /* @__PURE__ */ s(B, { name: "header" }),
-      /* @__PURE__ */ s(B, { name: "footer" }),
-      /* @__PURE__ */ s(B, { name: "content", children: /* @__PURE__ */ N("div", { className: "d-flex flex-column align-items-center", children: [
+    t && /* @__PURE__ */ E(ut, { size: t.size, className: "modal-alert", animation: t.animation, open: !0, ref: o, children: [
+      /* @__PURE__ */ s(K, { name: "header" }),
+      /* @__PURE__ */ s(K, { name: "footer" }),
+      /* @__PURE__ */ s(K, { name: "content", children: /* @__PURE__ */ E("div", { className: "d-flex flex-column align-items-center", children: [
         a !== null && /* @__PURE__ */ s(rn, { className: "modal-alert-icon", animationData: a }),
         /* @__PURE__ */ s("h3", { className: "modal-alert-title", children: t.title }),
-        !!((h = t.text) != null && h.length) && /* @__PURE__ */ s("p", { className: "modal-alert-text", children: t.text }),
-        t.actions && /* @__PURE__ */ s("div", { className: "d-flex justify-content-center align-items-center", children: Object.keys(t.actions).map((f) => {
-          var l, b, E;
+        !!((i = t.text) != null && i.length) && /* @__PURE__ */ s("p", { className: "modal-alert-text", children: t.text }),
+        t.actions && /* @__PURE__ */ s("div", { className: "d-flex justify-content-center align-items-center", children: Object.keys(t.actions).map((b) => {
+          var l, m, A;
           return /* @__PURE__ */ s(
-            he,
+            ge,
             {
-              className: "btn btn-lg mx-2 " + (((l = t.actions) == null ? void 0 : l[f].classList) ?? ["btn-primary"]).join(" "),
-              onClick: () => i(f),
-              children: ((E = ((b = t.actions) == null ? void 0 : b[f]) ?? null) == null ? void 0 : E.label) || f
+              className: "btn btn-lg mx-2 " + (((l = t.actions) == null ? void 0 : l[b].classList) ?? ["btn-primary"]).join(" "),
+              onClick: () => d(b),
+              children: ((A = ((m = t.actions) == null ? void 0 : m[b]) ?? null) == null ? void 0 : A.label) || b
             },
-            f
+            b
           );
         }) })
       ] }) })
@@ -790,44 +821,44 @@ function sn(e) {
   ] });
 }
 const on = ({ action: e, children: t, routeParams: n, results: r }) => {
-  const { getAction: o } = Me(), a = o(e.entity, "list", e.namespace);
-  return /* @__PURE__ */ N("section", { className: "edit", children: [
-    /* @__PURE__ */ N("header", { children: [
-      /* @__PURE__ */ N("h2", { className: "title", children: [
-        a && /* @__PURE__ */ s(z, { to: w(a.route, n), children: "←" }),
-        /* @__PURE__ */ s(V, { name: "title", content: t, data: r })
+  const { getAction: o } = ve(), { generateLink: a } = Q(), c = o(e.entity, "list", e.namespace);
+  return /* @__PURE__ */ E("section", { className: "edit", children: [
+    /* @__PURE__ */ E("header", { children: [
+      /* @__PURE__ */ E("h2", { className: "title", children: [
+        c && /* @__PURE__ */ s(et, { to: a(c.route, n), children: "←" }),
+        /* @__PURE__ */ s(U, { name: "title", content: t, data: r })
       ] }),
-      /* @__PURE__ */ s("nav", { children: /* @__PURE__ */ s(V, { name: "navigation", content: t, data: r }) })
+      /* @__PURE__ */ s("nav", { children: /* @__PURE__ */ s(U, { name: "navigation", content: t, data: r }) })
     ] }),
-    /* @__PURE__ */ s("main", { children: /* @__PURE__ */ s(V, { name: "content", content: t, data: r }) })
+    /* @__PURE__ */ s("main", { children: /* @__PURE__ */ s(U, { name: "content", content: t, data: r }) })
   ] });
 }, We = ({ action: e, children: t, onSuccess: n, modal: r, props: o }) => {
-  const a = { ...e.parameters || {}, ...Vt() }, c = k(void 0), u = k(void 0), { results: m, setParameters: i } = at({
+  const a = { ...e.parameters || {}, ...Vt() }, c = R(void 0), f = R(void 0), { results: p, setParameters: d } = lt({
     entityAction: e.action,
     initParameters: a
-  }), { open: h } = lt();
+  }), { open: i } = ft();
   return v(() => {
-    i(a);
+    d(a);
   }, [JSON.stringify(a)]), v(() => {
     var l;
-    (l = u.current) == null || l.open();
-  }, [JSON.stringify(m)]), /* @__PURE__ */ N(r ? ct : on, { ref: u, ...o, action: e, routeParams: a, children: [
-    /* @__PURE__ */ s(B, { name: "title", children: /* @__PURE__ */ s(V, { name: "title", content: t, data: m, children: (m == null ? void 0 : m.title) || "Title" }) }),
-    /* @__PURE__ */ s(B, { name: "navigation", children: /* @__PURE__ */ s(J, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ s(V, { name: "navigation", content: t, data: m }) }) }),
-    /* @__PURE__ */ s(B, { name: "content", children: /* @__PURE__ */ s(J, { namespace: e.action.namespace, view: "content", prefix: "modify", children: /* @__PURE__ */ s(V, { name: "content", content: t, data: m, children: /* @__PURE__ */ s(
+    (l = f.current) == null || l.open();
+  }, [JSON.stringify(p)]), /* @__PURE__ */ E(r ? ut : on, { ref: f, ...o, action: e, routeParams: a, children: [
+    /* @__PURE__ */ s(K, { name: "title", children: /* @__PURE__ */ s(U, { name: "title", content: t, data: p, children: (p == null ? void 0 : p.title) || "Title" }) }),
+    /* @__PURE__ */ s(K, { name: "navigation", children: /* @__PURE__ */ s(J, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ s(U, { name: "navigation", content: t, data: p }) }) }),
+    /* @__PURE__ */ s(K, { name: "content", children: /* @__PURE__ */ s(J, { namespace: e.action.namespace, view: "content", prefix: "modify", children: /* @__PURE__ */ s(U, { name: "content", content: t, data: p, children: /* @__PURE__ */ s(
       nn,
       {
         ref: c,
-        data: m,
+        data: p,
         action: e.action,
         onSuccess: (l) => {
-          var E, d;
-          (E = u.current) == null || E.close();
-          const b = new CustomEvent("success", { detail: l });
-          n && n(b, l), !b.defaultPrevented && h({
+          var A, u;
+          (A = f.current) == null || A.close();
+          const m = new CustomEvent("success", { detail: l });
+          n && n(m, l), !m.defaultPrevented && i({
             title: "Success",
-            text: Object.values(((d = l.messages) == null ? void 0 : d.success) ?? []).join(" ") ?? "Item was saved successful!",
-            icon: oe.success,
+            text: Object.values(((u = l.messages) == null ? void 0 : u.success) ?? []).join(" ") ?? "Item was saved successful!",
+            icon: ae.success,
             actions: {
               close: {
                 label: "OK"
@@ -836,10 +867,10 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
           });
         },
         onError: (l) => {
-          h({
+          console.log(l), i({
             title: l.status + " " + l.detail,
             text: l.detail,
-            icon: oe.denied,
+            icon: ae.denied,
             actions: {
               close: {
                 label: "OK"
@@ -852,23 +883,23 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
         },
         embedded: r,
         parameters: a,
-        children: r && /* @__PURE__ */ s(B, { name: "actions" })
+        children: r && /* @__PURE__ */ s(K, { name: "actions" })
       }
     ) }) }) }),
-    /* @__PURE__ */ s(B, { name: "actions", children: /* @__PURE__ */ s(V, { name: "actions", content: t, data: m, children: /* @__PURE__ */ s(
+    /* @__PURE__ */ s(K, { name: "actions", children: /* @__PURE__ */ s(U, { name: "actions", content: t, data: p, children: /* @__PURE__ */ s(
       "button",
       {
         type: "submit",
         className: "btn btn-primary",
         onClick: () => {
-          var l, b;
-          return (b = (l = c.current) == null ? void 0 : l.getFormRef()) == null ? void 0 : b.submit();
+          var l, m;
+          return (m = (l = c.current) == null ? void 0 : l.getFormRef()) == null ? void 0 : m.submit();
         },
         children: "Submit"
       }
     ) }) })
   ] });
-}, an = () => /* @__PURE__ */ s("div", { children: "No View Found" }), qe = ({ to: e, children: t, ...n }) => /* @__PURE__ */ s(z, { to: e, ...n, children: /* @__PURE__ */ s(ot, { ...n, children: t && t }) }), Y = /* @__PURE__ */ new Map(), ge = {
+}, an = () => /* @__PURE__ */ s("div", { children: "No View Found" }), z = ({ to: e, children: t, ...n }) => (rt(), /* @__PURE__ */ s(et, { to: e, ...n, children: /* @__PURE__ */ s(ct, { ...n, children: t && t }) })), Y = /* @__PURE__ */ new Map(), be = {
   set(e, t, n) {
     Y.has(e) || Y.set(e, /* @__PURE__ */ new Map());
     const r = Y.get(e);
@@ -887,7 +918,7 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
     const n = Y.get(e);
     n.delete(t), n.size === 0 && Y.delete(e);
   }
-}, cn = 1e3, Te = "transitionend", ut = (e) => (e && window.CSS && window.CSS.escape && (e = e.replace(/#([^\s"#']+)/g, (t, n) => `#${CSS.escape(n)}`)), e), ln = (e) => e == null ? `${e}` : Object.prototype.toString.call(e).match(/\s([a-z]+)/i)[1].toLowerCase(), un = (e) => {
+}, cn = 1e3, Te = "transitionend", mt = (e) => (e && window.CSS && window.CSS.escape && (e = e.replace(/#([^\s"#']+)/g, (t, n) => `#${CSS.escape(n)}`)), e), ln = (e) => e == null ? `${e}` : Object.prototype.toString.call(e).match(/\s([a-z]+)/i)[1].toLowerCase(), un = (e) => {
   if (!e)
     return 0;
   let { transitionDuration: t, transitionDelay: n } = window.getComputedStyle(e);
@@ -895,7 +926,7 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
   return !r && !o ? 0 : (t = t.split(",")[0], n = n.split(",")[0], (Number.parseFloat(t) + Number.parseFloat(n)) * cn);
 }, dn = (e) => {
   e.dispatchEvent(new Event(Te));
-}, G = (e) => !e || typeof e != "object" ? !1 : (typeof e.jquery < "u" && (e = e[0]), typeof e.nodeType < "u"), Se = (e) => G(e) ? e.jquery ? e[0] : e : typeof e == "string" && e.length > 0 ? document.querySelector(ut(e)) : null, dt = (e) => {
+}, G = (e) => !e || typeof e != "object" ? !1 : (typeof e.jquery < "u" && (e = e[0]), typeof e.nodeType < "u"), Se = (e) => G(e) ? e.jquery ? e[0] : e : typeof e == "string" && e.length > 0 ? document.querySelector(mt(e)) : null, pt = (e) => {
   if (!G(e) || e.getClientRects().length === 0)
     return !1;
   const t = getComputedStyle(e).getPropertyValue("visibility") === "visible", n = e.closest("details:not([open])");
@@ -907,15 +938,15 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
       return !1;
   }
   return t;
-}, De = (e) => !e || e.nodeType !== Node.ELEMENT_NODE || e.classList.contains("disabled") ? !0 : typeof e.disabled < "u" ? e.disabled : e.hasAttribute("disabled") && e.getAttribute("disabled") !== "false", ze = () => {
-}, ft = () => window.jQuery && !document.body.hasAttribute("data-bs-no-jquery") ? window.jQuery : null, be = [], fn = (e) => {
-  document.readyState === "loading" ? (be.length || document.addEventListener("DOMContentLoaded", () => {
-    for (const t of be)
+}, De = (e) => !e || e.nodeType !== Node.ELEMENT_NODE || e.classList.contains("disabled") ? !0 : typeof e.disabled < "u" ? e.disabled : e.hasAttribute("disabled") && e.getAttribute("disabled") !== "false", qe = () => {
+}, ht = () => window.jQuery && !document.body.hasAttribute("data-bs-no-jquery") ? window.jQuery : null, ye = [], fn = (e) => {
+  document.readyState === "loading" ? (ye.length || document.addEventListener("DOMContentLoaded", () => {
+    for (const t of ye)
       t();
-  }), be.push(e)) : e();
-}, te = () => document.documentElement.dir === "rtl", mn = (e) => {
+  }), ye.push(e)) : e();
+}, ne = () => document.documentElement.dir === "rtl", mn = (e) => {
   fn(() => {
-    const t = ft();
+    const t = ht();
     if (t) {
       const n = e.NAME, r = t.fn[n];
       t.fn[n] = e.jQueryInterface, t.fn[n].Constructor = e, t.fn[n].noConflict = () => (t.fn[n] = r, e.jQueryInterface);
@@ -928,8 +959,8 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
   }
   const o = un(t) + 5;
   let a = !1;
-  const c = ({ target: u }) => {
-    u === t && (a = !0, t.removeEventListener(Te, c), Le(e));
+  const c = ({ target: f }) => {
+    f === t && (a = !0, t.removeEventListener(Te, c), Le(e));
   };
   t.addEventListener(Te, c), setTimeout(() => {
     a || dn(t);
@@ -938,9 +969,9 @@ const on = ({ action: e, children: t, routeParams: n, results: r }) => {
   const o = e.length;
   let a = e.indexOf(t);
   return a === -1 ? !n && r ? e[o - 1] : e[0] : (a += n ? 1 : -1, r && (a = (a + o) % o), e[Math.max(0, Math.min(a, o - 1))]);
-}, gn = /[^.]*(?=\..*)\.|.*/, bn = /\..*/, yn = /::\d+$/, ye = {};
-let Ge = 1;
-const mt = {
+}, gn = /[^.]*(?=\..*)\.|.*/, bn = /\..*/, yn = /::\d+$/, Ee = {};
+let ze = 1;
+const gt = {
   mouseenter: "mouseover",
   mouseleave: "mouseout"
 }, En = /* @__PURE__ */ new Set([
@@ -991,96 +1022,96 @@ const mt = {
   "abort",
   "scroll"
 ]);
-function pt(e, t) {
-  return t && `${t}::${Ge++}` || e.uidEvent || Ge++;
+function bt(e, t) {
+  return t && `${t}::${ze++}` || e.uidEvent || ze++;
 }
-function ht(e) {
-  const t = pt(e);
-  return e.uidEvent = t, ye[t] = ye[t] || {}, ye[t];
+function yt(e) {
+  const t = bt(e);
+  return e.uidEvent = t, Ee[t] = Ee[t] || {}, Ee[t];
 }
 function _n(e, t) {
   return function n(r) {
-    return Ie(r, { delegateTarget: e }), n.oneOff && I.off(e, r.type, t), t.apply(e, [r]);
+    return Ie(r, { delegateTarget: e }), n.oneOff && $.off(e, r.type, t), t.apply(e, [r]);
   };
 }
 function Nn(e, t, n) {
   return function r(o) {
     const a = e.querySelectorAll(t);
     for (let { target: c } = o; c && c !== this; c = c.parentNode)
-      for (const u of a)
-        if (u === c)
-          return Ie(o, { delegateTarget: c }), r.oneOff && I.off(e, o.type, t, n), n.apply(c, [o]);
+      for (const f of a)
+        if (f === c)
+          return Ie(o, { delegateTarget: c }), r.oneOff && $.off(e, o.type, t, n), n.apply(c, [o]);
   };
 }
-function gt(e, t, n = null) {
+function Et(e, t, n = null) {
   return Object.values(e).find((r) => r.callable === t && r.delegationSelector === n);
 }
-function bt(e, t, n) {
+function _t(e, t, n) {
   const r = typeof t == "string", o = r ? n : t || n;
-  let a = yt(e);
+  let a = Nt(e);
   return En.has(a) || (a = e), [r, o, a];
 }
-function Je(e, t, n, r, o) {
+function Ge(e, t, n, r, o) {
   if (typeof t != "string" || !e)
     return;
-  let [a, c, u] = bt(t, n, r);
-  t in mt && (c = ((E) => function(d) {
-    if (!d.relatedTarget || d.relatedTarget !== d.delegateTarget && !d.delegateTarget.contains(d.relatedTarget))
-      return E.call(this, d);
+  let [a, c, f] = _t(t, n, r);
+  t in gt && (c = ((A) => function(u) {
+    if (!u.relatedTarget || u.relatedTarget !== u.delegateTarget && !u.delegateTarget.contains(u.relatedTarget))
+      return A.call(this, u);
   })(c));
-  const m = ht(e), i = m[u] || (m[u] = {}), h = gt(i, c, a ? n : null);
-  if (h) {
-    h.oneOff = h.oneOff && o;
+  const p = yt(e), d = p[f] || (p[f] = {}), i = Et(d, c, a ? n : null);
+  if (i) {
+    i.oneOff = i.oneOff && o;
     return;
   }
-  const f = pt(c, t.replace(gn, "")), l = a ? Nn(e, n, c) : _n(e, c);
-  l.delegationSelector = a ? n : null, l.callable = c, l.oneOff = o, l.uidEvent = f, i[f] = l, e.addEventListener(u, l, a);
+  const b = bt(c, t.replace(gn, "")), l = a ? Nn(e, n, c) : _n(e, c);
+  l.delegationSelector = a ? n : null, l.callable = c, l.oneOff = o, l.uidEvent = b, d[b] = l, e.addEventListener(f, l, a);
 }
-function je(e, t, n, r, o) {
-  const a = gt(t[n], r, o);
+function ke(e, t, n, r, o) {
+  const a = Et(t[n], r, o);
   a && (e.removeEventListener(n, a, !!o), delete t[n][a.uidEvent]);
 }
 function Cn(e, t, n, r) {
   const o = t[n] || {};
   for (const [a, c] of Object.entries(o))
-    a.includes(r) && je(e, t, n, c.callable, c.delegationSelector);
+    a.includes(r) && ke(e, t, n, c.callable, c.delegationSelector);
 }
-function yt(e) {
-  return e = e.replace(bn, ""), mt[e] || e;
+function Nt(e) {
+  return e = e.replace(bn, ""), gt[e] || e;
 }
-const I = {
+const $ = {
   on(e, t, n, r) {
-    Je(e, t, n, r, !1);
+    Ge(e, t, n, r, !1);
   },
   one(e, t, n, r) {
-    Je(e, t, n, r, !0);
+    Ge(e, t, n, r, !0);
   },
   off(e, t, n, r) {
     if (typeof t != "string" || !e)
       return;
-    const [o, a, c] = bt(t, n, r), u = c !== t, m = ht(e), i = m[c] || {}, h = t.startsWith(".");
+    const [o, a, c] = _t(t, n, r), f = c !== t, p = yt(e), d = p[c] || {}, i = t.startsWith(".");
     if (typeof a < "u") {
-      if (!Object.keys(i).length)
+      if (!Object.keys(d).length)
         return;
-      je(e, m, c, a, o ? n : null);
+      ke(e, p, c, a, o ? n : null);
       return;
     }
-    if (h)
-      for (const f of Object.keys(m))
-        Cn(e, m, f, t.slice(1));
-    for (const [f, l] of Object.entries(i)) {
-      const b = f.replace(yn, "");
-      (!u || t.includes(b)) && je(e, m, c, l.callable, l.delegationSelector);
+    if (i)
+      for (const b of Object.keys(p))
+        Cn(e, p, b, t.slice(1));
+    for (const [b, l] of Object.entries(d)) {
+      const m = b.replace(yn, "");
+      (!f || t.includes(m)) && ke(e, p, c, l.callable, l.delegationSelector);
     }
   },
   trigger(e, t, n) {
     if (typeof t != "string" || !e)
       return null;
-    const r = ft(), o = yt(t), a = t !== o;
-    let c = null, u = !0, m = !0, i = !1;
-    a && r && (c = r.Event(t, n), r(e).trigger(c), u = !c.isPropagationStopped(), m = !c.isImmediatePropagationStopped(), i = c.isDefaultPrevented());
-    const h = Ie(new Event(t, { bubbles: u, cancelable: !0 }), n);
-    return i && h.preventDefault(), m && e.dispatchEvent(h), h.defaultPrevented && c && c.preventDefault(), h;
+    const r = ht(), o = Nt(t), a = t !== o;
+    let c = null, f = !0, p = !0, d = !1;
+    a && r && (c = r.Event(t, n), r(e).trigger(c), f = !c.isPropagationStopped(), p = !c.isImmediatePropagationStopped(), d = c.isDefaultPrevented());
+    const i = Ie(new Event(t, { bubbles: f, cancelable: !0 }), n);
+    return d && i.preventDefault(), p && e.dispatchEvent(i), i.defaultPrevented && c && c.preventDefault(), i;
   }
 };
 function Ie(e, t = {}) {
@@ -1097,7 +1128,7 @@ function Ie(e, t = {}) {
     }
   return e;
 }
-function Qe(e) {
+function Je(e) {
   if (e === "true")
     return !0;
   if (e === "false")
@@ -1114,15 +1145,15 @@ function Qe(e) {
     return e;
   }
 }
-function Ee(e) {
+function _e(e) {
   return e.replace(/[A-Z]/g, (t) => `-${t.toLowerCase()}`);
 }
-const de = {
+const fe = {
   setDataAttribute(e, t, n) {
-    e.setAttribute(`data-bs-${Ee(t)}`, n);
+    e.setAttribute(`data-bs-${_e(t)}`, n);
   },
   removeDataAttribute(e, t) {
-    e.removeAttribute(`data-bs-${Ee(t)}`);
+    e.removeAttribute(`data-bs-${_e(t)}`);
   },
   getDataAttributes(e) {
     if (!e)
@@ -1130,12 +1161,12 @@ const de = {
     const t = {}, n = Object.keys(e.dataset).filter((r) => r.startsWith("bs") && !r.startsWith("bsConfig"));
     for (const r of n) {
       let o = r.replace(/^bs/, "");
-      o = o.charAt(0).toLowerCase() + o.slice(1, o.length), t[o] = Qe(e.dataset[r]);
+      o = o.charAt(0).toLowerCase() + o.slice(1, o.length), t[o] = Je(e.dataset[r]);
     }
     return t;
   },
   getDataAttribute(e, t) {
-    return Qe(e.getAttribute(`data-bs-${Ee(t)}`));
+    return Je(e.getAttribute(`data-bs-${_e(t)}`));
   }
 };
 class An {
@@ -1156,11 +1187,11 @@ class An {
     return t;
   }
   _mergeConfigObj(t, n) {
-    const r = G(n) ? de.getDataAttribute(n, "config") : {};
+    const r = G(n) ? fe.getDataAttribute(n, "config") : {};
     return {
       ...this.constructor.Default,
       ...typeof r == "object" ? r : {},
-      ...G(n) ? de.getDataAttributes(n) : {},
+      ...G(n) ? fe.getDataAttributes(n) : {},
       ...typeof t == "object" ? t : {}
     };
   }
@@ -1177,11 +1208,11 @@ class An {
 const On = "5.3.3";
 class Pn extends An {
   constructor(t, n) {
-    super(), t = Se(t), t && (this._element = t, this._config = this._getConfig(n), ge.set(this._element, this.constructor.DATA_KEY, this));
+    super(), t = Se(t), t && (this._element = t, this._config = this._getConfig(n), be.set(this._element, this.constructor.DATA_KEY, this));
   }
   // Public
   dispose() {
-    ge.remove(this._element, this.constructor.DATA_KEY), I.off(this._element, this.constructor.EVENT_KEY);
+    be.remove(this._element, this.constructor.DATA_KEY), $.off(this._element, this.constructor.EVENT_KEY);
     for (const t of Object.getOwnPropertyNames(this))
       this[t] = null;
   }
@@ -1193,7 +1224,7 @@ class Pn extends An {
   }
   // Static
   static getInstance(t) {
-    return ge.get(Se(t), this.DATA_KEY);
+    return be.get(Se(t), this.DATA_KEY);
   }
   static getOrCreateInstance(t, n = {}) {
     return this.getInstance(t) || new this(t, typeof n == "object" ? n : null);
@@ -1211,7 +1242,7 @@ class Pn extends An {
     return `${t}${this.EVENT_KEY}`;
   }
 }
-const _e = (e) => {
+const Ne = (e) => {
   let t = e.getAttribute("data-bs-target");
   if (!t || t === "#") {
     let n = e.getAttribute("href");
@@ -1219,8 +1250,8 @@ const _e = (e) => {
       return null;
     n.includes("#") && !n.startsWith("#") && (n = `#${n.split("#")[1]}`), t = n && n !== "#" ? n.trim() : null;
   }
-  return t ? t.split(",").map((n) => ut(n)).join(",") : null;
-}, U = {
+  return t ? t.split(",").map((n) => mt(n)).join(",") : null;
+}, B = {
   find(e, t = document.documentElement) {
     return [].concat(...Element.prototype.querySelectorAll.call(t, e));
   },
@@ -1267,21 +1298,21 @@ const _e = (e) => {
       "[tabindex]",
       '[contenteditable="true"]'
     ].map((n) => `${n}:not([tabindex^="-"])`).join(",");
-    return this.find(t, e).filter((n) => !De(n) && dt(n));
+    return this.find(t, e).filter((n) => !De(n) && pt(n));
   },
   getSelectorFromElement(e) {
-    const t = _e(e);
-    return t && U.findOne(t) ? t : null;
+    const t = Ne(e);
+    return t && B.findOne(t) ? t : null;
   },
   getElementFromSelector(e) {
-    const t = _e(e);
-    return t ? U.findOne(t) : null;
+    const t = Ne(e);
+    return t ? B.findOne(t) : null;
   },
   getMultipleElementsFromSelector(e) {
-    const t = _e(e);
-    return t ? U.find(t) : [];
+    const t = Ne(e);
+    return t ? B.find(t) : [];
   }
-}, Ze = "dropdown", Tn = "bs.dropdown", Q = `.${Tn}`, Ve = ".data-api", Sn = "Escape", Xe = "Tab", Dn = "ArrowUp", et = "ArrowDown", Ln = 2, jn = `hide${Q}`, xn = `hidden${Q}`, kn = `show${Q}`, Rn = `shown${Q}`, Et = `click${Q}${Ve}`, _t = `keydown${Q}${Ve}`, Mn = `keyup${Q}${Ve}`, ee = "show", vn = "dropup", Fn = "dropend", In = "dropstart", Vn = "dropup-center", $n = "dropdown-center", q = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Un = `${q}.${ee}`, le = ".dropdown-menu", Bn = ".navbar", Kn = ".navbar-nav", Hn = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", Yn = te() ? "top-end" : "top-start", wn = te() ? "top-start" : "top-end", Wn = te() ? "bottom-end" : "bottom-start", qn = te() ? "bottom-start" : "bottom-end", zn = te() ? "left-start" : "right-start", Gn = te() ? "right-start" : "left-start", Jn = "top", Qn = "bottom", Zn = {
+}, Qe = "dropdown", Tn = "bs.dropdown", Z = `.${Tn}`, $e = ".data-api", Sn = "Escape", Ze = "Tab", Dn = "ArrowUp", Xe = "ArrowDown", Ln = 2, kn = `hide${Z}`, xn = `hidden${Z}`, jn = `show${Z}`, Rn = `shown${Z}`, Ct = `click${Z}${$e}`, At = `keydown${Z}${$e}`, vn = `keyup${Z}${$e}`, te = "show", Mn = "dropup", Fn = "dropend", In = "dropstart", $n = "dropup-center", Vn = "dropdown-center", q = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Un = `${q}.${te}`, ue = ".dropdown-menu", Bn = ".navbar", Kn = ".navbar-nav", Hn = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", wn = ne() ? "top-end" : "top-start", Yn = ne() ? "top-start" : "top-end", Wn = ne() ? "bottom-end" : "bottom-start", qn = ne() ? "bottom-start" : "bottom-end", zn = ne() ? "left-start" : "right-start", Gn = ne() ? "right-start" : "left-start", Jn = "top", Qn = "bottom", Zn = {
   autoClose: !0,
   boundary: "clippingParents",
   display: "dynamic",
@@ -1296,9 +1327,9 @@ const _e = (e) => {
   popperConfig: "(null|object|function)",
   reference: "(string|element|object)"
 };
-let Z = class ue extends Pn {
+let X = class de extends Pn {
   constructor(t, n) {
-    super(t, n), this._popper = null, this._parent = this._element.parentNode, this._menu = U.next(this._element, le)[0] || U.prev(this._element, le)[0] || U.findOne(le, this._parent), this._inNavbar = this._detectNavbar();
+    super(t, n), this._popper = null, this._parent = this._element.parentNode, this._menu = B.next(this._element, ue)[0] || B.prev(this._element, ue)[0] || B.findOne(ue, this._parent), this._inNavbar = this._detectNavbar();
   }
   // Getters
   static get Default() {
@@ -1308,7 +1339,7 @@ let Z = class ue extends Pn {
     return Xn;
   }
   static get NAME() {
-    return Ze;
+    return Qe;
   }
   // Public
   toggle() {
@@ -1320,11 +1351,11 @@ let Z = class ue extends Pn {
     const t = {
       relatedTarget: this._element
     };
-    if (!I.trigger(this._element, kn, t).defaultPrevented) {
+    if (!$.trigger(this._element, jn, t).defaultPrevented) {
       if (this._createPopper(), "ontouchstart" in document.documentElement && !this._parent.closest(Kn))
         for (const r of [].concat(...document.body.children))
-          I.on(r, "mouseover", ze);
-      this._element.focus(), this._element.setAttribute("aria-expanded", !0), this._menu.classList.add(ee), this._element.classList.add(ee), I.trigger(this._element, Rn, t);
+          $.on(r, "mouseover", qe);
+      this._element.focus(), this._element.setAttribute("aria-expanded", !0), this._menu.classList.add(te), this._element.classList.add(te), $.trigger(this._element, Rn, t);
     }
   }
   hide() {
@@ -1343,16 +1374,16 @@ let Z = class ue extends Pn {
   }
   // Private
   _completeHide(t) {
-    if (!I.trigger(this._element, jn, t).defaultPrevented) {
+    if (!$.trigger(this._element, kn, t).defaultPrevented) {
       if ("ontouchstart" in document.documentElement)
         for (const r of [].concat(...document.body.children))
-          I.off(r, "mouseover", ze);
-      this._popper && this._popper.destroy(), this._menu.classList.remove(ee), this._element.classList.remove(ee), this._element.setAttribute("aria-expanded", "false"), de.removeDataAttribute(this._menu, "popper"), I.trigger(this._element, xn, t);
+          $.off(r, "mouseover", qe);
+      this._popper && this._popper.destroy(), this._menu.classList.remove(te), this._element.classList.remove(te), this._element.setAttribute("aria-expanded", "false"), fe.removeDataAttribute(this._menu, "popper"), $.trigger(this._element, xn, t);
     }
   }
   _getConfig(t) {
     if (t = super._getConfig(t), typeof t.reference == "object" && !G(t.reference) && typeof t.reference.getBoundingClientRect != "function")
-      throw new TypeError(`${Ze.toUpperCase()}: Option "reference" provided type "object" without a required "getBoundingClientRect" method.`);
+      throw new TypeError(`${Qe.toUpperCase()}: Option "reference" provided type "object" without a required "getBoundingClientRect" method.`);
     return t;
   }
   _createPopper() {
@@ -1364,7 +1395,7 @@ let Z = class ue extends Pn {
     this._popper = He.createPopper(t, this._menu, n);
   }
   _isShown() {
-    return this._menu.classList.contains(ee);
+    return this._menu.classList.contains(te);
   }
   _getPlacement() {
     const t = this._parent;
@@ -1372,12 +1403,12 @@ let Z = class ue extends Pn {
       return zn;
     if (t.classList.contains(In))
       return Gn;
-    if (t.classList.contains(Vn))
-      return Jn;
     if (t.classList.contains($n))
+      return Jn;
+    if (t.classList.contains(Vn))
       return Qn;
     const n = getComputedStyle(this._menu).getPropertyValue("--bs-position").trim() === "end";
-    return t.classList.contains(vn) ? n ? wn : Yn : n ? qn : Wn;
+    return t.classList.contains(Mn) ? n ? Yn : wn : n ? qn : Wn;
   }
   _detectNavbar() {
     return this._element.closest(Bn) !== null;
@@ -1404,7 +1435,7 @@ let Z = class ue extends Pn {
         }
       ]
     };
-    return (this._inNavbar || this._config.display === "static") && (de.setDataAttribute(this._menu, "popper", "static"), t.modifiers = [{
+    return (this._inNavbar || this._config.display === "static") && (fe.setDataAttribute(this._menu, "popper", "static"), t.modifiers = [{
       name: "applyStyles",
       enabled: !1
     }]), {
@@ -1413,13 +1444,13 @@ let Z = class ue extends Pn {
     };
   }
   _selectMenuItem({ key: t, target: n }) {
-    const r = U.find(Hn, this._menu).filter((o) => dt(o));
-    r.length && hn(r, n, t === et, !r.includes(n)).focus();
+    const r = B.find(Hn, this._menu).filter((o) => pt(o));
+    r.length && hn(r, n, t === Xe, !r.includes(n)).focus();
   }
   // Static
   static jQueryInterface(t) {
     return this.each(function() {
-      const n = ue.getOrCreateInstance(this, t);
+      const n = de.getOrCreateInstance(this, t);
       if (typeof t == "string") {
         if (typeof n[t] > "u")
           throw new TypeError(`No method named "${t}"`);
@@ -1428,26 +1459,26 @@ let Z = class ue extends Pn {
     });
   }
   static clearMenus(t) {
-    if (t.button === Ln || t.type === "keyup" && t.key !== Xe)
+    if (t.button === Ln || t.type === "keyup" && t.key !== Ze)
       return;
-    const n = U.find(Un);
+    const n = B.find(Un);
     for (const r of n) {
-      const o = ue.getInstance(r);
+      const o = de.getInstance(r);
       if (!o || o._config.autoClose === !1)
         continue;
       const a = t.composedPath(), c = a.includes(o._menu);
-      if (a.includes(o._element) || o._config.autoClose === "inside" && !c || o._config.autoClose === "outside" && c || o._menu.contains(t.target) && (t.type === "keyup" && t.key === Xe || /input|select|option|textarea|form/i.test(t.target.tagName)))
+      if (a.includes(o._element) || o._config.autoClose === "inside" && !c || o._config.autoClose === "outside" && c || o._menu.contains(t.target) && (t.type === "keyup" && t.key === Ze || /input|select|option|textarea|form/i.test(t.target.tagName)))
         continue;
-      const u = { relatedTarget: o._element };
-      t.type === "click" && (u.clickEvent = t), o._completeHide(u);
+      const f = { relatedTarget: o._element };
+      t.type === "click" && (f.clickEvent = t), o._completeHide(f);
     }
   }
   static dataApiKeydownHandler(t) {
-    const n = /input|textarea/i.test(t.target.tagName), r = t.key === Sn, o = [Dn, et].includes(t.key);
+    const n = /input|textarea/i.test(t.target.tagName), r = t.key === Sn, o = [Dn, Xe].includes(t.key);
     if (!o && !r || n && !r)
       return;
     t.preventDefault();
-    const a = this.matches(q) ? this : U.prev(this, q)[0] || U.next(this, q)[0] || U.findOne(q, t.delegateTarget.parentNode), c = ue.getOrCreateInstance(a);
+    const a = this.matches(q) ? this : B.prev(this, q)[0] || B.next(this, q)[0] || B.findOne(q, t.delegateTarget.parentNode), c = de.getOrCreateInstance(a);
     if (o) {
       t.stopPropagation(), c.show(), c._selectMenuItem(t);
       return;
@@ -1455,137 +1486,137 @@ let Z = class ue extends Pn {
     c._isShown() && (t.stopPropagation(), c.hide(), a.focus());
   }
 };
-I.on(document, _t, q, Z.dataApiKeydownHandler);
-I.on(document, _t, le, Z.dataApiKeydownHandler);
-I.on(document, Et, Z.clearMenus);
-I.on(document, Mn, Z.clearMenus);
-I.on(document, Et, q, function(e) {
-  e.preventDefault(), Z.getOrCreateInstance(this).toggle();
+$.on(document, At, q, X.dataApiKeydownHandler);
+$.on(document, At, ue, X.dataApiKeydownHandler);
+$.on(document, Ct, X.clearMenus);
+$.on(document, vn, X.clearMenus);
+$.on(document, Ct, q, function(e) {
+  e.preventDefault(), X.getOrCreateInstance(this).toggle();
 });
-mn(Z);
-const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, { children: e }), se = ({ children: e, ...t }) => /* @__PURE__ */ s("div", { className: "dropdown-menu", children: e }), Nt = ({ items: e, className: t, children: n, icon: r }) => {
-  const o = k(null);
+mn(X);
+const me = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(j, { children: e }), oe = ({ children: e, ...t }) => /* @__PURE__ */ s("div", { className: "dropdown-menu", children: e }), Ot = ({ items: e, className: t, children: n, icon: r }) => {
+  const o = R(null);
   v(() => {
-    const h = new Z(o.current);
+    const i = new X(o.current);
     return () => {
-      h.dispose();
+      i.dispose();
     };
   }, []);
-  const a = S.Children.toArray(n).find((h) => S.isValidElement(h) && h.type === se), c = S.Children.toArray(n).filter((h) => S.isValidElement(h) && h.type === qe), u = S.Children.toArray(n).find((h) => S.isValidElement(h) && h.type === fe), m = S.Children.toArray(n).filter((h) => !S.isValidElement(h) || h.type !== qe && h.type !== se && h.type !== fe), i = S.isValidElement(u) ? u.props : {};
-  return /* @__PURE__ */ N("div", { className: [...(t || "").split(" "), "dropdown"].filter((h, f, l) => l.indexOf(h) === f).join(" "), children: [
-    /* @__PURE__ */ s(he, { ref: o, "data-bs-toggle": "dropdown", ...i, className: [...(i.className || "").split(" "), "btn", "dropdown-toggle"].filter((h, f, l) => l.indexOf(h) === f).join(" "), children: i.children ? i.children : m }),
-    a || /* @__PURE__ */ s(se, { children: c })
+  const a = P.Children.toArray(n).find((i) => P.isValidElement(i) && i.type === oe), c = P.Children.toArray(n).filter((i) => P.isValidElement(i) && i.type === z), f = P.Children.toArray(n).find((i) => P.isValidElement(i) && i.type === me), p = P.Children.toArray(n).filter((i) => !P.isValidElement(i) || i.type !== z && i.type !== oe && i.type !== me), d = P.isValidElement(f) ? f.props : {};
+  return /* @__PURE__ */ E("div", { className: [...(t || "").split(" "), "dropdown"].filter((i, b, l) => l.indexOf(i) === b).join(" "), children: [
+    /* @__PURE__ */ s(ge, { ref: o, "data-bs-toggle": "dropdown", ...d, className: [...(d.className || "").split(" "), "btn", "dropdown-toggle"].filter((i, b, l) => l.indexOf(i) === b).join(" "), children: d.children ? d.children : p }),
+    a || /* @__PURE__ */ s(oe, { children: c })
   ] });
-}, er = ce(({ data: e, columns: t, options: n, onClick: r, onBatchClick: o, routeParams: a, namespace: c }, u) => {
-  var D, y, O, R, j, M, F;
-  t = (t || ((D = e == null ? void 0 : e.entity) == null ? void 0 : D.columns) || []).filter((g) => g.group !== !1);
-  const [, m] = $(), i = (y = e == null ? void 0 : e.entity) == null ? void 0 : y.primaryColumn, h = Object.values((e == null ? void 0 : e.action) || []), f = h.filter((g) => g.object), l = t.length + (h.length ? 1 : 0), b = ((e == null ? void 0 : e.entity.data.items) || []).map((g) => g[(i == null ? void 0 : i.field) || ""] || 0), E = k([]), d = !!b.length && b.reduce((g, P) => g && E.current.includes(P), !0), p = (j = (R = (O = e == null ? void 0 : e.form) == null ? void 0 : O.batch.view.children) == null ? void 0 : R.method) == null ? void 0 : j.choices, C = !!(p != null && p.length) && i, _ = (g, P = !1) => {
-    P ? E.current.push(g) : E.current = E.current.filter((L) => L !== g), m({});
-  }, A = (g = !1) => {
-    E.current = (g ? E.current.concat(b) : E.current.filter((P) => !b.includes(P))).filter((P, L, K) => K.indexOf(P) === L), m({});
-  }, T = (g) => {
-    var K, H;
+}, er = ce(({ data: e, columns: t, options: n, onClick: r, onBatchClick: o, routeParams: a, namespace: c }, f) => {
+  var k, F, N, L, I, x, M;
+  t = (t || ((k = e == null ? void 0 : e.entity) == null ? void 0 : k.columns) || []).filter((h) => h.group !== !1);
+  const [, p] = V(), { generateLink: d } = Q(), i = (F = e == null ? void 0 : e.entity) == null ? void 0 : F.primaryColumn, b = Object.values((e == null ? void 0 : e.action) || []), l = b.filter((h) => h.object), m = t.length + (b.length ? 1 : 0), A = ((e == null ? void 0 : e.entity.data.items) || []).map((h) => h[(i == null ? void 0 : i.field) || ""] || 0), u = R([]), y = !!A.length && A.reduce((h, S) => h && u.current.includes(S), !0), _ = (I = (L = (N = e == null ? void 0 : e.form) == null ? void 0 : N.batch.view.children) == null ? void 0 : L.method) == null ? void 0 : I.choices, g = !!(_ != null && _.length) && i, C = (h, S = !1) => {
+    S ? u.current.push(h) : u.current = u.current.filter((O) => O !== h), p({});
+  }, T = (h = !1) => {
+    u.current = (h ? u.current.concat(A) : u.current.filter((S) => !A.includes(S))).filter((S, O, H) => H.indexOf(S) === O), p({});
+  }, D = (h) => {
+    var H, w;
     if (!o)
       return;
-    const P = e == null ? void 0 : e.form.batch.view;
-    if (!C || !((K = E.current) != null && K.length))
+    const S = e == null ? void 0 : e.form.batch.view;
+    if (!g || !((H = u.current) != null && H.length))
       return;
-    const L = new FormData();
-    E.current.forEach((ne) => {
+    const O = new FormData();
+    u.current.forEach((re) => {
       var Ue;
-      L.append(`${(Ue = P == null ? void 0 : P.children) == null ? void 0 : Ue.ids.full_name}[]`, ne.toString());
-    }), L.append(((H = P == null ? void 0 : P.children) == null ? void 0 : H.method.full_name) || "method", g), o(g, E.current, L);
+      O.append(`${(Ue = S == null ? void 0 : S.children) == null ? void 0 : Ue.ids.full_name}[]`, re.toString());
+    }), O.append(((w = S == null ? void 0 : S.children) == null ? void 0 : w.method.full_name) || "method", h), o(h, u.current, O);
   };
-  return /* @__PURE__ */ N(x, { children: [
-    C && /* @__PURE__ */ N("div", { className: "btn-group btn-group-sm mb-2", children: [
+  return /* @__PURE__ */ E(j, { children: [
+    g && /* @__PURE__ */ E("div", { className: "btn-group btn-group-sm mb-2", children: [
       /* @__PURE__ */ s("label", { className: "btn btn-light", children: /* @__PURE__ */ s(
         "input",
         {
-          checked: d,
-          onChange: (g) => A(g.target.checked),
+          checked: y,
+          onChange: (h) => T(h.target.checked),
           type: "checkbox"
         }
       ) }),
-      /* @__PURE__ */ N(Nt, { className: "btn-group btn-group-sm", children: [
-        /* @__PURE__ */ s(fe, { disabled: !E.current.length, className: "btn-light" }),
-        /* @__PURE__ */ s(se, { children: (F = (M = e.form.batch.view.children) == null ? void 0 : M.method.choices) == null ? void 0 : F.map((g) => {
-          const P = g.value instanceof Function ? g.value() : g.value;
-          return /* @__PURE__ */ s(z, { to: "#", onClick: () => T(P), className: "dropdown-item", children: g.label instanceof Function ? g.label() : g.label }, P);
+      /* @__PURE__ */ E(Ot, { className: "btn-group btn-group-sm", children: [
+        /* @__PURE__ */ s(me, { disabled: !u.current.length, className: "btn-light" }),
+        /* @__PURE__ */ s(oe, { children: (M = (x = e.form.batch.view.children) == null ? void 0 : x.method.choices) == null ? void 0 : M.map((h) => {
+          const S = h.value instanceof Function ? h.value() : h.value;
+          return /* @__PURE__ */ s(z, { to: "#", onClick: () => D(S), className: "dropdown-item", children: h.label instanceof Function ? h.label() : h.label }, S);
         }) })
       ] })
     ] }),
-    /* @__PURE__ */ N("table", { className: "table table-striped table-hover table-bordered", children: [
-      /* @__PURE__ */ s("thead", { children: /* @__PURE__ */ N("tr", { children: [
-        t.map((g, P) => /* @__PURE__ */ N("th", { children: [
-          /* @__PURE__ */ s(J, { namespace: (e == null ? void 0 : e.entity.name) || "unknown", data: g, prefix: "list", view: g.field + ".label", children: g.label }),
-          g.sortable && (e == null ? void 0 : e.sort[g.field]) !== void 0 && /* @__PURE__ */ s(
+    /* @__PURE__ */ E("table", { className: "table table-striped table-hover table-bordered", children: [
+      /* @__PURE__ */ s("thead", { children: /* @__PURE__ */ E("tr", { children: [
+        t.map((h, S) => /* @__PURE__ */ E("th", { children: [
+          /* @__PURE__ */ s(J, { namespace: (e == null ? void 0 : e.entity.name) || "unknown", data: h, prefix: "list", view: h.field + ".label", children: h.label }),
+          h.sortable && (e == null ? void 0 : e.sort[h.field]) !== void 0 && /* @__PURE__ */ s(
             z,
             {
-              onClick: (L) => r && r({
+              onClick: (O) => r && r({
                 action: {
                   name: "sort",
                   object: !1,
                   namespace: c,
                   entity: e == null ? void 0 : e.entity.name
                 },
-                parameters: { [g.field]: e != null && e.sort[g.field] ? (e == null ? void 0 : e.sort[g.field]) === "ASC" ? "DESC" : "" : "ASC" }
-              }, L),
+                parameters: { [h.field]: e != null && e.sort[h.field] ? (e == null ? void 0 : e.sort[h.field]) === "ASC" ? "DESC" : "" : "ASC" }
+              }, O),
               className: "btn",
               to: "#",
-              children: e.sort[g.field] ? e.sort[g.field] === "ASC" ? "⇑" : "⇓" : "⇅"
+              children: e.sort[h.field] ? e.sort[h.field] === "ASC" ? "⇑" : "⇓" : "⇅"
             }
           )
-        ] }, P)),
-        i && f.length > 0 && /* @__PURE__ */ s("th", { className: "text-end", children: "Actions" })
+        ] }, S)),
+        i && l.length > 0 && /* @__PURE__ */ s("th", { className: "text-end", children: "Actions" })
       ] }) }),
       /* @__PURE__ */ s("tbody", { children: e && (e.entity.data.items.length ? e.entity.data.items.map(
-        (g, P) => /* @__PURE__ */ N("tr", { children: [
+        (h, S) => /* @__PURE__ */ E("tr", { children: [
           t == null ? void 0 : t.map(
-            (L, K) => {
-              var H;
-              return /* @__PURE__ */ N("td", { children: [
-                K === 0 && C && /* @__PURE__ */ s(
+            (O, H) => {
+              var w;
+              return /* @__PURE__ */ E("td", { children: [
+                H === 0 && g && /* @__PURE__ */ s(
                   "input",
                   {
-                    checked: E.current.includes(g[i == null ? void 0 : i.field]),
+                    checked: u.current.includes(h[i == null ? void 0 : i.field]),
                     className: "me-2",
                     type: "checkbox",
                     name: e.form.batch.view.full_name,
-                    value: g[i == null ? void 0 : i.field],
-                    onChange: (ne) => _(g[i == null ? void 0 : i.field], ne.target.checked)
+                    value: h[i == null ? void 0 : i.field],
+                    onChange: (re) => C(h[i == null ? void 0 : i.field], re.target.checked)
                   }
                 ),
-                /* @__PURE__ */ s(J, { namespace: c || "unknown", data: g, prefix: "list", view: L.field, children: g[L.field] !== void 0 && (g[L.field] instanceof Object ? g[L.field] instanceof Array ? g[L.field].join(", ") : JSON.stringify(g[L.field]) : (H = g[L.field]) == null ? void 0 : H.toString()) })
-              ] }, K);
+                /* @__PURE__ */ s(J, { namespace: c || "unknown", data: h, prefix: "list", view: O.field, children: h[O.field] !== void 0 && (h[O.field] instanceof Object ? h[O.field] instanceof Array ? h[O.field].join(", ") : JSON.stringify(h[O.field]) : (w = h[O.field]) == null ? void 0 : w.toString()) })
+              ] }, H);
             }
           ),
-          i && f.length > 0 && /* @__PURE__ */ s("td", { className: "text-end text-nowrap", children: f.map((L, K) => {
-            var H;
+          i && l.length > 0 && /* @__PURE__ */ s("td", { className: "text-end text-nowrap", children: l.map((O, H) => {
+            var w;
             return /* @__PURE__ */ s(
               z,
               {
-                onClick: (ne) => r && r({
-                  action: L,
+                onClick: (re) => r && r({
+                  action: O,
                   parameters: {
                     ...a || {},
-                    id: g[i == null ? void 0 : i.field]
+                    id: h[i == null ? void 0 : i.field]
                   }
-                }, ne),
-                className: ["btn", "btn-sm", "mb-1", "ms-1", (((H = L.route) == null ? void 0 : H.methods) ?? []).includes("DELETE") ? "btn-outline-danger" : "btn-outline-secondary"].join(" "),
-                to: w(L.route, {
+                }, re),
+                className: ["btn", "btn-sm", "mb-1", "ms-1", (((w = O.route) == null ? void 0 : w.methods) ?? []).includes("DELETE") ? "btn-outline-danger" : "btn-outline-secondary"].join(" "),
+                to: d(O.route, {
                   ...a || {},
-                  id: g[i.field]
+                  id: h[i.field]
                 }),
-                children: L.title
+                children: O.title
               },
-              K
+              H
             );
           }) })
-        ] }, P)
-      ) : /* @__PURE__ */ s("tr", { children: /* @__PURE__ */ s("td", { colSpan: l, children: "Not results found." }) })) })
+        ] }, S)
+      ) : /* @__PURE__ */ s("tr", { children: /* @__PURE__ */ s("td", { colSpan: m, children: "Not results found." }) })) })
     ] })
   ] });
-}), re = ({ route: e, page: t, active: n = !1, title: r, children: o }) => {
+}), se = ({ route: e, page: t, active: n = !1, title: r, children: o }) => {
   const a = new URL(document.location.href);
   return a.searchParams.set("page", t.toString()), /* @__PURE__ */ s("li", { className: `page-item ${n ? "active" : ""}`, children: /* @__PURE__ */ s(
     z,
@@ -1598,28 +1629,28 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
   ) });
 }, tr = ({ meta: e }) => {
   const n = e.totalPages, r = e.page || 1, o = e.links, a = !!e.totalPages;
-  return /* @__PURE__ */ N("div", { className: "d-flex flex-column justiry-content-center", children: [
-    /* @__PURE__ */ N("small", { className: "mb-2", children: [
+  return /* @__PURE__ */ E("div", { className: "d-flex flex-column justiry-content-center", children: [
+    /* @__PURE__ */ E("small", { className: "mb-2", children: [
       e.totalResults,
       " Results",
-      a && /* @__PURE__ */ N(x, { children: [
+      a && /* @__PURE__ */ E(j, { children: [
         " - Page ",
         r,
         " of ",
         e.totalPages
       ] })
     ] }),
-    a && /* @__PURE__ */ s("nav", { "aria-label": "Page navigation", className: "m-auto text-center d-inline", children: /* @__PURE__ */ N("ul", { className: "pagination pagination-sm", children: [
-      r > 1 && /* @__PURE__ */ s(re, { page: r - 1, title: "Go to First Page", children: "«" }),
-      e.links[0] !== 1 && /* @__PURE__ */ N(x, { children: [
-        /* @__PURE__ */ s(re, { page: 1, active: r === 1, children: 1 }, 1),
+    a && /* @__PURE__ */ s("nav", { "aria-label": "Page navigation", className: "m-auto text-center d-inline", children: /* @__PURE__ */ E("ul", { className: "pagination pagination-sm", children: [
+      r > 1 && /* @__PURE__ */ s(se, { page: r - 1, title: "Go to First Page", children: "«" }),
+      e.links[0] !== 1 && /* @__PURE__ */ E(j, { children: [
+        /* @__PURE__ */ s(se, { page: 1, active: r === 1, children: 1 }, 1),
         /* @__PURE__ */ s("div", { className: "page-item", children: /* @__PURE__ */ s("a", { className: "page-link", children: "..." }) })
       ] }),
-      (o || []).map((c, u) => /* @__PURE__ */ s(re, { page: c, active: c === r }, u)),
-      [...e.links].reverse()[0] !== n && /* @__PURE__ */ N(x, { children: [
+      (o || []).map((c, f) => /* @__PURE__ */ s(se, { page: c, active: c === r }, f)),
+      [...e.links].reverse()[0] !== n && /* @__PURE__ */ E(j, { children: [
         /* @__PURE__ */ s("div", { className: "page-item", children: /* @__PURE__ */ s("a", { className: "page-link", children: "..." }) }),
         /* @__PURE__ */ s(
-          re,
+          se,
           {
             page: n,
             active: n === r,
@@ -1628,14 +1659,14 @@ const fe = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(x, 
           n
         )
       ] }),
-      r < n && /* @__PURE__ */ s(re, { page: e.totalPages, title: "Go to Last Page", children: "»" })
+      r < n && /* @__PURE__ */ s(se, { page: e.totalPages, title: "Go to Last Page", children: "»" })
     ] }) })
   ] });
 }, xe = (e, t = !0) => (Object.entries(e).map(([n, r]) => (t && r instanceof Object && (r = xe(r)), [n, r])).filter(([, n]) => !(n instanceof Object ? Object.keys(n).length : n)).forEach(([n]) => {
   delete e[n];
-}), e), Ct = ({ children: e }) => /* @__PURE__ */ s(rr, { children: /* @__PURE__ */ s(sn, { children: /* @__PURE__ */ s(zt, { children: e }) }) }), At = S.createContext({});
+}), e), Pt = ({ children: e }) => /* @__PURE__ */ s(rr, { children: /* @__PURE__ */ s(sn, { children: /* @__PURE__ */ s(zt, { children: e }) }) }), Tt = P.createContext({});
 function nr() {
-  const { setModal: e } = S.useContext(At);
+  const { setModal: e } = P.useContext(Tt);
   return {
     openModal: (t) => {
       e && e(t);
@@ -1643,13 +1674,13 @@ function nr() {
   };
 }
 function rr(e) {
-  const [t, n] = $(), r = k(0);
+  const [t, n] = V(), r = R(0);
   return v(() => {
     r.current += 1;
-  }, [t]), /* @__PURE__ */ N(At.Provider, { value: { setModal: n }, children: [
+  }, [t]), /* @__PURE__ */ E(Tt.Provider, { value: { setModal: n }, children: [
     e.children,
-    t && /* @__PURE__ */ s(Ct, { children: /* @__PURE__ */ s(
-      Ot,
+    t && /* @__PURE__ */ s(Pt, { children: /* @__PURE__ */ s(
+      St,
       {
         view: t.action.action.name || "list",
         namespace: t.action.action.namespace || "",
@@ -1665,144 +1696,147 @@ function rr(e) {
   ] });
 }
 const sr = W(({ action: e, embedded: t = !1 }) => {
-  var _, A, T, D;
-  const n = $t(), [r, o] = Ut(), a = k(void 0), c = k(kt(r)), u = k(null), { openModal: m } = nr(), { open: i } = lt(), h = e.action.entity;
-  if (!h)
+  var T, D, k, F;
+  const n = tt(), { generateLink: r, generateRoute: o } = Q(), [a, c] = Ut(), f = R(void 0), p = R(xt(a)), d = R(null), { openModal: i } = nr(), { open: b } = ft(), l = e.action.entity;
+  if (!l)
     throw new Error("Invalid Entity");
-  const { results: f, refresh: l, setQueryParameters: b } = at({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: c.current }), E = Object.values((f == null ? void 0 : f.action) ?? []).filter((y) => !y.object && y.name !== e.action.name), d = (y) => {
-    y == null || y.forEach((j) => {
-      var M, F;
-      (F = (M = c.current) == null ? void 0 : M.filter) == null || delete F[j];
+  const { results: m, refresh: A, setQueryParameters: u } = lt({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: p.current }), y = Object.values((m == null ? void 0 : m.action) ?? []).filter((N) => !N.object && N.name !== e.action.name), _ = (N) => {
+    N == null || N.forEach((x) => {
+      var M, h;
+      (h = (M = p.current) == null ? void 0 : M.filter) == null || delete h[x];
     });
-    const O = {
-      ...c.current && c.current,
-      ...a.current && { sort: a.current }
-    }, R = Ce(xe(O));
-    t ? b(R) : o(R);
-  }, p = (y, O, R) => {
-    console.log("method", O, R), i({
+    const L = {
+      ...p.current && p.current,
+      ...f.current && { sort: f.current }
+    }, I = Ae(xe(L));
+    t ? u(I) : c(I);
+  }, g = (N, L, I) => {
+    console.log("method", L, I), b({
       title: "Are you sure?",
-      icon: oe.confirm,
-      onResult: (j) => {
-        j.isConfirmed && ae().post({ url: w(e.action.route, e.parameters), body: R }).catch((M) => {
+      icon: ae.confirm,
+      onResult: (x) => {
+        x.isConfirmed && ie().post({
+          url: o(e.action.route, e.parameters),
+          body: I
+        }).catch((M) => {
           console.log("error", M);
         }).finally(() => {
-          console.log("done"), l();
+          console.log("done"), A();
         });
       }
     });
-  }, C = (y, O) => {
-    switch (y.parameters !== void 0 && (y.parameters = xe(y.parameters), Object.keys(y.parameters).length || (y.parameters = void 0)), y.action.name) {
+  }, C = (N, L) => {
+    switch (N.parameters !== void 0 && (N.parameters = xe(N.parameters), Object.keys(N.parameters).length || (N.parameters = void 0)), N.action.name) {
       case "filter": {
-        O == null || O.preventDefault(), c.current = y.parameters;
+        L == null || L.preventDefault(), p.current = N.parameters;
         break;
       }
       case "sort": {
-        O == null || O.preventDefault(), a.current = y.parameters;
+        L == null || L.preventDefault(), f.current = N.parameters;
         break;
       }
       case "delete": {
-        O == null || O.preventDefault(), i({
+        L == null || L.preventDefault(), b({
           title: "Are you sure?",
-          icon: oe.confirm,
-          onResult: (R) => {
-            R.isConfirmed && ae().fetch({
-              url: w(y.action.route, { ...e.parameters, ...y.parameters }),
-              method: Mt.DELETE
-            }).catch((j) => {
-              console.log("error", j);
+          icon: ae.confirm,
+          onResult: (I) => {
+            I.isConfirmed && ie().fetch({
+              url: o(N.action.route, { ...e.parameters, ...N.parameters }),
+              method: Rt.DELETE
+            }).catch((x) => {
+              console.log("error", x);
             }).finally(() => {
-              l();
+              A();
             });
           }
         });
         return;
       }
       default: {
-        t && (O == null || O.preventDefault(), m({
-          action: y,
+        t && (L == null || L.preventDefault(), i({
+          action: N,
           props: {
             onClose: () => {
-              l();
+              A();
             }
           }
         }));
         return;
       }
     }
-    d();
+    _();
   };
   return v(() => {
-    b(r);
-  }, [n]), /* @__PURE__ */ s(x, { children: /* @__PURE__ */ N("section", { className: "list", children: [
-    /* @__PURE__ */ N("header", { className: "content-header d-md-flex mb-3 justify-content-between align-items-center", children: [
-      /* @__PURE__ */ s("h2", { children: f == null ? void 0 : f.title }),
-      /* @__PURE__ */ N("div", { className: "d-flex align-items-center", children: [
-        !!E.length && /* @__PURE__ */ s("div", { className: "btn-group btn-group-sm me-2", children: E.map((y, O) => /* @__PURE__ */ s(
+    u(a);
+  }, [n]), /* @__PURE__ */ s(j, { children: /* @__PURE__ */ E("section", { className: "list", children: [
+    /* @__PURE__ */ E("header", { className: "content-header d-md-flex mb-3 justify-content-between align-items-center", children: [
+      /* @__PURE__ */ s("h2", { children: m == null ? void 0 : m.title }),
+      /* @__PURE__ */ E("div", { className: "d-flex align-items-center", children: [
+        !!y.length && /* @__PURE__ */ s("div", { className: "btn-group btn-group-sm me-2", children: y.map((N, L) => /* @__PURE__ */ s(
           z,
           {
-            to: w(y.route, e.parameters),
-            onClick: (R) => C({
-              action: y,
+            to: r(N.route, e.parameters),
+            onClick: (I) => C({
+              action: N,
               parameters: e.parameters
-            }, R),
+            }, I),
             className: "btn btn-outline-secondary",
-            children: y.title || y.name
+            children: N.title || N.name
           },
-          O
+          L
         )) }),
-        ((_ = f == null ? void 0 : f.form) == null ? void 0 : _.filter) && /* @__PURE__ */ N("div", { className: "btn-group btn-group-sm", children: [
-          /* @__PURE__ */ N(Nt, { className: "btn-group btn-group-sm", children: [
-            /* @__PURE__ */ s(fe, { className: "btn-outline-dark", children: /* @__PURE__ */ s(Pe, { children: "Filter" }) }),
-            /* @__PURE__ */ s(se, { children: /* @__PURE__ */ s("div", { className: "filter", children: /* @__PURE__ */ N(
-              rt,
+        ((T = m == null ? void 0 : m.form) == null ? void 0 : T.filter) && /* @__PURE__ */ E("div", { className: "btn-group btn-group-sm", children: [
+          /* @__PURE__ */ E(Ot, { className: "btn-group btn-group-sm", children: [
+            /* @__PURE__ */ s(me, { className: "btn-outline-dark", children: /* @__PURE__ */ s(Pe, { children: "Filter" }) }),
+            /* @__PURE__ */ s(oe, { children: /* @__PURE__ */ s("div", { className: "filter", children: /* @__PURE__ */ E(
+              at,
               {
-                id: "filter_" + pe(h),
-                ref: u,
-                onSubmit: (y) => C({
+                id: "filter_" + he(l),
+                ref: d,
+                onSubmit: (N) => C({
                   action: {
                     name: "filter",
                     object: !1,
                     namespace: e.action.namespace,
-                    entity: h
+                    entity: l
                   },
-                  parameters: Rt(y)
+                  parameters: jt(N)
                 }),
                 onReset: () => C({
                   action: {
                     name: "filter",
                     object: !1,
                     namespace: e.action.namespace,
-                    entity: h
+                    entity: l
                   }
                 }),
                 children: [
-                  ((A = f == null ? void 0 : f.form) == null ? void 0 : A.filter) && /* @__PURE__ */ s(Fe, { view: f.form.filter.view }),
+                  ((D = m == null ? void 0 : m.form) == null ? void 0 : D.filter) && /* @__PURE__ */ s(Fe, { view: m.form.filter.view }),
                   /* @__PURE__ */ s("button", { className: "btn btn-primary me-2", type: "submit", children: /* @__PURE__ */ s(Pe, { children: "Submit" }) })
                 ]
               }
             ) }) })
           ] }),
-          !!Object.values(((T = c.current) == null ? void 0 : T.filter) || []).length && /* @__PURE__ */ s(he, { onClick: () => {
-            var y;
-            (y = u.current) == null || y.reset();
+          !!Object.values(((k = p.current) == null ? void 0 : k.filter) || []).length && /* @__PURE__ */ s(ge, { onClick: () => {
+            var N;
+            (N = d.current) == null || N.reset();
           }, className: "btn btn-outline-dark", children: "x" })
         ] })
       ] })
     ] }),
-    ((D = f == null ? void 0 : f.form) == null ? void 0 : D.filter) && /* @__PURE__ */ s(or, { formView: f.form.filter.view, onClick: (y) => d([y]) }),
-    /* @__PURE__ */ N(J, { namespace: e.action.namespace, prefix: "modify", view: "content", data: f, children: [
+    ((F = m == null ? void 0 : m.form) == null ? void 0 : F.filter) && /* @__PURE__ */ s(or, { formView: m.form.filter.view, onClick: (N) => _([N]) }),
+    /* @__PURE__ */ E(J, { namespace: e.action.namespace, prefix: "modify", view: "content", data: m, children: [
       /* @__PURE__ */ s("div", { className: "table-responsive", children: /* @__PURE__ */ s(
         er,
         {
-          data: f,
+          data: m,
           onClick: C,
-          onBatchClick: p,
+          onBatchClick: g,
           namespace: e.action.namespace,
           routeParams: e.parameters
         }
       ) }),
-      f && /* @__PURE__ */ s(tr, { meta: f.entity.data.meta })
+      m && /* @__PURE__ */ s(tr, { meta: m.entity.data.meta })
     ] }, "modify")
   ] }) });
 }), or = ({ formView: e, onClick: t }) => {
@@ -1810,9 +1844,9 @@ const sr = W(({ action: e, embedded: t = !1 }) => {
     var a, c;
     return ((c = (a = r.choices) == null ? void 0 : a[o]) == null ? void 0 : c.label) ?? o;
   }).join(", ") : r.data : r.checked !== void 0 ? r.checked ? "Yes" : "No" : r.data;
-  return /* @__PURE__ */ s("div", { className: "filters d-flex mb-sm overflow-auto", children: Object.values(e.children || []).filter((r) => r.data !== null).map((r, o) => /* @__PURE__ */ N("div", { className: "filters-item d-flex text-nowrap flex-column me-2 mb-2", children: [
+  return /* @__PURE__ */ s("div", { className: "filters d-flex mb-sm overflow-auto", children: Object.values(e.children || []).filter((r) => r.data !== null).map((r, o) => /* @__PURE__ */ E("div", { className: "filters-item d-flex text-nowrap flex-column me-2 mb-2", children: [
     /* @__PURE__ */ s("small", { className: "mb-2", children: r.label }),
-    /* @__PURE__ */ N("div", { className: "btn btn-sm btn-primary me-1 mb-1", children: [
+    /* @__PURE__ */ E("div", { className: "btn btn-sm btn-primary me-1 mb-1", children: [
       n(r),
       t && /* @__PURE__ */ s("span", { onClick: () => t(r.name), className: "ms-2", children: "×" })
     ] })
@@ -1824,16 +1858,20 @@ const sr = W(({ action: e, embedded: t = !1 }) => {
     list: sr
   };
   if (n[e] === void 0)
-    throw new ie(500, "View not found");
-  return S.createElement(n[e] || an, t);
-}, Ot = ({ view: e, namespace: t, props: n }) => /* @__PURE__ */ s(J, { namespace: t, view: e, props: n, children: /* @__PURE__ */ s(ar, { view: e, props: n }) }, t + e), cr = ({ path: e }) => {
-  const t = qt();
-  e ?? (e = document.location.pathname.replace(new RegExp("^" + (t == null ? void 0 : t.pathnameBase) + "(/)?"), "/"));
-  const { getOnClickActionByPath: n } = Me(), r = Lt(n(e));
+    throw new le(500, "View not found");
+  return P.createElement(n[e] || an, t);
+}, St = ({ view: e, namespace: t, props: n }) => /* @__PURE__ */ s(J, { namespace: t, view: e, props: n, children: /* @__PURE__ */ s(ar, { view: e, props: n }) }, t + e), ir = ({ path: e, preloader: t }) => {
+  if (!je.namespace[Ve])
+    throw new pe(500, "Invalid Configuration.");
+  const { getOnClickActionByPath: n } = ve(), [r, o] = V();
+  if (v(() => {
+    n(e).then((a) => o(a));
+  }, [e]), r === void 0)
+    return t ?? /* @__PURE__ */ s(j, { children: "Loading" });
   if (!r)
-    throw new ie(404, "Page Not Found");
+    throw new le(404, "Page Not Found");
   return /* @__PURE__ */ s(
-    Ot,
+    St,
     {
       view: r.action.name,
       namespace: r.action.namespace || "",
@@ -1841,38 +1879,42 @@ const sr = W(({ action: e, embedded: t = !1 }) => {
     }
   );
 };
-let Ne;
-const $e = "dakataa_crud", gr = (e) => {
-  Re.namespace[$e] = e;
-}, ae = () => (Ne || (Ne = Re.instance({ namespace: $e })), Ne), br = ({ path: e, errorFallback: t }) => {
-  if (!Re.namespace[$e])
-    throw new me(500, "Invalid Configuration.");
-  return /* @__PURE__ */ s(Ct, { children: /* @__PURE__ */ s(Ht, { fallback: t ?? /* @__PURE__ */ s(wt, {}), children: /* @__PURE__ */ s(jt, { fallback: /* @__PURE__ */ s(x, { children: "Loading" }), children: /* @__PURE__ */ s(cr, { path: e }) }) }) });
+let Ce;
+const Ve = "dakataa_crud", gr = ({ connection: e }) => {
+  je.namespace[Ve] = e;
+}, ie = () => (Ce || (Ce = je.instance({ namespace: Ve })), Ce), br = ({ includeParentRoutePath: e = !1, errorFallback: t }) => {
+  const n = tt(), { getParentReactRoute: r } = Q(), o = r();
+  let a = n.pathname, c;
+  return e && (c = o == null ? void 0 : o.pathnameBase, a = a.replace(new RegExp("^" + c + "(/)?"), "/")), /* @__PURE__ */ s(qt, { config: {
+    link: {
+      prefix: c
+    }
+  }, children: /* @__PURE__ */ s(Pt, { children: /* @__PURE__ */ s(Ht, { fallback: t ?? /* @__PURE__ */ s(Yt, {}), children: /* @__PURE__ */ s(ir, { path: a }) }) }) });
 };
 export {
   sn as AlertProvider,
   br as Crud,
   gr as CrudConfiguration,
-  Ct as CrudContext,
-  cr as CrudLoader,
+  Pt as CrudContext,
+  ir as CrudLoader,
   J as DynamicView,
   Ht as ErrorBoundary,
-  me as Exception,
-  rt as Form,
+  pe as Exception,
+  at as Form,
   Qt as FormGroup,
   Fe as FormView,
   Xt as FormWidget,
   er as GridTableView,
-  ie as HttpException,
+  le as HttpException,
   Zt as Input,
   sr as List,
   rr as ModalProvider,
   We as Modify,
-  V as TemplateBlock,
-  B as TemplateExtend,
-  lt as UseAlert,
+  U as TemplateBlock,
+  K as TemplateExtend,
+  ft as UseAlert,
   nr as UseModal,
-  Ot as ViewLoader,
-  pe as nameToId,
-  ve as useForm
+  St as ViewLoader,
+  he as nameToId,
+  Me as useForm
 };

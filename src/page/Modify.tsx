@@ -8,11 +8,11 @@ import GetData from "@src/component/hooks/GetData.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import {UseRouter} from "@src/context/RouterContext.tsx";
 
 const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     action: ActionType;
@@ -22,6 +22,7 @@ const DefaultModifyTemplate = ({action, children, routeParams, results}: {
 }) => {
 
     const {getAction} = UseActions();
+    const {generateLink} = UseRouter()
     const listAction = getAction(action.entity, 'list', action.namespace);
 
     return (
@@ -29,7 +30,7 @@ const DefaultModifyTemplate = ({action, children, routeParams, results}: {
             <header>
                 <h2 className="title">
                     {listAction && (
-                        <Link to={generateRoute(listAction.route, routeParams)}>&larr;</Link>
+                        <Link to={generateLink(listAction.route, routeParams)}>&larr;</Link>
                     )}
                     <TemplateBlock name={"title"} content={children} data={results}/>
                 </h2>
@@ -114,6 +115,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
                                 });
                             }}
                             onError={(error: ExceptionType) => {
+                                console.log(error);
                                 openAlert({
                                     title: error.status + ' ' + error.detail,
                                     text: error.detail,

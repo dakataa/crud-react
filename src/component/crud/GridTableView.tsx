@@ -1,11 +1,11 @@
 import {ListType} from "@src/type/ListType";
-import {Link} from "react-router";
 import {ColumnType} from "@src/type/ColumnType";
 import React, {forwardRef, ReactElement, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
+import Link from "@src/component/Link.tsx";
+import {UseRouter} from "@src/context/RouterContext.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -40,6 +40,7 @@ const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick
     columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
 
     const [, updateState] = useState<any>();
+    const {generateLink} = UseRouter();
     const primaryColumn = data?.entity?.primaryColumn;
     const actions = Object.values(data?.action || []);
     const objectActions = actions.filter(a => a.object);
@@ -176,7 +177,7 @@ const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick
                                                     }
                                                 }, event)}
                                                 className={['btn', 'btn-sm', 'mb-1', 'ms-1', (action.route?.methods ?? []).includes('DELETE') ? 'btn-outline-danger' : 'btn-outline-secondary'].join(' ')}
-                                                to={generateRoute(action.route, {
+                                                to={generateLink(action.route, {
                                                     ...(routeParams || {}),
                                                     id: row[primaryColumn.field]
                                                 })}

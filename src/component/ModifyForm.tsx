@@ -2,9 +2,7 @@ import {Form, FormRef} from "@src/component/form/Form.tsx";
 import FormView from "@src/component/crud/FormView.tsx";
 import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
-import {useNavigate} from "react-router";
 import {RequestBodyType} from "@dakataa/requester";
 import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateBlock from "@src/component/TemplateBlock.tsx";
@@ -14,6 +12,7 @@ import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
+import {UseRouter} from "@src/context/RouterContext.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -32,7 +31,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     embedded?: boolean;
 }, ref) => {
     const [preload, setPreloader] = useState(false);
-    const navigate = useNavigate();
+    const {navigate, generateLink, generateRoute} = UseRouter();
     const actionURL = generateRoute(action.route, (parameters || {}));
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
@@ -80,7 +79,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
             }
 
             if (data.redirect && !embedded) {
-                navigate(generateRoute(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
+                navigate(generateLink(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
             }
         }).catch((error: ExceptionType) => {
             if (onError) {

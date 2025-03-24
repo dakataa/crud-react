@@ -1,19 +1,21 @@
 import React, {memo, useEffect, useRef, useState} from "react";
 import Navigation, {MenuItem, NavigationItemContextType} from "@src/layout/default/component/Navigation.tsx";
-import Dropdown from "@src/component/Dropdown";
-import Link from "@src/component/Link";
 import {Outlet} from "react-router";
 import Base from "@src/layout/default/Base.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
+import Link from "@src/component/Link.tsx";
+import Dropdown from "@src/component/Dropdown.tsx";
 
-const Main = memo(({children}: {
+const Main = memo(({...props}: {
     children?: any
 }) => {
     const mainMenuRef = useRef<NavigationItemContextType | null>(null);
     const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
 
     useEffect(() => {
-        CrudRequester().get({url: '/_crud/navigation'}).then(({status, data}) => {
+        CrudRequester().get({
+            url: '/_crud/navigation'
+        }).then(({status, data}) => {
             if (status !== 200) {
                 return;
             }

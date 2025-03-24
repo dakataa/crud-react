@@ -1,16 +1,19 @@
 import React, {PropsWithChildren, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
-import {matchPath} from "react-router";
-import {crudToReactPathPattern} from "@src/helper/RouterUtils.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Exception from "@src/component/error/Exception.tsx";
+import {UseRouter} from "@src/context/RouterContext.tsx";
 
 const STORAGE_KEY = 'actions';
-const ActionContext = React.createContext<ActionType[] | null>(null);
+const ActionContext = React.createContext<ActionType[] | null | undefined>(undefined);
 
 export function UseActions() {
-    const context = React.useContext<ActionType[] | null>(ActionContext);
+    const context = React.useContext<ActionType[] | null | undefined>(ActionContext);
+    const {matchPath} = UseRouter();
+    if(context === undefined) {
+        throw new Error('UseActions should be used inside ActionProvider');
+    }
 
     const getContext = (): ActionType[] | undefined => {
         if(!Array.isArray(context)) {
@@ -25,7 +28,7 @@ export function UseActions() {
     }
 
     const getActionByPath = (path: string): ActionType | undefined => {
-        return getContext()?.find((a) => a.route?.path && matchPath(crudToReactPathPattern(a.route.path), path));
+        return getContext()?.find((a) => a.route?.path && matchPath(a.route.path, path));
     };
 
     const getOnClickActionByPath = (path: string): Promise<OnClickAction|null> => {
@@ -36,7 +39,7 @@ export function UseActions() {
                 return null;
             }
 
-            const match = matchPath(crudToReactPathPattern(action.route?.path || ''), path)
+            const match = matchPath(action.route?.path || '', path)
             return {
                 action,
                 parameters: match?.params

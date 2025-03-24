@@ -1,15 +1,7 @@
-import React, {
-    createRef,
-    ForwardedRef,
-    forwardRef,
-    useDeferredValue,
-    useEffect,
-    useImperativeHandle,
-    useRef
-} from "react";
-import {Link, useLocation} from "react-router";
-import {generateRoute} from "@src/helper/RouterUtils.tsx";
+import React, {createRef, ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from "react";
 import {RouteType} from "@src/type/RouteType";
+import {UseRouter} from "@src/context/RouterContext.tsx";
+import Link from "@src/component/Link.tsx";
 
 export type MenuItem = {
     title: string;
@@ -35,7 +27,7 @@ const MainNavigationItem = ({item, open = false}: {
 }) => {
 
     const isGroup = !!item.items?.length;
-    const location = useLocation();
+     const {location, generateRoute} = UseRouter();
     const currentLocationPath = location.pathname.replace(/(.*?)\/?$/i, '$1');
     const itemPath = generateRoute(item.route);
     const isActive = currentLocationPath.includes(itemPath, 0);

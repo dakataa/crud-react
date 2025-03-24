@@ -1,16 +1,31 @@
 import {ViewLoader} from "@src/component/ViewLoader.tsx";
-import React, {use} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
-import {UseParentReactRoute} from "@src/helper/RouterUtils.tsx";
+import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
+import Requester from "@dakataa/requester";
+import Exception from "@src/component/error/Exception.tsx";
+import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 
-const CrudLoader = ({path}: { path?: string }) => {
-    const currentRoute = UseParentReactRoute();
-
-    path ??= document.location.pathname.replace(new RegExp('^' + currentRoute?.pathnameBase + '(/)?'), '/');
+const CrudLoader = ({path, preloader}: {
+    path: string,
+    errorFallback?: ReactElement,
+    preloader?: ReactElement
+}) => {
+    if (!Requester.namespace[CRUD_NAMESPACE])
+        throw new Exception(500, 'Invalid Configuration.');
 
     const {getOnClickActionByPath} = UseActions();
-    const onClickAction = use(getOnClickActionByPath(path));
+    const [onClickAction, setOnClickAction] = useState<OnClickAction|null|undefined>();
+
+    useEffect(() => {
+        getOnClickActionByPath(path).then((v) => setOnClickAction(v));
+    }, [path]);
+
+    if(onClickAction === undefined) {
+        return preloader ?? <>Loading</>
+    }
+
     if (!onClickAction) {
         throw new HttpException(404, 'Page Not Found');
     }

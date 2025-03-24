@@ -1,39 +1,59 @@
-import React, {ReactElement, Suspense} from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import Requester, {Config} from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
 import CrudLoader from "@src/CrudLoader.tsx";
 import CrudContext from "@src/CrudContext.tsx";
-import Exception from "@src/component/error/Exception.tsx";
+import {ConfigProvider} from "@src/context/ConfigContext.tsx";
+import {UseRouter, withRouterContext} from "@src/context/RouterContext.tsx";
 
 let requester: Requester;
+
 export const CRUD_NAMESPACE = 'dakataa_crud';
 
-const CrudConfiguration = (config: Config) => {
-    Requester.namespace[CRUD_NAMESPACE] = config;
+const CrudConfiguration = ({connection}: { connection: Config }) => {
+    Requester.namespace[CRUD_NAMESPACE] = connection;
+
 }
 
 const CrudRequester = (): Requester => {
-    if(!requester) {
+    if (!requester) {
         requester = Requester.instance({namespace: CRUD_NAMESPACE});
     }
     return requester;
 }
 
-const Crud = ({path, errorFallback}: { path?: string, errorFallback?: ReactElement }) => {
-    if (!Requester.namespace[CRUD_NAMESPACE])
-        throw new Exception(500, 'Invalid Configuration.');
+const Crud = withRouterContext(({path, includeParentRoutePath = false, errorFallback}: {
+    path?: string,
+    includeParentRoutePath?: boolean,
+    errorFallback?: ReactElement
+}) => {
+
+    const {getParentReactRoute, location} = UseRouter()
+    const parentReactRoute = getParentReactRoute();
+
+    path ??= location.pathname;
+
+    let prefix;
+    if (includeParentRoutePath) {
+        prefix = parentReactRoute?.pathnameBase;
+        path = path.replace(new RegExp('^' + prefix + '(/)?'), '/');
+    }
 
     return (
-        <CrudContext>
-            <ErrorBoundary fallback={errorFallback ?? <Error/>}>
-                <Suspense fallback={<>Loading</>}>
+        <ConfigProvider config={{
+            link: {
+                prefix: prefix,
+            }
+        }}>
+            <CrudContext>
+                <ErrorBoundary fallback={errorFallback ?? <Error/>}>
                     <CrudLoader path={path}/>
-                </Suspense>
-            </ErrorBoundary>
-        </CrudContext>
+                </ErrorBoundary>
+            </CrudContext>
+        </ConfigProvider>
     );
-}
+});
 
 export {
     Crud as default,
