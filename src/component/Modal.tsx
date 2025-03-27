@@ -26,7 +26,7 @@ export enum Animation {
 
 const Modal = forwardRef(({
                               children,
-                              open = false,
+                              open = true,
                               animation = Animation.fade,
                               backdrop = true,
                               keyboard = true,
@@ -116,7 +116,6 @@ const Modal = forwardRef(({
                 }, animation ? 50 : 0);
 
                 modalRef.current?.addEventListener('animationstart', () => {
-                    console.log('timeout');
                     clearTimeout(closeTimeout);
                     modalRef.current?.removeEventListener('animationend', closeAndResolve);
                     modalRef.current?.addEventListener('animationend', closeAndResolve);

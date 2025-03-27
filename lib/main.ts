@@ -13,10 +13,12 @@ export {default as TemplateExtend} from "@src/component/TemplateExtend.tsx";
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
 export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.tsx";
 export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
+export * from "@src/context/RouterContext.tsx";
 export type {AlertConfigType, Animation, Result} from "@src/context/AlertContext.tsx";
 export type {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 export type {ActionType} from "@src/type/ActionType.tsx";
 export type {RouteType} from "@src/type/RouteType.tsx";
+
 
 export {default as HttpException} from "@src/component/error/HttpException.tsx";
 export {default as Exception} from "@src/component/error/Exception.tsx";

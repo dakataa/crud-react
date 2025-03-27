@@ -151,7 +151,7 @@ export function AlertProvider(props: PropsWithChildren) {
         <AlertContext.Provider value={{open}}>
             {props.children}
             {alert && (
-                <Modal size={alert.size as any} className={"modal-alert"} animation={alert.animation} open={true} ref={modalRef}>
+                <Modal key={updates.current} size={alert.size as any} className={"modal-alert"} animation={alert.animation} open={true} ref={modalRef}>
                     <TemplateExtend name={"header"}/>
                     <TemplateExtend name={"footer"}/>
                     <TemplateExtend name={"content"}>

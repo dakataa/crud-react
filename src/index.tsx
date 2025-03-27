@@ -26,7 +26,7 @@ root.render(
         <BrowserRouter>
             <Routes>
                 <Route element={<Main/>}>
-                    <Route path={"*"} element={<Crud includeParentRoutePath={false}/>}/>
+                    <Route path={"*"} element={<Crud/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

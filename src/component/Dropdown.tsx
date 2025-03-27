@@ -1,9 +1,7 @@
 import React, {PropsWithChildren, useEffect, useRef} from "react";
-import {Link as LinkType} from "./BaseButton";
 import Button from "./Button";
 import Link from "./Link";
 import {default as BootstrapDropdown} from "bootstrap/js/src/dropdown"
-import {LinkProps} from "react-router";
 
 const DropdownButton = ({children, disabled, className}: PropsWithChildren<{className?: string, disabled?: boolean}>) => {
     return <>
@@ -17,9 +15,8 @@ const DropdownContent = ({children, ...props}: { children: any }) => {
     </div>
 }
 
-const Dropdown = ({items, className, children, icon}: PropsWithChildren<{
+const Dropdown = ({ className, children, icon}: PropsWithChildren<{
     className?: string,
-    items?: (LinkProps & LinkType)[],
     icon?: any
 }>) => {
     const ref = useRef<HTMLButtonElement>(null);

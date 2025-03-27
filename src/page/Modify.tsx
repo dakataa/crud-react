@@ -67,8 +67,9 @@ const Modify = ({action, children, onSuccess, modal, props}: {
     }, [JSON.stringify(routeParams)]);
 
     useEffect(() => {
-        modalRef.current?.open();
-    }, [JSON.stringify(results)]);
+        // console.log('open', action);
+        // modalRef.current?.open();
+    }, []);
 
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 
@@ -129,7 +130,6 @@ const Modify = ({action, children, onSuccess, modal, props}: {
                             }}
                             onLoad={() => {
                                 console.log('loaded');
-                                // modalRef.current?.open();
                             }}
                             embedded={modal}
                             parameters={routeParams}

@@ -16,7 +16,6 @@ export function UseConfig(): Config {
 }
 
 export function ConfigProvider({config, ...props}: { config: Config } & PropsWithChildren) {
-
     return (
         <ConfigContext.Provider value={config}>
             {props.children}

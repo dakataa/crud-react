@@ -71,23 +71,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     //     setCache(results);
     // }, [JSON.stringify(results)]);
 
-    useEffect(() => {
-        /*if(lastKey.current === key) {
-            return;
-        }
-
-        lastKey.current = key;
-
-        let cachedData = getCache();
-        if(cachedData) {
-           try {
-               setResults(cachedData);
-               return;
-           } catch (e) {
-               console.log('error', e);
-           }
-        }*/
-
+    const update = () => {
         if (!entityAction) {
             return;
         }
@@ -110,6 +94,26 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                     }
                 }
             });
+    }
+
+    useEffect(() => {
+        /*if(lastKey.current === key) {
+            return;
+        }
+
+        lastKey.current = key;
+
+        let cachedData = getCache();
+        if(cachedData) {
+           try {
+               setResults(cachedData);
+               return;
+           } catch (e) {
+               console.log('error', e);
+           }
+        }*/
+
+       update();
     }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
 
     return {
@@ -119,7 +123,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             setQueryParameters(new URLSearchParams(value));
         },
         refresh: () => {
-            setRefresh(refresh + 1);
+            update();
         }
     }
 }

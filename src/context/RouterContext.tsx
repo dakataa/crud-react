@@ -1,7 +1,7 @@
-import {generatePath, matchPath as reactRouterMatchPath, UNSAFE_RouteContext} from "react-router";
+import {generatePath, matchPath as reactRouterMatchPath} from "react-router";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {RouteType} from "@src/type/RouteType.tsx";
-import React, {PropsWithChildren, useContext, useEffect, useState} from "react";
+import React, {PropsWithChildren, useEffect, useState} from "react";
 
 window.history.pushState = new Proxy(window.history.pushState, {
     apply: (target, thisArg, argArray: any) => {
@@ -36,7 +36,6 @@ const UseRouter = () => {
     };
 
     const config = UseConfig();
-    const routeContext = useContext(UNSAFE_RouteContext);
 
     const crudToReactPathPattern = (path: string) => {
         return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');
@@ -64,10 +63,6 @@ const UseRouter = () => {
         return path;
     }
 
-    const getParentReactRoute = () => {
-        return routeContext.matches.reverse()[1] ?? null;
-    }
-
     const navigate = (to: string) => {
         try {
             history.pushState(null, '', to);
@@ -87,8 +82,7 @@ const UseRouter = () => {
         generateRoute,
         generateRoutePath,
         crudToReactPathPattern,
-        generateLink,
-        getParentReactRoute,
+        generateLink
     }
 
 }

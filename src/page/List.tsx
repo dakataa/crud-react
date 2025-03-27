@@ -64,7 +64,6 @@ const List = memo(({action, embedded = false}: {
             const url = new URL(document.location.href);
             url.search = searchParams.toString();
             navigate(url.toString())
-
         }
     }
 
@@ -133,7 +132,8 @@ const List = memo(({action, embedded = false}: {
                 if (embedded) {
                     event?.preventDefault();
                     openModal({
-                        action: onClickAction, props: {
+                        action: onClickAction,
+                        props: {
                             onClose: () => {
                                 refresh();
                             }
@@ -166,9 +166,10 @@ const List = memo(({action, embedded = false}: {
                                         key={index}
                                         to={generateLink(item.route, action.parameters)}
                                         onClick={(event) => handleAction({
-                                            action: item,
-                                            parameters: action.parameters
-                                        }, event)}
+                                                action: item,
+                                                parameters: action.parameters
+                                            }, event)
+                                        }
                                         className="btn btn-outline-secondary">
                                         {item.title || item.name}
                                     </Link>

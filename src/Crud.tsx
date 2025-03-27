@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect} from 'react';
+import React, {ReactElement} from 'react';
 import Requester, {Config} from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
@@ -23,21 +23,17 @@ const CrudRequester = (): Requester => {
     return requester;
 }
 
-const Crud = withRouterContext(({path, includeParentRoutePath = false, errorFallback}: {
+const Crud = withRouterContext(({path, prefix, errorFallback}: {
     path?: string,
-    includeParentRoutePath?: boolean,
+    prefix?: string,
     errorFallback?: ReactElement
 }) => {
 
-    const {getParentReactRoute, location} = UseRouter()
-    const parentReactRoute = getParentReactRoute();
-
+    const {location} = UseRouter()
     path ??= location.pathname;
 
-    let prefix;
-    if (includeParentRoutePath) {
-        prefix = parentReactRoute?.pathnameBase;
-        path = path.replace(new RegExp('^' + prefix + '(/)?'), '/');
+    if (prefix) {
+        path = path.replace(new RegExp('^/' + prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
     }
 
     return (
