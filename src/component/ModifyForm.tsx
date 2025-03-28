@@ -12,7 +12,7 @@ import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
-import {UseRouter} from "@src/context/RouterContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -31,7 +31,7 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
     embedded?: boolean;
 }, ref) => {
     const [preload, setPreloader] = useState(false);
-    const {navigate, generateLink, generateRoute} = UseRouter();
+    const {navigate, generateLink, generateRoute} = UseActions();
     const actionURL = generateRoute(action.route, (parameters || {}));
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();

@@ -5,13 +5,11 @@ import {ActionProvider} from "@src/context/ActionContext.tsx";
 
 const CrudContext = ({children}: { children: ReactNode }) => {
     return (
-        <ActionProvider>
-            <AlertProvider>
-                <ModalProvider>
-                    {children}
-                </ModalProvider>
-            </AlertProvider>
-        </ActionProvider>
+        <AlertProvider>
+            <ModalProvider>
+                {children}
+            </ModalProvider>
+        </AlertProvider>
     )
 }
 

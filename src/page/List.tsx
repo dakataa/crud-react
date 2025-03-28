@@ -22,13 +22,13 @@ import {default as T} from "@src/component/Translation.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Link from "@src/component/Link.tsx";
-import {UseRouter} from "@src/context/RouterContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 
 const List = memo(({action, embedded = false}: {
     action: OnClickAction,
     embedded?: boolean
 }) => {
-    const {generateLink, generateRoute, location, navigate} = UseRouter()
+    const {generateLink, generateRoute, generateActionLink, location, navigate} = UseActions()
     let searchParams = new URLSearchParams(location.search);
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
@@ -68,15 +68,13 @@ const List = memo(({action, embedded = false}: {
     }
 
     const handleBatchAction = (method: string, ids: any, data: FormData) => {
-        console.log('method', ids, data);
-
         openAlert({
             title: 'Are you sure?',
             icon: Icon.confirm,
             onResult: (result: Result) => {
                 if (result.isConfirmed) {
                     CrudRequester().post({
-                        url: generateRoute(action.action.route, action.parameters),
+                        url: generateActionLink(action),
                         body: data
                     }).catch((e:any) => {
                         console.log('error', e);

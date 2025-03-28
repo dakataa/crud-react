@@ -5,7 +5,7 @@ import Error from "@src/layout/default/Error.tsx";
 import CrudLoader from "@src/CrudLoader.tsx";
 import CrudContext from "@src/CrudContext.tsx";
 import {ConfigProvider} from "@src/context/ConfigContext.tsx";
-import {UseRouter, withRouterContext} from "@src/context/RouterContext.tsx";
+import {UseActions, withRouterContext} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
 
@@ -29,7 +29,7 @@ const Crud = withRouterContext(({path, prefix, errorFallback}: {
     errorFallback?: ReactElement
 }) => {
 
-    const {location} = UseRouter()
+    const {location} = UseActions();
     path ??= location.pathname;
 
     if (prefix) {
@@ -43,7 +43,7 @@ const Crud = withRouterContext(({path, prefix, errorFallback}: {
             }
         }}>
             <CrudContext>
-                <ErrorBoundary fallback={errorFallback ?? <Error/>}>
+                <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
                     <CrudLoader path={path}/>
                 </ErrorBoundary>
             </CrudContext>

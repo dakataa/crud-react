@@ -3,32 +3,54 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Exception from "@src/component/error/Exception.tsx";
-import {UseRouter} from "@src/context/RouterContext.tsx";
+import {UseConfig} from "@src/context/ConfigContext.tsx";
+import {generatePath, matchPath as reactRouterMatchPath} from "react-router";
+import {RouteType} from "@src/type/RouteType.tsx";
+
+window.history.pushState = new Proxy(window.history.pushState, {
+    apply: (target, thisArg, argArray: any) => {
+        target.apply(thisArg, argArray);
+
+        window.dispatchEvent(new Event('pushstate'));
+    },
+});
+
+window.history.replaceState = new Proxy(window.history.replaceState, {
+    apply: (target, thisArg, argArray: any) => {
+        target.apply(thisArg, argArray);
+
+        window.dispatchEvent(new Event('replacestate'));
+    },
+});
 
 const STORAGE_KEY = 'actions';
-const ActionContext = React.createContext<ActionType[] | null | undefined>(undefined);
+
+type RouterContextType = {
+    location: URL;
+    setLocation: (location: URL) => void;
+    actions: ActionType[] | null;
+};
+
+const ActionContext = React.createContext<RouterContextType | undefined>(undefined);
 
 export function UseActions() {
-    const context = React.useContext<ActionType[] | null | undefined>(ActionContext);
-    const {matchPath} = UseRouter();
-    if(context === undefined) {
-        throw new Error('UseActions should be used inside ActionProvider');
-    }
+    const context = React.useContext<RouterContextType | undefined>(ActionContext);
 
-    const getContext = (): ActionType[] | undefined => {
-        if(!Array.isArray(context)) {
-            return;
+
+    const config = UseConfig();
+    const {actions, location, setLocation} = context ?? {
+        actions: null,
+        location: new URL(document.location.href),
+        setLocation: () => {
         }
-
-        return context;
-    }
+    };
 
     const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
-        return getContext()?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
+        return actions?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
     }
 
     const getActionByPath = (path: string): ActionType | undefined => {
-        return getContext()?.find((a) => a.route?.path && matchPath(a.route.path, path));
+        return actions?.find((a) => a.route?.path && matchPath(a.route.path, path));
     };
 
     const getOnClickActionByPath = (path: string): Promise<OnClickAction|null> => {
@@ -66,10 +88,62 @@ export function UseActions() {
 
     }
 
+    const crudToReactPathPattern = (path: string) => {
+        return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');
+    }
+
+    const generateRoutePath = (path: string, parameters: {} | undefined = undefined): string => {
+        return generatePath(crudToReactPathPattern(path), parameters);
+    }
+
+    const generateRoute = (route?: RouteType, parameters?: { [key: string]: string } | null): string => {
+        return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}) : '#';
+    }
+
+    const generateActionLink = (onClickAction: OnClickAction): string => {
+        const action = getAction(onClickAction.action.entity, onClickAction.action.name, onClickAction.action.namespace);
+
+        return generateRoute(action?.route, onClickAction.parameters)
+    }
+
+    const generateLink = (route?: RouteType, parameters?: { [key: string]: string } | null): string => {
+        const path = generateRoute(route, parameters);
+
+        return internalToExternalPath(path);
+    }
+
+    const internalToExternalPath = (path: string) => {
+        if (config.link?.prefix) {
+            path = '/' + config.link.prefix.replaceAll(new RegExp('^\/|\/$', 'g'), '') + path;
+        }
+
+        return path;
+    }
+
+    const navigate = (to: string) => {
+        try {
+            history.pushState(null, '', to);
+        } catch (e) {
+            window.location.assign(to);
+        }
+    }
+
+    const matchPath = (pattern: string, path: string) => {
+        return reactRouterMatchPath(crudToReactPathPattern(pattern), path);
+    }
+
     return {
         getAction,
         getActionByPath,
-        getOnClickActionByPath
+        getOnClickActionByPath,
+        navigate,
+        location,
+        matchPath,
+        generateRoute,
+        generateRoutePath,
+        crudToReactPathPattern,
+        generateActionLink,
+        generateLink
     };
 }
 
@@ -83,6 +157,40 @@ export function ActionProvider(props: PropsWithChildren) {
     }
 
     const [actions, setActions] = useState<ActionType[] | null>(initActions);
+    const [location, setLocation] = useState<URL>(new URL(document.location.href));
+
+    useEffect(() => {
+        if(!location) {
+            return;
+        }
+
+        if(location.toString() === document.location.toString()) {
+            return;
+        }
+
+        try {
+            history.pushState(null, '', location);
+        } catch (e) {
+            window.location.assign(location);
+        }
+    }, [location.toString()]);
+
+    useEffect(() => {
+        const onUrlChange = (() => {
+            setLocation(new URL(document.location.href));
+        });
+
+        window.addEventListener('pushstate', onUrlChange);
+        window.addEventListener('replacestate', onUrlChange);
+        window.addEventListener('popstate', onUrlChange);
+
+        return () => {
+            window.removeEventListener('pushstate', onUrlChange);
+            window.removeEventListener('replacestate', onUrlChange);
+            window.removeEventListener('popstate', onUrlChange);
+        }
+    }, []);
+
     useEffect(() => {
         if (initActions)
             return;
@@ -102,8 +210,24 @@ export function ActionProvider(props: PropsWithChildren) {
     }, []);
 
     return (
-        <ActionContext.Provider value={actions}>
+        <ActionContext.Provider value={{
+            actions,
+            location,
+            setLocation,
+        }}>
             {props.children}
         </ActionContext.Provider>
     );
+}
+
+export function withRouterContext(component: any): any {
+    return (props: any) => {
+        const reactComponent = React.createElement(component as any, props);
+
+        return (
+            <ActionProvider>
+                {reactComponent}
+            </ActionProvider>
+        )
+    };
 }

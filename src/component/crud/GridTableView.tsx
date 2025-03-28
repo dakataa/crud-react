@@ -5,7 +5,7 @@ import {ActionType} from "@src/type/ActionType";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Link from "@src/component/Link.tsx";
-import {UseRouter} from "@src/context/RouterContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -40,7 +40,7 @@ const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick
     columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
 
     const [, updateState] = useState<any>();
-    const {generateLink} = UseRouter();
+    const {generateLink} = UseActions();
     const primaryColumn = data?.entity?.primaryColumn;
     const actions = Object.values(data?.action || []);
     const objectActions = actions.filter(a => a.object);

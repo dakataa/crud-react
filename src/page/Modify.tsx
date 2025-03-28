@@ -12,7 +12,6 @@ import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {UseRouter} from "@src/context/RouterContext.tsx";
 
 const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     action: ActionType;
@@ -21,8 +20,7 @@ const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     results?: ModifyType;
 }) => {
 
-    const {getAction} = UseActions();
-    const {generateLink} = UseRouter()
+    const {getAction, generateLink} = UseActions();
     const listAction = getAction(action.entity, 'list', action.namespace);
 
     return (
@@ -65,11 +63,6 @@ const Modify = ({action, children, onSuccess, modal, props}: {
     useEffect(() => {
         setParameters(routeParams);
     }, [JSON.stringify(routeParams)]);
-
-    useEffect(() => {
-        // console.log('open', action);
-        // modalRef.current?.open();
-    }, []);
 
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 

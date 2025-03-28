@@ -1,8 +1,9 @@
-import React, {createRef, MouseEvent, useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import BaseButton, {Link as LinkType} from "./BaseButton";
-import {UseRouter} from "@src/context/RouterContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
+
 export default ({to, children, onClick, ...props}:  {to: string} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & LinkType) => {
-    const {navigate} = UseRouter();
+    const {navigate} = UseActions();
     const anchorRef = useRef<HTMLAnchorElement>(null);
 
     const onClickEvent = (event: Event) => {

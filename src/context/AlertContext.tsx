@@ -1,5 +1,5 @@
 import '@src/assets/style/alert.scss';
-import React, {PropsWithChildren, useContext, useEffect, useRef, useState} from "react";
+import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Button from "@src/component/Button.tsx";

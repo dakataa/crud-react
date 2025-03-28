@@ -7,7 +7,6 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
-import {UseRouter} from "@src/context/RouterContext.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -29,8 +28,7 @@ export function UseDataProvider(): GetDataType | null {
 }
 
 const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataProps): GetDataType => {
-    const {getAction} = UseActions();
-    const {generateRoute} = UseRouter();
+    const {getAction, generateRoute} = UseActions();
     entityAction = getAction(entityAction.entity, entityAction.name, entityAction.namespace) || entityAction;
 
     const [results, setResults] = useState<ListType | ModifyType | null>();
