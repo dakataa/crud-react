@@ -1,12 +1,15 @@
 import React, {PropsWithChildren} from "react";
 
-type ConfigLink = {
+export type ConfigLink = {
     prefix?: string,
     includePrefix?: boolean,
 }
 
-type Config = {
+export type Templates = { [path:string]: () => Promise<any> };
+
+export type Config = {
     link?: ConfigLink,
+    templates?: { [path:string]: () => Promise<any> },
 }
 
 const ConfigContext = React.createContext<Config>({});

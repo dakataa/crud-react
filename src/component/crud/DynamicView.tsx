@@ -1,5 +1,6 @@
 import React, {memo, ReactNode, useEffect, useRef, useState} from "react";
 import {capitalize} from "@src/helper/StingUtils.tsx";
+import {UseConfig} from "@src/context/ConfigContext.tsx";
 
 const EmptyView = ({children}: { children?: ReactNode }) => {
     return <>{children}</>
@@ -13,11 +14,12 @@ const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
     data?: any
     props?: any
 }) => {
-
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
-    const files = import.meta.glob('@crud/**');
+    const {templates: files} = UseConfig();
+
     const templateFilePath = ['crud', namespace, prefix, view].filter(v => v).join('/') + '.tsx';
-    const [key, importMethod] = Object.entries(files).filter(([path, importMethod]) => path.endsWith(templateFilePath)).shift() || [];
+
+    const [key, importMethod] = Object.entries(files ?? {}).filter(([path, importMethod]) => path.endsWith(templateFilePath)).shift() || [];
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(EmptyView);
 

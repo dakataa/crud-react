@@ -13,8 +13,10 @@ Requester.defaults = {
 
 CrudConfiguration({
     connection: {
-        baseURL: import.meta.env.CRUD_API_BASE_URL
-    }
+        baseURL: import.meta.env.CRUD_API_BASE_URL,
+    },
+
+    templates: import.meta.glob('@crud/**')
 });
 
 const root = ReactDOM.createRoot(
