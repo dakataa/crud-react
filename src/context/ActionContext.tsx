@@ -4,7 +4,6 @@ import {OnClickAction} from "@src/component/crud/GridTable.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Exception from "@src/component/error/Exception.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
-import {generatePath, matchPath as reactRouterMatchPath} from "react-router";
 import {RouteType} from "@src/type/RouteType.tsx";
 
 window.history.pushState = new Proxy(window.history.pushState, {
@@ -61,7 +60,8 @@ export function UseActions() {
                 return null;
             }
 
-            const match = matchPath(action.route?.path || '', path)
+            const match = matchPath(action.route?.path || '', path);
+
             return {
                 action,
                 parameters: match?.params
@@ -96,7 +96,7 @@ export function UseActions() {
         return generatePath(crudToReactPathPattern(path), parameters);
     }
 
-    const generateRoute = (route?: RouteType, parameters?: { [key: string]: string } | null): string => {
+    const generateRoute = (route?: RouteType, parameters?: { [key: string]: any } | null): string => {
         return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}) : '#';
     }
 
@@ -129,7 +129,21 @@ export function UseActions() {
     }
 
     const matchPath = (pattern: string, path: string) => {
-        return reactRouterMatchPath(crudToReactPathPattern(pattern), path);
+        const regexp = pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)');
+        const match = path.matchAll(new RegExp('^' + regexp + '$', 'g'));
+        const params = match?.next().value?.groups;
+
+        return params ? {
+            pathname: path,
+            params:  params,
+            pattern: pattern
+        } : null;
+    }
+
+    const generatePath = (pattern: string, parameters?: {[key:string]: string}): string => {
+        return pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
+            return parameters?.[p1] || '';
+        });
     }
 
     return {

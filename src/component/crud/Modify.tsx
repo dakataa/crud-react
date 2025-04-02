@@ -1,5 +1,4 @@
-import React, {ReactNode, useEffect, useRef} from "react";
-import {Link, useParams} from "react-router";
+import React, {ReactNode, useRef} from "react";
 import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
@@ -12,6 +11,7 @@ import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridTable.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import Link from "@src/component/Link.tsx";
 
 const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     action: ActionType;
@@ -51,7 +51,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
     modal?: boolean;
     props?: any;
 }) => {
-    const routeParams = {...(action.parameters || {}), ...useParams()}
+    const routeParams = {...(action.parameters || {})}
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);
     const {results, setParameters}: any & { results: ModifyType } = GetData({
@@ -60,9 +60,9 @@ const Modify = ({action, children, onSuccess, modal, props}: {
     });
     const {open: openAlert} = UseAlert();
 
-    useEffect(() => {
-        setParameters(routeParams);
-    }, [JSON.stringify(routeParams)]);
+    // useEffect(() => {
+    //     setParameters(routeParams);
+    // }, [JSON.stringify(routeParams)]);
 
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 
