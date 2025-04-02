@@ -1,9 +1,9 @@
-import {FormViewType} from "@src/type/FormViewType";
-import FormWidget from "@src/component/form/FormWidget";
+import {FormViewType} from "@src/type/FormViewType.tsx";
+import FormWidget from "@src/component/form/FormWidget.tsx";
 import React, {memo} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-export const FormView = memo(({view, namespace, name}: { view: FormViewType, namespace?: string, name?: string }) => {
+export const FormField = memo(({view, namespace, name}: { view: FormViewType, namespace?: string, name?: string }) => {
     return (
         view && <DynamicView
             namespace={namespace}
@@ -16,7 +16,7 @@ export const FormView = memo(({view, namespace, name}: { view: FormViewType, nam
                 Object.keys(view.children || []).length ?
                     Object.values(view.children || []).map((child) => {
                         return (
-                            <FormView namespace={namespace} key={child.id} view={child}/>
+                            <FormField namespace={namespace} key={child.id} view={child}/>
                         )
                     })
                     :
@@ -26,4 +26,4 @@ export const FormView = memo(({view, namespace, name}: { view: FormViewType, nam
     );
 });
 
-export default FormView;
+export default FormField;

@@ -1,13 +1,13 @@
-import {Form, FormRef} from "@src/component/form/Form.tsx";
-import FormView from "@src/component/crud/FormView.tsx";
+import {Form as BaseForm, FormRef} from "@src/component/form/Form.tsx";
+import FormField from "@src/component/crud/form/FormField.tsx";
 import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
 import {ActionType} from "@src/type/ActionType.tsx";
-import TemplateBlock from "@src/component/TemplateBlock.tsx";
+import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
-import {UseDataProvider} from "@src/component/hooks/GetData.tsx";
+import {UseDataProvider} from "@src/context/GetData.tsx";
 import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
@@ -19,7 +19,7 @@ export type ModifyFormRefType = {
     getFormRef: () => FormRef | null
 };
 
-const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSuccess, onError, onLoad, children, embedded = false}: {
+const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, onError, onLoad, children, embedded = false}: {
     name?: string,
     data?: ModifyType;
     action: ActionType;
@@ -109,11 +109,11 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
                 </div>
             ))}
 
-            <Form id={data?.form?.modify?.view?.id} ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
+            <BaseForm id={data?.form?.modify?.view?.id} ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
                 {
                     data?.form?.modify?.view !== undefined && (
                         <>
-                            <FormView
+                            <FormField
                                 name={name}
                                 namespace={action.namespace}
                                 key={data.form.modify.view.id}
@@ -126,9 +126,9 @@ const ModifyForm = forwardRef(({name, data: initData, action, parameters, onSucc
                 <TemplateBlock name={"actions"} content={children} data={{formRef}}>
                     <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
                 </TemplateBlock>
-            </Form>
+            </BaseForm>
         </>
     )
 });
 
-export default ModifyForm;
+export default Form;

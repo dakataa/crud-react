@@ -1,16 +1,16 @@
 import React, {ReactNode, useEffect, useRef} from "react";
 import {Link, useParams} from "react-router";
-import TemplateBlock from "@src/component/TemplateBlock.tsx";
+import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
-import ModifyForm, {ModifyFormRefType} from "@src/component/ModifyForm.tsx";
+import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import GetData from "@src/component/hooks/GetData.tsx";
+import GetData from "@src/context/GetData.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
-import TemplateExtend from "@src/component/TemplateExtend.tsx";
+import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
-import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
+import {OnClickAction} from "@src/component/crud/GridTable.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 const DefaultModifyTemplate = ({action, children, routeParams, results}: {
@@ -84,7 +84,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
             <TemplateExtend name={"content"}>
                 <DynamicView namespace={action.action.namespace} view={"content"} prefix={"modify"}>
                     <TemplateBlock name={"content"} content={children} data={results}>
-                        <ModifyForm
+                        <Form
                             ref={modifyFormRef}
                             data={results}
                             action={action.action}
@@ -128,7 +128,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
                             parameters={routeParams}
                         >
                             {modal && <TemplateExtend name={"actions"}></TemplateExtend>}
-                        </ModifyForm>
+                        </Form>
                     </TemplateBlock>
                 </DynamicView>
             </TemplateExtend>

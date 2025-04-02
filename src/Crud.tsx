@@ -2,9 +2,9 @@ import React, {ReactElement} from 'react';
 import Requester, {Config as RequesterConfig} from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
-import CrudLoader from "@src/CrudLoader.tsx";
-import CrudContext from "@src/CrudContext.tsx";
-import {ConfigProvider, Templates} from "@src/context/ConfigContext.tsx";
+import CrudLoader from "@src/component/crud/CrudLoader.tsx";
+import CrudProvider from "@src/context/CrudProvider.tsx";
+import {Templates} from "@src/context/ConfigContext.tsx";
 import {UseActions, withRouterContext} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
@@ -25,12 +25,13 @@ const CrudRequester = (): Requester => {
     return requester;
 }
 
-const Crud = withRouterContext(({path, prefix, errorFallback, templates}: {
-    path?: string,
-    prefix?: string,
-    errorFallback?: ReactElement,
-    templates?: { [path: string]: () => Promise<any> }
-}) => {
+const Crud = withRouterContext((
+    {path, prefix, errorFallback, templates}: {
+        path?: string,
+        prefix?: string,
+        errorFallback?: ReactElement,
+        templates?: { [path: string]: () => Promise<any> }
+    }) => {
 
     const {location} = UseActions();
     path ??= location.pathname;
@@ -42,18 +43,11 @@ const Crud = withRouterContext(({path, prefix, errorFallback, templates}: {
     templates = Object.assign(globalConfig.templates ?? {}, templates ?? {});
 
     return (
-        <ConfigProvider config={{
-            link: {
-                prefix
-            },
-            templates
-        }}>
-            <CrudContext>
-                <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
-                    <CrudLoader path={path}/>
-                </ErrorBoundary>
-            </CrudContext>
-        </ConfigProvider>
+        <CrudProvider config={{templates, link: {prefix}}}>
+            <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
+                <CrudLoader path={path}/>
+            </ErrorBoundary>
+        </CrudProvider>
     );
 });
 

@@ -36,7 +36,7 @@ type GridTableViewType = {
     namespace?: string
 };
 
-const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick, routeParams, namespace}: GridTableViewType, ref) => {
+const GridTable = forwardRef(({data, columns, options, onClick, onBatchClick, routeParams, namespace}: GridTableViewType, ref) => {
     columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
 
     const [, updateState] = useState<any>();
@@ -203,4 +203,4 @@ const GridTableView = forwardRef(({data, columns, options, onClick, onBatchClick
     );
 });
 
-export default GridTableView;
+export default GridTable;

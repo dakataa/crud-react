@@ -5,15 +5,15 @@ import {
     convertURLSearchParamsToObject,
     Method
 } from "@dakataa/requester";
-import GridTableView, {OnClickAction} from "@src/component/crud/GridTableView.tsx";
-import PaginatorView from "@src/component/crud/PaginatorView.tsx";
+import GridTable, {OnClickAction} from "@src/component/crud/GridTable.tsx";
+import PaginatorView from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Button from "@src/component/Button.tsx";
-import FormView from "@src/component/crud/FormView.tsx";
+import FormField from "@src/component/crud/form/FormField.tsx";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import GetData, {GetDataType} from "@src/component/hooks/GetData.tsx";
+import GetData, {GetDataType} from "@src/context/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
@@ -204,7 +204,7 @@ const List = memo(({action, embedded = false}: {
                                         >
                                             {
                                                 results?.form?.filter && (
-                                                    <FormView view={results.form.filter.view}/>
+                                                    <FormField view={results.form.filter.view}/>
                                                 )
                                             }
                                             <button className={"btn btn-primary me-2"} type={"submit"}>
@@ -228,7 +228,7 @@ const List = memo(({action, embedded = false}: {
                 )}
                 <DynamicView namespace={action.action.namespace} key={"modify"} prefix={"modify"} view={"content"} data={results}>
                     <div className={"table-responsive"}>
-                        <GridTableView
+                        <GridTable
                             data={results}
                             onClick={handleAction}
                             onBatchClick={handleBatchAction}

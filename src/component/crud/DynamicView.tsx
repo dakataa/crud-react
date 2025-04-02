@@ -1,10 +1,8 @@
 import React, {memo, ReactNode, useEffect, useRef, useState} from "react";
 import {capitalize} from "@src/helper/StingUtils.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
+import Empty from "@src/component/Empty.tsx";
 
-const EmptyView = ({children}: { children?: ReactNode }) => {
-    return <>{children}</>
-}
 
 const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
     namespace?: string,
@@ -21,7 +19,7 @@ const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
 
     const [key, importMethod] = Object.entries(files ?? {}).filter(([path, importMethod]) => path.endsWith(templateFilePath)).shift() || [];
     const [update, setUpdate] = useState(1);
-    const LoadedView = useRef<any>(EmptyView);
+    const LoadedView = useRef<any>(Empty);
 
     useEffect(() => {
         if (importMethod === undefined) {
@@ -36,7 +34,7 @@ const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
 
     return (
         <LoadedView.current {...props} view={view} controller={namespace} viewName={view} data={data} parent={children}>
-            {(!importMethod || LoadedView.current !== EmptyView) && children}
+            {(!importMethod || LoadedView.current !== Empty) && children}
         </LoadedView.current>
     );
 });

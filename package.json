@@ -57,7 +57,7 @@
 		"@popperjs/core": "^2.11.8",
 		"lottie-web": "^5.12.2",
 		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.6.3",

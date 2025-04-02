@@ -1,9 +1,9 @@
 import '@src/assets/style/alert.scss';
 import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
-import TemplateExtend from "@src/component/TemplateExtend.tsx";
+import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
 import Button from "@src/component/Button.tsx";
-import {default as LottieAnimation} from "@src/component/Animation.tsx";
+import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]

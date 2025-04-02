@@ -1,6 +1,6 @@
-import React, {PropsWithChildren, useEffect, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactElement, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
-import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
+import {OnClickAction} from "@src/component/crud/GridTable.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Exception from "@src/component/error/Exception.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
@@ -220,9 +220,9 @@ export function ActionProvider(props: PropsWithChildren) {
     );
 }
 
-export function withRouterContext(component: any): any {
-    return (props: any) => {
-        const reactComponent = React.createElement(component as any, props);
+export function withRouterContext<P extends {}>(component: ComponentType<P>): FC<P> {
+    return (props: P) => {
+        const reactComponent = React.createElement(component, props);
 
         return (
             <ActionProvider>

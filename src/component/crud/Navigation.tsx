@@ -1,13 +1,13 @@
 import React, {createRef, ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from "react";
-import {RouteType} from "@src/type/RouteType";
+import {RouteType} from "@src/type/RouteType.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 
-export type MenuItem = {
+export type NavigationItem = {
     title: string;
     route?: RouteType;
     icon?: any;
-    items?: MenuItem[];
+    items?: NavigationItem[];
     target?: '_blank' | '_self',
 }
 
@@ -21,8 +21,8 @@ const UseParentNavigationItem = () => {
     return React.useContext<NavigationItemContextType | null>(NavigationItemContext);
 }
 
-const MainNavigationItem = ({item, open = false}: {
-    item: MenuItem;
+const NavigationItem = ({item, open = false}: {
+    item: NavigationItem;
     open?: boolean;
 }) => {
 
@@ -108,7 +108,7 @@ const MainNavigationItem = ({item, open = false}: {
                     to={isGroup ? '#' : generateRoute(item.route)}
                     {...(item.icon && {icon: item.icon})}
                     {...(isGroup && {
-                        onClick: (e) => {
+                        onClick: () => {
                             setActive(!active);
                         }
                     })}
@@ -128,13 +128,13 @@ const MainNavigationItem = ({item, open = false}: {
 };
 
 const NavigationGroup = ({items}: {
-    items: MenuItem[];
+    items: NavigationItem[];
 }) => {
     return (
         items.map((item) => {
                 const key = [parent, item.title].filter(v => v).join('-').toLowerCase();
                 return (
-                    <MainNavigationItem key={key} item={item}/>
+                    <NavigationItem key={key} item={item}/>
                 )
             }
         )
@@ -142,7 +142,7 @@ const NavigationGroup = ({items}: {
 };
 
 const Navigation = forwardRef(({items, className, open = false}: {
-    items: MenuItem[];
+    items: NavigationItem[];
     className?: string;
     open?: boolean;
     props?: any;

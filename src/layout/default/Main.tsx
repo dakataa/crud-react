@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useRef, useState} from "react";
-import Navigation, {MenuItem, NavigationItemContextType} from "@src/layout/default/component/Navigation.tsx";
+import Navigation, {NavigationItem, NavigationItemContextType} from "@src/component/crud/Navigation.tsx";
 import {Outlet} from "react-router";
 import Base from "@src/layout/default/Base.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
@@ -10,7 +10,7 @@ const Main = memo(({...props}: {
     children?: any
 }) => {
     const mainMenuRef = useRef<NavigationItemContextType | null>(null);
-    const [navigationItems, setNavigationItems] = useState<MenuItem[]>([]);
+    const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([]);
 
     useEffect(() => {
         CrudRequester().get({

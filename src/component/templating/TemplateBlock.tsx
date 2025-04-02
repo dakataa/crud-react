@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import TemplateExtend from "@src/component/TemplateExtend.tsx";
+import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
 
 const TemplateBlock = memo(({name, content, children, data}: {
     name: string,
@@ -7,7 +7,7 @@ const TemplateBlock = memo(({name, content, children, data}: {
     children?: any,
     data: any
 }) => {
-    const templateElement = React.Children.toArray(content).find(x => React.isValidElement(x) && x.type === TemplateExtend && x.props.name === name);
+    const templateElement = React.Children.toArray(content).find(x => React.isValidElement(x) && x.type === TemplateExtend && (x as any).props.name === name);
     let contentElement = null;
     if (templateElement && React.isValidElement(templateElement)) {
         contentElement = React.cloneElement(templateElement as any, {parent: children, data: data});

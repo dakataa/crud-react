@@ -3,7 +3,7 @@ import LottiePlayer from "lottie-web/build/player/esm/lottie.min.js";
 import {AnimationConfigWithData, AnimationConfigWithPath, AnimationConfig} from "lottie-web";
 
 
-const Animation = ({
+const LottieAnimation = ({
                        animationData,
                        path,
                        options,
@@ -49,4 +49,4 @@ const Animation = ({
     )
 }
 
-export default Animation;
+export default LottieAnimation;

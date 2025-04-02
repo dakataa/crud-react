@@ -2,14 +2,14 @@ var En = Object.defineProperty;
 var Cn = (e, t, n) => t in e ? En(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
 var le = (e, t, n) => Cn(e, typeof t != "symbol" ? t + "" : t, n);
 import { jsx as u, Fragment as D, jsxs as w } from "react/jsx-runtime";
-import et, { convertObjectToURLSearchParams as We, RequestBodyType as vn, convertURLSearchParamsToObject as xn, convertFormDataToObject as _n, Method as Nn } from "@dakataa/requester";
+import tt, { convertObjectToURLSearchParams as We, RequestBodyType as vn, convertURLSearchParamsToObject as xn, convertFormDataToObject as _n, Method as Nn } from "@dakataa/requester";
 import * as C from "react";
-import R, { memo as X, useState as U, useEffect as M, forwardRef as Ce, useRef as $, useImperativeHandle as tt, useReducer as wn } from "react";
+import R, { memo as X, useState as U, useEffect as M, forwardRef as Ce, useRef as $, useImperativeHandle as nt, useReducer as wn } from "react";
 import "@dakataa/crud-theme/scss/theme.scss";
 import { createPortal as Pn } from "react-dom";
 import Sn from "lottie-web/build/player/esm/lottie.min.js";
-import * as gt from "@popperjs/core";
-class Ae {
+import * as yt from "@popperjs/core";
+class Re {
   constructor(t = 0, n, r) {
     le(this, "code");
     le(this, "detail");
@@ -17,7 +17,7 @@ class Ae {
     this.code = t, this.detail = n, this.trace = r;
   }
 }
-class ve extends Ae {
+class Ae extends Re {
   constructor(n, r, a) {
     super(0, r, a);
     le(this, "status", 400);
@@ -28,7 +28,7 @@ class Ln extends C.Component {
   constructor(n) {
     super(n);
     le(this, "promiseRejectionHandler", (n) => {
-      n.reason instanceof Ae && this.setState({
+      n.reason instanceof Re && this.setState({
         ...this.state,
         hasError: !0,
         error: n.reason
@@ -46,7 +46,7 @@ class Ln extends C.Component {
     window.removeEventListener("unhandledrejection", this.promiseRejectionHandler);
   }
   static getDerivedStateFromError(n) {
-    return n instanceof Error && (n = new ve(0, n.message)), {
+    return n instanceof Error && (n = new Ae(0, n.message)), {
       hasError: !0,
       error: n
     };
@@ -64,16 +64,16 @@ class Ln extends C.Component {
     ) : this.props.children;
   }
 }
-const Rn = X(({ children: e }) => /* @__PURE__ */ u(D, { children: e })), An = X(({ error: e }) => (e ?? (e = new ve(404, "Page not found.")), /* @__PURE__ */ u(Rn, { children: /* @__PURE__ */ u("main", { children: /* @__PURE__ */ w("div", { className: "content d-flex flex-column", children: [
-  /* @__PURE__ */ u("h1", { className: "display-1", children: e.status || "Error" }),
-  /* @__PURE__ */ u("p", { className: "text-secondary", children: e.detail }),
+const Rn = X(({ children: e }) => /* @__PURE__ */ u(D, { children: e })), An = X(({ error: e }) => /* @__PURE__ */ u(Rn, { children: /* @__PURE__ */ u("main", { children: /* @__PURE__ */ w("div", { className: "content d-flex flex-column", children: [
+  /* @__PURE__ */ u("h1", { className: "display-1", children: (e == null ? void 0 : e.status) || "Error" }),
+  /* @__PURE__ */ u("p", { className: "text-secondary", children: (e == null ? void 0 : e.detail) || "Unknown Error" }),
   /* @__PURE__ */ u("br", {}),
   /* @__PURE__ */ u("div", { children: /* @__PURE__ */ u("a", { className: "btn btn-primary", href: "#", children: "Back to home" }) })
-] }) }) })));
-var me = {}, yt;
+] }) }) }));
+var me = {}, bt;
 function kn() {
-  if (yt) return me;
-  yt = 1, Object.defineProperty(me, "__esModule", { value: !0 }), me.parse = s, me.serialize = i;
+  if (bt) return me;
+  bt = 1, Object.defineProperty(me, "__esModule", { value: !0 }), me.parse = s, me.serialize = i;
   const e = /^[\u0021-\u003A\u003C\u003E-\u007E]+$/, t = /^[\u0021-\u003A\u003C-\u007E]*$/, n = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i, r = /^[\u0020-\u003A\u003D-\u007E]*$/, a = Object.prototype.toString, o = /* @__PURE__ */ (() => {
     const d = function() {
     };
@@ -226,7 +226,7 @@ function Ke({
 }) {
   return t && t !== "?" && (e += t.charAt(0) === "?" ? t : "?" + t), n && n !== "#" && (e += n.charAt(0) === "#" ? n : "#" + n), e;
 }
-function nt(e) {
+function rt(e) {
   let t = {};
   if (e) {
     let n = e.indexOf("#");
@@ -240,7 +240,7 @@ function kt(e, t, n = "/") {
   return On(e, t, n, !1);
 }
 function On(e, t, n, r) {
-  let a = typeof t == "string" ? nt(t) : t, o = Z(a.pathname || "/", n);
+  let a = typeof t == "string" ? rt(t) : t, o = Z(a.pathname || "/", n);
   if (o == null)
     return null;
   let s = Ot(e);
@@ -248,7 +248,7 @@ function On(e, t, n, r) {
   let l = null;
   for (let c = 0; l == null && c < s.length; ++c) {
     let i = Kn(o);
-    l = Bn(
+    l = Vn(
       s[c],
       i,
       r
@@ -306,21 +306,21 @@ function Tt(e) {
 }
 function Tn(e) {
   e.sort(
-    (t, n) => t.score !== n.score ? n.score - t.score : Vn(
+    (t, n) => t.score !== n.score ? n.score - t.score : Bn(
       t.routesMeta.map((r) => r.childrenIndex),
       n.routesMeta.map((r) => r.childrenIndex)
     )
   );
 }
-var Dn = /^:[\w-]+$/, $n = 3, Mn = 2, jn = 1, Fn = 10, In = -2, bt = (e) => e === "*";
+var Dn = /^:[\w-]+$/, $n = 3, Mn = 2, jn = 1, Fn = 10, In = -2, Et = (e) => e === "*";
 function Un(e, t) {
   let n = e.split("/"), r = n.length;
-  return n.some(bt) && (r += In), t && (r += Mn), n.filter((a) => !bt(a)).reduce(
+  return n.some(Et) && (r += In), t && (r += Mn), n.filter((a) => !Et(a)).reduce(
     (a, o) => a + (Dn.test(o) ? $n : o === "" ? jn : Fn),
     r
   );
 }
-function Vn(e, t) {
+function Bn(e, t) {
   return e.length === t.length && e.slice(0, -1).every((r, a) => r === t[a]) ? (
     // If two routes are siblings, we should try to match the earlier sibling
     // first. This allows people to have fine-grained control over the matching
@@ -333,7 +333,7 @@ function Vn(e, t) {
     0
   );
 }
-function Bn(e, t, n = !1) {
+function Vn(e, t, n = !1) {
   let { routesMeta: r } = e, a = {}, o = "/", s = [];
   for (let l = 0; l < r.length; ++l) {
     let c = r[l], i = l === r.length - 1, m = o === "/" ? t : t.slice(o.length) || "/", b = ye(
@@ -439,7 +439,7 @@ function zn(e, t = "/") {
     pathname: n,
     search: r = "",
     hash: a = ""
-  } = typeof e == "string" ? nt(e) : e;
+  } = typeof e == "string" ? rt(e) : e;
   return {
     pathname: n ? n.startsWith("/") ? n : Yn(n, t) : t,
     search: Gn(r),
@@ -470,7 +470,7 @@ function Dt(e) {
 }
 function $t(e, t, n, r = !1) {
   let a;
-  typeof e == "string" ? a = nt(e) : (a = { ...e }, I(
+  typeof e == "string" ? a = rt(e) : (a = { ...e }, I(
     !a.pathname || !a.pathname.includes("?"),
     Me("?", "pathname", "search", a)
   ), I(
@@ -532,18 +532,18 @@ var J = C.createContext(
   null
 );
 J.displayName = "Navigation";
-var rt = C.createContext(
+var at = C.createContext(
   null
 );
-rt.displayName = "Location";
+at.displayName = "Location";
 var z = C.createContext({
   outlet: null,
   matches: [],
   isDataRoute: !1
 });
 z.displayName = "Route";
-var at = C.createContext(null);
-at.displayName = "RouteError";
+var ot = C.createContext(null);
+ot.displayName = "RouteError";
 function nr(e, { relative: t } = {}) {
   I(
     Oe(),
@@ -551,11 +551,11 @@ function nr(e, { relative: t } = {}) {
     // router loaded. We can help them understand how to avoid that.
     "useHref() may be used only in the context of a <Router> component."
   );
-  let { basename: n, navigator: r } = C.useContext(J), { hash: a, pathname: o, search: s } = xe(e, { relative: t }), l = o;
+  let { basename: n, navigator: r } = C.useContext(J), { hash: a, pathname: o, search: s } = ve(e, { relative: t }), l = o;
   return n !== "/" && (l = o === "/" ? n : q([n, o])), r.createHref({ pathname: l, search: s, hash: a });
 }
 function Oe() {
-  return C.useContext(rt) != null;
+  return C.useContext(at) != null;
 }
 function oe() {
   return I(
@@ -563,7 +563,7 @@ function oe() {
     // TODO: This error is probably because they somehow have 2 versions of the
     // router loaded. We can help them understand how to avoid that.
     "useLocation() may be used only in the context of a <Router> component."
-  ), C.useContext(rt).location;
+  ), C.useContext(at).location;
 }
 var Ft = "You should call navigate() in a React.useEffect(), not when your component is first rendered.";
 function It(e) {
@@ -616,7 +616,7 @@ function or() {
   let { matches: e } = C.useContext(z), t = e[e.length - 1];
   return t ? t.params : {};
 }
-function xe(e, { relative: t } = {}) {
+function ve(e, { relative: t } = {}) {
   let { matches: n } = C.useContext(z), { pathname: r } = oe(), a = JSON.stringify(Dt(n));
   return C.useMemo(
     () => $t(
@@ -719,7 +719,7 @@ var lr = /* @__PURE__ */ C.createElement(ir, null), cr = class extends C.Compone
   }
   render() {
     return this.state.error !== void 0 ? /* @__PURE__ */ C.createElement(z.Provider, { value: this.props.routeContext }, /* @__PURE__ */ C.createElement(
-      at.Provider,
+      ot.Provider,
       {
         value: this.state.error,
         children: this.props.component
@@ -804,22 +804,22 @@ function dr(e, t = [], n = null, r = null) {
     ) : g();
   }, null);
 }
-function ot(e) {
+function st(e) {
   return `${e} must be used within a data router.  See https://reactrouter.com/en/main/routers/picking-a-router.`;
 }
 function fr(e) {
   let t = C.useContext(ue);
-  return I(t, ot(e)), t;
+  return I(t, st(e)), t;
 }
 function mr(e) {
   let t = C.useContext(ke);
-  return I(t, ot(e)), t;
+  return I(t, st(e)), t;
 }
 function hr(e) {
   let t = C.useContext(z);
-  return I(t, ot(e)), t;
+  return I(t, st(e)), t;
 }
-function st(e) {
+function it(e) {
   let t = hr(e), n = t.matches[t.matches.length - 1];
   return I(
     n.route.id,
@@ -827,17 +827,17 @@ function st(e) {
   ), n.route.id;
 }
 function pr() {
-  return st(
+  return it(
     "useRouteId"
     /* UseRouteId */
   );
 }
 function gr() {
   var r;
-  let e = C.useContext(at), t = mr(
+  let e = C.useContext(ot), t = mr(
     "useRouteError"
     /* UseRouteError */
-  ), n = st(
+  ), n = it(
     "useRouteError"
     /* UseRouteError */
   );
@@ -847,7 +847,7 @@ function yr() {
   let { router: e } = fr(
     "useNavigate"
     /* UseNavigateStable */
-  ), t = st(
+  ), t = it(
     "useNavigate"
     /* UseNavigateStable */
   ), n = C.useRef(!1);
@@ -860,9 +860,9 @@ function yr() {
     [e, t]
   );
 }
-var Et = {};
+var Ct = {};
 function Ut(e, t, n) {
-  !t && !Et[e] && (Et[e] = !0, K(!1, n));
+  !t && !Ct[e] && (Ct[e] = !0, K(!1, n));
 }
 C.memo(br);
 function br({
@@ -872,7 +872,7 @@ function br({
 }) {
   return sr(e, void 0, n, t);
 }
-var Ne = "get", we = "application/x-www-form-urlencoded";
+var _e = "get", Ne = "application/x-www-form-urlencoded";
 function Te(e) {
   return e != null && typeof e.tagName == "string";
 }
@@ -893,19 +893,19 @@ function _r(e, t) {
   (!t || t === "_self") && // Let browser handle "target=_blank" etc.
   !xr(e);
 }
-var _e = null;
+var xe = null;
 function Nr() {
-  if (_e === null)
+  if (xe === null)
     try {
       new FormData(
         document.createElement("form"),
         // @ts-expect-error if FormData supports the submitter parameter, this will throw
         0
-      ), _e = !1;
+      ), xe = !1;
     } catch {
-      _e = !0;
+      xe = !0;
     }
-  return _e;
+  return xe;
 }
 var wr = /* @__PURE__ */ new Set([
   "application/x-www-form-urlencoded",
@@ -915,14 +915,14 @@ var wr = /* @__PURE__ */ new Set([
 function je(e) {
   return e != null && !wr.has(e) ? (K(
     !1,
-    `"${e}" is not a valid \`encType\` for \`<Form>\`/\`<fetcher.Form>\` and will default to "${we}"`
+    `"${e}" is not a valid \`encType\` for \`<Form>\`/\`<fetcher.Form>\` and will default to "${Ne}"`
   ), null) : e;
 }
 function Pr(e, t) {
   let n, r, a, o, s;
   if (Cr(e)) {
     let l = e.getAttribute("action");
-    r = l ? Z(l, t) : null, n = e.getAttribute("method") || Ne, a = je(e.getAttribute("enctype")) || we, o = new FormData(e);
+    r = l ? Z(l, t) : null, n = e.getAttribute("method") || _e, a = je(e.getAttribute("enctype")) || Ne, o = new FormData(e);
   } else if (Er(e) || vr(e) && (e.type === "submit" || e.type === "image")) {
     let l = e.form;
     if (l == null)
@@ -930,7 +930,7 @@ function Pr(e, t) {
         'Cannot submit a <button> or <input type="submit"> without a <form>'
       );
     let c = e.getAttribute("formaction") || l.getAttribute("action");
-    if (r = c ? Z(c, t) : null, n = e.getAttribute("formmethod") || l.getAttribute("method") || Ne, a = je(e.getAttribute("formenctype")) || je(l.getAttribute("enctype")) || we, o = new FormData(l, e), !Nr()) {
+    if (r = c ? Z(c, t) : null, n = e.getAttribute("formmethod") || l.getAttribute("method") || _e, a = je(e.getAttribute("formenctype")) || je(l.getAttribute("enctype")) || Ne, o = new FormData(l, e), !Nr()) {
       let { name: i, type: m, value: b } = e;
       if (m === "image") {
         let d = i ? `${i}.` : "";
@@ -942,11 +942,11 @@ function Pr(e, t) {
       throw new Error(
         'Cannot submit element that is not <form>, <button>, or <input type="submit|image">'
       );
-    n = Ne, r = null, a = we, s = e;
+    n = _e, r = null, a = Ne, s = e;
   }
   return o && a === "text/plain" && (s = o, o = void 0), { action: r, method: n.toLowerCase(), encType: a, formData: o, body: s };
 }
-function it(e, t) {
+function lt(e, t) {
   if (e === !1 || e === null || typeof e > "u")
     throw new Error(t);
 }
@@ -987,7 +987,7 @@ async function Rr(e, t, n) {
     )
   );
 }
-function Ct(e, t, n, r, a, o) {
+function vt(e, t, n, r, a, o) {
   let s = (c, i) => n[i] ? c.route.id !== n[i].route.id : !0, l = (c, i) => {
     var m;
     return (
@@ -1058,31 +1058,31 @@ function Dr(e, t) {
   ) : e;
   return n.pathname === "/" ? n.pathname = "_root.data" : t && Z(n.pathname, t) === "/" ? n.pathname = `${t.replace(/\/$/, "")}/_root.data` : n.pathname = `${n.pathname.replace(/\/$/, "")}.data`, n;
 }
-function Vt() {
+function Bt() {
   let e = C.useContext(ue);
-  return it(
+  return lt(
     e,
     "You must render this element inside a <DataRouterContext.Provider> element"
   ), e;
 }
 function $r() {
   let e = C.useContext(ke);
-  return it(
+  return lt(
     e,
     "You must render this element inside a <DataRouterStateContext.Provider> element"
   ), e;
 }
-var lt = C.createContext(void 0);
-lt.displayName = "FrameworkContext";
-function Bt() {
-  let e = C.useContext(lt);
-  return it(
+var ct = C.createContext(void 0);
+ct.displayName = "FrameworkContext";
+function Vt() {
+  let e = C.useContext(ct);
+  return lt(
     e,
     "You must render this element inside a <HydratedRouter> element"
   ), e;
 }
 function Mr(e, t) {
-  let n = C.useContext(lt), [r, a] = C.useState(!1), [o, s] = C.useState(!1), { onFocus: l, onBlur: c, onMouseEnter: i, onMouseLeave: m, onTouchStart: b } = t, d = C.useRef(null);
+  let n = C.useContext(ct), [r, a] = C.useState(!1), [o, s] = C.useState(!1), { onFocus: l, onBlur: c, onMouseEnter: i, onMouseLeave: m, onTouchStart: b } = t, d = C.useRef(null);
   C.useEffect(() => {
     if (e === "render" && s(!0), e === "viewport") {
       let h = (p) => {
@@ -1130,14 +1130,14 @@ function jr({
   page: e,
   ...t
 }) {
-  let { router: n } = Vt(), r = C.useMemo(
+  let { router: n } = Bt(), r = C.useMemo(
     () => kt(n.routes, e, n.basename),
     [n.routes, e, n.basename]
   );
   return r ? /* @__PURE__ */ C.createElement(Ir, { page: e, matches: r, ...t }) : null;
 }
 function Fr(e) {
-  let { manifest: t, routeModules: n } = Bt(), [r, a] = C.useState([]);
+  let { manifest: t, routeModules: n } = Vt(), [r, a] = C.useState([]);
   return C.useEffect(() => {
     let o = !1;
     return Rr(e, t, n).then(
@@ -1154,8 +1154,8 @@ function Ir({
   matches: t,
   ...n
 }) {
-  let r = oe(), { manifest: a, routeModules: o } = Bt(), { basename: s } = Vt(), { loaderData: l, matches: c } = $r(), i = C.useMemo(
-    () => Ct(
+  let r = oe(), { manifest: a, routeModules: o } = Vt(), { basename: s } = Bt(), { loaderData: l, matches: c } = $r(), i = C.useMemo(
+    () => vt(
       e,
       t,
       c,
@@ -1165,7 +1165,7 @@ function Ir({
     ),
     [e, t, c, a, r]
   ), m = C.useMemo(
-    () => Ct(
+    () => vt(
       e,
       t,
       c,
@@ -1220,7 +1220,7 @@ try {
   Ht && (window.__reactRouterVersion = "7.3.0");
 } catch {
 }
-var Wt = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i, ct = C.forwardRef(
+var Wt = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i, ut = C.forwardRef(
   function({
     onClick: t,
     discover: n = "render",
@@ -1278,8 +1278,8 @@ var Wt = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i, ct = C.forwardRef(
     return v && !h ? /* @__PURE__ */ C.createElement(C.Fragment, null, j, /* @__PURE__ */ C.createElement(jr, { page: y })) : j;
   }
 );
-ct.displayName = "Link";
-var Vr = C.forwardRef(
+ut.displayName = "Link";
+var Br = C.forwardRef(
   function({
     "aria-current": t = "page",
     caseSensitive: n = !1,
@@ -1291,7 +1291,7 @@ var Vr = C.forwardRef(
     children: c,
     ...i
   }, m) {
-    let b = xe(s, { relative: i.relative }), d = oe(), E = C.useContext(ke), { navigator: f, basename: h } = C.useContext(J), g = E != null && // Conditional usage is OK here because the usage of a data router is static
+    let b = ve(s, { relative: i.relative }), d = oe(), E = C.useContext(ke), { navigator: f, basename: h } = C.useContext(J), g = E != null && // Conditional usage is OK here because the usage of a data router is static
     // eslint-disable-next-line react-hooks/rules-of-hooks
     Jr(b) && l === !0, p = f.encodeLocation ? f.encodeLocation(b).pathname : b.pathname, y = d.pathname, v = E && E.navigation && E.navigation.location ? E.navigation.location.pathname : null;
     n || (y = y.toLowerCase(), v = v ? v.toLowerCase() : null, p = p.toLowerCase()), v && h && (v = Z(v, h) || v);
@@ -1309,7 +1309,7 @@ var Vr = C.forwardRef(
     ].filter(Boolean).join(" ");
     let S = typeof o == "function" ? o(T) : o;
     return /* @__PURE__ */ C.createElement(
-      ct,
+      ut,
       {
         ...i,
         "aria-current": j,
@@ -1323,8 +1323,8 @@ var Vr = C.forwardRef(
     );
   }
 );
-Vr.displayName = "NavLink";
-var Br = C.forwardRef(
+Br.displayName = "NavLink";
+var Vr = C.forwardRef(
   ({
     discover: e = "render",
     fetcherKey: t,
@@ -1332,7 +1332,7 @@ var Br = C.forwardRef(
     reloadDocument: r,
     replace: a,
     state: o,
-    method: s = Ne,
+    method: s = _e,
     action: l,
     onSubmit: c,
     relative: i,
@@ -1368,7 +1368,7 @@ var Br = C.forwardRef(
     );
   }
 );
-Br.displayName = "Form";
+Vr.displayName = "Form";
 function Hr(e) {
   return `${e} must be used within a data router.  See https://reactrouter.com/en/main/routers/picking-a-router.`;
 }
@@ -1384,7 +1384,7 @@ function Wr(e, {
   relative: o,
   viewTransition: s
 } = {}) {
-  let l = rr(), c = oe(), i = xe(e, { relative: o });
+  let l = rr(), c = oe(), i = ve(e, { relative: o });
   return C.useCallback(
     (m) => {
       if (_r(m, t)) {
@@ -1455,7 +1455,7 @@ function Yr() {
 function qr(e, { relative: t } = {}) {
   let { basename: n } = C.useContext(J), r = C.useContext(z);
   I(r, "useFormAction must be used inside a RouteContext");
-  let [a] = r.matches.slice(-1), o = { ...xe(e || ".", { relative: t }) }, s = oe();
+  let [a] = r.matches.slice(-1), o = { ...ve(e || ".", { relative: t }) }, s = oe();
   if (e == null) {
     o.search = s.search;
     let l = new URLSearchParams(o.search), c = l.getAll("index");
@@ -1476,14 +1476,14 @@ function Jr(e, t = {}) {
   let { basename: r } = Kt(
     "useViewTransitionState"
     /* useViewTransitionState */
-  ), a = xe(e, { relative: t.relative });
+  ), a = ve(e, { relative: t.relative });
   if (!n.isTransitioning)
     return !1;
   let o = Z(n.currentLocation.pathname, r) || n.currentLocation.pathname, s = Z(n.nextLocation.pathname, r) || n.nextLocation.pathname;
   return ye(a.pathname, s) != null || ye(a.pathname, o) != null;
 }
 new TextEncoder();
-const Gr = ({ children: e }) => /* @__PURE__ */ u(D, { children: e }), W = X(({ name: e, children: t, data: n, parent: r, render: a }) => (t = R.Children.toArray((a ? a(n, r) : t) || []).map((o) => (R.isValidElement(o) && o.type === Gr && (o = R.cloneElement(o, { children: r })), o)), /* @__PURE__ */ u(D, { children: t }))), B = X(({ name: e, content: t, children: n, data: r }) => {
+const Gr = ({ children: e }) => /* @__PURE__ */ u(D, { children: e }), W = X(({ name: e, children: t, data: n, parent: r, render: a }) => (t = R.Children.toArray((a ? a(n, r) : t) || []).map((o) => (R.isValidElement(o) && o.type === Gr && (o = R.cloneElement(o, { children: r })), o)), /* @__PURE__ */ u(D, { children: t }))), V = X(({ name: e, content: t, children: n, data: r }) => {
   const a = R.Children.toArray(t).find((l) => R.isValidElement(l) && l.type === W && l.props.name === e);
   let o = null;
   a && R.isValidElement(a) && (o = R.cloneElement(a, { parent: n, data: r }));
@@ -1506,7 +1506,7 @@ window.history.replaceState = new Proxy(window.history.replaceState, {
     e.apply(t, n), window.dispatchEvent(new Event("replacestate"));
   }
 });
-const vt = "actions", qt = R.createContext(void 0);
+const xt = "actions", qt = R.createContext(void 0);
 function ee() {
   const e = R.useContext(qt), t = Yt(), { actions: n, location: r, setLocation: a } = e ?? {
     actions: null,
@@ -1532,7 +1532,7 @@ function ee() {
       let v = 0;
       const _ = () => {
         if (v > 10)
-          throw new Ae(0, "Cannot load routes");
+          throw new Re(0, "Cannot load routes");
         if (e)
           return y(p());
         setTimeout(_, 200), v++;
@@ -1572,7 +1572,7 @@ function ee() {
 function Zr(e) {
   let t = null;
   try {
-    const s = sessionStorage.getItem(vt);
+    const s = sessionStorage.getItem(xt);
     t = JSON.parse(atob(s || ""));
   } catch {
   }
@@ -1593,7 +1593,7 @@ function Zr(e) {
     };
   }, []), M(() => {
     t || Ee().get({ url: "/_crud/actions" }).then(({ status: s, data: l }) => {
-      s === 200 && (sessionStorage.setItem(vt, btoa(JSON.stringify(l))), r(l));
+      s === 200 && (sessionStorage.setItem(xt, btoa(JSON.stringify(l))), r(l));
     }).catch((s) => {
       console.log("error", s);
     }).finally(() => {
@@ -1611,7 +1611,7 @@ function Xr(e) {
   };
 }
 const Jt = R.createContext(null);
-function ut() {
+function dt() {
   const e = R.useContext(Jt);
   if (!e)
     throw new Error("useForm must be used in Form");
@@ -1669,7 +1669,7 @@ const De = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       return (h = i.current) == null ? void 0 : h.requestSubmit();
     }
   };
-  tt(c, () => b), M(() => {
+  nt(c, () => b), M(() => {
     const h = () => {
       s && s();
     }, g = i == null ? void 0 : i.current;
@@ -1751,7 +1751,7 @@ const De = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
   ...s
 }) => {
   t = t || [];
-  const [[l, c], i] = ut(), m = $(null), d = !!((l == null ? void 0 : l.errors[e.full_name]) || []).length, E = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  const [[l, c], i] = dt(), m = $(null), d = !!((l == null ? void 0 : l.errors[e.full_name]) || []).length, E = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
   M(() => {
     c({
       action: "constraints",
@@ -1845,7 +1845,7 @@ const De = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
     E
   ) });
 }, Qt = ({ name: e, className: t }) => {
-  const [[n]] = ut(), r = (n == null ? void 0 : n.errors[e]) || [];
+  const [[n]] = dt(), r = (n == null ? void 0 : n.errors[e]) || [];
   return r.length ? /* @__PURE__ */ u("div", { className: t, children: r.map((a, o) => /* @__PURE__ */ u("span", { children: a.message }, o)) }) : /* @__PURE__ */ u(D, {});
 }, ze = (e) => e.toLowerCase().replace(new RegExp("^.{1,1}"), (t) => t.toUpperCase()), ta = (e) => {
   let t = e.replace(new RegExp("[-_]", "gi"), " ").split(new RegExp("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])"));
@@ -1899,7 +1899,7 @@ const De = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
   className: n,
   onChange: r
 }) => {
-  const [[a, o]] = ut(), s = $(null), l = (a == null ? void 0 : a.errors[e.full_name]) || [];
+  const [[a, o]] = dt(), s = $(null), l = (a == null ? void 0 : a.errors[e.full_name]) || [];
   M(() => {
     o({
       action: "constraints",
@@ -1941,9 +1941,9 @@ const De = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
     default:
       return /* @__PURE__ */ u(ra, { view: e });
   }
-})() }), xt = ({ children: e }) => /* @__PURE__ */ u(D, { children: e }), ae = X(({ namespace: e, view: t, prefix: n, children: r, props: a, data: o }) => {
+})() }), Ye = ({ children: e }) => /* @__PURE__ */ u(D, { children: e }), ae = X(({ namespace: e, view: t, prefix: n, children: r, props: a, data: o }) => {
   t = t.split(/[._]/).map((E) => ze(E)).join("");
-  const { templates: s } = Yt(), l = ["crud", e, n, t].filter((E) => E).join("/") + ".tsx", [c, i] = Object.entries(s ?? {}).filter(([E, f]) => E.endsWith(l)).shift() || [], [m, b] = U(1), d = $(xt);
+  const { templates: s } = Yt(), l = ["crud", e, n, t].filter((E) => E).join("/") + ".tsx", [c, i] = Object.entries(s ?? {}).filter(([E, f]) => E.endsWith(l)).shift() || [], [m, b] = U(1), d = $(Ye);
   return M(() => {
     if (i === void 0)
       return () => {
@@ -1951,15 +1951,15 @@ const De = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
     i().then((E) => {
       d.current = E.default, b(m + 1);
     });
-  }, []), /* @__PURE__ */ u(d.current, { ...a, view: t, controller: e, viewName: t, data: o, parent: r, children: (!i || d.current !== xt) && r });
-}), dt = X(({ view: e, namespace: t, name: n }) => e && /* @__PURE__ */ u(
+  }, []), /* @__PURE__ */ u(d.current, { ...a, view: t, controller: e, viewName: t, data: o, parent: r, children: (!i || d.current !== Ye) && r });
+}), ft = X(({ view: e, namespace: t, name: n }) => e && /* @__PURE__ */ u(
   ae,
   {
     namespace: t,
     view: n || e.name || "form",
     prefix: "modify/form",
     data: e,
-    children: Object.keys(e.children || []).length ? Object.values(e.children || []).map((r) => /* @__PURE__ */ u(dt, { namespace: t, view: r }, r.id)) : /* @__PURE__ */ u(aa, { view: e }, e.id)
+    children: Object.keys(e.children || []).length ? Object.values(e.children || []).map((r) => /* @__PURE__ */ u(ft, { namespace: t, view: r }, r.id)) : /* @__PURE__ */ u(aa, { view: e }, e.id)
   },
   e.id
 )), Zt = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: a = !1 }) => /* @__PURE__ */ u(D, { children: r && r }), $e = Ce(({
@@ -1990,7 +1990,7 @@ const Xt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
         }
         default: {
           const g = h;
-          throw new ve(g.status, g.detail, g.trace);
+          throw new Ae(g.status, g.detail, g.trace);
         }
       }
     });
@@ -2007,10 +2007,10 @@ const Xt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
       E();
     }
   };
-}, Ye = X(({ children: e }) => /* @__PURE__ */ u(D, { children: e })), ia = Ce(({ name: e, data: t, action: n, parameters: r, onSuccess: a, onError: o, onLoad: s, children: l, embedded: c = !1 }, i) => {
+}, qe = X(({ children: e }) => /* @__PURE__ */ u(D, { children: e })), ia = Ce(({ name: e, data: t, action: n, parameters: r, onSuccess: a, onError: o, onLoad: s, children: l, embedded: c = !1 }, i) => {
   var k, T, j, N, S;
   const [m, b] = U(!1), { navigate: d, generateLink: E, generateRoute: f } = ee(), h = f(n.route, r || {}), g = $(null), p = sa(), [y, v] = U();
-  tt(i, () => ({
+  nt(i, () => ({
     getData: () => y,
     getFormRef: () => g.current
   }));
@@ -2049,7 +2049,7 @@ const Xt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
     /* @__PURE__ */ w(Gt, { id: (j = (T = (k = y == null ? void 0 : y.form) == null ? void 0 : k.modify) == null ? void 0 : T.view) == null ? void 0 : j.id, ref: g, action: h, method: "POST", onSubmit: P, children: [
       ((S = (N = y == null ? void 0 : y.form) == null ? void 0 : N.modify) == null ? void 0 : S.view) !== void 0 && /* @__PURE__ */ w(D, { children: [
         /* @__PURE__ */ u(
-          dt,
+          ft,
           {
             name: e,
             namespace: n.namespace,
@@ -2059,7 +2059,7 @@ const Xt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
         ),
         /* @__PURE__ */ u(Qt, { name: y.form.modify.view.full_name, className: "alert alert-danger" })
       ] }),
-      /* @__PURE__ */ u(B, { name: "actions", content: l, data: { formRef: g }, children: /* @__PURE__ */ u($e, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ u(Ye, { children: "Save" }) }) })
+      /* @__PURE__ */ u(V, { name: "actions", content: l, data: { formRef: g }, children: /* @__PURE__ */ u($e, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ u(qe, { children: "Save" }) }) })
     ] })
   ] });
 }), en = Ce(({
@@ -2073,7 +2073,7 @@ const Xt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   className: l
 }, c) => {
   const [i, m] = U(t);
-  tt(c, () => ({
+  nt(c, () => ({
     toggle: () => m(!i),
     open: () => m(!0),
     close: () => h(),
@@ -2137,12 +2137,12 @@ const Xt = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
         ref: d,
         className: ["modal", o && "modal-" + o, n && n, l].filter((g) => g).join(" "),
         children: /* @__PURE__ */ u("div", { className: "modal-dialog modal-dialog-centered", role: "document", children: /* @__PURE__ */ w("div", { className: "modal-content", children: [
-          /* @__PURE__ */ u(B, { name: "header", content: e, data: null, children: /* @__PURE__ */ w("div", { className: "modal-header", children: [
-            /* @__PURE__ */ u("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ u(B, { name: "title", content: e, data: null, children: "Title" }) }),
+          /* @__PURE__ */ u(V, { name: "header", content: e, data: null, children: /* @__PURE__ */ w("div", { className: "modal-header", children: [
+            /* @__PURE__ */ u("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ u(V, { name: "title", content: e, data: null, children: "Title" }) }),
             /* @__PURE__ */ u("button", { onClick: h, type: "button", className: "btn-close", "aria-label": "Close" })
           ] }) }),
-          /* @__PURE__ */ u("div", { className: "modal-body", children: /* @__PURE__ */ u(B, { name: "content", content: e, data: null, children: e }) }),
-          /* @__PURE__ */ u(B, { name: "footer", content: e, data: null, children: /* @__PURE__ */ u("div", { className: "modal-footer", children: /* @__PURE__ */ u(B, { name: "actions", content: e, data: null, children: /* @__PURE__ */ u("button", { onClick: h, type: "button", className: "btn btn-secondary", children: "Close" }) }) }) })
+          /* @__PURE__ */ u("div", { className: "modal-body", children: /* @__PURE__ */ u(V, { name: "content", content: e, data: null, children: e }) }),
+          /* @__PURE__ */ u(V, { name: "footer", content: e, data: null, children: /* @__PURE__ */ u("div", { className: "modal-footer", children: /* @__PURE__ */ u(V, { name: "actions", content: e, data: null, children: /* @__PURE__ */ u("button", { onClick: h, type: "button", className: "btn btn-secondary", children: "Close" }) }) }) })
         ] }) })
       }
     ),
@@ -2274,12 +2274,12 @@ const ua = ({ action: e, children: t, routeParams: n, results: r }) => {
   return /* @__PURE__ */ w("section", { className: "edit", children: [
     /* @__PURE__ */ w("header", { children: [
       /* @__PURE__ */ w("h2", { className: "title", children: [
-        s && /* @__PURE__ */ u(ct, { to: o(s.route, n), children: "←" }),
-        /* @__PURE__ */ u(B, { name: "title", content: t, data: r })
+        s && /* @__PURE__ */ u(ut, { to: o(s.route, n), children: "←" }),
+        /* @__PURE__ */ u(V, { name: "title", content: t, data: r })
       ] }),
-      /* @__PURE__ */ u("nav", { children: /* @__PURE__ */ u(B, { name: "navigation", content: t, data: r }) })
+      /* @__PURE__ */ u("nav", { children: /* @__PURE__ */ u(V, { name: "navigation", content: t, data: r }) })
     ] }),
-    /* @__PURE__ */ u("main", { children: /* @__PURE__ */ u(B, { name: "content", content: t, data: r }) })
+    /* @__PURE__ */ u("main", { children: /* @__PURE__ */ u(V, { name: "content", content: t, data: r }) })
   ] });
 }, _t = ({ action: e, children: t, onSuccess: n, modal: r, props: a }) => {
   const o = { ...e.parameters || {}, ...or() }, s = $(void 0), l = $(void 0), { results: c, setParameters: i } = Xt({
@@ -2289,9 +2289,9 @@ const ua = ({ action: e, children: t, routeParams: n, results: r }) => {
   return M(() => {
     i(o);
   }, [JSON.stringify(o)]), /* @__PURE__ */ w(r ? en : ua, { ref: l, ...a, action: e, routeParams: o, children: [
-    /* @__PURE__ */ u(W, { name: "title", children: /* @__PURE__ */ u(B, { name: "title", content: t, data: c, children: (c == null ? void 0 : c.title) || "Title" }) }),
-    /* @__PURE__ */ u(W, { name: "navigation", children: /* @__PURE__ */ u(ae, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ u(B, { name: "navigation", content: t, data: c }) }) }),
-    /* @__PURE__ */ u(W, { name: "content", children: /* @__PURE__ */ u(ae, { namespace: e.action.namespace, view: "content", prefix: "modify", children: /* @__PURE__ */ u(B, { name: "content", content: t, data: c, children: /* @__PURE__ */ u(
+    /* @__PURE__ */ u(W, { name: "title", children: /* @__PURE__ */ u(V, { name: "title", content: t, data: c, children: (c == null ? void 0 : c.title) || "Title" }) }),
+    /* @__PURE__ */ u(W, { name: "navigation", children: /* @__PURE__ */ u(ae, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ u(V, { name: "navigation", content: t, data: c }) }) }),
+    /* @__PURE__ */ u(W, { name: "content", children: /* @__PURE__ */ u(ae, { namespace: e.action.namespace, view: "content", prefix: "modify", children: /* @__PURE__ */ u(V, { name: "content", content: t, data: c, children: /* @__PURE__ */ u(
       ia,
       {
         ref: s,
@@ -2332,7 +2332,7 @@ const ua = ({ action: e, children: t, routeParams: n, results: r }) => {
         children: r && /* @__PURE__ */ u(W, { name: "actions" })
       }
     ) }) }) }),
-    /* @__PURE__ */ u(W, { name: "actions", children: /* @__PURE__ */ u(B, { name: "actions", content: t, data: c, children: /* @__PURE__ */ u(
+    /* @__PURE__ */ u(W, { name: "actions", children: /* @__PURE__ */ u(V, { name: "actions", content: t, data: c, children: /* @__PURE__ */ u(
       "button",
       {
         type: "submit",
@@ -2345,7 +2345,7 @@ const ua = ({ action: e, children: t, routeParams: n, results: r }) => {
       }
     ) }) })
   ] });
-}, da = () => /* @__PURE__ */ u("div", { children: "No View Found" }), ne = ({ to: e, children: t, onClick: n, ...r }) => {
+}, ne = ({ to: e, children: t, onClick: n, ...r }) => {
   const { navigate: a } = ee(), o = $(null), s = (l) => {
     var c;
     n && n(l), !l.defaultPrevented && (c = o == null ? void 0 : o.current) != null && c.href && (l.preventDefault(), a(o.current.href));
@@ -2376,15 +2376,15 @@ const ua = ({ action: e, children: t, routeParams: n, results: r }) => {
     const n = Q.get(e);
     n.delete(t), n.size === 0 && Q.delete(e);
   }
-}, fa = 1e3, qe = "transitionend", rn = (e) => (e && window.CSS && window.CSS.escape && (e = e.replace(/#([^\s"#']+)/g, (t, n) => `#${CSS.escape(n)}`)), e), ma = (e) => e == null ? `${e}` : Object.prototype.toString.call(e).match(/\s([a-z]+)/i)[1].toLowerCase(), ha = (e) => {
+}, da = 1e3, Je = "transitionend", rn = (e) => (e && window.CSS && window.CSS.escape && (e = e.replace(/#([^\s"#']+)/g, (t, n) => `#${CSS.escape(n)}`)), e), fa = (e) => e == null ? `${e}` : Object.prototype.toString.call(e).match(/\s([a-z]+)/i)[1].toLowerCase(), ma = (e) => {
   if (!e)
     return 0;
   let { transitionDuration: t, transitionDelay: n } = window.getComputedStyle(e);
   const r = Number.parseFloat(t), a = Number.parseFloat(n);
-  return !r && !a ? 0 : (t = t.split(",")[0], n = n.split(",")[0], (Number.parseFloat(t) + Number.parseFloat(n)) * fa);
-}, pa = (e) => {
-  e.dispatchEvent(new Event(qe));
-}, re = (e) => !e || typeof e != "object" ? !1 : (typeof e.jquery < "u" && (e = e[0]), typeof e.nodeType < "u"), Je = (e) => re(e) ? e.jquery ? e[0] : e : typeof e == "string" && e.length > 0 ? document.querySelector(rn(e)) : null, an = (e) => {
+  return !r && !a ? 0 : (t = t.split(",")[0], n = n.split(",")[0], (Number.parseFloat(t) + Number.parseFloat(n)) * da);
+}, ha = (e) => {
+  e.dispatchEvent(new Event(Je));
+}, re = (e) => !e || typeof e != "object" ? !1 : (typeof e.jquery < "u" && (e = e[0]), typeof e.nodeType < "u"), Ge = (e) => re(e) ? e.jquery ? e[0] : e : typeof e == "string" && e.length > 0 ? document.querySelector(rn(e)) : null, an = (e) => {
   if (!re(e) || e.getClientRects().length === 0)
     return !1;
   const t = getComputedStyle(e).getPropertyValue("visibility") === "visible", n = e.closest("details:not([open])");
@@ -2396,43 +2396,43 @@ const ua = ({ action: e, children: t, routeParams: n, results: r }) => {
       return !1;
   }
   return t;
-}, Ge = (e) => !e || e.nodeType !== Node.ELEMENT_NODE || e.classList.contains("disabled") ? !0 : typeof e.disabled < "u" ? e.disabled : e.hasAttribute("disabled") && e.getAttribute("disabled") !== "false", Nt = () => {
-}, on = () => window.jQuery && !document.body.hasAttribute("data-bs-no-jquery") ? window.jQuery : null, Ie = [], ga = (e) => {
+}, Qe = (e) => !e || e.nodeType !== Node.ELEMENT_NODE || e.classList.contains("disabled") ? !0 : typeof e.disabled < "u" ? e.disabled : e.hasAttribute("disabled") && e.getAttribute("disabled") !== "false", Nt = () => {
+}, on = () => window.jQuery && !document.body.hasAttribute("data-bs-no-jquery") ? window.jQuery : null, Ie = [], pa = (e) => {
   document.readyState === "loading" ? (Ie.length || document.addEventListener("DOMContentLoaded", () => {
     for (const t of Ie)
       t();
   }), Ie.push(e)) : e();
-}, de = () => document.documentElement.dir === "rtl", ya = (e) => {
-  ga(() => {
+}, de = () => document.documentElement.dir === "rtl", ga = (e) => {
+  pa(() => {
     const t = on();
     if (t) {
       const n = e.NAME, r = t.fn[n];
       t.fn[n] = e.jQueryInterface, t.fn[n].Constructor = e, t.fn[n].noConflict = () => (t.fn[n] = r, e.jQueryInterface);
     }
   });
-}, Qe = (e, t = [], n = e) => typeof e == "function" ? e(...t) : n, ba = (e, t, n = !0) => {
+}, Ze = (e, t = [], n = e) => typeof e == "function" ? e(...t) : n, ya = (e, t, n = !0) => {
   if (!n) {
-    Qe(e);
+    Ze(e);
     return;
   }
-  const a = ha(t) + 5;
+  const a = ma(t) + 5;
   let o = !1;
   const s = ({ target: l }) => {
-    l === t && (o = !0, t.removeEventListener(qe, s), Qe(e));
+    l === t && (o = !0, t.removeEventListener(Je, s), Ze(e));
   };
-  t.addEventListener(qe, s), setTimeout(() => {
-    o || pa(t);
+  t.addEventListener(Je, s), setTimeout(() => {
+    o || ha(t);
   }, a);
-}, Ea = (e, t, n, r) => {
+}, ba = (e, t, n, r) => {
   const a = e.length;
   let o = e.indexOf(t);
   return o === -1 ? !n && r ? e[a - 1] : e[0] : (o += n ? 1 : -1, r && (o = (o + a) % a), e[Math.max(0, Math.min(o, a - 1))]);
-}, Ca = /[^.]*(?=\..*)\.|.*/, va = /\..*/, xa = /::\d+$/, Ue = {};
+}, Ea = /[^.]*(?=\..*)\.|.*/, Ca = /\..*/, va = /::\d+$/, Ue = {};
 let wt = 1;
 const sn = {
   mouseenter: "mouseover",
   mouseleave: "mouseout"
-}, _a = /* @__PURE__ */ new Set([
+}, xa = /* @__PURE__ */ new Set([
   "click",
   "dblclick",
   "mouseup",
@@ -2487,18 +2487,18 @@ function cn(e) {
   const t = ln(e);
   return e.uidEvent = t, Ue[t] = Ue[t] || {}, Ue[t];
 }
-function Na(e, t) {
+function _a(e, t) {
   return function n(r) {
-    return ft(r, { delegateTarget: e }), n.oneOff && V.off(e, r.type, t), t.apply(e, [r]);
+    return mt(r, { delegateTarget: e }), n.oneOff && B.off(e, r.type, t), t.apply(e, [r]);
   };
 }
-function wa(e, t, n) {
+function Na(e, t, n) {
   return function r(a) {
     const o = e.querySelectorAll(t);
     for (let { target: s } = a; s && s !== this; s = s.parentNode)
       for (const l of o)
         if (l === s)
-          return ft(a, { delegateTarget: s }), r.oneOff && V.off(e, a.type, t, n), n.apply(s, [a]);
+          return mt(a, { delegateTarget: s }), r.oneOff && B.off(e, a.type, t, n), n.apply(s, [a]);
   };
 }
 function un(e, t, n = null) {
@@ -2507,7 +2507,7 @@ function un(e, t, n = null) {
 function dn(e, t, n) {
   const r = typeof t == "string", a = r ? n : t || n;
   let o = fn(e);
-  return _a.has(o) || (o = e), [r, a, o];
+  return xa.has(o) || (o = e), [r, a, o];
 }
 function Pt(e, t, n, r, a) {
   if (typeof t != "string" || !e)
@@ -2522,22 +2522,22 @@ function Pt(e, t, n, r, a) {
     m.oneOff = m.oneOff && a;
     return;
   }
-  const b = ln(s, t.replace(Ca, "")), d = o ? wa(e, n, s) : Na(e, s);
+  const b = ln(s, t.replace(Ea, "")), d = o ? Na(e, n, s) : _a(e, s);
   d.delegationSelector = o ? n : null, d.callable = s, d.oneOff = a, d.uidEvent = b, i[b] = d, e.addEventListener(l, d, o);
 }
-function Ze(e, t, n, r, a) {
+function Xe(e, t, n, r, a) {
   const o = un(t[n], r, a);
   o && (e.removeEventListener(n, o, !!a), delete t[n][o.uidEvent]);
 }
-function Pa(e, t, n, r) {
+function wa(e, t, n, r) {
   const a = t[n] || {};
   for (const [o, s] of Object.entries(a))
-    o.includes(r) && Ze(e, t, n, s.callable, s.delegationSelector);
+    o.includes(r) && Xe(e, t, n, s.callable, s.delegationSelector);
 }
 function fn(e) {
-  return e = e.replace(va, ""), sn[e] || e;
+  return e = e.replace(Ca, ""), sn[e] || e;
 }
-const V = {
+const B = {
   on(e, t, n, r) {
     Pt(e, t, n, r, !1);
   },
@@ -2551,15 +2551,15 @@ const V = {
     if (typeof o < "u") {
       if (!Object.keys(i).length)
         return;
-      Ze(e, c, s, o, a ? n : null);
+      Xe(e, c, s, o, a ? n : null);
       return;
     }
     if (m)
       for (const b of Object.keys(c))
-        Pa(e, c, b, t.slice(1));
+        wa(e, c, b, t.slice(1));
     for (const [b, d] of Object.entries(i)) {
-      const E = b.replace(xa, "");
-      (!l || t.includes(E)) && Ze(e, c, s, d.callable, d.delegationSelector);
+      const E = b.replace(va, "");
+      (!l || t.includes(E)) && Xe(e, c, s, d.callable, d.delegationSelector);
     }
   },
   trigger(e, t, n) {
@@ -2568,11 +2568,11 @@ const V = {
     const r = on(), a = fn(t), o = t !== a;
     let s = null, l = !0, c = !0, i = !1;
     o && r && (s = r.Event(t, n), r(e).trigger(s), l = !s.isPropagationStopped(), c = !s.isImmediatePropagationStopped(), i = s.isDefaultPrevented());
-    const m = ft(new Event(t, { bubbles: l, cancelable: !0 }), n);
+    const m = mt(new Event(t, { bubbles: l, cancelable: !0 }), n);
     return i && m.preventDefault(), c && e.dispatchEvent(m), m.defaultPrevented && s && s.preventDefault(), m;
   }
 };
-function ft(e, t = {}) {
+function mt(e, t = {}) {
   for (const [n, r] of Object.entries(t))
     try {
       e[n] = r;
@@ -2603,15 +2603,15 @@ function St(e) {
     return e;
   }
 }
-function Ve(e) {
+function Be(e) {
   return e.replace(/[A-Z]/g, (t) => `-${t.toLowerCase()}`);
 }
-const Le = {
+const Se = {
   setDataAttribute(e, t, n) {
-    e.setAttribute(`data-bs-${Ve(t)}`, n);
+    e.setAttribute(`data-bs-${Be(t)}`, n);
   },
   removeDataAttribute(e, t) {
-    e.removeAttribute(`data-bs-${Ve(t)}`);
+    e.removeAttribute(`data-bs-${Be(t)}`);
   },
   getDataAttributes(e) {
     if (!e)
@@ -2624,10 +2624,10 @@ const Le = {
     return t;
   },
   getDataAttribute(e, t) {
-    return St(e.getAttribute(`data-bs-${Ve(t)}`));
+    return St(e.getAttribute(`data-bs-${Be(t)}`));
   }
 };
-class Sa {
+class Pa {
   // Getters
   static get Default() {
     return {};
@@ -2645,17 +2645,17 @@ class Sa {
     return t;
   }
   _mergeConfigObj(t, n) {
-    const r = re(n) ? Le.getDataAttribute(n, "config") : {};
+    const r = re(n) ? Se.getDataAttribute(n, "config") : {};
     return {
       ...this.constructor.Default,
       ...typeof r == "object" ? r : {},
-      ...re(n) ? Le.getDataAttributes(n) : {},
+      ...re(n) ? Se.getDataAttributes(n) : {},
       ...typeof t == "object" ? t : {}
     };
   }
   _typeCheckConfig(t, n = this.constructor.DefaultType) {
     for (const [r, a] of Object.entries(n)) {
-      const o = t[r], s = re(o) ? "element" : ma(o);
+      const o = t[r], s = re(o) ? "element" : fa(o);
       if (!new RegExp(a).test(s))
         throw new TypeError(
           `${this.constructor.NAME.toUpperCase()}: Option "${r}" provided type "${s}" but expected type "${a}".`
@@ -2663,32 +2663,32 @@ class Sa {
     }
   }
 }
-const La = "5.3.3";
-class Ra extends Sa {
+const Sa = "5.3.3";
+class La extends Pa {
   constructor(t, n) {
-    super(), t = Je(t), t && (this._element = t, this._config = this._getConfig(n), Fe.set(this._element, this.constructor.DATA_KEY, this));
+    super(), t = Ge(t), t && (this._element = t, this._config = this._getConfig(n), Fe.set(this._element, this.constructor.DATA_KEY, this));
   }
   // Public
   dispose() {
-    Fe.remove(this._element, this.constructor.DATA_KEY), V.off(this._element, this.constructor.EVENT_KEY);
+    Fe.remove(this._element, this.constructor.DATA_KEY), B.off(this._element, this.constructor.EVENT_KEY);
     for (const t of Object.getOwnPropertyNames(this))
       this[t] = null;
   }
   _queueCallback(t, n, r = !0) {
-    ba(t, n, r);
+    ya(t, n, r);
   }
   _getConfig(t) {
     return t = this._mergeConfigObj(t, this._element), t = this._configAfterMerge(t), this._typeCheckConfig(t), t;
   }
   // Static
   static getInstance(t) {
-    return Fe.get(Je(t), this.DATA_KEY);
+    return Fe.get(Ge(t), this.DATA_KEY);
   }
   static getOrCreateInstance(t, n = {}) {
     return this.getInstance(t) || new this(t, typeof n == "object" ? n : null);
   }
   static get VERSION() {
-    return La;
+    return Sa;
   }
   static get DATA_KEY() {
     return `bs.${this.NAME}`;
@@ -2700,7 +2700,7 @@ class Ra extends Sa {
     return `${t}${this.EVENT_KEY}`;
   }
 }
-const Be = (e) => {
+const Ve = (e) => {
   let t = e.getAttribute("data-bs-target");
   if (!t || t === "#") {
     let n = e.getAttribute("href");
@@ -2756,28 +2756,28 @@ const Be = (e) => {
       "[tabindex]",
       '[contenteditable="true"]'
     ].map((n) => `${n}:not([tabindex^="-"])`).join(",");
-    return this.find(t, e).filter((n) => !Ge(n) && an(n));
+    return this.find(t, e).filter((n) => !Qe(n) && an(n));
   },
   getSelectorFromElement(e) {
-    const t = Be(e);
+    const t = Ve(e);
     return t && H.findOne(t) ? t : null;
   },
   getElementFromSelector(e) {
-    const t = Be(e);
+    const t = Ve(e);
     return t ? H.findOne(t) : null;
   },
   getMultipleElementsFromSelector(e) {
-    const t = Be(e);
+    const t = Ve(e);
     return t ? H.find(t) : [];
   }
-}, Lt = "dropdown", Aa = "bs.dropdown", se = `.${Aa}`, mt = ".data-api", ka = "Escape", Rt = "Tab", Oa = "ArrowUp", At = "ArrowDown", Ta = 2, Da = `hide${se}`, $a = `hidden${se}`, Ma = `show${se}`, ja = `shown${se}`, mn = `click${se}${mt}`, hn = `keydown${se}${mt}`, Fa = `keyup${se}${mt}`, ce = "show", Ia = "dropup", Ua = "dropend", Va = "dropstart", Ba = "dropup-center", Ha = "dropdown-center", te = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Wa = `${te}.${ce}`, Pe = ".dropdown-menu", Ka = ".navbar", za = ".navbar-nav", Ya = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", qa = de() ? "top-end" : "top-start", Ja = de() ? "top-start" : "top-end", Ga = de() ? "bottom-end" : "bottom-start", Qa = de() ? "bottom-start" : "bottom-end", Za = de() ? "left-start" : "right-start", Xa = de() ? "right-start" : "left-start", eo = "top", to = "bottom", no = {
+}, Lt = "dropdown", Ra = "bs.dropdown", se = `.${Ra}`, ht = ".data-api", Aa = "Escape", Rt = "Tab", ka = "ArrowUp", At = "ArrowDown", Oa = 2, Ta = `hide${se}`, Da = `hidden${se}`, $a = `show${se}`, Ma = `shown${se}`, mn = `click${se}${ht}`, hn = `keydown${se}${ht}`, ja = `keyup${se}${ht}`, ce = "show", Fa = "dropup", Ia = "dropend", Ua = "dropstart", Ba = "dropup-center", Va = "dropdown-center", te = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Ha = `${te}.${ce}`, we = ".dropdown-menu", Wa = ".navbar", Ka = ".navbar-nav", za = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", Ya = de() ? "top-end" : "top-start", qa = de() ? "top-start" : "top-end", Ja = de() ? "bottom-end" : "bottom-start", Ga = de() ? "bottom-start" : "bottom-end", Qa = de() ? "left-start" : "right-start", Za = de() ? "right-start" : "left-start", Xa = "top", eo = "bottom", to = {
   autoClose: !0,
   boundary: "clippingParents",
   display: "dynamic",
   offset: [0, 2],
   popperConfig: null,
   reference: "toggle"
-}, ro = {
+}, no = {
   autoClose: "(boolean|string)",
   boundary: "(string|element)",
   display: "string",
@@ -2785,16 +2785,16 @@ const Be = (e) => {
   popperConfig: "(null|object|function)",
   reference: "(string|element|object)"
 };
-let ie = class Se extends Ra {
+let ie = class Pe extends La {
   constructor(t, n) {
-    super(t, n), this._popper = null, this._parent = this._element.parentNode, this._menu = H.next(this._element, Pe)[0] || H.prev(this._element, Pe)[0] || H.findOne(Pe, this._parent), this._inNavbar = this._detectNavbar();
+    super(t, n), this._popper = null, this._parent = this._element.parentNode, this._menu = H.next(this._element, we)[0] || H.prev(this._element, we)[0] || H.findOne(we, this._parent), this._inNavbar = this._detectNavbar();
   }
   // Getters
   static get Default() {
-    return no;
+    return to;
   }
   static get DefaultType() {
-    return ro;
+    return no;
   }
   static get NAME() {
     return Lt;
@@ -2804,20 +2804,20 @@ let ie = class Se extends Ra {
     return this._isShown() ? this.hide() : this.show();
   }
   show() {
-    if (Ge(this._element) || this._isShown())
+    if (Qe(this._element) || this._isShown())
       return;
     const t = {
       relatedTarget: this._element
     };
-    if (!V.trigger(this._element, Ma, t).defaultPrevented) {
-      if (this._createPopper(), "ontouchstart" in document.documentElement && !this._parent.closest(za))
+    if (!B.trigger(this._element, $a, t).defaultPrevented) {
+      if (this._createPopper(), "ontouchstart" in document.documentElement && !this._parent.closest(Ka))
         for (const r of [].concat(...document.body.children))
-          V.on(r, "mouseover", Nt);
-      this._element.focus(), this._element.setAttribute("aria-expanded", !0), this._menu.classList.add(ce), this._element.classList.add(ce), V.trigger(this._element, ja, t);
+          B.on(r, "mouseover", Nt);
+      this._element.focus(), this._element.setAttribute("aria-expanded", !0), this._menu.classList.add(ce), this._element.classList.add(ce), B.trigger(this._element, Ma, t);
     }
   }
   hide() {
-    if (Ge(this._element) || !this._isShown())
+    if (Qe(this._element) || !this._isShown())
       return;
     const t = {
       relatedTarget: this._element
@@ -2832,11 +2832,11 @@ let ie = class Se extends Ra {
   }
   // Private
   _completeHide(t) {
-    if (!V.trigger(this._element, Da, t).defaultPrevented) {
+    if (!B.trigger(this._element, Ta, t).defaultPrevented) {
       if ("ontouchstart" in document.documentElement)
         for (const r of [].concat(...document.body.children))
-          V.off(r, "mouseover", Nt);
-      this._popper && this._popper.destroy(), this._menu.classList.remove(ce), this._element.classList.remove(ce), this._element.setAttribute("aria-expanded", "false"), Le.removeDataAttribute(this._menu, "popper"), V.trigger(this._element, $a, t);
+          B.off(r, "mouseover", Nt);
+      this._popper && this._popper.destroy(), this._menu.classList.remove(ce), this._element.classList.remove(ce), this._element.setAttribute("aria-expanded", "false"), Se.removeDataAttribute(this._menu, "popper"), B.trigger(this._element, Da, t);
     }
   }
   _getConfig(t) {
@@ -2845,31 +2845,31 @@ let ie = class Se extends Ra {
     return t;
   }
   _createPopper() {
-    if (typeof gt > "u")
+    if (typeof yt > "u")
       throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org)");
     let t = this._element;
-    this._config.reference === "parent" ? t = this._parent : re(this._config.reference) ? t = Je(this._config.reference) : typeof this._config.reference == "object" && (t = this._config.reference);
+    this._config.reference === "parent" ? t = this._parent : re(this._config.reference) ? t = Ge(this._config.reference) : typeof this._config.reference == "object" && (t = this._config.reference);
     const n = this._getPopperConfig();
-    this._popper = gt.createPopper(t, this._menu, n);
+    this._popper = yt.createPopper(t, this._menu, n);
   }
   _isShown() {
     return this._menu.classList.contains(ce);
   }
   _getPlacement() {
     const t = this._parent;
+    if (t.classList.contains(Ia))
+      return Qa;
     if (t.classList.contains(Ua))
       return Za;
-    if (t.classList.contains(Va))
-      return Xa;
     if (t.classList.contains(Ba))
+      return Xa;
+    if (t.classList.contains(Va))
       return eo;
-    if (t.classList.contains(Ha))
-      return to;
     const n = getComputedStyle(this._menu).getPropertyValue("--bs-position").trim() === "end";
-    return t.classList.contains(Ia) ? n ? Ja : qa : n ? Qa : Ga;
+    return t.classList.contains(Fa) ? n ? qa : Ya : n ? Ga : Ja;
   }
   _detectNavbar() {
-    return this._element.closest(Ka) !== null;
+    return this._element.closest(Wa) !== null;
   }
   _getOffset() {
     const { offset: t } = this._config;
@@ -2893,22 +2893,22 @@ let ie = class Se extends Ra {
         }
       ]
     };
-    return (this._inNavbar || this._config.display === "static") && (Le.setDataAttribute(this._menu, "popper", "static"), t.modifiers = [{
+    return (this._inNavbar || this._config.display === "static") && (Se.setDataAttribute(this._menu, "popper", "static"), t.modifiers = [{
       name: "applyStyles",
       enabled: !1
     }]), {
       ...t,
-      ...Qe(this._config.popperConfig, [t])
+      ...Ze(this._config.popperConfig, [t])
     };
   }
   _selectMenuItem({ key: t, target: n }) {
-    const r = H.find(Ya, this._menu).filter((a) => an(a));
-    r.length && Ea(r, n, t === At, !r.includes(n)).focus();
+    const r = H.find(za, this._menu).filter((a) => an(a));
+    r.length && ba(r, n, t === At, !r.includes(n)).focus();
   }
   // Static
   static jQueryInterface(t) {
     return this.each(function() {
-      const n = Se.getOrCreateInstance(this, t);
+      const n = Pe.getOrCreateInstance(this, t);
       if (typeof t == "string") {
         if (typeof n[t] > "u")
           throw new TypeError(`No method named "${t}"`);
@@ -2917,11 +2917,11 @@ let ie = class Se extends Ra {
     });
   }
   static clearMenus(t) {
-    if (t.button === Ta || t.type === "keyup" && t.key !== Rt)
+    if (t.button === Oa || t.type === "keyup" && t.key !== Rt)
       return;
-    const n = H.find(Wa);
+    const n = H.find(Ha);
     for (const r of n) {
-      const a = Se.getInstance(r);
+      const a = Pe.getInstance(r);
       if (!a || a._config.autoClose === !1)
         continue;
       const o = t.composedPath(), s = o.includes(a._menu);
@@ -2932,11 +2932,11 @@ let ie = class Se extends Ra {
     }
   }
   static dataApiKeydownHandler(t) {
-    const n = /input|textarea/i.test(t.target.tagName), r = t.key === ka, a = [Oa, At].includes(t.key);
+    const n = /input|textarea/i.test(t.target.tagName), r = t.key === Aa, a = [ka, At].includes(t.key);
     if (!a && !r || n && !r)
       return;
     t.preventDefault();
-    const o = this.matches(te) ? this : H.prev(this, te)[0] || H.next(this, te)[0] || H.findOne(te, t.delegateTarget.parentNode), s = Se.getOrCreateInstance(o);
+    const o = this.matches(te) ? this : H.prev(this, te)[0] || H.next(this, te)[0] || H.findOne(te, t.delegateTarget.parentNode), s = Pe.getOrCreateInstance(o);
     if (a) {
       t.stopPropagation(), s.show(), s._selectMenuItem(t);
       return;
@@ -2944,15 +2944,15 @@ let ie = class Se extends Ra {
     s._isShown() && (t.stopPropagation(), s.hide(), o.focus());
   }
 };
-V.on(document, hn, te, ie.dataApiKeydownHandler);
-V.on(document, hn, Pe, ie.dataApiKeydownHandler);
-V.on(document, mn, ie.clearMenus);
-V.on(document, Fa, ie.clearMenus);
-V.on(document, mn, te, function(e) {
+B.on(document, hn, te, ie.dataApiKeydownHandler);
+B.on(document, hn, we, ie.dataApiKeydownHandler);
+B.on(document, mn, ie.clearMenus);
+B.on(document, ja, ie.clearMenus);
+B.on(document, mn, te, function(e) {
   e.preventDefault(), ie.getOrCreateInstance(this).toggle();
 });
-ya(ie);
-const Re = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, { children: e }), ge = ({ children: e, ...t }) => /* @__PURE__ */ u("div", { className: "dropdown-menu", children: e }), pn = ({ className: e, children: t, icon: n }) => {
+ga(ie);
+const Le = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, { children: e }), ge = ({ children: e, ...t }) => /* @__PURE__ */ u("div", { className: "dropdown-menu", children: e }), pn = ({ className: e, children: t, icon: n }) => {
   const r = $(null);
   M(() => {
     const i = new ie(r.current);
@@ -2960,12 +2960,12 @@ const Re = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, 
       i.dispose();
     };
   }, []);
-  const a = R.Children.toArray(t).find((i) => R.isValidElement(i) && i.type === ge), o = R.Children.toArray(t).filter((i) => R.isValidElement(i) && i.type === ne), s = R.Children.toArray(t).find((i) => R.isValidElement(i) && i.type === Re), l = R.Children.toArray(t).filter((i) => !R.isValidElement(i) || i.type !== ne && i.type !== ge && i.type !== Re), c = R.isValidElement(s) ? s.props : {};
+  const a = R.Children.toArray(t).find((i) => R.isValidElement(i) && i.type === ge), o = R.Children.toArray(t).filter((i) => R.isValidElement(i) && i.type === ne), s = R.Children.toArray(t).find((i) => R.isValidElement(i) && i.type === Le), l = R.Children.toArray(t).filter((i) => !R.isValidElement(i) || i.type !== ne && i.type !== ge && i.type !== Le), c = R.isValidElement(s) ? s.props : {};
   return /* @__PURE__ */ w("div", { className: [...(e || "").split(" "), "dropdown"].filter((i, m, b) => b.indexOf(i) === m).join(" "), children: [
     /* @__PURE__ */ u($e, { ref: r, "data-bs-toggle": "dropdown", ...c, className: [...(c.className || "").split(" "), "btn", "dropdown-toggle"].filter((i, m, b) => b.indexOf(i) === m).join(" "), children: c.children ? c.children : l }),
     a || /* @__PURE__ */ u(ge, { children: o })
   ] });
-}, ao = Ce(({ data: e, columns: t, options: n, onClick: r, onBatchClick: a, routeParams: o, namespace: s }, l) => {
+}, ro = Ce(({ data: e, columns: t, options: n, onClick: r, onBatchClick: a, routeParams: o, namespace: s }, l) => {
   var k, T, j, N, S, A, F;
   t = (t || ((k = e == null ? void 0 : e.entity) == null ? void 0 : k.columns) || []).filter((x) => x.group !== !1);
   const [, c] = U(), { generateLink: i } = ee(), m = (T = e == null ? void 0 : e.entity) == null ? void 0 : T.primaryColumn, b = Object.values((e == null ? void 0 : e.action) || []), d = b.filter((x) => x.object), E = t.length + (b.length ? 1 : 0), f = ((e == null ? void 0 : e.entity.data.items) || []).map((x) => x[(m == null ? void 0 : m.field) || ""] || 0), h = $([]), g = !!f.length && f.reduce((x, O) => x && h.current.includes(O), !0), p = (S = (N = (j = e == null ? void 0 : e.form) == null ? void 0 : j.batch.view.children) == null ? void 0 : N.method) == null ? void 0 : S.choices, y = !!(p != null && p.length) && m, v = (x, O = !1) => {
@@ -2981,8 +2981,8 @@ const Re = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, 
       return;
     const L = new FormData();
     h.current.forEach((fe) => {
-      var pt;
-      L.append(`${(pt = O == null ? void 0 : O.children) == null ? void 0 : pt.ids.full_name}[]`, fe.toString());
+      var gt;
+      L.append(`${(gt = O == null ? void 0 : O.children) == null ? void 0 : gt.ids.full_name}[]`, fe.toString());
     }), L.append(((G = O == null ? void 0 : O.children) == null ? void 0 : G.method.full_name) || "method", x), a(x, h.current, L);
   };
   return /* @__PURE__ */ w(D, { children: [
@@ -2996,7 +2996,7 @@ const Re = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, 
         }
       ) }),
       /* @__PURE__ */ w(pn, { className: "btn-group btn-group-sm", children: [
-        /* @__PURE__ */ u(Re, { disabled: !h.current.length, className: "btn-light" }),
+        /* @__PURE__ */ u(Le, { disabled: !h.current.length, className: "btn-light" }),
         /* @__PURE__ */ u(ge, { children: (F = (A = e.form.batch.view.children) == null ? void 0 : A.method.choices) == null ? void 0 : F.map((x) => {
           const O = x.value instanceof Function ? x.value() : x.value;
           return /* @__PURE__ */ u(ne, { to: "#", onClick: () => P(O), className: "dropdown-item", children: x.label instanceof Function ? x.label() : x.label }, O);
@@ -3085,7 +3085,7 @@ const Re = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, 
       children: a || t
     }
   ) });
-}, oo = ({ meta: e }) => {
+}, ao = ({ meta: e }) => {
   const n = e.totalPages, r = e.page || 1, a = e.links, o = !!e.totalPages;
   return /* @__PURE__ */ w("div", { className: "d-flex flex-column justiry-content-center", children: [
     /* @__PURE__ */ w("small", { className: "mb-2", children: [
@@ -3120,10 +3120,10 @@ const Re = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ u(D, 
       r < n && /* @__PURE__ */ u(pe, { page: e.totalPages, title: "Go to Last Page", children: "»" })
     ] }) })
   ] });
-}, Xe = (e, t = !0) => (Object.entries(e).map(([n, r]) => (t && r instanceof Object && (r = Xe(r)), [n, r])).filter(([, n]) => !(n instanceof Object ? Object.keys(n).length : n)).forEach(([n]) => {
+}, et = (e, t = !0) => (Object.entries(e).map(([n, r]) => (t && r instanceof Object && (r = et(r)), [n, r])).filter(([, n]) => !(n instanceof Object ? Object.keys(n).length : n)).forEach(([n]) => {
   delete e[n];
 }), e), gn = R.createContext({});
-function so() {
+function oo() {
   const { setModal: e } = R.useContext(gn);
   return {
     openModal: (t) => {
@@ -3131,7 +3131,7 @@ function so() {
     }
   };
 }
-function io(e) {
+function so(e) {
   const [t, n] = U(), r = $(0);
   M(() => {
     r.current += 1;
@@ -3160,11 +3160,11 @@ function io(e) {
     )
   ] });
 }
-const lo = X(({ action: e, embedded: t = !1 }) => {
+const io = X(({ action: e, embedded: t = !1 }) => {
   var P, k, T, j;
   const { generateLink: n, generateRoute: r, generateActionLink: a, location: o, navigate: s } = ee();
   let l = new URLSearchParams(o.search);
-  const c = $(void 0), i = $(xn(l)), m = $(null), { openModal: b } = so(), { open: d } = nn(), E = e.action.entity;
+  const c = $(void 0), i = $(xn(l)), m = $(null), { openModal: b } = oo(), { open: d } = nn(), E = e.action.entity;
   if (!E)
     throw new Error("Invalid Entity");
   const { results: f, refresh: h, setQueryParameters: g } = Xt({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: i.current }), p = Object.values((f == null ? void 0 : f.action) ?? []).filter((N) => !N.object && N.name !== e.action.name), y = (N) => {
@@ -3176,7 +3176,7 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
       ...i.current && i.current,
       ...c.current && { sort: c.current }
     };
-    if (l = We(Xe(S)), t)
+    if (l = We(et(S)), t)
       g(l);
     else {
       const A = new URL(document.location.href);
@@ -3198,7 +3198,7 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
       }
     });
   }, _ = (N, S) => {
-    switch (N.parameters !== void 0 && (N.parameters = Xe(N.parameters), Object.keys(N.parameters).length || (N.parameters = void 0)), N.action.name) {
+    switch (N.parameters !== void 0 && (N.parameters = et(N.parameters), Object.keys(N.parameters).length || (N.parameters = void 0)), N.action.name) {
       case "filter": {
         S == null || S.preventDefault(), i.current = N.parameters;
         break;
@@ -3259,7 +3259,7 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
         )) }),
         ((P = f == null ? void 0 : f.form) == null ? void 0 : P.filter) && /* @__PURE__ */ w("div", { className: "btn-group btn-group-sm", children: [
           /* @__PURE__ */ w(pn, { className: "btn-group btn-group-sm", children: [
-            /* @__PURE__ */ u(Re, { className: "btn-outline-dark", children: /* @__PURE__ */ u(Ye, { children: "Filter" }) }),
+            /* @__PURE__ */ u(Le, { className: "btn-outline-dark", children: /* @__PURE__ */ u(qe, { children: "Filter" }) }),
             /* @__PURE__ */ u(ge, { children: /* @__PURE__ */ u("div", { className: "filter", children: /* @__PURE__ */ w(
               Gt,
               {
@@ -3283,8 +3283,8 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
                   }
                 }),
                 children: [
-                  ((k = f == null ? void 0 : f.form) == null ? void 0 : k.filter) && /* @__PURE__ */ u(dt, { view: f.form.filter.view }),
-                  /* @__PURE__ */ u("button", { className: "btn btn-primary me-2", type: "submit", children: /* @__PURE__ */ u(Ye, { children: "Submit" }) })
+                  ((k = f == null ? void 0 : f.form) == null ? void 0 : k.filter) && /* @__PURE__ */ u(ft, { view: f.form.filter.view }),
+                  /* @__PURE__ */ u("button", { className: "btn btn-primary me-2", type: "submit", children: /* @__PURE__ */ u(qe, { children: "Submit" }) })
                 ]
               }
             ) }) })
@@ -3296,10 +3296,10 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
         ] })
       ] })
     ] }),
-    ((j = f == null ? void 0 : f.form) == null ? void 0 : j.filter) && /* @__PURE__ */ u(co, { formView: f.form.filter.view, onClick: (N) => y([N]) }),
+    ((j = f == null ? void 0 : f.form) == null ? void 0 : j.filter) && /* @__PURE__ */ u(lo, { formView: f.form.filter.view, onClick: (N) => y([N]) }),
     /* @__PURE__ */ w(ae, { namespace: e.action.namespace, prefix: "modify", view: "content", data: f, children: [
       /* @__PURE__ */ u("div", { className: "table-responsive", children: /* @__PURE__ */ u(
-        ao,
+        ro,
         {
           data: f,
           onClick: _,
@@ -3308,10 +3308,10 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
           routeParams: e.parameters
         }
       ) }),
-      f && /* @__PURE__ */ u(oo, { meta: f.entity.data.meta })
+      f && /* @__PURE__ */ u(ao, { meta: f.entity.data.meta })
     ] }, "modify")
   ] }) });
-}), co = ({ formView: e, onClick: t }) => {
+}), lo = ({ formView: e, onClick: t }) => {
   const n = (r) => r.choices !== void 0 ? r.choices ? Object.values(r.data instanceof Object ? r.data : [r.data]).map((a) => {
     var o, s;
     return ((s = (o = r.choices) == null ? void 0 : o[a]) == null ? void 0 : s.label) ?? a;
@@ -3323,25 +3323,25 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
       t && /* @__PURE__ */ u("span", { onClick: () => t(r.name), className: "ms-2", children: "×" })
     ] })
   ] }, a)) });
-}, uo = ({ view: e, props: t }) => {
+}, co = ({ view: e, props: t }) => {
   const n = {
     add: _t,
     edit: _t,
-    list: lo
+    list: io
   };
   if (n[e] === void 0)
-    throw new ve(500, "View not found");
-  return R.createElement(n[e] || da, t);
-}, yn = ({ view: e, namespace: t, props: n }) => /* @__PURE__ */ u(ae, { namespace: t, view: e, props: n, children: /* @__PURE__ */ u(uo, { view: e, props: n }) }, t + e), fo = ({ path: e, preloader: t }) => {
-  if (!et.namespace[ht])
-    throw new Ae(500, "Invalid Configuration.");
+    throw new Ae(500, "View not found");
+  return R.createElement(n[e] || Ye, t);
+}, yn = ({ view: e, namespace: t, props: n }) => /* @__PURE__ */ u(ae, { namespace: t, view: e, props: n, children: /* @__PURE__ */ u(co, { view: e, props: n }) }, t + e), uo = ({ path: e, preloader: t }) => {
+  if (!tt.namespace[pt])
+    throw new Re(500, "Invalid Configuration.");
   const { getOnClickActionByPath: n } = ee(), [r, a] = U();
   if (M(() => {
     n(e).then((o) => a(o));
   }, [e]), r === void 0)
     return t ?? /* @__PURE__ */ u(D, { children: "Loading" });
   if (!r)
-    throw new ve(404, "Page Not Found");
+    throw new Ae(404, "Page Not Found");
   return /* @__PURE__ */ u(
     yn,
     {
@@ -3350,46 +3350,41 @@ const lo = X(({ action: e, embedded: t = !1 }) => {
       props: { action: r }
     }
   );
-}, mo = ({ children: e }) => /* @__PURE__ */ u(ca, { children: /* @__PURE__ */ u(io, { children: e }) });
+}, fo = ({ children: e, config: t }) => /* @__PURE__ */ u(Qr, { config: t, children: /* @__PURE__ */ u(ca, { children: /* @__PURE__ */ u(so, { children: e }) }) });
 let He;
-const bn = {}, ht = "dakataa_crud", vo = ({ connection: e, templates: t }) => {
-  et.namespace[ht] = e, bn.templates = t;
-}, Ee = () => (He || (He = et.instance({ namespace: ht })), He), xo = Xr(({ path: e, prefix: t, errorFallback: n, templates: r }) => {
+const bn = {}, pt = "dakataa_crud", Co = ({ connection: e, templates: t }) => {
+  tt.namespace[pt] = e, bn.templates = t;
+}, Ee = () => (He || (He = tt.instance({ namespace: pt })), He), vo = Xr(({ path: e, prefix: t, errorFallback: n, templates: r }) => {
   const { location: a } = ee();
-  return e ?? (e = a.pathname), t && (e = e.replace(new RegExp("^/" + t.replace(new RegExp("^/"), "") + "(/)?"), "/")), r = Object.assign(bn.templates ?? {}, r ?? {}), /* @__PURE__ */ u(Qr, { config: {
-    link: {
-      prefix: t
-    },
-    templates: r
-  }, children: /* @__PURE__ */ u(mo, { children: /* @__PURE__ */ u(Ln, { fallback: n ?? /* @__PURE__ */ u(An, {}), children: /* @__PURE__ */ u(fo, { path: e }) }, e) }) });
+  return e ?? (e = a.pathname), t && (e = e.replace(new RegExp("^/" + t.replace(new RegExp("^/"), "") + "(/)?"), "/")), r = Object.assign(bn.templates ?? {}, r ?? {}), /* @__PURE__ */ u(fo, { config: { templates: r, link: { prefix: t } }, children: /* @__PURE__ */ u(Ln, { fallback: n ?? /* @__PURE__ */ u(An, {}), children: /* @__PURE__ */ u(uo, { path: e }) }, e) });
 });
 export {
   Zr as ActionProvider,
   ca as AlertProvider,
-  xo as Crud,
-  vo as CrudConfiguration,
-  mo as CrudContext,
-  fo as CrudLoader,
+  vo as Crud,
+  Co as CrudConfiguration,
+  uo as CrudLoader,
+  fo as CrudProvider,
   ae as DynamicView,
   Ln as ErrorBoundary,
-  Ae as Exception,
+  Re as Exception,
   Gt as Form,
+  ft as FormField,
   na as FormGroup,
-  dt as FormView,
   aa as FormWidget,
-  ao as GridTableView,
-  ve as HttpException,
+  ro as GridTable,
+  Ae as HttpException,
   ra as Input,
-  lo as List,
-  io as ModalProvider,
+  io as List,
+  so as ModalProvider,
   _t as Modify,
-  B as TemplateBlock,
+  V as TemplateBlock,
   W as TemplateExtend,
   ee as UseActions,
   nn as UseAlert,
-  so as UseModal,
+  oo as UseModal,
   yn as ViewLoader,
   De as nameToId,
-  ut as useForm,
+  dt as useForm,
   Xr as withRouterContext
 };

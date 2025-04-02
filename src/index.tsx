@@ -34,5 +34,3 @@ root.render(
         </BrowserRouter>
     </React.StrictMode>
 );
-
-// TODO: Add Google WebVitals to measure performance
