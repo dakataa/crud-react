@@ -130,7 +130,7 @@ export function UseActions() {
         const regexp = new RegExp('^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)')  + '$', 'giu');
         const hasMatch = regexp.test(path);
         if(!hasMatch) {
-            return false;
+            return null;
         }
 
         const match = path.matchAll(regexp);
