@@ -1,12 +1,11 @@
 import React, {memo, useEffect, useRef, useState} from "react";
 import Navigation, {NavigationItem, NavigationItemContextType} from "@src/component/crud/Navigation.tsx";
-import {Outlet} from "react-router";
 import Base from "@src/layout/default/Base.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Link from "@src/component/Link.tsx";
 import Dropdown from "@src/component/Dropdown.tsx";
 
-const Main = memo(({...props}: {
+const Main = memo(({children, ...props}: {
     children?: any
 }) => {
     const mainMenuRef = useRef<NavigationItemContextType | null>(null);
@@ -54,7 +53,7 @@ const Main = memo(({...props}: {
                     </div>
                 )}
                 <div className={"content"}>
-                    <Outlet/>
+                    {children}
                 </div>
             </main>
         </Base>

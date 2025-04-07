@@ -28,4 +28,8 @@ export * from "@src/component/form/Form.tsx";
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";
 
+export {default as BaseLayout} from "@src/layout/default/Base.tsx";
+export {default as MainLayout} from "@src/layout/default/Main.tsx";
+
+
 export * from "src/component/form/Choice.tsx"

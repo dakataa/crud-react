@@ -55,13 +55,11 @@ export function UseActions() {
     const getOnClickActionByPath = (path: string): Promise<OnClickAction|null> => {
         const getOnClickAction = () => {
             const action = getActionByPath(path);
-
             if(!action) {
                 return null;
             }
 
             const match = matchPath(action.route?.path || '', path);
-
             return {
                 action,
                 parameters: match?.params
@@ -129,15 +127,20 @@ export function UseActions() {
     }
 
     const matchPath = (pattern: string, path: string) => {
-        const regexp = pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)');
-        const match = path.matchAll(new RegExp('^' + regexp + '$', 'g'));
+        const regexp = new RegExp('^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)')  + '$', 'giu');
+        const hasMatch = regexp.test(path);
+        if(!hasMatch) {
+            return false;
+        }
+
+        const match = path.matchAll(regexp);
         const params = match?.next().value?.groups;
 
-        return params ? {
+        return {
             pathname: path,
             params:  params,
             pattern: pattern
-        } : null;
+        };
     }
 
     const generatePath = (pattern: string, parameters?: {[key:string]: string}): string => {
