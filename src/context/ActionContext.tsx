@@ -133,7 +133,7 @@ export function UseActions() {
             return null;
         }
 
-        const match = path.matchAll(new RegExp(regexpPattern, 'giu'));
+        const match = path.matchAll(new RegExp(regexp, 'giu'));
         const params = match?.next().value?.groups;
 
         return {
