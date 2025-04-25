@@ -127,13 +127,13 @@ export function UseActions() {
     }
 
     const matchPath = (pattern: string, path: string) => {
-        const regexp = new RegExp('^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)')  + '$', 'giu');
-        const hasMatch = regexp.test(path);
+        const regexp = '^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)')  + '$';
+        const hasMatch = new RegExp(regexp, 'giu').test(path);
         if(!hasMatch) {
             return null;
         }
 
-        const match = path.matchAll(regexp);
+        const match = path.matchAll(new RegExp(regexpPattern, 'giu'));
         const params = match?.next().value?.groups;
 
         return {
