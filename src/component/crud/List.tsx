@@ -5,7 +5,7 @@ import {
     convertURLSearchParamsToObject,
     Method
 } from "@dakataa/requester";
-import GridTable, {OnClickAction} from "@src/component/crud/GridTable.tsx";
+import GridView, {OnClickAction} from "@src/component/crud/GridView.tsx";
 import PaginatorView from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
@@ -19,10 +19,13 @@ import {ActionType} from "@src/type/ActionType.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
 import {default as T} from "@src/component/Translation.tsx";
-import {FormViewType} from "@src/type/FormViewType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
+import FiltersView from "@src/component/crud/FiltersView.tsx";
+import ListView from "@src/component/crud/ListView.tsx";
+import {BatchActionsProvider} from "@src/component/crud/batch/BatchActionsContext.tsx";
+import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.tsx";
 
 const List = memo(({action, embedded = false}: {
     action: OnClickAction,
@@ -223,53 +226,31 @@ const List = memo(({action, embedded = false}: {
                         )}
                     </div>
                 </header>
-                {results?.form?.filter && (
-                    <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
-                )}
-                <DynamicView namespace={action.action.namespace} key={"modify"} prefix={"modify"} view={"content"} data={results}>
-                    <div className={"table-responsive"}>
-                        <GridTable
-                            data={results}
-                            onClick={handleAction}
-                            onBatchClick={handleBatchAction}
-                            namespace={action.action.namespace}
-                            routeParams={action.parameters}/>
-                    </div>
-                    {results && <PaginatorView meta={results.entity.data.meta}/>}
-                </DynamicView>
+                <BatchActionsProvider data={results} onClick={handleBatchAction}>
+                    {results?.form?.filter && (
+                        <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
+                    )}
+                    <BatchActionSelector/>
+                    <DynamicView namespace={action.action.namespace} key={"list"} prefix={"list"} view={"content"} data={results}>
+
+                            <GridView
+                                data={results}
+                                onClick={handleAction}
+                                namespace={action.action.namespace}
+                                routeParams={action.parameters}/>
+                            {/*<ListView*/}
+                            {/*    data={results}*/}
+                            {/*    onClick={handleAction}*/}
+                            {/*    namespace={action.action.namespace}*/}
+                            {/*    routeParams={action.parameters}/>*/}
+
+                    </DynamicView>
+                    <PaginatorView meta={results?.entity.data.meta}/>
+                </BatchActionsProvider>
             </section>
         </>
     );
 })
 
-const FiltersView = ({formView, onClick}: { formView: FormViewType, onClick: (key: string) => void }) => {
-    const getValue = (view: FormViewType) => {
-        if (view.choices !== undefined) {
-            return (view.choices ? Object.values(view.data instanceof Object ? view.data : [view.data]).map((k: any) => view.choices?.[k]?.label ?? k).join(', ') : view.data);
-        } else if (view.checked !== undefined) {
-            return view.checked ? 'Yes' : 'No';
-        }
-
-        return view.data;
-    }
-
-    return (
-        <div className={"filters d-flex mb-sm overflow-auto"}>
-            {Object.values<FormViewType>(formView.children || []).filter(item => item.data !== null).map((item, index) => (
-                <div key={index} className="filters-item d-flex text-nowrap flex-column me-2 mb-2">
-                    <small className="mb-2">{item.label}</small>
-                    <div className="btn btn-sm btn-primary me-1 mb-1">
-                        {getValue(item)}
-                        {onClick && (
-                            <span onClick={() => onClick(item.name)} className={"ms-2"}>
-                                &times;
-                            </span>
-                        )}
-                    </div>
-                </div>
-            ))}
-        </div>
-    )
-}
 
 export default List;

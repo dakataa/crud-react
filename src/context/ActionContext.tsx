@@ -1,6 +1,6 @@
 import React, {ComponentType, FC, PropsWithChildren, ReactElement, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
-import {OnClickAction} from "@src/component/crud/GridTable.tsx";
+import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Exception from "@src/component/error/Exception.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";

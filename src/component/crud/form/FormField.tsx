@@ -3,7 +3,7 @@ import FormWidget from "@src/component/form/FormWidget.tsx";
 import React, {memo} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-export const FormField = memo(({view, namespace, name}: { view: FormViewType, namespace?: string, name?: string }) => {
+const FormField = memo(({view, namespace, name}: { view: FormViewType, namespace?: string, name?: string }) => {
     return (
         view && <DynamicView
             namespace={namespace}

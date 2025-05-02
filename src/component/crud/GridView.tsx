@@ -1,11 +1,13 @@
 import {ListType} from "@src/type/ListType";
 import {ColumnType} from "@src/type/ColumnType";
-import React, {forwardRef, ReactElement, useRef, useState} from "react";
+import React, {forwardRef, ReactElement} from "react";
 import {ActionType} from "@src/type/ActionType";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
+import {default as T} from "@src/component/Translation.tsx";
+import ColumnValue from "@src/component/crud/ColumnValue.tsx";
+import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -16,7 +18,7 @@ export type OnClickAction = {
     parameters?: { [key: string]: any }
 };
 
-type GridTableViewType = {
+export type GridViewType = {
     data?: ListType | null,
     columns?: ColumnType[],
     options?: {
@@ -31,85 +33,23 @@ type GridTableViewType = {
         }
     },
     onClick?: (props: OnClickAction, event: React.MouseEvent) => void,
-    onBatchClick?: (method: string, ids: any, data: FormData) => void,
     routeParams?: {[key: string]: any},
     namespace?: string
 };
 
-const GridTable = forwardRef(({data, columns, options, onClick, onBatchClick, routeParams, namespace}: GridTableViewType, ref) => {
-    columns = (columns || data?.entity?.columns || []).filter(c => c.group !== false);
+const GridView = forwardRef(({data, columns, options, onClick, routeParams, namespace}: GridViewType, ref) => {
+    columns = (columns || data?.entity?.columns || []).filter(c => c.visible).filter(c => c.group !== false);
 
-    const [, updateState] = useState<any>();
     const {generateLink} = UseActions();
+
     const primaryColumn = data?.entity?.primaryColumn;
     const actions = Object.values(data?.action || []);
     const objectActions = actions.filter(a => a.object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
-    const currentIds: number[] = (data?.entity.data.items || []).map(row => (row[primaryColumn?.field || ''] || 0));
-    const batchSelectedIds = useRef<number[]>([]);
-    const batchIsSelectedAll = !!currentIds.length && currentIds.reduce<boolean>((result: boolean, id) => result && batchSelectedIds.current.includes(id), true);
-    const batchActions = data?.form?.batch.view.children?.method?.choices;
-    const hasBatchActions = !!batchActions?.length && primaryColumn;
-
-    const batchToggleItem = (id: number, add: boolean = false) => {
-        if (add) {
-            batchSelectedIds.current.push(id);
-        } else {
-            batchSelectedIds.current = batchSelectedIds.current.filter(v => v !== id);
-        }
-        updateState({});
-    };
-
-    const batchToggleAll = (selectAll: boolean = false) => {
-        batchSelectedIds.current = (selectAll ? batchSelectedIds.current.concat(currentIds) : batchSelectedIds.current.filter((id) => !currentIds.includes(id))).filter((v, i, self) => self.indexOf(v) === i)
-        updateState({});
-    };
-
-    const batchHandle = (method: string) => {
-        if(!onBatchClick) {
-            return;
-        }
-
-        const batchFormView = data?.form.batch.view;
-        if(!hasBatchActions) {
-            return;
-        }
-
-        if(!batchSelectedIds.current?.length) {
-            return;
-        }
-
-        const formData = new FormData()
-        batchSelectedIds.current.forEach((value) => {
-            formData.append(`${batchFormView?.children?.ids.full_name}[]`, value.toString());
-        })
-        formData.append(batchFormView?.children?.method.full_name || 'method', method)
-
-        onBatchClick(method, batchSelectedIds.current, formData);
-    }
+    const items = data?.entity.data.items ?? [];
 
     return (
-        <>
-            {hasBatchActions && (
-                <div className={"btn-group btn-group-sm mb-2"}>
-                    <label className={"btn btn-light"}>
-                        <input
-                            checked={batchIsSelectedAll}
-                            onChange={(e) => batchToggleAll(e.target.checked)}
-                            type={"checkbox"}/>
-                    </label>
-                    <Dropdown className={"btn-group btn-group-sm"}>
-                        <DropdownButton disabled={!batchSelectedIds.current.length} className={"btn-light"}></DropdownButton>
-                        <DropdownContent>
-                            {(data.form.batch.view.children?.method.choices?.map((choice) => {
-                                const value = choice.value instanceof Function ? choice.value() : choice.value;
-                                return (<Link key={value} to={"#"} onClick={() => batchHandle(value)} className={"dropdown-item"}>{(choice.label instanceof Function ? choice.label() : choice.label)}</Link>
-                            )}))}
-                        </DropdownContent>
-                    </Dropdown>
-                </div>
-            )}
-
+        <div className={"table-responsive"}>
             <table className="table table-striped table-hover table-bordered">
                 <thead>
                 <tr>
@@ -141,26 +81,16 @@ const GridTable = forwardRef(({data, columns, options, onClick, onBatchClick, ro
                 </tr>
                 </thead>
                 <tbody>
-                {data && (!!data.entity.data.items.length ? data.entity.data.items.map((row, rowIndex) => (
+                {items.length ? items.map((row, rowIndex) => (
                             <tr key={rowIndex}>
                                 {columns?.map((column, columnIndex) => (
                                         <td key={columnIndex}>
-                                            {columnIndex === 0 && hasBatchActions &&
+                                            {columnIndex === 0 &&
                                                 (
-                                                    <input
-                                                        checked={batchSelectedIds.current.includes(row[primaryColumn?.field])}
-                                                        className={"me-2"} type="checkbox"
-                                                        name={data.form.batch.view.full_name}
-                                                        value={row[primaryColumn?.field]}
-                                                        onChange={(e) => batchToggleItem(row[primaryColumn?.field], e.target.checked)}
-                                                    />
+                                                    <BatchItemSelector row={rowIndex}/>
                                                 )
                                             }
-                                            <DynamicView namespace={namespace || 'unknown'} data={row} prefix={"list"} view={column.field}>
-                                                {row[column.field] !== undefined && (
-                                                    row[column.field] instanceof Object ? (row[column.field] instanceof Array ? row[column.field].join(', ') : JSON.stringify(row[column.field])): row[column.field]?.toString()
-                                                )}
-                                            </DynamicView>
+                                            <ColumnValue column={column} row={rowIndex} data={data as ListType} namespace={namespace || 'unknown'}/>
                                         </td>
                                     )
                                 )}
@@ -192,15 +122,15 @@ const GridTable = forwardRef(({data, columns, options, onClick, onBatchClick, ro
                     ) : (
                         <tr>
                             <td colSpan={columnsTotal}>
-                                Not results found.
+                                <T>Not results found.</T>
                             </td>
                         </tr>
                     )
-                )}
+                }
                 </tbody>
             </table>
-        </>
+        </div>
     );
 });
 
-export default GridTable;
+export default GridView;

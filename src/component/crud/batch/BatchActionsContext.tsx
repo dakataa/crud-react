@@ -1,0 +1,102 @@
+import React, {PropsWithChildren, useRef, useState} from "react";
+import {ListType} from "@src/type/ListType.tsx";
+import {ChoiceType} from "@src/type/FormViewType.tsx";
+
+export type BatchContextType = {
+    actions: {[action: string]: string}  | undefined;
+    toggle: (row: number, add: boolean) => void;
+    toggleAll: (selectAll: boolean) => void;
+    isSelected: (row: number) => boolean;
+    isSelectedAll: boolean;
+    executeAction: (method: string) => void;
+    selected?: any[]
+}
+
+const BatchActionsContext = React.createContext<BatchContextType|undefined>(undefined);
+
+export function UseBatchActions() {
+    const context = React.useContext<BatchContextType|undefined>(BatchActionsContext);
+    if (context === undefined) {
+        throw new Error("UseBatchActions must be within BatchActionsProvider")
+    }
+
+    return context;
+}
+
+export function BatchActionsProvider({data, onClick, ...props}: {
+    data: ListType;
+    onClick: (method: string, ids: any, data: FormData) => void;
+} & PropsWithChildren) {
+
+    const selectedIds = useRef<number[]>([]);
+    const primaryColumn = data?.entity?.primaryColumn;
+    const currentIds: number[] = (data?.entity.data.items || []).map(row => (row[primaryColumn?.field || ''] || 0));
+    const isSelectedAll = !!currentIds.length && currentIds.reduce<boolean>((result: boolean, id) => result && selectedIds.current.includes(id), true);
+    const actions = data?.form?.batch.view.children?.method?.choices?.reduce((result, choice: ChoiceType) => {
+        const label = choice.label instanceof Function ? choice.label() : choice.label;
+        const method = choice.value instanceof Function ? choice.value() : choice.value?.toString();
+        return {...result, [method]: label };
+    }, {});
+
+    const hasBatchActions = !!Object.keys(actions || {}).length && primaryColumn;
+    const [, updateState] = useState<any>();
+
+    const toggle = (row: number, add: boolean = false) => {
+        const id = currentIds[row];
+        if (add) {
+            selectedIds.current.push(id);
+        } else {
+            selectedIds.current = selectedIds.current.filter(v => v !== id);
+        }
+
+        updateState({});
+    };
+
+    const toggleAll = (selectAll: boolean = false) => {
+        selectedIds.current = (selectAll ? selectedIds.current.concat(currentIds) : selectedIds.current.filter((id) => !currentIds.includes(id))).filter((v, i, self) => self.indexOf(v) === i)
+        updateState({});
+    };
+
+    const isSelected = (row: number): boolean => {
+        const currentId = currentIds[row];
+        return selectedIds.current.includes(currentId);
+    }
+
+    const executeAction = (method: string) => {
+        if (!selectedIds) {
+            return;
+        }
+
+        const batchFormView = data?.form.batch.view;
+        if (!hasBatchActions) {
+            return;
+        }
+
+        if (!selectedIds.current?.length) {
+            return;
+        }
+
+        const formData = new FormData()
+        selectedIds.current.forEach((value) => {
+            formData.append(`${batchFormView?.children?.ids.full_name}[]`, value.toString());
+        })
+        formData.append(batchFormView?.children?.method.full_name || 'method', method)
+
+        onClick(method, selectedIds.current, formData);
+    }
+
+    return (
+        <BatchActionsContext.Provider
+            value={{
+                actions,
+                toggle,
+                toggleAll,
+                isSelected,
+                isSelectedAll,
+                executeAction,
+                selected: selectedIds.current
+        }}>
+            {props.children}
+        </BatchActionsContext.Provider>
+    );
+}

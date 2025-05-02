@@ -3,7 +3,7 @@ export {default as CrudProvider} from "@src/context/CrudProvider.tsx";
 export {default as CrudLoader} from "@src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "@src/component/crud/Modify.tsx";
 export {default as List} from "@src/component/crud/List.tsx";
-export {default as GridTable} from "@src/component/crud/GridTable.tsx";
+export {default as GridView} from "@src/component/crud/GridView.tsx";
 export {default as FormField} from "@src/component/crud/form/FormField.tsx";
 export {default as FormWidget} from "@src/component/form/FormWidget.tsx";
 export {default as DynamicView} from "@src/component/crud/DynamicView.tsx";
@@ -15,7 +15,7 @@ export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.
 export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
 export * from "@src/context/ActionContext.tsx";
 export type {AlertConfigType, Animation, Result} from "@src/context/AlertContext.tsx";
-export type {OnClickAction} from "@src/component/crud/GridTable.tsx";
+export type {OnClickAction} from "@src/component/crud/GridView.tsx";
 export type {ActionType} from "@src/type/ActionType.tsx";
 export type {RouteType} from "@src/type/RouteType.tsx";
 

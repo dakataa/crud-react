@@ -6,9 +6,9 @@ const Base = memo(({children}: {
 }) => {
 
     return (
-        <>
+        <div className={"crud"}>
             {children}
-        </>
+        </div>
     );
 });
 

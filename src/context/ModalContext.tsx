@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import {OnClickAction} from "@src/component/crud/GridTable.tsx";
+import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
 
 export type ModalActionType = {

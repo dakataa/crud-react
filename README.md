@@ -2,8 +2,8 @@
 This is a frontend react implementation of CRUD.
 Easy way to create CRUD ADMIN panel / Dashboard for your software.
 
-This library depend on [@dakataa/crud](https://github.com/dakataa/crud) which is CRUD REST API, but also can use as standalone if you provide correct data structure.
-Components are based on Bootstrap Framework.
+This library depend on [@dakataa/crud](https://github.com/dakataa/crud) which is CRUD REST API; however, it can also be used as a standalone
+if you provide the correct data structure. The components are based on the Bootstrap Framework.
 
 ### Table of Contents
 1. [Installation](#installation)
@@ -50,11 +50,12 @@ CrudConfiguration({
 
 #### Example with *react-router*
 main.tsx
+
 ```jsx
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
-import {BrowserRouter, Route, Routes} from "react-router";
-import {Crud, CrudConfiguration} from "@dakataa/crud-react";
+import {BrowserRouter, Outlet, Route, Routes} from "react-router";
+import {Crud, CrudConfiguration, MainLayout} from "@dakataa/crud-react";
 
 CrudConfiguration({
 	baseURL: 'https://project.local',
@@ -67,7 +68,7 @@ createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<BrowserRouter>
 			<Routes>
-				<Route element={<YourLayout/>}>
+				<Route element={<MainLayout><Outlet/></MainLayout>}>
 					<Route path={"*"} element={<Crud/>}/>
 				</Route>
 			</Routes>

@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {convertObjectToURLSearchParams} from "@dakataa/requester";
+import {convertObjectToURLSearchParams, Response} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
@@ -79,16 +79,20 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                 url: generateRoute(entityAction.route, parameters ?? null),
                 query: queryParameters
             })
-            .then(({status, data}) => {
-                switch (status) {
+            .then(({data, response}) => {
+                switch (response.status) {
                     case 201:
                     case 200: {
                         setResults(data);
                         break;
                     }
                     default: {
-                        const exception = (data as ExceptionType);
-                        throw new HttpException(exception.status, exception.detail, exception.trace);
+                        if(data instanceof Object) {
+                            const exception = (data as ExceptionType);
+                            throw new HttpException(exception.status, exception.detail, exception.trace);
+                        }
+
+                        throw new HttpException(response.status, response.statusText);
                     }
                 }
             });

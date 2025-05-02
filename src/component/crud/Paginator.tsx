@@ -26,12 +26,12 @@ const PageItem = ({route, page, active = false, title, children}: {
 
 const Paginator = ({meta}: { meta: ListMetaType, route?: RouteType }) => {
     const firstPage = 1;
-    const lastPage = meta.totalPages;
-    const page = meta.page || firstPage;
-    const link = meta.links;
-    const hasPagination = !!meta.totalPages;
+    const totalPages = meta?.totalPages;
+    const page = meta?.page || firstPage;
+    const link = meta?.links;
+    const hasPagination = !!meta?.totalPages;
 
-    return (
+    return totalPages && (
         <div className="d-flex flex-column justiry-content-center">
             <small className="mb-2">
                 {meta.totalResults} Results
@@ -56,16 +56,16 @@ const Paginator = ({meta}: { meta: ListMetaType, route?: RouteType }) => {
                         {(link || []).map((p, i) => (
                             <PageItem key={i} page={p} active={p === page}/>
                         ))}
-                        {[...meta.links].reverse()[0] !== lastPage && (
+                        {[...meta.links].reverse()[0] !== totalPages && (
                             <>
                                 <div className={"page-item"}>
                                     <a className="page-link">...</a>
                                 </div>
-                                <PageItem key={lastPage} page={lastPage}
-                                          active={lastPage === page}>{lastPage}</PageItem>
+                                <PageItem key={totalPages} page={totalPages}
+                                          active={totalPages === page}>{totalPages}</PageItem>
                             </>
                         )}
-                        {page < lastPage && (
+                        {page < totalPages && (
                             <PageItem page={meta.totalPages} title="Go to Last Page">
                                 {'\u00bb'}
                             </PageItem>
