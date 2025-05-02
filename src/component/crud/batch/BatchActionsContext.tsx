@@ -9,7 +9,8 @@ export type BatchContextType = {
     isSelected: (row: number) => boolean;
     isSelectedAll: boolean;
     executeAction: (method: string) => void;
-    selected?: any[]
+    selected?: any[],
+    clear: () => void;
 }
 
 const BatchActionsContext = React.createContext<BatchContextType|undefined>(undefined);
@@ -25,7 +26,7 @@ export function UseBatchActions() {
 
 export function BatchActionsProvider({data, onClick, ...props}: {
     data: ListType;
-    onClick: (method: string, ids: any, data: FormData) => void;
+    onClick: (method: string, ids: any, data: FormData) => Promise<void>;
 } & PropsWithChildren) {
 
     const selectedIds = useRef<number[]>([]);
@@ -57,32 +58,42 @@ export function BatchActionsProvider({data, onClick, ...props}: {
         updateState({});
     };
 
+    const clear = () => {
+        selectedIds.current = [];
+        updateState({});
+    }
+
     const isSelected = (row: number): boolean => {
         const currentId = currentIds[row];
         return selectedIds.current.includes(currentId);
     }
 
-    const executeAction = (method: string) => {
-        if (!selectedIds) {
-            return;
-        }
+    const executeAction = (method: string): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            if (!selectedIds) {
+                return reject();
+            }
 
-        const batchFormView = data?.form.batch.view;
-        if (!hasBatchActions) {
-            return;
-        }
+            const batchFormView = data?.form.batch.view;
+            if (!hasBatchActions) {
+                return reject();
+            }
 
-        if (!selectedIds.current?.length) {
-            return;
-        }
+            if (!selectedIds.current?.length) {
+                return reject();
+            }
 
-        const formData = new FormData()
-        selectedIds.current.forEach((value) => {
-            formData.append(`${batchFormView?.children?.ids.full_name}[]`, value.toString());
-        })
-        formData.append(batchFormView?.children?.method.full_name || 'method', method)
+            const formData = new FormData()
+            selectedIds.current.forEach((value) => {
+                formData.append(`${batchFormView?.children?.ids.full_name}[]`, value.toString());
+            })
+            formData.append(batchFormView?.children?.method.full_name || 'method', method)
 
-        onClick(method, selectedIds.current, formData);
+            onClick(method, selectedIds.current, formData).then(() => {
+                clear();
+                resolve();
+            }).catch(reject);
+        });
     }
 
     return (
@@ -94,7 +105,8 @@ export function BatchActionsProvider({data, onClick, ...props}: {
                 isSelected,
                 isSelectedAll,
                 executeAction,
-                selected: selectedIds.current
+                selected: selectedIds.current,
+                clear
         }}>
             {props.children}
         </BatchActionsContext.Provider>

@@ -22,7 +22,6 @@ const DefaultViewComponent = ({view, props}: {
 }
 
 const ViewLoader = ({view, namespace, props}: { view: string; namespace: string; props?: { [key: string]: any } }): any => {
-
     return (
         <DynamicView namespace={namespace} view={view} key={namespace + view} props={props}>
             <DefaultViewComponent view={view} props={props}/>

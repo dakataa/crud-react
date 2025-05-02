@@ -127,7 +127,7 @@ export function UseActions() {
     }
 
     const matchPath = (pattern: string, path: string) => {
-        const regexp = '^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>.+)')  + '$';
+        const regexp = '^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>[^/]+)')  + '$';
         const hasMatch = new RegExp(regexp, 'giu').test(path);
         if(!hasMatch) {
             return null;

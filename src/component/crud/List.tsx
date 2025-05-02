@@ -70,23 +70,27 @@ const List = memo(({action, embedded = false}: {
         }
     }
 
-    const handleBatchAction = (method: string, ids: any, data: FormData) => {
-        openAlert({
-            title: 'Are you sure?',
-            icon: Icon.confirm,
-            onResult: (result: Result) => {
-                if (result.isConfirmed) {
-                    CrudRequester().post({
-                        url: generateActionLink(action),
-                        body: data
-                    }).catch((e:any) => {
-                        console.log('error', e);
-                    }).finally(() => {
-                        console.log('done');
-                        refresh();
-                    });
+    const handleBatchAction = (method: string, ids: any, data: FormData): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            openAlert({
+                title: 'Are you sure?',
+                icon: Icon.confirm,
+                onResult: (result: Result) => {
+                    if (result.isConfirmed) {
+                        CrudRequester().post({
+                            url: generateActionLink(action),
+                            body: data
+                        }).catch((e:any) => {
+                            console.log('error', e);
+                            reject();
+                        }).finally(() => {
+                            console.log('done');
+                            refresh();
+                            resolve();
+                        });
+                    }
                 }
-            }
+            });
         });
     }
 
