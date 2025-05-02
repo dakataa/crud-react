@@ -15,11 +15,11 @@ const ListView = forwardRef(({item, data, columns, onClick, routeParams, namespa
     const primaryColumn = data?.entity?.primaryColumn;
     const items = data?.entity.data.items ?? [];
 
-    return (
+    return !!data && (
         <>
             {items.length ? items.map((row, rowIndex) => (
                 <DynamicView key={data?.entity.data.items[rowIndex][primaryColumn?.field ?? '']} namespace={data?.entity.name || 'unknown'} data={row} prefix={"list"} view={"listItem"}>
-                    <ListItem row={rowIndex} data={data} onClick={onClick} routeParams={routeParams} namespace={namespace}/>
+                    <ListItem row={rowIndex} data={data} onClick={onClick} namespace={namespace}/>
                 </DynamicView>
             )) : (
                 <T>No results found.</T>

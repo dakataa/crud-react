@@ -237,16 +237,16 @@ const List = memo(({action, embedded = false}: {
                     <BatchActionSelector/>
                     <DynamicView namespace={action.action.namespace} key={"list"} prefix={"list"} view={"content"} data={results}>
 
-                            <GridView
-                                data={results}
-                                onClick={handleAction}
-                                namespace={action.action.namespace}
-                                routeParams={action.parameters}/>
-                            {/*<ListView*/}
+                            {/*<GridView*/}
                             {/*    data={results}*/}
                             {/*    onClick={handleAction}*/}
                             {/*    namespace={action.action.namespace}*/}
                             {/*    routeParams={action.parameters}/>*/}
+                            <ListView
+                                data={results}
+                                onClick={handleAction}
+                                namespace={action.action.namespace}
+                                routeParams={action.parameters}/>
 
                     </DynamicView>
                     <PaginatorView meta={results?.entity.data.meta}/>
