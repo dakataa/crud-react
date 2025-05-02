@@ -2,6 +2,7 @@ import React, {memo, ReactNode, useEffect, useRef, useState} from "react";
 import {capitalize} from "@src/helper/StingUtils.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import Empty from "@src/component/Empty.tsx";
+import {UseNamespace} from "@src/context/NamespaceContext.tsx";
 
 
 const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
@@ -13,6 +14,8 @@ const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
     props?: any
 }) => {
     view = view.split(/[._]/).map((v) => capitalize(v)).join('');
+    namespace ??= UseNamespace();
+
     const {templates: files} = UseConfig();
 
     const templateFilePath = ['crud', namespace, prefix, view].filter(v => v).join('/') + '.tsx';

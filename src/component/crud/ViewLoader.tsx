@@ -4,6 +4,7 @@ import List from "@src/component/crud/List.tsx";
 import React from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
+import {UseNamespace} from "@src/context/NamespaceContext.tsx";
 
 const DefaultViewComponent = ({view, props}: {
     view: string,
@@ -21,9 +22,11 @@ const DefaultViewComponent = ({view, props}: {
     return React.createElement(defaultComponents[view] || EmptyView, props);
 }
 
-const ViewLoader = ({view, namespace, props}: { view: string; namespace: string; props?: { [key: string]: any } }): any => {
+const ViewLoader = ({view, namespace, props}: { view: string; namespace?: string; props?: { [key: string]: any } }): any => {
+    namespace ??= UseNamespace();
+
     return (
-        <DynamicView namespace={namespace} view={view} key={namespace + view} props={props}>
+        <DynamicView view={view} key={namespace + view} props={props}>
             <DefaultViewComponent view={view} props={props}/>
         </DynamicView>
     );

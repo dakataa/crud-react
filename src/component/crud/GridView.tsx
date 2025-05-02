@@ -2,12 +2,12 @@ import {ListType} from "@src/type/ListType";
 import {ColumnType} from "@src/type/ColumnType";
 import React, {forwardRef, ReactElement} from "react";
 import {ActionType} from "@src/type/ActionType";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import ColumnValue from "@src/component/crud/ColumnValue.tsx";
 import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
+import ColumnLabel from "@src/component/crud/ColumnLabel.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -55,7 +55,7 @@ const GridView = forwardRef(({data, columns, options, onClick, routeParams, name
                 <tr>
                     {columns.map((column, index) => (
                         <th key={index}>
-                            <DynamicView namespace={data?.entity.name || 'unknown'} data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
+                            <ColumnLabel column={column} namespace={namespace}/>
                             {column.sortable && data?.sort[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({

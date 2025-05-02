@@ -6,6 +6,7 @@ import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import Requester from "@dakataa/requester";
 import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
+import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 
 const CrudLoader = ({path, preloader}: {
     path: string,
@@ -16,13 +17,13 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {getOnClickActionByPath} = UseActions();
-    const [onClickAction, setOnClickAction] = useState<OnClickAction|null|undefined>();
+    const [onClickAction, setOnClickAction] = useState<OnClickAction | null | undefined>();
 
     useEffect(() => {
         getOnClickActionByPath(path).then((v) => setOnClickAction(v));
     }, [path]);
 
-    if(onClickAction === undefined) {
+    if (onClickAction === undefined) {
         return preloader ?? <>Loading</>
     }
 
@@ -31,11 +32,12 @@ const CrudLoader = ({path, preloader}: {
     }
 
     return (
-        <ViewLoader
-            view={onClickAction.action.name}
-            namespace={onClickAction.action.namespace || ''}
-            props={{action: onClickAction}}
-        />
+        <NamespaceProvider namespace={onClickAction.action.namespace || ''}>
+            <ViewLoader
+                view={onClickAction.action.name}
+                props={{action: onClickAction}}
+            />
+        </NamespaceProvider>
     );
 }
 
