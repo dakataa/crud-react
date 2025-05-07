@@ -88,6 +88,8 @@ const List = memo(({action, embedded = false}: {
                             refresh();
                             resolve();
                         });
+                    } else {
+                        reject();
                     }
                 }
             });
@@ -235,17 +237,16 @@ const List = memo(({action, embedded = false}: {
                         <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
                     )}
                     <BatchActionSelector/>
-                    <DynamicView namespace={action.action.namespace} key={"list"} prefix={"list"} view={"content"} data={results}>
+                    <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>
 
                             <GridView
                                 data={results}
                                 onClick={handleAction}
-                                namespace={action.action.namespace}
-                                routeParams={action.parameters}/>
+                                routeParams={action.parameters}
+                            />
                             <ListView
                                 data={results}
                                 onClick={handleAction}
-                                namespace={action.action.namespace}
                                 routeParams={action.parameters}/>
 
                     </DynamicView>
