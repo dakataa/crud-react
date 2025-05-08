@@ -1,20 +1,20 @@
 import {ColumnType} from "@src/type/ColumnType.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import React from "react";
-import {ListType} from "@src/type/ListType.tsx";
+import {UseListItem} from "@src/context/ListItemContext.tsx";
 
-const ColumnValue = ({column, row, data, namespace}: {
+const ColumnValue = ({column, namespace}: {
     column: ColumnType;
-    row: number;
-    data: ListType;
     namespace?: string;
 }) => {
-    const rowData = data.entity?.data?.items[row] || {};
+    const {index, data} = UseListItem();
 
-    return (
-        <DynamicView namespace={namespace} data={rowData} prefix={"list"} view={column.field}>
-            {rowData[column.field] !== undefined && (
-                rowData[column.field] instanceof Object ? (rowData[column.field] instanceof Array ? rowData[column.field].join(', ') : JSON.stringify(rowData[column.field])) : rowData[column.field]?.toString()
+
+
+    return data && (
+        <DynamicView namespace={namespace} data={data} prefix={"list"} view={column.field}>
+            {data[column.field] !== undefined && (
+                data[column.field] instanceof Object ? (data[column.field] instanceof Array ? data[column.field].join(', ') : JSON.stringify(data[column.field])) : data[column.field]?.toString()
             )}
         </DynamicView>
     )

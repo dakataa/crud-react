@@ -26,6 +26,8 @@ import FiltersView from "@src/component/crud/FiltersView.tsx";
 import ListView from "@src/component/crud/ListView.tsx";
 import {BatchActionsProvider} from "@src/component/crud/batch/BatchActionsContext.tsx";
 import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.tsx";
+import {ListProvider} from "@src/context/ListContext.tsx";
+import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 
 const List = memo(({action, embedded = false}: {
     action: OnClickAction,
@@ -81,10 +83,8 @@ const List = memo(({action, embedded = false}: {
                             url: generateActionLink(action),
                             body: data
                         }).catch((e:any) => {
-                            console.log('error', e);
                             reject();
                         }).finally(() => {
-                            console.log('done');
                             refresh();
                             resolve();
                         });
@@ -159,7 +159,7 @@ const List = memo(({action, embedded = false}: {
     }, [location.search]);
 
     return (
-        <>
+        <ListProvider data={results} onClick={handleAction}>
             <section className={"list"}>
                 <header className="content-header d-md-flex mb-3 justify-content-between align-items-center">
                     <h2>
@@ -240,20 +240,17 @@ const List = memo(({action, embedded = false}: {
                     <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>
 
                             <GridView
-                                data={results}
-                                onClick={handleAction}
                                 routeParams={action.parameters}
                             />
                             <ListView
-                                data={results}
-                                onClick={handleAction}
+                                item={<CustomUserItem/>}
                                 routeParams={action.parameters}/>
 
                     </DynamicView>
                     <PaginatorView meta={results?.entity.data.meta}/>
                 </BatchActionsProvider>
             </section>
-        </>
+        </ListProvider>
     );
 })
 

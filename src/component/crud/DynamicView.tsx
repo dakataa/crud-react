@@ -5,9 +5,9 @@ import Empty from "@src/component/Empty.tsx";
 import {UseNamespace} from "@src/context/NamespaceContext.tsx";
 
 
-const DynamicView = memo(({namespace, view, prefix, children, props, data}: {
-    namespace?: string,
+const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
     view: string,
+    namespace?: string,
     prefix?: string,
     children?: ReactNode,
     data?: any

@@ -1,15 +1,15 @@
-var Dt = Object.defineProperty;
-var kt = (e, t, n) => t in e ? Dt(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
-var X = (e, t, n) => kt(e, typeof t != "symbol" ? t + "" : t, n);
-import { jsx as s, jsxs as A, Fragment as j } from "react/jsx-runtime";
-import De, { convertObjectToURLSearchParams as Ce, RequestBodyType as jt, convertURLSearchParamsToObject as Rt, convertFormDataToObject as wt, Method as Mt } from "@dakataa/requester";
-import * as $e from "react";
-import L, { memo as H, useState as M, useEffect as D, forwardRef as Q, useRef as T, useImperativeHandle as fe, useReducer as Ft, createRef as It } from "react";
+var Ft = Object.defineProperty;
+var It = (e, t, n) => t in e ? Ft(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
+var X = (e, t, n) => It(e, typeof t != "symbol" ? t + "" : t, n);
+import { jsx as o, jsxs as v, Fragment as R } from "react/jsx-runtime";
+import je, { convertObjectToURLSearchParams as Ae, RequestBodyType as Ut, convertURLSearchParamsToObject as $t, convertFormDataToObject as Vt, Method as Bt } from "@dakataa/requester";
+import * as Ve from "react";
+import A, { memo as Y, useState as M, useEffect as k, forwardRef as Q, useRef as T, useImperativeHandle as fe, useReducer as Kt, createRef as Ht } from "react";
 import "@dakataa/crud-theme/scss/theme.scss";
-import { createPortal as $t } from "react-dom";
-import Ut from "lottie-web/build/player/esm/lottie.min.js";
-import * as Ue from "@popperjs/core";
-class me {
+import { createPortal as Yt } from "react-dom";
+import Wt from "lottie-web/build/player/esm/lottie.min.js";
+import * as Be from "@popperjs/core";
+class pe {
   constructor(t = 0, n, r) {
     X(this, "code");
     X(this, "detail");
@@ -17,18 +17,18 @@ class me {
     this.code = t, this.detail = n, this.trace = r;
   }
 }
-class ae extends me {
-  constructor(n, r, o) {
-    super(0, r, o);
+class ie extends pe {
+  constructor(n, r, s) {
+    super(0, r, s);
     X(this, "status", 400);
     this.status = n;
   }
 }
-class Vt extends $e.Component {
+class qt extends Ve.Component {
   constructor(n) {
     super(n);
     X(this, "promiseRejectionHandler", (n) => {
-      n.reason instanceof me && this.setState({
+      n.reason instanceof pe && this.setState({
         ...this.state,
         hasError: !0,
         error: n.reason
@@ -46,7 +46,7 @@ class Vt extends $e.Component {
     window.removeEventListener("unhandledrejection", this.promiseRejectionHandler);
   }
   static getDerivedStateFromError(n) {
-    return n instanceof Error && (n = new ae(0, n.message)), {
+    return n instanceof Error && (n = new ie(0, n.message)), {
       hasError: !0,
       error: n
     };
@@ -55,7 +55,7 @@ class Vt extends $e.Component {
     console.log("error", n);
   }
   render() {
-    return this.state.hasError ? $e.cloneElement(
+    return this.state.hasError ? Ve.cloneElement(
       this.props.fallback,
       {
         error: this.state.error,
@@ -64,23 +64,23 @@ class Vt extends $e.Component {
     ) : this.props.children;
   }
 }
-const Qe = H(({ children: e }) => /* @__PURE__ */ s("div", { className: "crud", children: e })), Bt = H(({ error: e }) => /* @__PURE__ */ s(Qe, { children: /* @__PURE__ */ s("main", { children: /* @__PURE__ */ A("div", { className: "content d-flex flex-column", children: [
-  /* @__PURE__ */ s("h1", { className: "display-1", children: (e == null ? void 0 : e.status) || "Error" }),
-  /* @__PURE__ */ s("p", { className: "text-secondary", children: (e == null ? void 0 : e.detail) || "Unknown Error" }),
-  /* @__PURE__ */ s("br", {}),
-  /* @__PURE__ */ s("div", { children: /* @__PURE__ */ s("a", { className: "btn btn-primary", href: "#", children: "Back to home" }) })
-] }) }) })), Kt = ({ children: e }) => /* @__PURE__ */ s(j, { children: e }), K = H(({ name: e, children: t, data: n, parent: r, render: o }) => (t = L.Children.toArray((o ? o(n, r) : t) || []).map((a) => (L.isValidElement(a) && a.type === Kt && (a = L.cloneElement(a, { children: r })), a)), /* @__PURE__ */ s(j, { children: t }))), U = H(({ name: e, content: t, children: n, data: r }) => {
-  const o = L.Children.toArray(t).find((d) => L.isValidElement(d) && d.type === K && d.props.name === e);
+const Ze = Y(({ children: e }) => /* @__PURE__ */ o("div", { className: "crud", children: e })), zt = Y(({ error: e }) => /* @__PURE__ */ o(Ze, { children: /* @__PURE__ */ o("main", { children: /* @__PURE__ */ v("div", { className: "content d-flex flex-column", children: [
+  /* @__PURE__ */ o("h1", { className: "display-1", children: (e == null ? void 0 : e.status) || "Error" }),
+  /* @__PURE__ */ o("p", { className: "text-secondary", children: (e == null ? void 0 : e.detail) || "Unknown Error" }),
+  /* @__PURE__ */ o("br", {}),
+  /* @__PURE__ */ o("div", { children: /* @__PURE__ */ o("a", { className: "btn btn-primary", href: "#", children: "Back to home" }) })
+] }) }) })), Gt = ({ children: e }) => /* @__PURE__ */ o(R, { children: e }), K = Y(({ name: e, children: t, data: n, parent: r, render: s }) => (t = A.Children.toArray((s ? s(n, r) : t) || []).map((a) => (A.isValidElement(a) && a.type === Gt && (a = A.cloneElement(a, { children: r })), a)), /* @__PURE__ */ o(R, { children: t }))), $ = Y(({ name: e, content: t, children: n, data: r }) => {
+  const s = A.Children.toArray(t).find((d) => A.isValidElement(d) && d.type === K && d.props.name === e);
   let a = null;
-  o && L.isValidElement(o) && (a = L.cloneElement(o, { parent: n, data: r }));
-  const i = L.Children.toArray(n).filter((d) => L.isValidElement(d) && d.type !== K);
-  return /* @__PURE__ */ s(j, { children: a || (i.length ? i : n) });
-}), Je = L.createContext({});
-function Ze() {
-  return L.useContext(Je);
+  s && A.isValidElement(s) && (a = A.cloneElement(s, { parent: n, data: r }));
+  const i = A.Children.toArray(n).filter((d) => A.isValidElement(d) && d.type !== K);
+  return /* @__PURE__ */ o(R, { children: a || (i.length ? i : n) });
+}), Xe = A.createContext({});
+function et() {
+  return A.useContext(Xe);
 }
-function Ht({ config: e, ...t }) {
-  return /* @__PURE__ */ s(Je.Provider, { value: e, children: t.children });
+function Qt({ config: e, ...t }) {
+  return /* @__PURE__ */ o(Xe.Provider, { value: e, children: t.children });
 }
 window.history.pushState = new Proxy(window.history.pushState, {
   apply: (e, t, n) => {
@@ -92,134 +92,134 @@ window.history.replaceState = new Proxy(window.history.replaceState, {
     e.apply(t, n), window.dispatchEvent(new Event("replacestate"));
   }
 });
-const Ve = "actions", Xe = L.createContext(void 0);
-function Y() {
-  const e = L.useContext(Xe), t = Ze(), { actions: n, location: r, setLocation: o } = e ?? {
+const Ke = "actions", tt = A.createContext(void 0);
+function W() {
+  const e = A.useContext(tt), t = et(), { actions: n, location: r, setLocation: s } = e ?? {
     actions: null,
     location: new URL(document.location.href),
     setLocation: () => {
     }
-  }, a = (f, u, E) => n == null ? void 0 : n.filter((g) => g.entity === f && g.name === u && (E === void 0 || g.namespace === E)).shift(), i = (f) => n == null ? void 0 : n.find((u) => {
-    var E;
-    return ((E = u.route) == null ? void 0 : E.path) && l(u.route.path, f);
-  }), d = (f) => {
+  }, a = (h, u, _) => n == null ? void 0 : n.filter((g) => g.entity === h && g.name === u && (_ === void 0 || g.namespace === _)).shift(), i = (h) => n == null ? void 0 : n.find((u) => {
+    var _;
+    return ((_ = u.route) == null ? void 0 : _.path) && p(u.route.path, h);
+  }), d = (h) => {
     const u = () => {
-      var _;
-      const E = i(f);
-      if (!E)
+      var E;
+      const _ = i(h);
+      if (!_)
         return null;
-      const g = l(((_ = E.route) == null ? void 0 : _.path) || "", f);
+      const g = p(((E = _.route) == null ? void 0 : E.path) || "", h);
       return {
-        action: E,
+        action: _,
         parameters: g == null ? void 0 : g.params
       };
     };
-    return new Promise((E) => {
+    return new Promise((_) => {
       let g = 0;
-      const _ = () => {
+      const E = () => {
         if (g > 10)
-          throw new me(0, "Cannot load routes");
+          throw new pe(0, "Cannot load routes");
         if (e)
-          return E(u());
-        setTimeout(_, 200), g++;
+          return _(u());
+        setTimeout(E, 200), g++;
       };
-      _();
+      E();
     });
-  }, m = (f) => f.replaceAll(new RegExp("{(.*?)}", "gi"), ":$1"), c = (f, u = void 0) => b(m(f), u), N = (f, u) => f ? c(f.path, { ...f.defaults || {}, ...u }) : "#", p = (f) => {
-    const u = a(f.action.entity, f.action.name, f.action.namespace);
-    return N(u == null ? void 0 : u.route, f.parameters);
-  }, h = (f, u) => {
-    const E = N(f, u);
-    return C(E);
-  }, C = (f) => {
+  }, m = (h) => h.replaceAll(new RegExp("{(.*?)}", "gi"), ":$1"), c = (h, u = void 0) => y(m(h), u), N = (h, u) => h ? c(h.path, { ...h.defaults || {}, ...u }) : "#", l = (h) => {
+    const u = a(h.action.entity, h.action.name, h.action.namespace);
+    return N(u == null ? void 0 : u.route, h.parameters);
+  }, f = (h, u) => {
+    const _ = N(h, u);
+    return C(_);
+  }, C = (h) => {
     var u;
-    return (u = t.link) != null && u.prefix && (f = "/" + t.link.prefix.replaceAll(new RegExp("^/|/$", "g"), "") + f), f;
-  }, y = (f) => {
+    return (u = t.link) != null && u.prefix && (h = "/" + t.link.prefix.replaceAll(new RegExp("^/|/$", "g"), "") + h), h;
+  }, b = (h) => {
     try {
-      history.pushState(null, "", f);
+      history.pushState(null, "", h);
     } catch {
-      window.location.assign(f);
+      window.location.assign(h);
     }
-  }, l = (f, u) => {
-    var P;
-    const E = "^" + f.replace(new RegExp("[{:](\\w+)}?", "g"), "(?<$1>[^/]+)") + "$";
-    if (!new RegExp(E, "giu").test(u))
+  }, p = (h, u) => {
+    var O;
+    const _ = "^" + h.replace(new RegExp("[{:](\\w+)}?", "g"), "(?<$1>[^/]+)") + "$";
+    if (!new RegExp(_, "giu").test(u))
       return null;
-    const _ = u.matchAll(new RegExp(E, "giu")), O = (P = _ == null ? void 0 : _.next().value) == null ? void 0 : P.groups;
+    const E = u.matchAll(new RegExp(_, "giu")), P = (O = E == null ? void 0 : E.next().value) == null ? void 0 : O.groups;
     return {
       pathname: u,
-      params: O,
-      pattern: f
+      params: P,
+      pattern: h
     };
-  }, b = (f, u) => f.replaceAll(new RegExp("[{:](\\w+)}?", "g"), (E, g) => (u == null ? void 0 : u[g]) || "");
+  }, y = (h, u) => h.replaceAll(new RegExp("[{:](\\w+)}?", "g"), (_, g) => (u == null ? void 0 : u[g]) || "");
   return {
     getAction: a,
     getActionByPath: i,
     getOnClickActionByPath: d,
-    navigate: y,
+    navigate: b,
     location: r,
-    matchPath: l,
+    matchPath: p,
     generateRoute: N,
     generateRoutePath: c,
     crudToReactPathPattern: m,
-    generateActionLink: p,
-    generateLink: h
+    generateActionLink: l,
+    generateLink: f
   };
 }
-function Yt(e) {
+function Jt(e) {
   let t = null;
   try {
-    const i = sessionStorage.getItem(Ve);
+    const i = sessionStorage.getItem(Ke);
     t = JSON.parse(atob(i || ""));
   } catch {
   }
-  const [n, r] = M(t), [o, a] = M(new URL(document.location.href));
-  return D(() => {
-    if (o && o.toString() !== document.location.toString())
+  const [n, r] = M(t), [s, a] = M(new URL(document.location.href));
+  return k(() => {
+    if (s && s.toString() !== document.location.toString())
       try {
-        history.pushState(null, "", o);
+        history.pushState(null, "", s);
       } catch {
-        window.location.assign(o);
+        window.location.assign(s);
       }
-  }, [o.toString()]), D(() => {
+  }, [s.toString()]), k(() => {
     const i = () => {
       a(new URL(document.location.href));
     };
     return window.addEventListener("pushstate", i), window.addEventListener("replacestate", i), window.addEventListener("popstate", i), () => {
       window.removeEventListener("pushstate", i), window.removeEventListener("replacestate", i), window.removeEventListener("popstate", i);
     };
-  }, []), D(() => {
+  }, []), k(() => {
     t || ne().get({ url: "/_crud/actions" }).then(({ status: i, data: d }) => {
-      i === 200 && (sessionStorage.setItem(Ve, btoa(JSON.stringify(d))), r(d));
+      i === 200 && (sessionStorage.setItem(Ke, btoa(JSON.stringify(d))), r(d));
     }).catch((i) => {
       console.log("error", i);
     }).finally(() => {
     });
-  }, []), /* @__PURE__ */ s(Xe.Provider, { value: {
+  }, []), /* @__PURE__ */ o(tt.Provider, { value: {
     actions: n,
-    location: o,
+    location: s,
     setLocation: a
   }, children: e.children });
 }
-function Wt(e) {
+function Zt(e) {
   return (t) => {
-    const n = L.createElement(e, t);
-    return /* @__PURE__ */ s(Yt, { children: n });
+    const n = A.createElement(e, t);
+    return /* @__PURE__ */ o(Jt, { children: n });
   };
 }
-const et = L.createContext(null);
-function ke() {
-  const e = L.useContext(et);
+const nt = A.createContext(null);
+function Re() {
+  const e = A.useContext(nt);
   if (!e)
     throw new Error("useForm must be used in Form");
   return e;
 }
-const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").replace(/([a-zA-Z])(?=[A-Z])/g, "$1_")) + (t ?? "")).toLowerCase(), tt = Q(({
+const he = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").replace(/_+/gi, "_").replace(/([a-zA-Z])(?=[A-Z])/g, "$1_")) + (t ?? "")).toLowerCase(), rt = Q(({
   id: e,
   children: t,
   data: n,
   onError: r,
-  onBeforeSubmit: o,
+  onBeforeSubmit: s,
   onSubmit: a,
   onReset: i,
   ...d
@@ -228,128 +228,128 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
     response: null,
     constraints: {},
     errors: {}
-  }, p = {
+  }, l = {
     getFormData: () => new FormData(c.current || void 0),
-    setFormData: (l) => {
-      var b;
-      [...((b = c.current) == null ? void 0 : b.elements) || []].forEach((f) => {
-        const u = l.get(f.name);
-        switch (f.tagName.toLowerCase()) {
+    setFormData: (p) => {
+      var y;
+      [...((y = c.current) == null ? void 0 : y.elements) || []].forEach((h) => {
+        const u = p.get(h.name);
+        switch (h.tagName.toLowerCase()) {
           case "select": {
-            f.multiple ? [...f.options].forEach((E) => {
-              E.selected = l.getAll(f.name).includes(E.value);
-            }) : f.value = u;
+            h.multiple ? [...h.options].forEach((_) => {
+              _.selected = p.getAll(h.name).includes(_.value);
+            }) : h.value = u;
             break;
           }
           default:
-            switch (f.type) {
+            switch (h.type) {
               case "checkbox":
-                f.checked = !!u;
+                h.checked = !!u;
                 break;
               default:
-                f.value = u;
+                h.value = u;
                 break;
             }
         }
       });
     },
-    setErrors: (l) => {
-      const [, b] = C;
-      b({ action: "errors", payload: l });
+    setErrors: (p) => {
+      const [, y] = C;
+      y({ action: "errors", payload: p });
     },
     reset: () => {
-      var l;
-      (l = c.current) == null || l.reset();
+      var p;
+      (p = c.current) == null || p.reset();
     },
     submit: () => {
-      var l;
-      return (l = c.current) == null ? void 0 : l.requestSubmit();
+      var p;
+      return (p = c.current) == null ? void 0 : p.requestSubmit();
     }
   };
-  fe(m, () => p), D(() => {
-    const l = () => {
+  fe(m, () => l), k(() => {
+    const p = () => {
       i && i();
-    }, b = c == null ? void 0 : c.current;
-    return b == null || b.addEventListener("reset", l), () => {
-      b == null || b.removeEventListener("reset", l);
+    }, y = c == null ? void 0 : c.current;
+    return y == null || y.addEventListener("reset", p), () => {
+      y == null || y.removeEventListener("reset", p);
     };
   }, []);
-  const h = (l, b) => {
-    const f = p.getFormData();
-    for (const u of b)
-      if (!u.isValid(f.get(l) || null))
+  const f = (p, y) => {
+    const h = l.getFormData();
+    for (const u of y)
+      if (!u.isValid(h.get(p) || null))
         return { valid: !1, message: u.getMessage() };
     return { valid: !0, message: null };
-  }, C = Ft((l, b) => {
-    const { action: f, payload: u } = b;
-    switch (f) {
+  }, C = Kt((p, y) => {
+    const { action: h, payload: u } = y;
+    switch (h) {
       case "constraints": {
-        const { name: E, constraints: g } = u;
+        const { name: _, constraints: g } = u;
         return {
-          ...l,
+          ...p,
           constraints: {
-            ...l.constraints || {},
-            [E]: g
+            ...p.constraints || {},
+            [_]: g
           }
         };
       }
       case "validate": {
-        const { valid: E, message: g } = h(u, l.constraints[u] || []), _ = l.errors || {}, O = u;
-        return E ? delete _[O] : _[O] = [..._[O] || [], { message: g || "Error" }], Object.keys(_).length ? {
-          ...l,
-          errors: _
-        } : l;
+        const { valid: _, message: g } = f(u, p.constraints[u] || []), E = p.errors || {}, P = u;
+        return _ ? delete E[P] : E[P] = [...E[P] || [], { message: g || "Error" }], Object.keys(E).length ? {
+          ...p,
+          errors: E
+        } : p;
       }
       case "response":
         return {
-          ...l,
+          ...p,
           response: u
         };
       case "errors":
         return {
-          ...l,
+          ...p,
           errors: u || []
         };
       case "error": {
-        const E = { ...l.errors, ...u };
+        const _ = { ...p.errors, ...u };
         return {
-          ...l,
-          errors: E
+          ...p,
+          errors: _
         };
       }
     }
-    return l;
-  }, N), y = (l) => {
-    l.preventDefault();
-    const [b, f] = C;
+    return p;
+  }, N), b = (p) => {
+    p.preventDefault();
+    const [y, h] = C;
     let u = {};
-    for (const [g, _] of Object.entries(b.constraints)) {
-      const { valid: O, message: P } = h(g, _);
-      O || (u[g] = [P]);
+    for (const [g, E] of Object.entries(y.constraints)) {
+      const { valid: P, message: O } = f(g, E);
+      P || (u[g] = [O]);
     }
     if (Object.values(u).length) {
-      f({ action: "errors", payload: u });
+      h({ action: "errors", payload: u });
       return;
     }
-    const E = new FormData((c == null ? void 0 : c.current) || void 0);
-    if (o && o(E), a) {
-      a(E);
+    const _ = new FormData((c == null ? void 0 : c.current) || void 0);
+    if (s && s(_), a) {
+      a(_);
       return;
     }
   };
-  return /* @__PURE__ */ s(et.Provider, { value: [C, m, c], children: /* @__PURE__ */ s("form", { id: e, ref: c, onSubmit: y, ...d, children: t }) });
-}), qt = ({
+  return /* @__PURE__ */ o(nt.Provider, { value: [C, m, c], children: /* @__PURE__ */ o("form", { id: e, ref: c, onSubmit: b, ...d, children: t }) });
+}), Xt = ({
   view: e,
   constraints: t,
   className: n,
   onChange: r,
-  choiceValueTransform: o,
+  choiceValueTransform: s,
   choiceLabelTransform: a,
   ...i
 }) => {
   t = t || [];
-  const [[d, m], c] = ke(), N = T(null), h = !!((d == null ? void 0 : d.errors[e.full_name]) || []).length, C = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
-  D(() => {
+  const [[d, m], c] = Re(), N = T(null), f = !!((d == null ? void 0 : d.errors[e.full_name]) || []).length, C = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  k(() => {
     m({
       action: "constraints",
       payload: {
@@ -358,109 +358,109 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       }
     });
   }, []);
-  const y = (l) => {
-    m({ action: "validate", payload: e.full_name }), r && r(l);
+  const b = (p) => {
+    m({ action: "validate", payload: e.full_name }), r && r(p);
   };
-  return e != null && e.expanded ? /* @__PURE__ */ s(j, { children: Object.values(e.choices || []).map(
-    (l, b) => {
-      var _;
-      const f = pe(e.full_name, b), u = o ? o(l) : l.value, E = a ? a(l) : l.label || u, g = {
-        id: f,
-        ...(e == null ? void 0 : e.choice_attr) && ((e == null ? void 0 : e.choice_attr) instanceof Function ? e == null ? void 0 : e.choice_attr(l) : e == null ? void 0 : e.choice_attr)
+  return e != null && e.expanded ? /* @__PURE__ */ o(R, { children: Object.values(e.choices || []).map(
+    (p, y) => {
+      var E;
+      const h = he(e.full_name, y), u = s ? s(p) : p.value, _ = a ? a(p) : p.label || u, g = {
+        id: h,
+        ...(e == null ? void 0 : e.choice_attr) && ((e == null ? void 0 : e.choice_attr) instanceof Function ? e == null ? void 0 : e.choice_attr(p) : e == null ? void 0 : e.choice_attr)
       };
-      return /* @__PURE__ */ A(
+      return /* @__PURE__ */ v(
         "div",
         {
           className: "form-check",
           children: [
-            /* @__PURE__ */ s(
+            /* @__PURE__ */ o(
               "input",
               {
                 ref: N,
                 defaultValue: u,
                 type: e != null && e.multiple ? "checkbox" : "radio",
-                defaultChecked: (_ = e == null ? void 0 : e.data) == null ? void 0 : _.includes(u),
+                defaultChecked: (E = e == null ? void 0 : e.data) == null ? void 0 : E.includes(u),
                 name: (e == null ? void 0 : e.full_name) + "[]",
-                id: f,
+                id: h,
                 className: "form-check-input",
                 ...g,
-                onChange: (O) => {
-                  var P, w;
-                  return y({
-                    value: (e != null && e.multiple ? (P = c == null ? void 0 : c.current) == null ? void 0 : P.getFormData().getAll(e == null ? void 0 : e.full_name) : (w = c == null ? void 0 : c.current) == null ? void 0 : w.getFormData().get(e == null ? void 0 : e.full_name)) || O.target.value,
-                    targetValue: O.target.value,
-                    checked: O.target.checked
+                onChange: (P) => {
+                  var O, w;
+                  return b({
+                    value: (e != null && e.multiple ? (O = c == null ? void 0 : c.current) == null ? void 0 : O.getFormData().getAll(e == null ? void 0 : e.full_name) : (w = c == null ? void 0 : c.current) == null ? void 0 : w.getFormData().get(e == null ? void 0 : e.full_name)) || P.target.value,
+                    targetValue: P.target.value,
+                    checked: P.target.checked
                   });
                 }
               },
               C
             ),
-            /* @__PURE__ */ s(
+            /* @__PURE__ */ o(
               "label",
               {
                 htmlFor: g.id,
                 className: "form-check-label",
-                children: E
+                children: _
               }
             )
           ]
         },
-        b
+        y
       );
     }
-  ) }) : /* @__PURE__ */ s(j, { children: /* @__PURE__ */ A(
+  ) }) : /* @__PURE__ */ o(R, { children: /* @__PURE__ */ v(
     "select",
     {
       ref: N,
       name: e.full_name,
       multiple: e.multiple,
-      "aria-invalid": h,
-      onChange: (l) => {
-        var b, f;
-        return y({
-          value: (e.multiple ? (b = c == null ? void 0 : c.current) == null ? void 0 : b.getFormData().getAll(e.full_name) : (f = c == null ? void 0 : c.current) == null ? void 0 : f.getFormData().get(e.full_name)) || l.target.value
+      "aria-invalid": f,
+      onChange: (p) => {
+        var y, h;
+        return b({
+          value: (e.multiple ? (y = c == null ? void 0 : c.current) == null ? void 0 : y.getFormData().getAll(e.full_name) : (h = c == null ? void 0 : c.current) == null ? void 0 : h.getFormData().get(e.full_name)) || p.target.value
         });
       },
-      className: [...(n || "").split(" ") || [], "form-control", ...h ? ["is-invalid"] : []].join(" "),
+      className: [...(n || "").split(" ") || [], "form-control", ...f ? ["is-invalid"] : []].join(" "),
       ...e.attr && (e.attr instanceof Function ? e.attr() : e.attr),
       defaultValue: e.data,
       children: [
-        e.placeholder && /* @__PURE__ */ s("option", { value: "", children: e.placeholder }),
+        e.placeholder && /* @__PURE__ */ o("option", { value: "", children: e.placeholder }),
         Object.values(e.choices || []).map(
-          (l, b) => /* @__PURE__ */ s(
+          (p, y) => /* @__PURE__ */ o(
             "option",
             {
-              value: l.value || l.label,
-              ...e.choice_attr && (e.choice_attr instanceof Function ? e.choice_attr(l) : e.choice_attr),
-              children: l.label
+              value: p.value || p.label,
+              ...e.choice_attr && (e.choice_attr instanceof Function ? e.choice_attr(p) : e.choice_attr),
+              children: p.label
             },
-            b
+            y
           )
         )
       ]
     },
     C
   ) });
-}, nt = ({ name: e, className: t }) => {
-  const [[n]] = ke(), r = (n == null ? void 0 : n.errors[e]) || [];
-  return r.length ? /* @__PURE__ */ s("div", { className: t, children: r.map((o, a) => /* @__PURE__ */ s("span", { children: o.message }, a)) }) : /* @__PURE__ */ s(j, {});
-}, Ae = (e) => e.toLowerCase().replace(new RegExp("^.{1,1}"), (t) => t.toUpperCase()), zt = (e) => {
+}, ot = ({ name: e, className: t }) => {
+  const [[n]] = Re(), r = (n == null ? void 0 : n.errors[e]) || [];
+  return r.length ? /* @__PURE__ */ o("div", { className: t, children: r.map((s, a) => /* @__PURE__ */ o("span", { children: s.message }, a)) }) : /* @__PURE__ */ o(R, {});
+}, Le = (e) => e.toLowerCase().replace(new RegExp("^.{1,1}"), (t) => t.toUpperCase()), en = (e) => {
   let t = e.replace(new RegExp("[-_]", "gi"), " ").split(new RegExp("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])"));
   const n = t.shift(), r = t.pop();
-  return t = t.map((o) => o.toLowerCase()), n && t.unshift(Ae(n)), r && t.push(Ae(r)), t.join(" ");
-}, Gt = ({
+  return t = t.map((s) => s.toLowerCase()), n && t.unshift(Le(n)), r && t.push(Le(r)), t.join(" ");
+}, tn = ({
   view: e,
   children: t,
   className: n
 }) => {
-  const r = e.label || zt(e.name), o = ["checkbox", "radio"].includes(e.type || "input");
-  return /* @__PURE__ */ A(
+  const r = e.label || en(e.name), s = ["checkbox", "radio"].includes(e.type || "input");
+  return /* @__PURE__ */ v(
     "div",
     {
-      className: [...(n == null ? void 0 : n.split(" ")) || [], "mb-3", o && "form-check"].filter((a) => a).join(" "),
+      className: [...(n == null ? void 0 : n.split(" ")) || [], "mb-3", s && "form-check"].filter((a) => a).join(" "),
       ...e.attr && (e.attr instanceof Function ? e.attr() : e.attr),
       children: [
-        !o && /* @__PURE__ */ s(
+        !s && /* @__PURE__ */ o(
           "label",
           {
             className: "form-label",
@@ -469,17 +469,17 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
           }
         ),
         t,
-        o && /* @__PURE__ */ s(
+        s && /* @__PURE__ */ o(
           "label",
           {
             className: "form-check-label",
-            htmlFor: e.id || pe(e.full_name),
+            htmlFor: e.id || he(e.full_name),
             ...e.label_attr && (e.label_attr instanceof Function ? e.label_attr() : e.label_attr),
             children: r
           }
         ),
-        /* @__PURE__ */ s(nt, { name: e.full_name, className: "invalid-feedback" }),
-        e.help && /* @__PURE__ */ s(
+        /* @__PURE__ */ o(ot, { name: e.full_name, className: "invalid-feedback" }),
+        e.help && /* @__PURE__ */ o(
           "div",
           {
             className: "form-help",
@@ -490,14 +490,14 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       ]
     }
   );
-}, Qt = ({
+}, nn = ({
   view: e,
   constraints: t,
   className: n,
   onChange: r
 }) => {
-  const [[o, a]] = ke(), i = T(null), d = (o == null ? void 0 : o.errors[e.full_name]) || [];
-  D(() => {
+  const [[s, a]] = Re(), i = T(null), d = (s == null ? void 0 : s.errors[e.full_name]) || [];
+  k(() => {
     a({
       action: "constraints",
       payload: {
@@ -506,160 +506,160 @@ const pe = (e, t = null) => ((e == null ? void 0 : e.replace(/[\[\]]/gi, "_").re
       }
     });
   }, []);
-  const m = (h) => {
-    a({ action: "validate", payload: e.full_name }), r && r(h);
-  }, N = ["checkbox", "radio"].includes(e.type) ? "form-check-input" : "form-control", p = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
-  return /* @__PURE__ */ s(j, { children: /* @__PURE__ */ s(
+  const m = (f) => {
+    a({ action: "validate", payload: e.full_name }), r && r(f);
+  }, N = ["checkbox", "radio"].includes(e.type) ? "form-check-input" : "form-control", l = btoa(encodeURIComponent(e.full_name + JSON.stringify(e.data)));
+  return /* @__PURE__ */ o(R, { children: /* @__PURE__ */ o(
     "input",
     {
       ref: i,
-      id: e.id || pe(e.full_name),
+      id: e.id || he(e.full_name),
       name: e.full_name,
       type: e.type,
       defaultValue: e.data,
       "aria-invalid": !d.length,
-      onKeyUp: (h) => m({ value: h.target.value }),
-      onChange: (h) => m({ value: h.target.value }),
+      onKeyUp: (f) => m({ value: f.target.value }),
+      onChange: (f) => m({ value: f.target.value }),
       className: [N, ...d.length ? ["is-invalid"] : []].join(" "),
       defaultChecked: e == null ? void 0 : e.checked,
       ...e.attr && (e.attr instanceof Function ? e.attr() : e.attr)
     },
-    p
+    l
   ) });
-}, Jt = ({
+}, rn = ({
   view: e
-}) => /* @__PURE__ */ s(Gt, { className: "mb-3", view: e, children: (() => {
+}) => /* @__PURE__ */ o(tn, { className: "mb-3", view: e, children: (() => {
   switch (e.type) {
     case "entity":
     case "choice":
     case "collection":
     case "enum":
-      return /* @__PURE__ */ s(qt, { view: e });
+      return /* @__PURE__ */ o(Xt, { view: e });
     default:
-      return /* @__PURE__ */ s(Qt, { view: e });
+      return /* @__PURE__ */ o(nn, { view: e });
   }
-})() }), ve = ({ children: e }) => /* @__PURE__ */ s(j, { children: e }), rt = L.createContext("");
-function st() {
-  return L.useContext(rt);
+})() }), Pe = ({ children: e }) => /* @__PURE__ */ o(R, { children: e }), st = A.createContext("");
+function at() {
+  return A.useContext(st);
 }
-function Zt({ namespace: e, ...t }) {
-  return /* @__PURE__ */ s(rt.Provider, { value: e, children: t.children });
+function on({ namespace: e, ...t }) {
+  return /* @__PURE__ */ o(st.Provider, { value: e, children: t.children });
 }
-const q = H(({ namespace: e, view: t, prefix: n, children: r, props: o, data: a }) => {
-  t = t.split(/[._]/).map((C) => Ae(C)).join(""), e ?? (e = st());
-  const { templates: i } = Ze(), d = ["crud", e, n, t].filter((C) => C).join("/") + ".tsx", [m, c] = Object.entries(i ?? {}).filter(([C, y]) => C.endsWith(d)).shift() || [], [N, p] = M(1), h = T(ve);
-  return D(() => {
+const H = Y(({ view: e, prefix: t, namespace: n, children: r, props: s, data: a }) => {
+  e = e.split(/[._]/).map((C) => Le(C)).join(""), n ?? (n = at());
+  const { templates: i } = et(), d = ["crud", n, t, e].filter((C) => C).join("/") + ".tsx", [m, c] = Object.entries(i ?? {}).filter(([C, b]) => C.endsWith(d)).shift() || [], [N, l] = M(1), f = T(Pe);
+  return k(() => {
     if (c === void 0)
       return () => {
       };
     c().then((C) => {
-      h.current = C.default, p(N + 1);
+      f.current = C.default, l(N + 1);
     });
-  }, []), /* @__PURE__ */ s(h.current, { ...o, view: t, controller: e, viewName: t, data: a, parent: r, children: (!c || h.current !== ve) && r });
-}), je = H(({ view: e, namespace: t, name: n }) => e && /* @__PURE__ */ s(
-  q,
+  }, []), /* @__PURE__ */ o(f.current, { ...s, view: e, controller: n, viewName: e, data: a, parent: r, children: (!c || f.current !== Pe) && r });
+}), we = Y(({ view: e, namespace: t, name: n }) => e && /* @__PURE__ */ o(
+  H,
   {
     namespace: t,
     view: n || e.name || "form",
     prefix: "modify/form",
     data: e,
-    children: Object.keys(e.children || []).length ? Object.values(e.children || []).map((r) => /* @__PURE__ */ s(je, { namespace: t, view: r }, r.id)) : /* @__PURE__ */ s(Jt, { view: e }, e.id)
+    children: Object.keys(e.children || []).length ? Object.values(e.children || []).map((r) => /* @__PURE__ */ o(we, { namespace: t, view: r }, r.id)) : /* @__PURE__ */ o(rn, { view: e }, e.id)
   },
   e.id
-)), ot = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: o = !1 }) => /* @__PURE__ */ s(j, { children: r && r }), he = Q(({
+)), it = ({ icon: e, rightIcon: t, rightIconProps: n, children: r, preload: s = !1 }) => /* @__PURE__ */ o(R, { children: r && r }), ge = Q(({
   children: e,
   preload: t,
   ...n
-}, r) => /* @__PURE__ */ s("button", { disabled: t, ...n, ref: r, children: /* @__PURE__ */ s(ot, { preload: t, ...n, children: e }) })), Xt = L.createContext(null);
-function en() {
-  return L.useContext(Xt);
+}, r) => /* @__PURE__ */ o("button", { disabled: t, ...n, ref: r, children: /* @__PURE__ */ o(it, { preload: t, ...n, children: e }) })), sn = A.createContext(null);
+function an() {
+  return A.useContext(sn);
 }
-const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
-  const { getAction: r, generateRoute: o } = Y();
+const ct = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
+  const { getAction: r, generateRoute: s } = W();
   e = r(e.entity, e.name, e.namespace) || e;
   const [a, i] = M(), [d, m] = M(t || null);
   T(null);
-  const [c, N] = M(n instanceof URLSearchParams ? n : Ce(n || {}));
-  btoa(encodeURIComponent([e.entity, e.name, e.namespace, ...Object.entries(d || {}).map(([y, l]) => y + "-" + l), (c instanceof URLSearchParams ? c : Ce(c)).toString()].filter((y) => y).join("."))), T({});
-  const [p, h] = M(1), C = () => {
+  const [c, N] = M(n instanceof URLSearchParams ? n : Ae(n || {}));
+  btoa(encodeURIComponent([e.entity, e.name, e.namespace, ...Object.entries(d || {}).map(([b, p]) => b + "-" + p), (c instanceof URLSearchParams ? c : Ae(c)).toString()].filter((b) => b).join("."))), T({});
+  const [l, f] = M(1), C = () => {
     e && ne().get({
-      url: o(e.route, d ?? null),
+      url: s(e.route, d ?? null),
       query: c
-    }).then(({ data: y, response: l }) => {
-      switch (l.status) {
+    }).then(({ data: b, response: p }) => {
+      switch (p.status) {
         case 201:
         case 200: {
-          i(y);
+          i(b);
           break;
         }
         default: {
-          if (y instanceof Object) {
-            const b = y;
-            throw new ae(b.status, b.detail, b.trace);
+          if (b instanceof Object) {
+            const y = b;
+            throw new ie(y.status, y.detail, y.trace);
           }
-          throw new ae(l.status, l.statusText);
+          throw new ie(p.status, p.statusText);
         }
       }
     });
   };
-  return D(() => {
+  return k(() => {
     C();
-  }, [JSON.stringify(d), c.toString(), p]), {
+  }, [JSON.stringify(d), c.toString(), l]), {
     results: a,
     setParameters: m,
-    setQueryParameters: (y) => {
-      N(new URLSearchParams(y));
+    setQueryParameters: (b) => {
+      N(new URLSearchParams(b));
     },
     refresh: () => {
       C();
     }
   };
-}, te = H(({ children: e, domain: t, properties: n }) => (n ?? (n = {}), Object.keys(n).forEach((r) => {
-  var o;
-  e = e == null ? void 0 : e.replaceAll(new RegExp(":" + r, "g"), ((o = n[r]) == null ? void 0 : o.toString()) || "");
-}), e = e == null ? void 0 : e.replaceAll(new RegExp(":w+", "g"), ""), /* @__PURE__ */ s(j, { children: e }))), tn = Q(({ name: e, data: t, action: n, parameters: r, onSuccess: o, onError: a, onLoad: i, children: d, embedded: m = !1 }, c) => {
-  var O, P, w, v, x;
-  const [N, p] = M(!1), { navigate: h, generateLink: C, generateRoute: y } = Y(), l = y(n.route, r || {}), b = T(null), f = en(), [u, E] = M();
+}, te = Y(({ children: e, domain: t, properties: n }) => (n ?? (n = {}), Object.keys(n).forEach((r) => {
+  var s;
+  e = e == null ? void 0 : e.replaceAll(new RegExp(":" + r, "g"), ((s = n[r]) == null ? void 0 : s.toString()) || "");
+}), e = e == null ? void 0 : e.replaceAll(new RegExp(":w+", "g"), ""), /* @__PURE__ */ o(R, { children: e }))), cn = Q(({ name: e, data: t, action: n, parameters: r, onSuccess: s, onError: a, onLoad: i, children: d, embedded: m = !1 }, c) => {
+  var P, O, w, L, S;
+  const [N, l] = M(!1), { navigate: f, generateLink: C, generateRoute: b } = W(), p = b(n.route, r || {}), y = T(null), h = an(), [u, _] = M();
   fe(c, () => ({
     getData: () => u,
-    getFormRef: () => b.current
+    getFormRef: () => y.current
   }));
-  const g = (S) => {
-    var R, $;
-    let k = {
-      ...(R = S.errors) != null && R.length ? { [S.full_name]: S.errors } : {}
+  const g = (x) => {
+    var j, I;
+    let D = {
+      ...(j = x.errors) != null && j.length ? { [x.full_name]: x.errors } : {}
     };
-    for (let [, F] of Object.entries((S == null ? void 0 : S.children) || []))
-      F.children && Object.values(F.children).length ? k = { ...k, ...g(F) } : ($ = F.errors) != null && $.length && (k[F.full_name] = F.errors);
-    return k;
-  }, _ = (S) => {
-    p(!0), ne().post({ url: l, body: S, bodyType: jt.FormData }).then(({ status: k, data: R }) => {
-      var F;
-      if (![200, 201, 400].includes(k))
-        return Promise.reject(R);
-      E(R);
-      const $ = g(R.form.modify.view);
-      if (Object.entries($).length) {
-        (F = b.current) == null || F.setErrors($);
+    for (let [, U] of Object.entries((x == null ? void 0 : x.children) || []))
+      U.children && Object.values(U.children).length ? D = { ...D, ...g(U) } : (I = U.errors) != null && I.length && (D[U.full_name] = U.errors);
+    return D;
+  }, E = (x) => {
+    l(!0), ne().post({ url: p, body: x, bodyType: Ut.FormData }).then(({ status: D, data: j }) => {
+      var U;
+      if (![200, 201, 400].includes(D))
+        return Promise.reject(j);
+      _(j);
+      const I = g(j.form.modify.view);
+      if (Object.entries(I).length) {
+        (U = y.current) == null || U.setErrors(I);
         return;
       }
-      o && o(R), R.redirect && !m && h(C(R.redirect.route, { ...r || {}, ...R.redirect.parameters }));
-    }).catch((k) => {
-      a && a(k);
+      s && s(j), j.redirect && !m && f(C(j.redirect.route, { ...r || {}, ...j.redirect.parameters }));
+    }).catch((D) => {
+      a && a(D);
     }).finally(() => {
-      p(!1);
+      l(!1);
     });
   };
-  return D(() => {
+  return k(() => {
     i && i();
-  }, []), t = (f == null ? void 0 : f.results) ?? t, D(() => {
-    E(t);
-  }, [JSON.stringify(t)]), u && /* @__PURE__ */ A(j, { children: [
-    Object.keys((u == null ? void 0 : u.messages) || {}).map((S, k) => /* @__PURE__ */ s("div", { className: ["alert", "alert-" + S].join(" "), children: ((u == null ? void 0 : u.messages[S]) || ["Item was saved successful."]).join(" ") }, "alert-" + S)),
-    /* @__PURE__ */ A(tt, { id: (w = (P = (O = u == null ? void 0 : u.form) == null ? void 0 : O.modify) == null ? void 0 : P.view) == null ? void 0 : w.id, ref: b, action: l, method: "POST", onSubmit: _, children: [
-      ((x = (v = u == null ? void 0 : u.form) == null ? void 0 : v.modify) == null ? void 0 : x.view) !== void 0 && /* @__PURE__ */ A(j, { children: [
-        /* @__PURE__ */ s(
-          je,
+  }, []), t = (h == null ? void 0 : h.results) ?? t, k(() => {
+    _(t);
+  }, [JSON.stringify(t)]), u && /* @__PURE__ */ v(R, { children: [
+    Object.keys((u == null ? void 0 : u.messages) || {}).map((x, D) => /* @__PURE__ */ o("div", { className: ["alert", "alert-" + x].join(" "), children: ((u == null ? void 0 : u.messages[x]) || ["Item was saved successful."]).join(" ") }, "alert-" + x)),
+    /* @__PURE__ */ v(rt, { id: (w = (O = (P = u == null ? void 0 : u.form) == null ? void 0 : P.modify) == null ? void 0 : O.view) == null ? void 0 : w.id, ref: y, action: p, method: "POST", onSubmit: E, children: [
+      ((S = (L = u == null ? void 0 : u.form) == null ? void 0 : L.modify) == null ? void 0 : S.view) !== void 0 && /* @__PURE__ */ v(R, { children: [
+        /* @__PURE__ */ o(
+          we,
           {
             name: e,
             namespace: n.namespace,
@@ -667,17 +667,17 @@ const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
           },
           u.form.modify.view.id
         ),
-        /* @__PURE__ */ s(nt, { name: u.form.modify.view.full_name, className: "alert alert-danger" })
+        /* @__PURE__ */ o(ot, { name: u.form.modify.view.full_name, className: "alert alert-danger" })
       ] }),
-      /* @__PURE__ */ s(U, { name: "actions", content: d, data: { formRef: b }, children: /* @__PURE__ */ s(he, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ s(te, { children: "Save" }) }) })
+      /* @__PURE__ */ o($, { name: "actions", content: d, data: { formRef: y }, children: /* @__PURE__ */ o(ge, { type: "submit", className: "btn btn-primary", children: /* @__PURE__ */ o(te, { children: "Save" }) }) })
     ] })
   ] });
-}), it = Q(({
+}), lt = Q(({
   children: e,
   open: t = !0,
   animation: n = "fade",
   backdrop: r = !0,
-  keyboard: o = !0,
+  keyboard: s = !0,
   size: a,
   onClose: i,
   className: d
@@ -686,98 +686,98 @@ const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
   fe(m, () => ({
     toggle: () => N(!c),
     open: () => N(!0),
-    close: () => l(),
+    close: () => p(),
     isOpen: () => c
-  })), D(() => {
+  })), k(() => {
     N(t);
   }, [t]);
-  const p = (b) => {
-    if (o)
-      switch (b.key) {
+  const l = (y) => {
+    if (s)
+      switch (y.key) {
         case "Escape": {
-          l();
+          p();
           break;
         }
       }
   };
-  D(() => {
+  k(() => {
     var u;
     if (!c)
       return;
-    const b = () => {
-      var E;
-      (E = h.current) == null || E.addEventListener("animationend", f);
-    }, f = () => {
-      var E, g, _;
-      (E = h.current) == null || E.classList.remove(n), (g = h.current) == null || g.removeEventListener("animationstart", b), (_ = h.current) == null || _.removeEventListener("animationend", f);
+    const y = () => {
+      var _;
+      (_ = f.current) == null || _.addEventListener("animationend", h);
+    }, h = () => {
+      var _, g, E;
+      (_ = f.current) == null || _.classList.remove(n), (g = f.current) == null || g.removeEventListener("animationstart", y), (E = f.current) == null || E.removeEventListener("animationend", h);
     };
     return setTimeout(() => {
-      var E, g;
-      (E = h.current) == null || E.classList.add("d-block", "show"), (g = C == null ? void 0 : C.current) == null || g.classList.add("show");
-    }, n ? 100 : 0), document.addEventListener("keydown", p), (u = h.current) == null || u.addEventListener("animationstart", b), () => {
-      var E, g;
-      document.removeEventListener("keydown", p), (E = h.current) == null || E.removeEventListener("animationstart", b), (g = h.current) == null || g.removeEventListener("animationend", f);
+      var _, g;
+      (_ = f.current) == null || _.classList.add("d-block", "show"), (g = C == null ? void 0 : C.current) == null || g.classList.add("show");
+    }, n ? 100 : 0), document.addEventListener("keydown", l), (u = f.current) == null || u.addEventListener("animationstart", y), () => {
+      var _, g;
+      document.removeEventListener("keydown", l), (_ = f.current) == null || _.removeEventListener("animationstart", y), (g = f.current) == null || g.removeEventListener("animationend", h);
     };
   }, [c]);
-  const h = T(null), C = T(null), y = () => {
+  const f = T(null), C = T(null), b = () => {
     N(!1), i && i();
-  }, l = () => new Promise((b, f) => {
-    var E, g;
+  }, p = () => new Promise((y, h) => {
+    var _, g;
     if (!c)
-      return b();
+      return y();
     const u = () => {
-      var _;
-      (_ = h == null ? void 0 : h.current) == null || _.classList.remove("show", "d-block"), b(), y();
+      var E;
+      (E = f == null ? void 0 : f.current) == null || E.classList.remove("show", "d-block"), y(), b();
     };
     if (n) {
-      const _ = setTimeout(() => {
+      const E = setTimeout(() => {
         u();
       }, n ? 50 : 0);
-      (E = h.current) == null || E.addEventListener("animationstart", () => {
-        var O, P;
-        clearTimeout(_), (O = h.current) == null || O.removeEventListener("animationend", u), (P = h.current) == null || P.addEventListener("animationend", u);
-      }), (g = h.current) == null || g.classList.add(n, "close");
+      (_ = f.current) == null || _.addEventListener("animationstart", () => {
+        var P, O;
+        clearTimeout(E), (P = f.current) == null || P.removeEventListener("animationend", u), (O = f.current) == null || O.addEventListener("animationend", u);
+      }), (g = f.current) == null || g.classList.add(n, "close");
     } else
       u();
   });
-  return c && $t(/* @__PURE__ */ A(j, { children: [
-    /* @__PURE__ */ s(
+  return c && Yt(/* @__PURE__ */ v(R, { children: [
+    /* @__PURE__ */ o(
       "div",
       {
-        ref: h,
-        className: ["modal", a && "modal-" + a, n && n, d].filter((b) => b).join(" "),
-        children: /* @__PURE__ */ s("div", { className: "modal-dialog modal-dialog-centered", role: "document", children: /* @__PURE__ */ A("div", { className: "modal-content", children: [
-          /* @__PURE__ */ s(U, { name: "header", content: e, data: null, children: /* @__PURE__ */ A("div", { className: "modal-header", children: [
-            /* @__PURE__ */ s("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ s(U, { name: "title", content: e, data: null, children: "Title" }) }),
-            /* @__PURE__ */ s("button", { onClick: l, type: "button", className: "btn-close", "aria-label": "Close" })
+        ref: f,
+        className: ["modal", a && "modal-" + a, n && n, d].filter((y) => y).join(" "),
+        children: /* @__PURE__ */ o("div", { className: "modal-dialog modal-dialog-centered", role: "document", children: /* @__PURE__ */ v("div", { className: "modal-content", children: [
+          /* @__PURE__ */ o($, { name: "header", content: e, data: null, children: /* @__PURE__ */ v("div", { className: "modal-header", children: [
+            /* @__PURE__ */ o("h5", { className: "modal-title", id: "exampleModalLabel", children: /* @__PURE__ */ o($, { name: "title", content: e, data: null, children: "Title" }) }),
+            /* @__PURE__ */ o("button", { onClick: p, type: "button", className: "btn-close", "aria-label": "Close" })
           ] }) }),
-          /* @__PURE__ */ s("div", { className: "modal-body", children: /* @__PURE__ */ s(U, { name: "content", content: e, data: null, children: e }) }),
-          /* @__PURE__ */ s(U, { name: "footer", content: e, data: null, children: /* @__PURE__ */ s("div", { className: "modal-footer", children: /* @__PURE__ */ s(U, { name: "actions", content: e, data: null, children: /* @__PURE__ */ s("button", { onClick: l, type: "button", className: "btn btn-secondary", children: "Close" }) }) }) })
+          /* @__PURE__ */ o("div", { className: "modal-body", children: /* @__PURE__ */ o($, { name: "content", content: e, data: null, children: e }) }),
+          /* @__PURE__ */ o($, { name: "footer", content: e, data: null, children: /* @__PURE__ */ o("div", { className: "modal-footer", children: /* @__PURE__ */ o($, { name: "actions", content: e, data: null, children: /* @__PURE__ */ o("button", { onClick: p, type: "button", className: "btn btn-secondary", children: "Close" }) }) }) })
         ] }) })
       }
     ),
-    r && /* @__PURE__ */ s(
+    r && /* @__PURE__ */ o(
       "div",
       {
         ref: C,
-        className: ["modal-backdrop", "fade", ...n && ["show"]].filter((b) => b).join(" ")
+        className: ["modal-backdrop", "fade", ...n && ["show"]].filter((y) => y).join(" ")
       }
     )
   ] }), document.body);
-}), nn = ({
+}), ln = ({
   animationData: e,
   path: t,
   options: n,
   width: r,
-  height: o,
+  height: s,
   className: a,
   ...i
 }) => {
   const d = T(null);
-  return D(() => {
+  return k(() => {
     if (!d.current)
       return;
-    const m = Ut.loadAnimation({
+    const m = Wt.loadAnimation({
       renderer: "svg",
       loop: !1,
       autoplay: !0,
@@ -792,31 +792,31 @@ const at = ({ entityAction: e, initParameters: t, initQueryParameters: n }) => {
     return () => {
       m.destroy();
     };
-  }, []), /* @__PURE__ */ s("div", { className: a, ref: d, style: { width: r, height: o } });
-}, ct = L.createContext(void 0);
-var ie = /* @__PURE__ */ ((e) => (e[e.success = 0] = "success", e[e.denied = 1] = "denied", e[e.warning = 2] = "warning", e[e.info = 3] = "info", e[e.confirm = 4] = "confirm", e))(ie || {});
-function lt() {
-  const e = L.useContext(ct);
+  }, []), /* @__PURE__ */ o("div", { className: a, ref: d, style: { width: r, height: s } });
+}, ut = A.createContext(void 0);
+var ce = /* @__PURE__ */ ((e) => (e[e.success = 0] = "success", e[e.denied = 1] = "denied", e[e.warning = 2] = "warning", e[e.info = 3] = "info", e[e.confirm = 4] = "confirm", e))(ce || {});
+function dt() {
+  const e = A.useContext(ut);
   if (e === void 0)
     throw new Error("UseAlert must be within AlertProvider");
   return e;
 }
-function rn(e) {
+function un(e) {
   var N;
-  const [t, n] = M(), r = T(0), o = T(void 0), [a, i] = M(null);
-  D(() => {
+  const [t, n] = M(), r = T(0), s = T(void 0), [a, i] = M(null);
+  k(() => {
     r.current += 1;
   }, [t]);
-  const d = /* @__PURE__ */ Object.assign({ "/src/assets/images/alert/denied.json": () => import("./denied-CgoMpaA7.js"), "/src/assets/images/alert/info.json": () => import("./info-D-NzIEYs.js"), "/src/assets/images/alert/success.json": () => import("./success-Bu_BJcf1.js"), "/src/assets/images/alert/warning.json": () => import("./warning-B1nr7TsB.js") }), m = (p) => {
-    var y, l;
-    let h = {
+  const d = /* @__PURE__ */ Object.assign({ "/src/assets/images/alert/denied.json": () => import("./denied-CgoMpaA7.js"), "/src/assets/images/alert/info.json": () => import("./info-D-NzIEYs.js"), "/src/assets/images/alert/success.json": () => import("./success-Bu_BJcf1.js"), "/src/assets/images/alert/warning.json": () => import("./warning-B1nr7TsB.js") }), m = (l) => {
+    var b, p;
+    let f = {
       title: "Are you confirm?",
       icon: 0,
       animation: "scale",
       size: "auto",
       allowClose: !1,
       timeoutProgress: !1,
-      ...p || {}
+      ...l || {}
     };
     const C = {
       0: "success.json",
@@ -825,13 +825,13 @@ function rn(e) {
       3: "info.json",
       4: "info.json"
     };
-    if (Object.hasOwn(C, h.icon)) {
-      const b = C[h.icon], f = Object.keys(d).filter((u) => u.endsWith(b)).pop();
-      f && d[f]().then((u) => {
+    if (Object.hasOwn(C, f.icon)) {
+      const y = C[f.icon], h = Object.keys(d).filter((u) => u.endsWith(y)).pop();
+      h && d[h]().then((u) => {
         i(u.default);
       });
     }
-    !h.actions && !h.timeoutProgress && (h.actions = {
+    !f.actions && !f.timeoutProgress && (f.actions = {
       cancel: {
         label: "Cancel",
         classList: ["btn-outline-primary"]
@@ -839,40 +839,40 @@ function rn(e) {
       confirm: {
         label: "Confirm"
       }
-    }), (y = o.current) != null && y.isOpen() ? (l = o.current) == null || l.close().finally(() => {
-      n(h);
-    }) : n(h);
-  }, c = (p) => {
+    }), (b = s.current) != null && b.isOpen() ? (p = s.current) == null || p.close().finally(() => {
+      n(f);
+    }) : n(f);
+  }, c = (l) => {
     var C;
-    const h = {
-      [p]: !0,
-      isConfirmed: p === "confirm",
-      isCancelled: p === "cancel",
-      isDenied: p === "deny"
+    const f = {
+      [l]: !0,
+      isConfirmed: l === "confirm",
+      isCancelled: l === "cancel",
+      isDenied: l === "deny"
     };
-    t != null && t.onResult && t.onResult(h), (C = o.current) == null || C.close().then(() => {
+    t != null && t.onResult && t.onResult(f), (C = s.current) == null || C.close().then(() => {
       i(null), n(void 0);
     });
   };
-  return /* @__PURE__ */ A(ct.Provider, { value: { open: m }, children: [
+  return /* @__PURE__ */ v(ut.Provider, { value: { open: m }, children: [
     e.children,
-    t && /* @__PURE__ */ A(it, { size: t.size, className: "modal-alert", animation: t.animation, open: !0, ref: o, children: [
-      /* @__PURE__ */ s(K, { name: "header" }),
-      /* @__PURE__ */ s(K, { name: "footer" }),
-      /* @__PURE__ */ s(K, { name: "content", children: /* @__PURE__ */ A("div", { className: "d-flex flex-column align-items-center", children: [
-        a !== null && /* @__PURE__ */ s(nn, { className: "modal-alert-icon", animationData: a }),
-        /* @__PURE__ */ s("h3", { className: "modal-alert-title", children: t.title }),
-        !!((N = t.text) != null && N.length) && /* @__PURE__ */ s("p", { className: "modal-alert-text", children: t.text }),
-        t.actions && /* @__PURE__ */ s("div", { className: "d-flex justify-content-center align-items-center", children: Object.keys(t.actions).map((p) => {
-          var h, C, y;
-          return /* @__PURE__ */ s(
-            he,
+    t && /* @__PURE__ */ v(lt, { size: t.size, className: "modal-alert", animation: t.animation, open: !0, ref: s, children: [
+      /* @__PURE__ */ o(K, { name: "header" }),
+      /* @__PURE__ */ o(K, { name: "footer" }),
+      /* @__PURE__ */ o(K, { name: "content", children: /* @__PURE__ */ v("div", { className: "d-flex flex-column align-items-center", children: [
+        a !== null && /* @__PURE__ */ o(ln, { className: "modal-alert-icon", animationData: a }),
+        /* @__PURE__ */ o("h3", { className: "modal-alert-title", children: t.title }),
+        !!((N = t.text) != null && N.length) && /* @__PURE__ */ o("p", { className: "modal-alert-text", children: t.text }),
+        t.actions && /* @__PURE__ */ o("div", { className: "d-flex justify-content-center align-items-center", children: Object.keys(t.actions).map((l) => {
+          var f, C, b;
+          return /* @__PURE__ */ o(
+            ge,
             {
-              className: "btn btn-lg mx-2 " + (((h = t.actions) == null ? void 0 : h[p].classList) ?? ["btn-primary"]).join(" "),
-              onClick: () => c(p),
-              children: ((y = ((C = t.actions) == null ? void 0 : C[p]) ?? null) == null ? void 0 : y.label) || p
+              className: "btn btn-lg mx-2 " + (((f = t.actions) == null ? void 0 : f[l].classList) ?? ["btn-primary"]).join(" "),
+              onClick: () => c(l),
+              children: ((b = ((C = t.actions) == null ? void 0 : C[l]) ?? null) == null ? void 0 : b.label) || l
             },
-            p
+            l
           );
         }) })
       ] }) })
@@ -880,51 +880,51 @@ function rn(e) {
   ] });
 }
 const V = ({ to: e, children: t, onClick: n, ...r }) => {
-  const { navigate: o } = Y(), a = T(null), i = (d) => {
+  const { navigate: s } = W(), a = T(null), i = (d) => {
     var m;
-    n && n(d), !d.defaultPrevented && (m = a == null ? void 0 : a.current) != null && m.href && (d.preventDefault(), o(a.current.href));
+    n && n(d), !d.defaultPrevented && (m = a == null ? void 0 : a.current) != null && m.href && (d.preventDefault(), s(a.current.href));
   };
-  return D(() => {
+  return k(() => {
     var d;
     return (d = a == null ? void 0 : a.current) == null || d.addEventListener("click", i), () => {
       var m;
       (m = a == null ? void 0 : a.current) == null || m.removeEventListener("click", i);
     };
-  }, [e, n]), /* @__PURE__ */ s("a", { ref: a, href: e, ...r, children: /* @__PURE__ */ s(ot, { children: t && t }) });
-}, sn = ({ action: e, children: t, routeParams: n, results: r }) => {
-  const { getAction: o, generateLink: a } = Y(), i = o(e.entity, "list", e.namespace);
-  return /* @__PURE__ */ A("section", { className: "edit", children: [
-    /* @__PURE__ */ A("header", { children: [
-      /* @__PURE__ */ A("h2", { className: "title", children: [
-        i && /* @__PURE__ */ s(V, { to: a(i.route, n), children: "←" }),
-        /* @__PURE__ */ s(U, { name: "title", content: t, data: r })
+  }, [e, n]), /* @__PURE__ */ o("a", { ref: a, href: e, ...r, children: /* @__PURE__ */ o(it, { children: t && t }) });
+}, dn = ({ action: e, children: t, routeParams: n, results: r }) => {
+  const { getAction: s, generateLink: a } = W(), i = s(e.entity, "list", e.namespace);
+  return /* @__PURE__ */ v("section", { className: "edit", children: [
+    /* @__PURE__ */ v("header", { children: [
+      /* @__PURE__ */ v("h2", { className: "title", children: [
+        i && /* @__PURE__ */ o(V, { to: a(i.route, n), children: "←" }),
+        /* @__PURE__ */ o($, { name: "title", content: t, data: r })
       ] }),
-      /* @__PURE__ */ s("nav", { children: /* @__PURE__ */ s(U, { name: "navigation", content: t, data: r }) })
+      /* @__PURE__ */ o("nav", { children: /* @__PURE__ */ o($, { name: "navigation", content: t, data: r }) })
     ] }),
-    /* @__PURE__ */ s("main", { children: /* @__PURE__ */ s(U, { name: "content", content: t, data: r }) })
+    /* @__PURE__ */ o("main", { children: /* @__PURE__ */ o($, { name: "content", content: t, data: r }) })
   ] });
-}, Be = ({ action: e, children: t, onSuccess: n, modal: r, props: o }) => {
-  const a = { ...e.parameters || {} }, i = T(void 0), d = T(void 0), { results: m } = at({
+}, He = ({ action: e, children: t, onSuccess: n, modal: r, props: s }) => {
+  const a = { ...e.parameters || {} }, i = T(void 0), d = T(void 0), { results: m } = ct({
     entityAction: e.action,
     initParameters: a
-  }), { open: c } = lt();
-  return /* @__PURE__ */ A(r ? it : sn, { ref: d, ...o, action: e, routeParams: a, children: [
-    /* @__PURE__ */ s(K, { name: "title", children: /* @__PURE__ */ s(U, { name: "title", content: t, data: m, children: (m == null ? void 0 : m.title) || "Title" }) }),
-    /* @__PURE__ */ s(K, { name: "navigation", children: /* @__PURE__ */ s(q, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ s(U, { name: "navigation", content: t, data: m }) }) }),
-    /* @__PURE__ */ s(K, { name: "content", children: /* @__PURE__ */ s(q, { namespace: e.action.namespace, view: "content", prefix: "modify", children: /* @__PURE__ */ s(U, { name: "content", content: t, data: m, children: /* @__PURE__ */ s(
-      tn,
+  }), { open: c } = dt();
+  return /* @__PURE__ */ v(r ? lt : dn, { ref: d, ...s, action: e, routeParams: a, children: [
+    /* @__PURE__ */ o(K, { name: "title", children: /* @__PURE__ */ o($, { name: "title", content: t, data: m, children: (m == null ? void 0 : m.title) || "Title" }) }),
+    /* @__PURE__ */ o(K, { name: "navigation", children: /* @__PURE__ */ o(H, { namespace: e.action.namespace, view: "navigation", prefix: "modify", children: /* @__PURE__ */ o($, { name: "navigation", content: t, data: m }) }) }),
+    /* @__PURE__ */ o(K, { name: "content", children: /* @__PURE__ */ o(H, { namespace: e.action.namespace, view: "content", prefix: "modify", children: /* @__PURE__ */ o($, { name: "content", content: t, data: m, children: /* @__PURE__ */ o(
+      cn,
       {
         ref: i,
         data: m,
         action: e.action,
-        onSuccess: (p) => {
-          var C, y;
+        onSuccess: (l) => {
+          var C, b;
           (C = d.current) == null || C.close();
-          const h = new CustomEvent("success", { detail: p });
-          n && n(h, p), !h.defaultPrevented && c({
+          const f = new CustomEvent("success", { detail: l });
+          n && n(f, l), !f.defaultPrevented && c({
             title: "Success",
-            text: Object.values(((y = p.messages) == null ? void 0 : y.success) ?? []).join(" ") ?? "Item was saved successful!",
-            icon: ie.success,
+            text: Object.values(((b = l.messages) == null ? void 0 : b.success) ?? []).join(" ") ?? "Item was saved successful!",
+            icon: ce.success,
             actions: {
               close: {
                 label: "OK"
@@ -932,11 +932,11 @@ const V = ({ to: e, children: t, onClick: n, ...r }) => {
             }
           });
         },
-        onError: (p) => {
-          console.log(p), c({
-            title: p.status + " " + p.detail,
-            text: p.detail,
-            icon: ie.denied,
+        onError: (l) => {
+          console.log(l), c({
+            title: l.status + " " + l.detail,
+            text: l.detail,
+            icon: ce.denied,
             actions: {
               close: {
                 label: "OK"
@@ -949,84 +949,120 @@ const V = ({ to: e, children: t, onClick: n, ...r }) => {
         },
         embedded: r,
         parameters: a,
-        children: r && /* @__PURE__ */ s(K, { name: "actions" })
+        children: r && /* @__PURE__ */ o(K, { name: "actions" })
       }
     ) }) }) }),
-    /* @__PURE__ */ s(K, { name: "actions", children: /* @__PURE__ */ s(U, { name: "actions", content: t, data: m, children: /* @__PURE__ */ s(
+    /* @__PURE__ */ o(K, { name: "actions", children: /* @__PURE__ */ o($, { name: "actions", content: t, data: m, children: /* @__PURE__ */ o(
       "button",
       {
         type: "submit",
         className: "btn btn-primary",
         onClick: () => {
-          var p, h;
-          return (h = (p = i.current) == null ? void 0 : p.getFormRef()) == null ? void 0 : h.submit();
+          var l, f;
+          return (f = (l = i.current) == null ? void 0 : l.getFormRef()) == null ? void 0 : f.submit();
         },
         children: "Submit"
       }
     ) }) })
   ] });
-}, ut = ({ column: e, row: t, data: n, namespace: r }) => {
-  var a, i, d;
-  const o = ((i = (a = n.entity) == null ? void 0 : a.data) == null ? void 0 : i.items[t]) || {};
-  return /* @__PURE__ */ s(q, { namespace: r, data: o, prefix: "list", view: e.field, children: o[e.field] !== void 0 && (o[e.field] instanceof Object ? o[e.field] instanceof Array ? o[e.field].join(", ") : JSON.stringify(o[e.field]) : (d = o[e.field]) == null ? void 0 : d.toString()) });
-}, dt = L.createContext(void 0);
-function ft() {
-  const e = L.useContext(dt);
+}, mt = A.createContext(void 0);
+function re() {
+  var c, N;
+  const e = A.useContext(mt);
+  if (e === void 0)
+    throw new Error("UseList must be within ListProvider");
+  const { data: t, onClick: n } = e, r = (c = t == null ? void 0 : t.entity) == null ? void 0 : c.primaryColumn, s = (((N = t == null ? void 0 : t.entity) == null ? void 0 : N.columns) || []).filter((l) => l.visible).filter((l) => l.group !== !1), a = Object.values((t == null ? void 0 : t.action) || []), i = a.filter((l) => l.object), d = s.length + (a.length ? 1 : 0), m = (t == null ? void 0 : t.entity.data.items) ?? [];
+  return {
+    data: t,
+    columns: s,
+    actions: a,
+    objectActions: i,
+    columnsTotal: d,
+    primaryColumn: r,
+    items: m,
+    onClick: n
+  };
+}
+function mn({ data: e, onClick: t, ...n }) {
+  return /* @__PURE__ */ o(mt.Provider, { value: { data: e, onClick: t }, children: n.children });
+}
+const ft = A.createContext(void 0);
+function be() {
+  const e = A.useContext(ft);
+  if (e === void 0)
+    throw new Error("UseListItem must be within ListItemProvider");
+  const { index: t } = e, { data: n, primaryColumn: r } = re();
+  return {
+    index: t,
+    id: (n == null ? void 0 : n.entity.data.items[t][(r == null ? void 0 : r.field) || ""]) ?? null,
+    data: (n == null ? void 0 : n.entity.data.items[t]) ?? null
+  };
+}
+function pt({ index: e, ...t }) {
+  return /* @__PURE__ */ o(ft.Provider, { value: { index: e }, children: t.children });
+}
+const ht = ({ column: e, namespace: t }) => {
+  var r;
+  const { data: n } = be();
+  return n && /* @__PURE__ */ o(H, { namespace: t, data: n, prefix: "list", view: e.field, children: n[e.field] !== void 0 && (n[e.field] instanceof Object ? n[e.field] instanceof Array ? n[e.field].join(", ") : JSON.stringify(n[e.field]) : (r = n[e.field]) == null ? void 0 : r.toString()) });
+}, gt = A.createContext(void 0);
+function bt() {
+  const e = A.useContext(gt);
   if (e === void 0)
     throw new Error("UseBatchActions must be within BatchActionsProvider");
   return e;
 }
-function on({ data: e, onClick: t, ...n }) {
-  var l, b, f, u, E;
-  const r = T([]), o = (l = e == null ? void 0 : e.entity) == null ? void 0 : l.primaryColumn, a = ((e == null ? void 0 : e.entity.data.items) || []).map((g) => g[(o == null ? void 0 : o.field) || ""] || 0), i = !!a.length && a.reduce((g, _) => g && r.current.includes(_), !0), d = (E = (u = (f = (b = e == null ? void 0 : e.form) == null ? void 0 : b.batch.view.children) == null ? void 0 : f.method) == null ? void 0 : u.choices) == null ? void 0 : E.reduce((g, _) => {
+function fn({ data: e, onClick: t, ...n }) {
+  var p, y, h, u, _;
+  const r = T([]), s = (p = e == null ? void 0 : e.entity) == null ? void 0 : p.primaryColumn, a = ((e == null ? void 0 : e.entity.data.items) || []).map((g) => g[(s == null ? void 0 : s.field) || ""] || 0), i = !!a.length && a.reduce((g, E) => g && r.current.includes(E), !0), d = (_ = (u = (h = (y = e == null ? void 0 : e.form) == null ? void 0 : y.batch.view.children) == null ? void 0 : h.method) == null ? void 0 : u.choices) == null ? void 0 : _.reduce((g, E) => {
     var w;
-    const O = _.label instanceof Function ? _.label() : _.label, P = _.value instanceof Function ? _.value() : (w = _.value) == null ? void 0 : w.toString();
-    return { ...g, [P]: O };
-  }, {}), m = !!Object.keys(d || {}).length && o, [, c] = M(), N = (g, _ = !1) => {
-    const O = a[g];
-    _ ? r.current.push(O) : r.current = r.current.filter((P) => P !== O), c({});
-  }, p = (g = !1) => {
-    r.current = (g ? r.current.concat(a) : r.current.filter((_) => !a.includes(_))).filter((_, O, P) => P.indexOf(_) === O), c({});
-  }, h = () => {
+    const P = E.label instanceof Function ? E.label() : E.label, O = E.value instanceof Function ? E.value() : (w = E.value) == null ? void 0 : w.toString();
+    return { ...g, [O]: P };
+  }, {}), m = !!Object.keys(d || {}).length && s, [, c] = M(), N = (g, E = !1) => {
+    const P = a[g];
+    E ? r.current.push(P) : r.current = r.current.filter((O) => O !== P), c({});
+  }, l = (g = !1) => {
+    r.current = (g ? r.current.concat(a) : r.current.filter((E) => !a.includes(E))).filter((E, P, O) => O.indexOf(E) === P), c({});
+  }, f = () => {
     r.current = [], c({});
   }, C = (g) => {
-    const _ = a[g];
-    return r.current.includes(_);
-  }, y = (g) => new Promise((_, O) => {
-    var v, x;
+    const E = a[g];
+    return r.current.includes(E);
+  }, b = (g) => new Promise((E, P) => {
+    var L, S;
     if (!r)
-      return O();
-    const P = e == null ? void 0 : e.form.batch.view;
-    if (!m || !((v = r.current) != null && v.length))
-      return O();
+      return P();
+    const O = e == null ? void 0 : e.form.batch.view;
+    if (!m || !((L = r.current) != null && L.length))
+      return P();
     const w = new FormData();
-    r.current.forEach((S) => {
-      var k;
-      w.append(`${(k = P == null ? void 0 : P.children) == null ? void 0 : k.ids.full_name}[]`, S.toString());
-    }), w.append(((x = P == null ? void 0 : P.children) == null ? void 0 : x.method.full_name) || "method", g), t(g, r.current, w).then(() => {
-      h(), _();
-    }).catch(O);
+    r.current.forEach((x) => {
+      var D;
+      w.append(`${(D = O == null ? void 0 : O.children) == null ? void 0 : D.ids.full_name}[]`, x.toString());
+    }), w.append(((S = O == null ? void 0 : O.children) == null ? void 0 : S.method.full_name) || "method", g), t(g, r.current, w).then(() => {
+      f(), E();
+    }).catch(P);
   });
-  return /* @__PURE__ */ s(
-    dt.Provider,
+  return /* @__PURE__ */ o(
+    gt.Provider,
     {
       value: {
         actions: d,
         toggle: N,
-        toggleAll: p,
+        toggleAll: l,
         isSelected: C,
         isSelectedAll: i,
-        executeAction: y,
+        executeAction: b,
         selected: r.current,
-        clear: h
+        clear: f
       },
       children: n.children
     }
   );
 }
-const mt = ({ row: e }) => {
-  const { toggle: t, isSelected: n } = ft();
-  return /* @__PURE__ */ s(j, { children: /* @__PURE__ */ s(
+const yt = ({ row: e }) => {
+  const { toggle: t, isSelected: n } = bt();
+  return /* @__PURE__ */ o(R, { children: /* @__PURE__ */ o(
     "input",
     {
       checked: n(e),
@@ -1036,101 +1072,110 @@ const mt = ({ row: e }) => {
       onChange: (r) => t(e, r.target.checked)
     }
   ) });
-}, pt = ({ column: e, namespace: t }) => /* @__PURE__ */ s(j, { children: /* @__PURE__ */ s(q, { namespace: t, data: e, prefix: "list", view: e.field + ".label", children: e.label }) }), an = Q(({ data: e, columns: t, options: n, onClick: r, routeParams: o, namespace: a }, i) => {
-  var C, y;
-  t = (t || ((C = e == null ? void 0 : e.entity) == null ? void 0 : C.columns) || []).filter((l) => l.visible).filter((l) => l.group !== !1);
-  const { generateLink: d } = Y(), m = (y = e == null ? void 0 : e.entity) == null ? void 0 : y.primaryColumn, c = Object.values((e == null ? void 0 : e.action) || []), N = c.filter((l) => l.object), p = t.length + (c.length ? 1 : 0), h = (e == null ? void 0 : e.entity.data.items) ?? [];
-  return /* @__PURE__ */ s("div", { className: "table-responsive", children: /* @__PURE__ */ A("table", { className: "table table-striped table-hover table-bordered", children: [
-    /* @__PURE__ */ s("thead", { children: /* @__PURE__ */ A("tr", { children: [
-      t.map((l, b) => /* @__PURE__ */ A("th", { children: [
-        /* @__PURE__ */ s(pt, { column: l, namespace: a }),
-        l.sortable && (e == null ? void 0 : e.sort[l.field]) !== void 0 && /* @__PURE__ */ s(
+}, Et = ({ column: e, namespace: t }) => /* @__PURE__ */ o(R, { children: /* @__PURE__ */ o(H, { namespace: t, data: e, prefix: "list", view: e.field + ".label", children: e.label }) }), pn = ({ children: e, action: t, className: n, routeParams: r }) => {
+  const { generateLink: s } = W(), { id: a } = be(), { onClick: i } = re();
+  return /* @__PURE__ */ o(
+    V,
+    {
+      onClick: (d) => i && i({
+        action: t,
+        parameters: {
+          ...r || {},
+          id: a
+        }
+      }, d),
+      className: n,
+      to: s(t.route, {
+        ...r || {},
+        id: a
+      }),
+      children: e ?? t.title
+    }
+  );
+}, _t = ({ namespace: e, routeParams: t }) => {
+  const { objectActions: n } = re(), { data: r } = be();
+  return r && /* @__PURE__ */ o(H, { namespace: e, data: r, prefix: "list", view: "object.actions", children: n.map((s, a) => {
+    var i;
+    return /* @__PURE__ */ o(
+      pn,
+      {
+        action: s,
+        routeParams: t,
+        className: ["btn", "btn-sm", "mb-1", "ms-1", (((i = s.route) == null ? void 0 : i.methods) ?? []).includes("DELETE") ? "btn-outline-danger" : "btn-outline-secondary"].join(" ")
+      },
+      a
+    );
+  }) });
+}, hn = Q(({ options: e, routeParams: t, namespace: n }, r) => {
+  const { columns: s, primaryColumn: a, objectActions: i, columnsTotal: d, items: m, data: c, onClick: N } = re();
+  return /* @__PURE__ */ o("div", { className: "table-responsive", children: /* @__PURE__ */ v("table", { className: "table table-striped table-hover table-bordered", children: [
+    /* @__PURE__ */ o("thead", { children: /* @__PURE__ */ v("tr", { children: [
+      s.map((l, f) => /* @__PURE__ */ v("th", { children: [
+        /* @__PURE__ */ o(Et, { column: l, namespace: n }),
+        l.sortable && (c == null ? void 0 : c.sort[l.field]) !== void 0 && /* @__PURE__ */ o(
           V,
           {
-            onClick: (f) => r && r({
+            onClick: (C) => N && N({
               action: {
                 name: "sort",
                 object: !1,
-                namespace: a,
-                entity: e == null ? void 0 : e.entity.name
+                namespace: n,
+                entity: c == null ? void 0 : c.entity.name
               },
-              parameters: { [l.field]: e != null && e.sort[l.field] ? (e == null ? void 0 : e.sort[l.field]) === "ASC" ? "DESC" : "" : "ASC" }
-            }, f),
+              parameters: { [l.field]: c != null && c.sort[l.field] ? (c == null ? void 0 : c.sort[l.field]) === "ASC" ? "DESC" : "" : "ASC" }
+            }, C),
             className: "btn",
             to: "#",
-            children: e.sort[l.field] ? e.sort[l.field] === "ASC" ? "⇑" : "⇓" : "⇅"
+            children: c.sort[l.field] ? c.sort[l.field] === "ASC" ? "⇑" : "⇓" : "⇅"
           }
         )
-      ] }, b)),
-      m && N.length > 0 && /* @__PURE__ */ s("th", { className: "text-end", children: "Actions" })
+      ] }, f)),
+      a && i.length > 0 && /* @__PURE__ */ o("th", { className: "text-end", children: "Actions" })
     ] }) }),
-    /* @__PURE__ */ s("tbody", { children: h.length ? h.map(
-      (l, b) => /* @__PURE__ */ A("tr", { children: [
-        t == null ? void 0 : t.map(
-          (f, u) => /* @__PURE__ */ A("td", { children: [
-            u === 0 && /* @__PURE__ */ s(mt, { row: b }),
-            /* @__PURE__ */ s(ut, { column: f, row: b, data: e, namespace: a || "unknown" })
-          ] }, u)
-        ),
-        m && N.length > 0 && /* @__PURE__ */ s("td", { className: "text-end text-nowrap", children: N.map((f, u) => {
-          var E;
-          return /* @__PURE__ */ s(
-            V,
-            {
-              onClick: (g) => r && r({
-                action: f,
-                parameters: {
-                  ...o || {},
-                  id: l[m == null ? void 0 : m.field]
-                }
-              }, g),
-              className: ["btn", "btn-sm", "mb-1", "ms-1", (((E = f.route) == null ? void 0 : E.methods) ?? []).includes("DELETE") ? "btn-outline-danger" : "btn-outline-secondary"].join(" "),
-              to: d(f.route, {
-                ...o || {},
-                id: l[m.field]
-              }),
-              children: f.title
-            },
-            u
-          );
-        }) })
-      ] }, b)
-    ) : /* @__PURE__ */ s("tr", { children: /* @__PURE__ */ s("td", { colSpan: p, children: /* @__PURE__ */ s(te, { children: "Not results found." }) }) }) })
+    /* @__PURE__ */ o("tbody", { children: m.length ? m.map((l, f) => /* @__PURE__ */ o(pt, { index: f, children: /* @__PURE__ */ v("tr", { children: [
+      s == null ? void 0 : s.map(
+        (C, b) => /* @__PURE__ */ v("td", { children: [
+          b === 0 && /* @__PURE__ */ o(yt, { row: f }),
+          /* @__PURE__ */ o(ht, { column: C, namespace: n })
+        ] }, b)
+      ),
+      a && i.length > 0 && /* @__PURE__ */ o("td", { className: "text-end text-nowrap", children: /* @__PURE__ */ o(_t, { namespace: n }) })
+    ] }, f) })) : /* @__PURE__ */ o("tr", { children: /* @__PURE__ */ o("td", { colSpan: d, children: /* @__PURE__ */ o(te, { children: "Not results found." }) }) }) })
   ] }) });
-}), se = ({ route: e, page: t, active: n = !1, title: r, children: o }) => {
+}), se = ({ route: e, page: t, active: n = !1, title: r, children: s }) => {
   const a = new URL(document.location.href);
-  return a.searchParams.set("page", t.toString()), /* @__PURE__ */ s("li", { className: `page-item ${n ? "active" : ""}`, children: /* @__PURE__ */ s(
+  return a.searchParams.set("page", t.toString()), /* @__PURE__ */ o("li", { className: `page-item ${n ? "active" : ""}`, children: /* @__PURE__ */ o(
     V,
     {
       to: a.toString(),
       className: "page-link",
       title: r,
-      children: o || t
+      children: s || t
     }
   ) });
-}, cn = ({ meta: e }) => {
-  const n = e == null ? void 0 : e.totalPages, r = (e == null ? void 0 : e.page) || 1, o = e == null ? void 0 : e.links, a = !!(e != null && e.totalPages);
-  return n && /* @__PURE__ */ A("div", { className: "d-flex flex-column justiry-content-center", children: [
-    /* @__PURE__ */ A("small", { className: "mb-2", children: [
+}, gn = ({ meta: e }) => {
+  const n = e == null ? void 0 : e.totalPages, r = (e == null ? void 0 : e.page) || 1, s = e == null ? void 0 : e.links, a = !!(e != null && e.totalPages);
+  return n && /* @__PURE__ */ v("div", { className: "d-flex flex-column justiry-content-center", children: [
+    /* @__PURE__ */ v("small", { className: "mb-2", children: [
       e.totalResults,
       " Results",
-      a && /* @__PURE__ */ A(j, { children: [
+      a && /* @__PURE__ */ v(R, { children: [
         " - Page ",
         r,
         " of ",
         e.totalPages
       ] })
     ] }),
-    a && /* @__PURE__ */ s("nav", { "aria-label": "Page navigation", className: "m-auto text-center d-inline", children: /* @__PURE__ */ A("ul", { className: "pagination pagination-sm", children: [
-      r > 1 && /* @__PURE__ */ s(se, { page: r - 1, title: "Go to First Page", children: "«" }),
-      e.links[0] !== 1 && /* @__PURE__ */ A(j, { children: [
-        /* @__PURE__ */ s(se, { page: 1, active: r === 1, children: 1 }, 1),
-        /* @__PURE__ */ s("div", { className: "page-item", children: /* @__PURE__ */ s("a", { className: "page-link", children: "..." }) })
+    a && /* @__PURE__ */ o("nav", { "aria-label": "Page navigation", className: "m-auto text-center d-inline", children: /* @__PURE__ */ v("ul", { className: "pagination pagination-sm", children: [
+      r > 1 && /* @__PURE__ */ o(se, { page: r - 1, title: "Go to First Page", children: "«" }),
+      e.links[0] !== 1 && /* @__PURE__ */ v(R, { children: [
+        /* @__PURE__ */ o(se, { page: 1, active: r === 1, children: 1 }, 1),
+        /* @__PURE__ */ o("div", { className: "page-item", children: /* @__PURE__ */ o("a", { className: "page-link", children: "..." }) })
       ] }),
-      (o || []).map((i, d) => /* @__PURE__ */ s(se, { page: i, active: i === r }, d)),
-      [...e.links].reverse()[0] !== n && /* @__PURE__ */ A(j, { children: [
-        /* @__PURE__ */ s("div", { className: "page-item", children: /* @__PURE__ */ s("a", { className: "page-link", children: "..." }) }),
-        /* @__PURE__ */ s(
+      (s || []).map((i, d) => /* @__PURE__ */ o(se, { page: i, active: i === r }, d)),
+      [...e.links].reverse()[0] !== n && /* @__PURE__ */ v(R, { children: [
+        /* @__PURE__ */ o("div", { className: "page-item", children: /* @__PURE__ */ o("a", { className: "page-link", children: "..." }) }),
+        /* @__PURE__ */ o(
           se,
           {
             page: n,
@@ -1140,13 +1185,13 @@ const mt = ({ row: e }) => {
           n
         )
       ] }),
-      r < n && /* @__PURE__ */ s(se, { page: e.totalPages, title: "Go to Last Page", children: "»" })
+      r < n && /* @__PURE__ */ o(se, { page: e.totalPages, title: "Go to Last Page", children: "»" })
     ] }) })
   ] });
-}, W = /* @__PURE__ */ new Map(), ge = {
+}, q = /* @__PURE__ */ new Map(), ye = {
   set(e, t, n) {
-    W.has(e) || W.set(e, /* @__PURE__ */ new Map());
-    const r = W.get(e);
+    q.has(e) || q.set(e, /* @__PURE__ */ new Map());
+    const r = q.get(e);
     if (!r.has(t) && r.size !== 0) {
       console.error(`Bootstrap doesn't allow more than one instance per element. Bound instance: ${Array.from(r.keys())[0]}.`);
       return;
@@ -1154,23 +1199,23 @@ const mt = ({ row: e }) => {
     r.set(t, n);
   },
   get(e, t) {
-    return W.has(e) && W.get(e).get(t) || null;
+    return q.has(e) && q.get(e).get(t) || null;
   },
   remove(e, t) {
-    if (!W.has(e))
+    if (!q.has(e))
       return;
-    const n = W.get(e);
-    n.delete(t), n.size === 0 && W.delete(e);
+    const n = q.get(e);
+    n.delete(t), n.size === 0 && q.delete(e);
   }
-}, ln = 1e3, Le = "transitionend", ht = (e) => (e && window.CSS && window.CSS.escape && (e = e.replace(/#([^\s"#']+)/g, (t, n) => `#${CSS.escape(n)}`)), e), un = (e) => e == null ? `${e}` : Object.prototype.toString.call(e).match(/\s([a-z]+)/i)[1].toLowerCase(), dn = (e) => {
+}, bn = 1e3, Oe = "transitionend", Nt = (e) => (e && window.CSS && window.CSS.escape && (e = e.replace(/#([^\s"#']+)/g, (t, n) => `#${CSS.escape(n)}`)), e), yn = (e) => e == null ? `${e}` : Object.prototype.toString.call(e).match(/\s([a-z]+)/i)[1].toLowerCase(), En = (e) => {
   if (!e)
     return 0;
   let { transitionDuration: t, transitionDelay: n } = window.getComputedStyle(e);
-  const r = Number.parseFloat(t), o = Number.parseFloat(n);
-  return !r && !o ? 0 : (t = t.split(",")[0], n = n.split(",")[0], (Number.parseFloat(t) + Number.parseFloat(n)) * ln);
-}, fn = (e) => {
-  e.dispatchEvent(new Event(Le));
-}, G = (e) => !e || typeof e != "object" ? !1 : (typeof e.jquery < "u" && (e = e[0]), typeof e.nodeType < "u"), Oe = (e) => G(e) ? e.jquery ? e[0] : e : typeof e == "string" && e.length > 0 ? document.querySelector(ht(e)) : null, gt = (e) => {
+  const r = Number.parseFloat(t), s = Number.parseFloat(n);
+  return !r && !s ? 0 : (t = t.split(",")[0], n = n.split(",")[0], (Number.parseFloat(t) + Number.parseFloat(n)) * bn);
+}, _n = (e) => {
+  e.dispatchEvent(new Event(Oe));
+}, G = (e) => !e || typeof e != "object" ? !1 : (typeof e.jquery < "u" && (e = e[0]), typeof e.nodeType < "u"), xe = (e) => G(e) ? e.jquery ? e[0] : e : typeof e == "string" && e.length > 0 ? document.querySelector(Nt(e)) : null, Ct = (e) => {
   if (!G(e) || e.getClientRects().length === 0)
     return !1;
   const t = getComputedStyle(e).getPropertyValue("visibility") === "visible", n = e.closest("details:not([open])");
@@ -1182,43 +1227,43 @@ const mt = ({ row: e }) => {
       return !1;
   }
   return t;
-}, Pe = (e) => !e || e.nodeType !== Node.ELEMENT_NODE || e.classList.contains("disabled") ? !0 : typeof e.disabled < "u" ? e.disabled : e.hasAttribute("disabled") && e.getAttribute("disabled") !== "false", Ke = () => {
-}, bt = () => window.jQuery && !document.body.hasAttribute("data-bs-no-jquery") ? window.jQuery : null, be = [], mn = (e) => {
-  document.readyState === "loading" ? (be.length || document.addEventListener("DOMContentLoaded", () => {
-    for (const t of be)
+}, Se = (e) => !e || e.nodeType !== Node.ELEMENT_NODE || e.classList.contains("disabled") ? !0 : typeof e.disabled < "u" ? e.disabled : e.hasAttribute("disabled") && e.getAttribute("disabled") !== "false", Ye = () => {
+}, vt = () => window.jQuery && !document.body.hasAttribute("data-bs-no-jquery") ? window.jQuery : null, Ee = [], Nn = (e) => {
+  document.readyState === "loading" ? (Ee.length || document.addEventListener("DOMContentLoaded", () => {
+    for (const t of Ee)
       t();
-  }), be.push(e)) : e();
-}, re = () => document.documentElement.dir === "rtl", pn = (e) => {
-  mn(() => {
-    const t = bt();
+  }), Ee.push(e)) : e();
+}, oe = () => document.documentElement.dir === "rtl", Cn = (e) => {
+  Nn(() => {
+    const t = vt();
     if (t) {
       const n = e.NAME, r = t.fn[n];
       t.fn[n] = e.jQueryInterface, t.fn[n].Constructor = e, t.fn[n].noConflict = () => (t.fn[n] = r, e.jQueryInterface);
     }
   });
-}, Se = (e, t = [], n = e) => typeof e == "function" ? e.call(...t) : n, hn = (e, t, n = !0) => {
+}, Te = (e, t = [], n = e) => typeof e == "function" ? e.call(...t) : n, vn = (e, t, n = !0) => {
   if (!n) {
-    Se(e);
+    Te(e);
     return;
   }
-  const o = dn(t) + 5;
+  const s = En(t) + 5;
   let a = !1;
   const i = ({ target: d }) => {
-    d === t && (a = !0, t.removeEventListener(Le, i), Se(e));
+    d === t && (a = !0, t.removeEventListener(Oe, i), Te(e));
   };
-  t.addEventListener(Le, i), setTimeout(() => {
-    a || fn(t);
-  }, o);
-}, gn = (e, t, n, r) => {
-  const o = e.length;
+  t.addEventListener(Oe, i), setTimeout(() => {
+    a || _n(t);
+  }, s);
+}, An = (e, t, n, r) => {
+  const s = e.length;
   let a = e.indexOf(t);
-  return a === -1 ? !n && r ? e[o - 1] : e[0] : (a += n ? 1 : -1, r && (a = (a + o) % o), e[Math.max(0, Math.min(a, o - 1))]);
-}, bn = /[^.]*(?=\..*)\.|.*/, yn = /\..*/, En = /::\d+$/, ye = {};
-let He = 1;
-const yt = {
+  return a === -1 ? !n && r ? e[s - 1] : e[0] : (a += n ? 1 : -1, r && (a = (a + s) % s), e[Math.max(0, Math.min(a, s - 1))]);
+}, Ln = /[^.]*(?=\..*)\.|.*/, Pn = /\..*/, On = /::\d+$/, _e = {};
+let We = 1;
+const At = {
   mouseenter: "mouseover",
   mouseleave: "mouseout"
-}, _n = /* @__PURE__ */ new Set([
+}, xn = /* @__PURE__ */ new Set([
   "click",
   "dblclick",
   "mouseup",
@@ -1266,99 +1311,99 @@ const yt = {
   "abort",
   "scroll"
 ]);
-function Et(e, t) {
-  return t && `${t}::${He++}` || e.uidEvent || He++;
+function Lt(e, t) {
+  return t && `${t}::${We++}` || e.uidEvent || We++;
 }
-function _t(e) {
-  const t = Et(e);
-  return e.uidEvent = t, ye[t] = ye[t] || {}, ye[t];
+function Pt(e) {
+  const t = Lt(e);
+  return e.uidEvent = t, _e[t] = _e[t] || {}, _e[t];
 }
-function Nn(e, t) {
+function Sn(e, t) {
   return function n(r) {
-    return Re(r, { delegateTarget: e }), n.oneOff && I.off(e, r.type, t), t.apply(e, [r]);
+    return Me(r, { delegateTarget: e }), n.oneOff && F.off(e, r.type, t), t.apply(e, [r]);
   };
 }
-function Cn(e, t, n) {
-  return function r(o) {
+function Tn(e, t, n) {
+  return function r(s) {
     const a = e.querySelectorAll(t);
-    for (let { target: i } = o; i && i !== this; i = i.parentNode)
+    for (let { target: i } = s; i && i !== this; i = i.parentNode)
       for (const d of a)
         if (d === i)
-          return Re(o, { delegateTarget: i }), r.oneOff && I.off(e, o.type, t, n), n.apply(i, [o]);
+          return Me(s, { delegateTarget: i }), r.oneOff && F.off(e, s.type, t, n), n.apply(i, [s]);
   };
 }
-function Nt(e, t, n = null) {
+function Ot(e, t, n = null) {
   return Object.values(e).find((r) => r.callable === t && r.delegationSelector === n);
 }
-function Ct(e, t, n) {
-  const r = typeof t == "string", o = r ? n : t || n;
-  let a = At(e);
-  return _n.has(a) || (a = e), [r, o, a];
+function xt(e, t, n) {
+  const r = typeof t == "string", s = r ? n : t || n;
+  let a = St(e);
+  return xn.has(a) || (a = e), [r, s, a];
 }
-function Ye(e, t, n, r, o) {
+function qe(e, t, n, r, s) {
   if (typeof t != "string" || !e)
     return;
-  let [a, i, d] = Ct(t, n, r);
-  t in yt && (i = ((y) => function(l) {
-    if (!l.relatedTarget || l.relatedTarget !== l.delegateTarget && !l.delegateTarget.contains(l.relatedTarget))
-      return y.call(this, l);
+  let [a, i, d] = xt(t, n, r);
+  t in At && (i = ((b) => function(p) {
+    if (!p.relatedTarget || p.relatedTarget !== p.delegateTarget && !p.delegateTarget.contains(p.relatedTarget))
+      return b.call(this, p);
   })(i));
-  const m = _t(e), c = m[d] || (m[d] = {}), N = Nt(c, i, a ? n : null);
+  const m = Pt(e), c = m[d] || (m[d] = {}), N = Ot(c, i, a ? n : null);
   if (N) {
-    N.oneOff = N.oneOff && o;
+    N.oneOff = N.oneOff && s;
     return;
   }
-  const p = Et(i, t.replace(bn, "")), h = a ? Cn(e, n, i) : Nn(e, i);
-  h.delegationSelector = a ? n : null, h.callable = i, h.oneOff = o, h.uidEvent = p, c[p] = h, e.addEventListener(d, h, a);
+  const l = Lt(i, t.replace(Ln, "")), f = a ? Tn(e, n, i) : Sn(e, i);
+  f.delegationSelector = a ? n : null, f.callable = i, f.oneOff = s, f.uidEvent = l, c[l] = f, e.addEventListener(d, f, a);
 }
-function xe(e, t, n, r, o) {
-  const a = Nt(t[n], r, o);
-  a && (e.removeEventListener(n, a, !!o), delete t[n][a.uidEvent]);
+function ke(e, t, n, r, s) {
+  const a = Ot(t[n], r, s);
+  a && (e.removeEventListener(n, a, !!s), delete t[n][a.uidEvent]);
 }
-function An(e, t, n, r) {
-  const o = t[n] || {};
-  for (const [a, i] of Object.entries(o))
-    a.includes(r) && xe(e, t, n, i.callable, i.delegationSelector);
+function kn(e, t, n, r) {
+  const s = t[n] || {};
+  for (const [a, i] of Object.entries(s))
+    a.includes(r) && ke(e, t, n, i.callable, i.delegationSelector);
 }
-function At(e) {
-  return e = e.replace(yn, ""), yt[e] || e;
+function St(e) {
+  return e = e.replace(Pn, ""), At[e] || e;
 }
-const I = {
+const F = {
   on(e, t, n, r) {
-    Ye(e, t, n, r, !1);
+    qe(e, t, n, r, !1);
   },
   one(e, t, n, r) {
-    Ye(e, t, n, r, !0);
+    qe(e, t, n, r, !0);
   },
   off(e, t, n, r) {
     if (typeof t != "string" || !e)
       return;
-    const [o, a, i] = Ct(t, n, r), d = i !== t, m = _t(e), c = m[i] || {}, N = t.startsWith(".");
+    const [s, a, i] = xt(t, n, r), d = i !== t, m = Pt(e), c = m[i] || {}, N = t.startsWith(".");
     if (typeof a < "u") {
       if (!Object.keys(c).length)
         return;
-      xe(e, m, i, a, o ? n : null);
+      ke(e, m, i, a, s ? n : null);
       return;
     }
     if (N)
-      for (const p of Object.keys(m))
-        An(e, m, p, t.slice(1));
-    for (const [p, h] of Object.entries(c)) {
-      const C = p.replace(En, "");
-      (!d || t.includes(C)) && xe(e, m, i, h.callable, h.delegationSelector);
+      for (const l of Object.keys(m))
+        kn(e, m, l, t.slice(1));
+    for (const [l, f] of Object.entries(c)) {
+      const C = l.replace(On, "");
+      (!d || t.includes(C)) && ke(e, m, i, f.callable, f.delegationSelector);
     }
   },
   trigger(e, t, n) {
     if (typeof t != "string" || !e)
       return null;
-    const r = bt(), o = At(t), a = t !== o;
+    const r = vt(), s = St(t), a = t !== s;
     let i = null, d = !0, m = !0, c = !1;
     a && r && (i = r.Event(t, n), r(e).trigger(i), d = !i.isPropagationStopped(), m = !i.isImmediatePropagationStopped(), c = i.isDefaultPrevented());
-    const N = Re(new Event(t, { bubbles: d, cancelable: !0 }), n);
+    const N = Me(new Event(t, { bubbles: d, cancelable: !0 }), n);
     return c && N.preventDefault(), m && e.dispatchEvent(N), N.defaultPrevented && i && i.preventDefault(), N;
   }
 };
-function Re(e, t = {}) {
+function Me(e, t = {}) {
   for (const [n, r] of Object.entries(t))
     try {
       e[n] = r;
@@ -1372,7 +1417,7 @@ function Re(e, t = {}) {
     }
   return e;
 }
-function We(e) {
+function ze(e) {
   if (e === "true")
     return !0;
   if (e === "false")
@@ -1389,31 +1434,31 @@ function We(e) {
     return e;
   }
 }
-function Ee(e) {
+function Ne(e) {
   return e.replace(/[A-Z]/g, (t) => `-${t.toLowerCase()}`);
 }
-const ue = {
+const de = {
   setDataAttribute(e, t, n) {
-    e.setAttribute(`data-bs-${Ee(t)}`, n);
+    e.setAttribute(`data-bs-${Ne(t)}`, n);
   },
   removeDataAttribute(e, t) {
-    e.removeAttribute(`data-bs-${Ee(t)}`);
+    e.removeAttribute(`data-bs-${Ne(t)}`);
   },
   getDataAttributes(e) {
     if (!e)
       return {};
     const t = {}, n = Object.keys(e.dataset).filter((r) => r.startsWith("bs") && !r.startsWith("bsConfig"));
     for (const r of n) {
-      let o = r.replace(/^bs/, "");
-      o = o.charAt(0).toLowerCase() + o.slice(1), t[o] = We(e.dataset[r]);
+      let s = r.replace(/^bs/, "");
+      s = s.charAt(0).toLowerCase() + s.slice(1), t[s] = ze(e.dataset[r]);
     }
     return t;
   },
   getDataAttribute(e, t) {
-    return We(e.getAttribute(`data-bs-${Ee(t)}`));
+    return ze(e.getAttribute(`data-bs-${Ne(t)}`));
   }
 };
-class vn {
+class Dn {
   // Getters
   static get Default() {
     return {};
@@ -1431,50 +1476,50 @@ class vn {
     return t;
   }
   _mergeConfigObj(t, n) {
-    const r = G(n) ? ue.getDataAttribute(n, "config") : {};
+    const r = G(n) ? de.getDataAttribute(n, "config") : {};
     return {
       ...this.constructor.Default,
       ...typeof r == "object" ? r : {},
-      ...G(n) ? ue.getDataAttributes(n) : {},
+      ...G(n) ? de.getDataAttributes(n) : {},
       ...typeof t == "object" ? t : {}
     };
   }
   _typeCheckConfig(t, n = this.constructor.DefaultType) {
-    for (const [r, o] of Object.entries(n)) {
-      const a = t[r], i = G(a) ? "element" : un(a);
-      if (!new RegExp(o).test(i))
+    for (const [r, s] of Object.entries(n)) {
+      const a = t[r], i = G(a) ? "element" : yn(a);
+      if (!new RegExp(s).test(i))
         throw new TypeError(
-          `${this.constructor.NAME.toUpperCase()}: Option "${r}" provided type "${i}" but expected type "${o}".`
+          `${this.constructor.NAME.toUpperCase()}: Option "${r}" provided type "${i}" but expected type "${s}".`
         );
     }
   }
 }
-const Ln = "5.3.5";
-class On extends vn {
+const jn = "5.3.5";
+class Rn extends Dn {
   constructor(t, n) {
-    super(), t = Oe(t), t && (this._element = t, this._config = this._getConfig(n), ge.set(this._element, this.constructor.DATA_KEY, this));
+    super(), t = xe(t), t && (this._element = t, this._config = this._getConfig(n), ye.set(this._element, this.constructor.DATA_KEY, this));
   }
   // Public
   dispose() {
-    ge.remove(this._element, this.constructor.DATA_KEY), I.off(this._element, this.constructor.EVENT_KEY);
+    ye.remove(this._element, this.constructor.DATA_KEY), F.off(this._element, this.constructor.EVENT_KEY);
     for (const t of Object.getOwnPropertyNames(this))
       this[t] = null;
   }
   _queueCallback(t, n, r = !0) {
-    hn(t, n, r);
+    vn(t, n, r);
   }
   _getConfig(t) {
     return t = this._mergeConfigObj(t, this._element), t = this._configAfterMerge(t), this._typeCheckConfig(t), t;
   }
   // Static
   static getInstance(t) {
-    return ge.get(Oe(t), this.DATA_KEY);
+    return ye.get(xe(t), this.DATA_KEY);
   }
   static getOrCreateInstance(t, n = {}) {
     return this.getInstance(t) || new this(t, typeof n == "object" ? n : null);
   }
   static get VERSION() {
-    return Ln;
+    return jn;
   }
   static get DATA_KEY() {
     return `bs.${this.NAME}`;
@@ -1486,7 +1531,7 @@ class On extends vn {
     return `${t}${this.EVENT_KEY}`;
   }
 }
-const _e = (e) => {
+const Ce = (e) => {
   let t = e.getAttribute("data-bs-target");
   if (!t || t === "#") {
     let n = e.getAttribute("href");
@@ -1494,7 +1539,7 @@ const _e = (e) => {
       return null;
     n.includes("#") && !n.startsWith("#") && (n = `#${n.split("#")[1]}`), t = n && n !== "#" ? n.trim() : null;
   }
-  return t ? t.split(",").map((n) => ht(n)).join(",") : null;
+  return t ? t.split(",").map((n) => Nt(n)).join(",") : null;
 }, B = {
   find(e, t = document.documentElement) {
     return [].concat(...Element.prototype.querySelectorAll.call(t, e));
@@ -1542,28 +1587,28 @@ const _e = (e) => {
       "[tabindex]",
       '[contenteditable="true"]'
     ].map((n) => `${n}:not([tabindex^="-"])`).join(",");
-    return this.find(t, e).filter((n) => !Pe(n) && gt(n));
+    return this.find(t, e).filter((n) => !Se(n) && Ct(n));
   },
   getSelectorFromElement(e) {
-    const t = _e(e);
+    const t = Ce(e);
     return t && B.findOne(t) ? t : null;
   },
   getElementFromSelector(e) {
-    const t = _e(e);
+    const t = Ce(e);
     return t ? B.findOne(t) : null;
   },
   getMultipleElementsFromSelector(e) {
-    const t = _e(e);
+    const t = Ce(e);
     return t ? B.find(t) : [];
   }
-}, qe = "dropdown", Pn = "bs.dropdown", J = `.${Pn}`, we = ".data-api", Sn = "Escape", ze = "Tab", xn = "ArrowUp", Ge = "ArrowDown", Tn = 2, Dn = `hide${J}`, kn = `hidden${J}`, jn = `show${J}`, Rn = `shown${J}`, vt = `click${J}${we}`, Lt = `keydown${J}${we}`, wn = `keyup${J}${we}`, ee = "show", Mn = "dropup", Fn = "dropend", In = "dropstart", $n = "dropup-center", Un = "dropdown-center", z = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Vn = `${z}.${ee}`, ce = ".dropdown-menu", Bn = ".navbar", Kn = ".navbar-nav", Hn = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", Yn = re() ? "top-end" : "top-start", Wn = re() ? "top-start" : "top-end", qn = re() ? "bottom-end" : "bottom-start", zn = re() ? "bottom-start" : "bottom-end", Gn = re() ? "left-start" : "right-start", Qn = re() ? "right-start" : "left-start", Jn = "top", Zn = "bottom", Xn = {
+}, Ge = "dropdown", wn = "bs.dropdown", J = `.${wn}`, Fe = ".data-api", Mn = "Escape", Qe = "Tab", Fn = "ArrowUp", Je = "ArrowDown", In = 2, Un = `hide${J}`, $n = `hidden${J}`, Vn = `show${J}`, Bn = `shown${J}`, Tt = `click${J}${Fe}`, kt = `keydown${J}${Fe}`, Kn = `keyup${J}${Fe}`, ee = "show", Hn = "dropup", Yn = "dropend", Wn = "dropstart", qn = "dropup-center", zn = "dropdown-center", z = '[data-bs-toggle="dropdown"]:not(.disabled):not(:disabled)', Gn = `${z}.${ee}`, le = ".dropdown-menu", Qn = ".navbar", Jn = ".navbar-nav", Zn = ".dropdown-menu .dropdown-item:not(.disabled):not(:disabled)", Xn = oe() ? "top-end" : "top-start", er = oe() ? "top-start" : "top-end", tr = oe() ? "bottom-end" : "bottom-start", nr = oe() ? "bottom-start" : "bottom-end", rr = oe() ? "left-start" : "right-start", or = oe() ? "right-start" : "left-start", sr = "top", ar = "bottom", ir = {
   autoClose: !0,
   boundary: "clippingParents",
   display: "dynamic",
   offset: [0, 2],
   popperConfig: null,
   reference: "toggle"
-}, er = {
+}, cr = {
   autoClose: "(boolean|string)",
   boundary: "(string|element)",
   display: "string",
@@ -1571,39 +1616,39 @@ const _e = (e) => {
   popperConfig: "(null|object|function)",
   reference: "(string|element|object)"
 };
-let Z = class le extends On {
+let Z = class ue extends Rn {
   constructor(t, n) {
-    super(t, n), this._popper = null, this._parent = this._element.parentNode, this._menu = B.next(this._element, ce)[0] || B.prev(this._element, ce)[0] || B.findOne(ce, this._parent), this._inNavbar = this._detectNavbar();
+    super(t, n), this._popper = null, this._parent = this._element.parentNode, this._menu = B.next(this._element, le)[0] || B.prev(this._element, le)[0] || B.findOne(le, this._parent), this._inNavbar = this._detectNavbar();
   }
   // Getters
   static get Default() {
-    return Xn;
+    return ir;
   }
   static get DefaultType() {
-    return er;
+    return cr;
   }
   static get NAME() {
-    return qe;
+    return Ge;
   }
   // Public
   toggle() {
     return this._isShown() ? this.hide() : this.show();
   }
   show() {
-    if (Pe(this._element) || this._isShown())
+    if (Se(this._element) || this._isShown())
       return;
     const t = {
       relatedTarget: this._element
     };
-    if (!I.trigger(this._element, jn, t).defaultPrevented) {
-      if (this._createPopper(), "ontouchstart" in document.documentElement && !this._parent.closest(Kn))
+    if (!F.trigger(this._element, Vn, t).defaultPrevented) {
+      if (this._createPopper(), "ontouchstart" in document.documentElement && !this._parent.closest(Jn))
         for (const r of [].concat(...document.body.children))
-          I.on(r, "mouseover", Ke);
-      this._element.focus(), this._element.setAttribute("aria-expanded", !0), this._menu.classList.add(ee), this._element.classList.add(ee), I.trigger(this._element, Rn, t);
+          F.on(r, "mouseover", Ye);
+      this._element.focus(), this._element.setAttribute("aria-expanded", !0), this._menu.classList.add(ee), this._element.classList.add(ee), F.trigger(this._element, Bn, t);
     }
   }
   hide() {
-    if (Pe(this._element) || !this._isShown())
+    if (Se(this._element) || !this._isShown())
       return;
     const t = {
       relatedTarget: this._element
@@ -1618,44 +1663,44 @@ let Z = class le extends On {
   }
   // Private
   _completeHide(t) {
-    if (!I.trigger(this._element, Dn, t).defaultPrevented) {
+    if (!F.trigger(this._element, Un, t).defaultPrevented) {
       if ("ontouchstart" in document.documentElement)
         for (const r of [].concat(...document.body.children))
-          I.off(r, "mouseover", Ke);
-      this._popper && this._popper.destroy(), this._menu.classList.remove(ee), this._element.classList.remove(ee), this._element.setAttribute("aria-expanded", "false"), ue.removeDataAttribute(this._menu, "popper"), I.trigger(this._element, kn, t);
+          F.off(r, "mouseover", Ye);
+      this._popper && this._popper.destroy(), this._menu.classList.remove(ee), this._element.classList.remove(ee), this._element.setAttribute("aria-expanded", "false"), de.removeDataAttribute(this._menu, "popper"), F.trigger(this._element, $n, t);
     }
   }
   _getConfig(t) {
     if (t = super._getConfig(t), typeof t.reference == "object" && !G(t.reference) && typeof t.reference.getBoundingClientRect != "function")
-      throw new TypeError(`${qe.toUpperCase()}: Option "reference" provided type "object" without a required "getBoundingClientRect" method.`);
+      throw new TypeError(`${Ge.toUpperCase()}: Option "reference" provided type "object" without a required "getBoundingClientRect" method.`);
     return t;
   }
   _createPopper() {
-    if (typeof Ue > "u")
+    if (typeof Be > "u")
       throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org/docs/v2/)");
     let t = this._element;
-    this._config.reference === "parent" ? t = this._parent : G(this._config.reference) ? t = Oe(this._config.reference) : typeof this._config.reference == "object" && (t = this._config.reference);
+    this._config.reference === "parent" ? t = this._parent : G(this._config.reference) ? t = xe(this._config.reference) : typeof this._config.reference == "object" && (t = this._config.reference);
     const n = this._getPopperConfig();
-    this._popper = Ue.createPopper(t, this._menu, n);
+    this._popper = Be.createPopper(t, this._menu, n);
   }
   _isShown() {
     return this._menu.classList.contains(ee);
   }
   _getPlacement() {
     const t = this._parent;
-    if (t.classList.contains(Fn))
-      return Gn;
-    if (t.classList.contains(In))
-      return Qn;
-    if (t.classList.contains($n))
-      return Jn;
-    if (t.classList.contains(Un))
-      return Zn;
+    if (t.classList.contains(Yn))
+      return rr;
+    if (t.classList.contains(Wn))
+      return or;
+    if (t.classList.contains(qn))
+      return sr;
+    if (t.classList.contains(zn))
+      return ar;
     const n = getComputedStyle(this._menu).getPropertyValue("--bs-position").trim() === "end";
-    return t.classList.contains(Mn) ? n ? Wn : Yn : n ? zn : qn;
+    return t.classList.contains(Hn) ? n ? er : Xn : n ? nr : tr;
   }
   _detectNavbar() {
-    return this._element.closest(Bn) !== null;
+    return this._element.closest(Qn) !== null;
   }
   _getOffset() {
     const { offset: t } = this._config;
@@ -1679,22 +1724,22 @@ let Z = class le extends On {
         }
       ]
     };
-    return (this._inNavbar || this._config.display === "static") && (ue.setDataAttribute(this._menu, "popper", "static"), t.modifiers = [{
+    return (this._inNavbar || this._config.display === "static") && (de.setDataAttribute(this._menu, "popper", "static"), t.modifiers = [{
       name: "applyStyles",
       enabled: !1
     }]), {
       ...t,
-      ...Se(this._config.popperConfig, [void 0, t])
+      ...Te(this._config.popperConfig, [void 0, t])
     };
   }
   _selectMenuItem({ key: t, target: n }) {
-    const r = B.find(Hn, this._menu).filter((o) => gt(o));
-    r.length && gn(r, n, t === Ge, !r.includes(n)).focus();
+    const r = B.find(Zn, this._menu).filter((s) => Ct(s));
+    r.length && An(r, n, t === Je, !r.includes(n)).focus();
   }
   // Static
   static jQueryInterface(t) {
     return this.each(function() {
-      const n = le.getOrCreateInstance(this, t);
+      const n = ue.getOrCreateInstance(this, t);
       if (typeof t == "string") {
         if (typeof n[t] > "u")
           throw new TypeError(`No method named "${t}"`);
@@ -1703,127 +1748,136 @@ let Z = class le extends On {
     });
   }
   static clearMenus(t) {
-    if (t.button === Tn || t.type === "keyup" && t.key !== ze)
+    if (t.button === In || t.type === "keyup" && t.key !== Qe)
       return;
-    const n = B.find(Vn);
+    const n = B.find(Gn);
     for (const r of n) {
-      const o = le.getInstance(r);
-      if (!o || o._config.autoClose === !1)
+      const s = ue.getInstance(r);
+      if (!s || s._config.autoClose === !1)
         continue;
-      const a = t.composedPath(), i = a.includes(o._menu);
-      if (a.includes(o._element) || o._config.autoClose === "inside" && !i || o._config.autoClose === "outside" && i || o._menu.contains(t.target) && (t.type === "keyup" && t.key === ze || /input|select|option|textarea|form/i.test(t.target.tagName)))
+      const a = t.composedPath(), i = a.includes(s._menu);
+      if (a.includes(s._element) || s._config.autoClose === "inside" && !i || s._config.autoClose === "outside" && i || s._menu.contains(t.target) && (t.type === "keyup" && t.key === Qe || /input|select|option|textarea|form/i.test(t.target.tagName)))
         continue;
-      const d = { relatedTarget: o._element };
-      t.type === "click" && (d.clickEvent = t), o._completeHide(d);
+      const d = { relatedTarget: s._element };
+      t.type === "click" && (d.clickEvent = t), s._completeHide(d);
     }
   }
   static dataApiKeydownHandler(t) {
-    const n = /input|textarea/i.test(t.target.tagName), r = t.key === Sn, o = [xn, Ge].includes(t.key);
-    if (!o && !r || n && !r)
+    const n = /input|textarea/i.test(t.target.tagName), r = t.key === Mn, s = [Fn, Je].includes(t.key);
+    if (!s && !r || n && !r)
       return;
     t.preventDefault();
-    const a = this.matches(z) ? this : B.prev(this, z)[0] || B.next(this, z)[0] || B.findOne(z, t.delegateTarget.parentNode), i = le.getOrCreateInstance(a);
-    if (o) {
+    const a = this.matches(z) ? this : B.prev(this, z)[0] || B.next(this, z)[0] || B.findOne(z, t.delegateTarget.parentNode), i = ue.getOrCreateInstance(a);
+    if (s) {
       t.stopPropagation(), i.show(), i._selectMenuItem(t);
       return;
     }
     i._isShown() && (t.stopPropagation(), i.hide(), a.focus());
   }
 };
-I.on(document, Lt, z, Z.dataApiKeydownHandler);
-I.on(document, Lt, ce, Z.dataApiKeydownHandler);
-I.on(document, vt, Z.clearMenus);
-I.on(document, wn, Z.clearMenus);
-I.on(document, vt, z, function(e) {
+F.on(document, kt, z, Z.dataApiKeydownHandler);
+F.on(document, kt, le, Z.dataApiKeydownHandler);
+F.on(document, Tt, Z.clearMenus);
+F.on(document, Kn, Z.clearMenus);
+F.on(document, Tt, z, function(e) {
   e.preventDefault(), Z.getOrCreateInstance(this).toggle();
 });
-pn(Z);
-const de = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ s(j, { children: e }), oe = ({ children: e, ...t }) => /* @__PURE__ */ s("div", { className: "dropdown-menu", children: e }), Me = ({ className: e, children: t, icon: n }) => {
+Cn(Z);
+const me = ({ children: e, disabled: t, className: n }) => /* @__PURE__ */ o(R, { children: e }), ae = ({ children: e, ...t }) => /* @__PURE__ */ o("div", { className: "dropdown-menu", children: e }), Ie = ({ className: e, children: t, icon: n }) => {
   const r = T(null);
-  D(() => {
+  k(() => {
     const c = new Z(r.current);
     return () => {
       c.dispose();
     };
   }, []);
-  const o = L.Children.toArray(t).find((c) => L.isValidElement(c) && c.type === oe), a = L.Children.toArray(t).filter((c) => L.isValidElement(c) && c.type === V), i = L.Children.toArray(t).find((c) => L.isValidElement(c) && c.type === de), d = L.Children.toArray(t).filter((c) => !L.isValidElement(c) || c.type !== V && c.type !== oe && c.type !== de), m = L.isValidElement(i) ? i.props : {};
-  return /* @__PURE__ */ A("div", { className: [...(e || "").split(" "), "dropdown"].filter((c, N, p) => p.indexOf(c) === N).join(" "), children: [
-    /* @__PURE__ */ s(he, { ref: r, "data-bs-toggle": "dropdown", ...m, className: [...(m.className || "").split(" "), "btn", "dropdown-toggle"].filter((c, N, p) => p.indexOf(c) === N).join(" "), children: m.children ? m.children : d }),
-    o || /* @__PURE__ */ s(oe, { children: a })
+  const s = A.Children.toArray(t).find((c) => A.isValidElement(c) && c.type === ae), a = A.Children.toArray(t).filter((c) => A.isValidElement(c) && c.type === V), i = A.Children.toArray(t).find((c) => A.isValidElement(c) && c.type === me), d = A.Children.toArray(t).filter((c) => !A.isValidElement(c) || c.type !== V && c.type !== ae && c.type !== me), m = A.isValidElement(i) ? i.props : {};
+  return /* @__PURE__ */ v("div", { className: [...(e || "").split(" "), "dropdown"].filter((c, N, l) => l.indexOf(c) === N).join(" "), children: [
+    /* @__PURE__ */ o(ge, { ref: r, "data-bs-toggle": "dropdown", ...m, className: [...(m.className || "").split(" "), "btn", "dropdown-toggle"].filter((c, N, l) => l.indexOf(c) === N).join(" "), children: m.children ? m.children : d }),
+    s || /* @__PURE__ */ o(ae, { children: a })
   ] });
-}, Te = (e, t = !0) => (Object.entries(e).map(([n, r]) => (t && r instanceof Object && (r = Te(r)), [n, r])).filter(([, n]) => !(n instanceof Object ? Object.keys(n).length : n)).forEach(([n]) => {
+}, De = (e, t = !0) => (Object.entries(e).map(([n, r]) => (t && r instanceof Object && (r = De(r)), [n, r])).filter(([, n]) => !(n instanceof Object ? Object.keys(n).length : n)).forEach(([n]) => {
   delete e[n];
-}), e), Ot = L.createContext({});
-function tr() {
-  const { setModal: e } = L.useContext(Ot);
+}), e), Dt = A.createContext({});
+function lr() {
+  const { setModal: e } = A.useContext(Dt);
   return {
     openModal: (t) => {
       e && e(t);
     }
   };
 }
-function nr(e) {
+function ur(e) {
   const [t, n] = M(), r = T(0);
-  D(() => {
+  k(() => {
     r.current += 1;
   }, [t]);
-  const o = {
+  const s = {
     ...(t == null ? void 0 : t.props) || {},
     onClose: () => {
       var a;
       (a = t == null ? void 0 : t.props) != null && a.onClose && t.props.onClose(), n(null);
     }
   };
-  return /* @__PURE__ */ A(Ot.Provider, { value: { setModal: n }, children: [
+  return /* @__PURE__ */ v(Dt.Provider, { value: { setModal: n }, children: [
     e.children,
-    t && /* @__PURE__ */ s(
-      Pt,
+    t && /* @__PURE__ */ o(
+      jt,
       {
         view: t.action.action.name || "list",
         namespace: t.action.action.namespace || "",
         props: {
           action: t.action,
           modal: !0,
-          props: o
+          props: s
         }
       },
       r.current
     )
   ] });
 }
-const rr = ({ formView: e, onClick: t }) => {
-  const n = (r) => r.choices !== void 0 ? r.choices ? Object.values(r.data instanceof Object ? r.data : [r.data]).map((o) => {
+const dr = ({ formView: e, onClick: t }) => {
+  const n = (r) => r.choices !== void 0 ? r.choices ? Object.values(r.data instanceof Object ? r.data : [r.data]).map((s) => {
     var a, i;
-    return ((i = (a = r.choices) == null ? void 0 : a[o]) == null ? void 0 : i.label) ?? o;
+    return ((i = (a = r.choices) == null ? void 0 : a[s]) == null ? void 0 : i.label) ?? s;
   }).join(", ") : r.data : r.checked !== void 0 ? r.checked ? "Yes" : "No" : r.data;
-  return /* @__PURE__ */ s("div", { className: "filters d-flex mb-sm overflow-auto", children: Object.values(e.children || []).filter((r) => r.data !== null).map((r, o) => /* @__PURE__ */ A("div", { className: "filters-item d-flex text-nowrap flex-column me-2 mb-2", children: [
-    /* @__PURE__ */ s("small", { className: "mb-2", children: r.label }),
-    /* @__PURE__ */ A("div", { className: "btn btn-sm btn-primary me-1 mb-1", children: [
+  return /* @__PURE__ */ o("div", { className: "filters d-flex mb-sm overflow-auto", children: Object.values(e.children || []).filter((r) => r.data !== null).map((r, s) => /* @__PURE__ */ v("div", { className: "filters-item d-flex text-nowrap flex-column me-2 mb-2", children: [
+    /* @__PURE__ */ o("small", { className: "mb-2", children: r.label }),
+    /* @__PURE__ */ v("div", { className: "btn btn-sm btn-primary me-1 mb-1", children: [
       n(r),
-      t && /* @__PURE__ */ s("span", { onClick: () => t(r.name), className: "ms-2", children: "×" })
+      t && /* @__PURE__ */ o("span", { onClick: () => t(r.name), className: "ms-2", children: "×" })
     ] })
-  ] }, o)) });
-}, sr = ({ row: e, data: t, onClick: n, namespace: r }) => {
-  var a;
-  const o = (((a = t == null ? void 0 : t.entity) == null ? void 0 : a.columns) || []).filter((i) => i.visible).filter((i) => i.group !== !1);
-  return /* @__PURE__ */ s("div", { className: "card mb-3", children: /* @__PURE__ */ A("div", { className: "card-body", children: [
-    /* @__PURE__ */ s(mt, { row: e }),
-    /* @__PURE__ */ s("div", { className: "d-flex flex-column flex-wrap gap-2", children: o.map((i, d) => /* @__PURE__ */ A("div", { children: [
-      /* @__PURE__ */ A("span", { className: "text-secondary me-1", children: [
-        /* @__PURE__ */ s(pt, { column: i, namespace: r }),
+  ] }, s)) });
+}, mr = ({ namespace: e }) => {
+  const { columns: t } = re(), { index: n } = be();
+  return /* @__PURE__ */ o("div", { className: "card mb-3", children: /* @__PURE__ */ o("div", { className: "card-body", children: /* @__PURE__ */ v("div", { className: "d-flex flex-row align-items-start", children: [
+    /* @__PURE__ */ o(yt, { row: n }),
+    /* @__PURE__ */ o("div", { className: "d-flex flex-column flex-wrap gap-2", children: t.map((r, s) => /* @__PURE__ */ v("div", { children: [
+      /* @__PURE__ */ v("span", { className: "text-secondary me-1", children: [
+        /* @__PURE__ */ o(Et, { column: r, namespace: e }),
         ":"
       ] }),
-      /* @__PURE__ */ s(ut, { column: i, row: e, data: t })
-    ] }, d)) })
-  ] }) });
-}, or = Q(({ item: e, data: t, columns: n, onClick: r, routeParams: o, namespace: a }, i) => {
-  var c;
-  const d = (c = t == null ? void 0 : t.entity) == null ? void 0 : c.primaryColumn, m = (t == null ? void 0 : t.entity.data.items) ?? [];
-  return !!t && /* @__PURE__ */ s(j, { children: m.length ? m.map((N, p) => /* @__PURE__ */ s(q, { namespace: (t == null ? void 0 : t.entity.name) || "unknown", data: N, prefix: "list", view: "listItem", children: /* @__PURE__ */ s(sr, { row: p, data: t, onClick: r, namespace: a }) }, t == null ? void 0 : t.entity.data.items[p][(d == null ? void 0 : d.field) ?? ""])) : /* @__PURE__ */ s(te, { children: "No results found." }) });
-}), ar = () => {
-  const { actions: e, isSelectedAll: t, toggleAll: n, selected: r, executeAction: o, clear: a } = ft();
-  return e && /* @__PURE__ */ A("div", { className: "btn-group btn-group-sm mb-2", children: [
-    /* @__PURE__ */ s("label", { className: "btn btn-light", children: /* @__PURE__ */ s(
+      /* @__PURE__ */ o(ht, { column: r, namespace: e })
+    ] }, s)) }),
+    /* @__PURE__ */ o(_t, { namespace: e })
+  ] }) }) });
+}, fr = Q(({ item: e, routeParams: t, namespace: n }, r) => {
+  const { items: s, primaryColumn: a, data: i } = re();
+  return !!i && (s.length ? s.map((d, m) => /* @__PURE__ */ o(pt, { index: m, children: /* @__PURE__ */ o(
+    H,
+    {
+      namespace: (i == null ? void 0 : i.entity.name) || "unknown",
+      data: d,
+      prefix: "list",
+      view: "listItem",
+      children: /* @__PURE__ */ o(mr, { namespace: n })
+    },
+    i == null ? void 0 : i.entity.data.items[m][(a == null ? void 0 : a.field) ?? ""]
+  ) })) : /* @__PURE__ */ o(te, { children: "No results found." }));
+}), pr = () => {
+  const { actions: e, isSelectedAll: t, toggleAll: n, selected: r, executeAction: s, clear: a } = bt();
+  return e && /* @__PURE__ */ v("div", { className: "btn-group btn-group-sm mb-2", children: [
+    /* @__PURE__ */ o("label", { className: "btn btn-light", children: /* @__PURE__ */ o(
       "input",
       {
         checked: t,
@@ -1831,91 +1885,91 @@ const rr = ({ formView: e, onClick: t }) => {
         type: "checkbox"
       }
     ) }),
-    /* @__PURE__ */ A(Me, { className: "btn-group btn-group-sm", children: [
-      /* @__PURE__ */ s(de, { disabled: !(r != null && r.length), className: "btn-light", children: !!(r != null && r.length) && /* @__PURE__ */ s(te, { properties: { number: r == null ? void 0 : r.length }, children: ":number selected" }) }),
-      /* @__PURE__ */ s(oe, { children: Object.keys(e).map((i) => /* @__PURE__ */ s(
+    /* @__PURE__ */ v(Ie, { className: "btn-group btn-group-sm", children: [
+      /* @__PURE__ */ o(me, { disabled: !(r != null && r.length), className: "btn-light", children: !!(r != null && r.length) && /* @__PURE__ */ o(te, { properties: { number: r == null ? void 0 : r.length }, children: ":number selected" }) }),
+      /* @__PURE__ */ o(ae, { children: Object.keys(e).map((i) => /* @__PURE__ */ o(
         V,
         {
           to: "#",
-          onClick: () => o(i),
+          onClick: () => s(i),
           className: "dropdown-item",
           children: e[i]
         },
         i
       )) })
     ] }),
-    !!(r != null && r.length) && /* @__PURE__ */ s("button", { title: "Clear selection", onClick: a, className: "btn btn-light", children: "×" })
+    !!(r != null && r.length) && /* @__PURE__ */ o("button", { title: "Clear selection", onClick: a, className: "btn btn-light", children: "×" })
   ] });
-}, ir = H(({ action: e, embedded: t = !1 }) => {
-  var _, O, P, w;
-  const { generateLink: n, generateRoute: r, generateActionLink: o, location: a, navigate: i } = Y();
+}, hr = Y(({ action: e, embedded: t = !1 }) => {
+  var E, P, O, w;
+  const { generateLink: n, generateRoute: r, generateActionLink: s, location: a, navigate: i } = W();
   let d = new URLSearchParams(a.search);
-  const m = T(void 0), c = T(Rt(d)), N = T(null), { openModal: p } = tr(), { open: h } = lt(), C = e.action.entity;
+  const m = T(void 0), c = T($t(d)), N = T(null), { openModal: l } = lr(), { open: f } = dt(), C = e.action.entity;
   if (!C)
     throw new Error("Invalid Entity");
-  const { results: y, refresh: l, setQueryParameters: b } = at({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: c.current }), f = Object.values((y == null ? void 0 : y.action) ?? []).filter((v) => !v.object && v.name !== e.action.name), u = (v) => {
-    v == null || v.forEach((S) => {
-      var k, R;
-      (R = (k = c.current) == null ? void 0 : k.filter) == null || delete R[S];
+  const { results: b, refresh: p, setQueryParameters: y } = ct({ entityAction: e.action, initParameters: e.parameters, initQueryParameters: c.current }), h = Object.values((b == null ? void 0 : b.action) ?? []).filter((L) => !L.object && L.name !== e.action.name), u = (L) => {
+    L == null || L.forEach((x) => {
+      var D, j;
+      (j = (D = c.current) == null ? void 0 : D.filter) == null || delete j[x];
     });
-    const x = {
+    const S = {
       ...c.current && c.current,
       ...m.current && { sort: m.current }
     };
-    if (d = Ce(Te(x)), t)
-      b(d);
+    if (d = Ae(De(S)), t)
+      y(d);
     else {
-      const S = new URL(document.location.href);
-      S.search = d.toString(), i(S.toString());
+      const x = new URL(document.location.href);
+      x.search = d.toString(), i(x.toString());
     }
-  }, E = (v, x, S) => new Promise((k, R) => {
-    h({
+  }, _ = (L, S, x) => new Promise((D, j) => {
+    f({
       title: "Are you sure?",
-      icon: ie.confirm,
-      onResult: ($) => {
-        $.isConfirmed && ne().post({
-          url: o(e),
-          body: S
-        }).catch((F) => {
-          console.log("error", F), R();
+      icon: ce.confirm,
+      onResult: (I) => {
+        I.isConfirmed ? ne().post({
+          url: s(e),
+          body: x
+        }).catch((U) => {
+          j();
         }).finally(() => {
-          console.log("done"), l(), k();
-        });
+          p(), D();
+        }) : j();
       }
     });
-  }), g = (v, x) => {
-    switch (v.parameters !== void 0 && (v.parameters = Te(v.parameters), Object.keys(v.parameters).length || (v.parameters = void 0)), v.action.name) {
+  }), g = (L, S) => {
+    switch (L.parameters !== void 0 && (L.parameters = De(L.parameters), Object.keys(L.parameters).length || (L.parameters = void 0)), L.action.name) {
       case "filter": {
-        x == null || x.preventDefault(), c.current = v.parameters;
+        S == null || S.preventDefault(), c.current = L.parameters;
         break;
       }
       case "sort": {
-        x == null || x.preventDefault(), m.current = v.parameters;
+        S == null || S.preventDefault(), m.current = L.parameters;
         break;
       }
       case "delete": {
-        x == null || x.preventDefault(), h({
+        S == null || S.preventDefault(), f({
           title: "Are you sure?",
-          icon: ie.confirm,
-          onResult: (S) => {
-            S.isConfirmed && ne().fetch({
-              url: r(v.action.route, { ...e.parameters, ...v.parameters }),
-              method: Mt.DELETE
-            }).catch((k) => {
-              console.log("error", k);
+          icon: ce.confirm,
+          onResult: (x) => {
+            x.isConfirmed && ne().fetch({
+              url: r(L.action.route, { ...e.parameters, ...L.parameters }),
+              method: Bt.DELETE
+            }).catch((D) => {
+              console.log("error", D);
             }).finally(() => {
-              l();
+              p();
             });
           }
         });
         return;
       }
       default: {
-        t && (x == null || x.preventDefault(), p({
-          action: v,
+        t && (S == null || S.preventDefault(), l({
+          action: L,
           props: {
             onClose: () => {
-              l();
+              p();
             }
           }
         }));
@@ -1924,41 +1978,41 @@ const rr = ({ formView: e, onClick: t }) => {
     }
     u();
   };
-  return D(() => {
-    b(d);
-  }, [a.search]), /* @__PURE__ */ s(j, { children: /* @__PURE__ */ A("section", { className: "list", children: [
-    /* @__PURE__ */ A("header", { className: "content-header d-md-flex mb-3 justify-content-between align-items-center", children: [
-      /* @__PURE__ */ s("h2", { children: y == null ? void 0 : y.title }),
-      /* @__PURE__ */ A("div", { className: "d-flex align-items-center", children: [
-        !!f.length && /* @__PURE__ */ s("div", { className: "btn-group btn-group-sm me-2", children: f.map((v, x) => /* @__PURE__ */ s(
+  return k(() => {
+    y(d);
+  }, [a.search]), /* @__PURE__ */ o(mn, { data: b, onClick: g, children: /* @__PURE__ */ v("section", { className: "list", children: [
+    /* @__PURE__ */ v("header", { className: "content-header d-md-flex mb-3 justify-content-between align-items-center", children: [
+      /* @__PURE__ */ o("h2", { children: b == null ? void 0 : b.title }),
+      /* @__PURE__ */ v("div", { className: "d-flex align-items-center", children: [
+        !!h.length && /* @__PURE__ */ o("div", { className: "btn-group btn-group-sm me-2", children: h.map((L, S) => /* @__PURE__ */ o(
           V,
           {
-            to: n(v.route, e.parameters),
-            onClick: (S) => g({
-              action: v,
+            to: n(L.route, e.parameters),
+            onClick: (x) => g({
+              action: L,
               parameters: e.parameters
-            }, S),
+            }, x),
             className: "btn btn-outline-secondary",
-            children: v.title || v.name
+            children: L.title || L.name
           },
-          x
+          S
         )) }),
-        ((_ = y == null ? void 0 : y.form) == null ? void 0 : _.filter) && /* @__PURE__ */ A("div", { className: "btn-group btn-group-sm", children: [
-          /* @__PURE__ */ A(Me, { className: "btn-group btn-group-sm", children: [
-            /* @__PURE__ */ s(de, { className: "btn-outline-dark", children: /* @__PURE__ */ s(te, { children: "Filter" }) }),
-            /* @__PURE__ */ s(oe, { children: /* @__PURE__ */ s("div", { className: "filter", children: /* @__PURE__ */ A(
-              tt,
+        ((E = b == null ? void 0 : b.form) == null ? void 0 : E.filter) && /* @__PURE__ */ v("div", { className: "btn-group btn-group-sm", children: [
+          /* @__PURE__ */ v(Ie, { className: "btn-group btn-group-sm", children: [
+            /* @__PURE__ */ o(me, { className: "btn-outline-dark", children: /* @__PURE__ */ o(te, { children: "Filter" }) }),
+            /* @__PURE__ */ o(ae, { children: /* @__PURE__ */ o("div", { className: "filter", children: /* @__PURE__ */ v(
+              rt,
               {
-                id: "filter_" + pe(C),
+                id: "filter_" + he(C),
                 ref: N,
-                onSubmit: (v) => g({
+                onSubmit: (L) => g({
                   action: {
                     name: "filter",
                     object: !1,
                     namespace: e.action.namespace,
                     entity: C
                   },
-                  parameters: wt(v)
+                  parameters: Vt(L)
                 }),
                 onReset: () => g({
                   action: {
@@ -1969,106 +2023,100 @@ const rr = ({ formView: e, onClick: t }) => {
                   }
                 }),
                 children: [
-                  ((O = y == null ? void 0 : y.form) == null ? void 0 : O.filter) && /* @__PURE__ */ s(je, { view: y.form.filter.view }),
-                  /* @__PURE__ */ s("button", { className: "btn btn-primary me-2", type: "submit", children: /* @__PURE__ */ s(te, { children: "Submit" }) })
+                  ((P = b == null ? void 0 : b.form) == null ? void 0 : P.filter) && /* @__PURE__ */ o(we, { view: b.form.filter.view }),
+                  /* @__PURE__ */ o("button", { className: "btn btn-primary me-2", type: "submit", children: /* @__PURE__ */ o(te, { children: "Submit" }) })
                 ]
               }
             ) }) })
           ] }),
-          !!Object.values(((P = c.current) == null ? void 0 : P.filter) || []).length && /* @__PURE__ */ s(he, { onClick: () => {
-            var v;
-            (v = N.current) == null || v.reset();
+          !!Object.values(((O = c.current) == null ? void 0 : O.filter) || []).length && /* @__PURE__ */ o(ge, { onClick: () => {
+            var L;
+            (L = N.current) == null || L.reset();
           }, className: "btn btn-outline-dark", children: "x" })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ A(on, { data: y, onClick: E, children: [
-      ((w = y == null ? void 0 : y.form) == null ? void 0 : w.filter) && /* @__PURE__ */ s(rr, { formView: y.form.filter.view, onClick: (v) => u([v]) }),
-      /* @__PURE__ */ s(ar, {}),
-      /* @__PURE__ */ A(q, { namespace: e.action.namespace, prefix: "list", view: "content", data: y, children: [
-        /* @__PURE__ */ s(
-          an,
+    /* @__PURE__ */ v(fn, { data: b, onClick: _, children: [
+      ((w = b == null ? void 0 : b.form) == null ? void 0 : w.filter) && /* @__PURE__ */ o(dr, { formView: b.form.filter.view, onClick: (L) => u([L]) }),
+      /* @__PURE__ */ o(pr, {}),
+      /* @__PURE__ */ v(H, { prefix: "list", view: "content", data: b, children: [
+        /* @__PURE__ */ o(
+          hn,
           {
-            data: y,
-            onClick: g,
-            namespace: e.action.namespace,
             routeParams: e.parameters
           }
         ),
-        /* @__PURE__ */ s(
-          or,
+        /* @__PURE__ */ o(
+          fr,
           {
-            data: y,
-            onClick: g,
-            namespace: e.action.namespace,
             routeParams: e.parameters
           }
         )
       ] }, "list"),
-      /* @__PURE__ */ s(cn, { meta: y == null ? void 0 : y.entity.data.meta })
+      /* @__PURE__ */ o(gn, { meta: b == null ? void 0 : b.entity.data.meta })
     ] })
   ] }) });
-}), cr = ({ view: e, props: t }) => {
+}), gr = ({ view: e, props: t }) => {
   const n = {
-    add: Be,
-    edit: Be,
-    list: ir
+    add: He,
+    edit: He,
+    list: hr
   };
   if (n[e] === void 0)
-    throw new ae(500, "View not found");
-  return L.createElement(n[e] || ve, t);
-}, Pt = ({ view: e, namespace: t, props: n }) => (t ?? (t = st()), /* @__PURE__ */ s(q, { view: e, props: n, children: /* @__PURE__ */ s(cr, { view: e, props: n }) }, t + e)), lr = ({ path: e, preloader: t }) => {
-  if (!De.namespace[Fe])
-    throw new me(500, "Invalid Configuration.");
-  const { getOnClickActionByPath: n } = Y(), [r, o] = M();
-  if (D(() => {
-    n(e).then((a) => o(a));
+    throw new ie(500, "View not found");
+  return A.createElement(n[e] || Pe, t);
+}, jt = ({ view: e, namespace: t, props: n }) => (t ?? (t = at()), /* @__PURE__ */ o(H, { view: e, props: n, children: /* @__PURE__ */ o(gr, { view: e, props: n }) }, t + e)), br = ({ path: e, preloader: t }) => {
+  if (!je.namespace[Ue])
+    throw new pe(500, "Invalid Configuration.");
+  const { getOnClickActionByPath: n } = W(), [r, s] = M();
+  if (k(() => {
+    n(e).then((a) => s(a));
   }, [e]), r === void 0)
-    return t ?? /* @__PURE__ */ s(j, { children: "Loading" });
+    return t ?? /* @__PURE__ */ o(R, { children: "Loading" });
   if (!r)
-    throw new ae(404, "Page Not Found");
-  return /* @__PURE__ */ s(Zt, { namespace: r.action.namespace || "", children: /* @__PURE__ */ s(
-    Pt,
+    throw new ie(404, "Page Not Found");
+  return /* @__PURE__ */ o(on, { namespace: r.action.namespace || "", children: /* @__PURE__ */ o(
+    jt,
     {
       view: r.action.name,
       props: { action: r }
     }
   ) });
-}, ur = ({ children: e, config: t }) => /* @__PURE__ */ s(Ht, { config: t, children: /* @__PURE__ */ s(rn, { children: /* @__PURE__ */ s(nr, { children: e }) }) });
-let Ne;
-const St = {}, Fe = "dakataa_crud", Nr = ({ connection: e, templates: t }) => {
-  De.namespace[Fe] = e, St.templates = t;
-}, ne = () => (Ne || (Ne = De.instance({ namespace: Fe })), Ne), Cr = Wt(({ path: e, prefix: t, errorFallback: n, templates: r }) => {
-  const { location: o } = Y();
-  return e ?? (e = o.pathname), t && (e = e.replace(new RegExp("^/" + t.replace(new RegExp("^/"), "") + "(/)?"), "/")), r = Object.assign(St.templates ?? {}, r ?? {}), /* @__PURE__ */ s(ur, { config: { templates: r, link: { prefix: t } }, children: /* @__PURE__ */ s(Vt, { fallback: n ?? /* @__PURE__ */ s(Bt, {}), children: /* @__PURE__ */ s(lr, { path: e }) }, e) });
-}), xt = L.createContext(null), dr = () => L.useContext(xt), fr = ({ item: e, open: t = !1 }) => {
-  var u, E;
-  const n = !!((u = e.items) != null && u.length), { location: r, generateRoute: o } = Y(), a = r.pathname.replace(/(.*?)\/?$/i, "$1"), i = o(e.route), d = a.includes(i, 0), [m, c] = L.useState(d), N = dr(), p = T(null), h = T(null), C = "collapse", y = "collapsing", l = {
+}, yr = ({ children: e, config: t }) => /* @__PURE__ */ o(Qt, { config: t, children: /* @__PURE__ */ o(un, { children: /* @__PURE__ */ o(ur, { children: e }) }) });
+let ve;
+const Rt = {}, Ue = "dakataa_crud", Sr = ({ connection: e, templates: t }) => {
+  je.namespace[Ue] = e, Rt.templates = t;
+}, ne = () => (ve || (ve = je.instance({ namespace: Ue })), ve), Tr = Zt(({ path: e, prefix: t, errorFallback: n, templates: r }) => {
+  const { location: s } = W();
+  return e ?? (e = s.pathname), t && (e = e.replace(new RegExp("^/" + t.replace(new RegExp("^/"), "") + "(/)?"), "/")), r = Object.assign(Rt.templates ?? {}, r ?? {}), /* @__PURE__ */ o(yr, { config: { templates: r, link: { prefix: t } }, children: /* @__PURE__ */ o(qt, { fallback: n ?? /* @__PURE__ */ o(zt, {}), children: /* @__PURE__ */ o(br, { path: e }) }, e) });
+}), wt = A.createContext(null), Er = () => A.useContext(wt), _r = ({ item: e, open: t = !1 }) => {
+  var u, _;
+  const n = !!((u = e.items) != null && u.length), { location: r, generateRoute: s } = W(), a = r.pathname.replace(/(.*?)\/?$/i, "$1"), i = s(e.route), d = a.includes(i, 0), [m, c] = A.useState(d), N = Er(), l = T(null), f = T(null), C = "collapse", b = "collapsing", p = {
     toggle: (g) => {
       c(g !== void 0 ? g : !m);
     }
-  }, b = () => {
-    var g, _, O, P;
-    (g = p.current) == null || g.classList.remove(y), (_ = p.current) == null || _.classList.add(C), (O = p.current) == null || O.classList.toggle("show", m), (P = p.current) == null || P.style.removeProperty("height");
-  }, f = () => {
-    h.current && (clearTimeout(h.current), h.current = null);
+  }, y = () => {
+    var g, E, P, O;
+    (g = l.current) == null || g.classList.remove(b), (E = l.current) == null || E.classList.add(C), (P = l.current) == null || P.classList.toggle("show", m), (O = l.current) == null || O.style.removeProperty("height");
+  }, h = () => {
+    f.current && (clearTimeout(f.current), f.current = null);
   };
-  return D(() => {
-    var g, _, O, P, w, v, x, S, k;
-    return m && N && N.toggle(!0), (g = p.current) == null || g.addEventListener("animationstart", f), (_ = p.current) == null || _.addEventListener("transitionstart", f), (O = p.current) == null || O.addEventListener("animationend", b), (P = p.current) == null || P.addEventListener("transitionend", b), (v = p.current) == null || v.style.setProperty("height", (m ? 0 : (w = p.current) == null ? void 0 : w.scrollHeight) + "px"), (x = p.current) == null || x.classList.remove("show"), (S = p.current) == null || S.classList.remove(C), (k = p.current) == null || k.classList.add(y), setTimeout(() => {
-      var R, $;
-      ($ = p.current) == null || $.style.setProperty("height", (m ? (R = p.current) == null ? void 0 : R.scrollHeight : 0) + "px");
-    }, 10), h.current = setTimeout(b, 50), () => {
-      var R, $, F, Ie;
-      f(), (R = p.current) == null || R.removeEventListener("animationstart", f), ($ = p.current) == null || $.removeEventListener("transitionstart", f), (F = p.current) == null || F.removeEventListener("animationend", b), (Ie = p.current) == null || Ie.removeEventListener("transitionend", b);
+  return k(() => {
+    var g, E, P, O, w, L, S, x, D;
+    return m && N && N.toggle(!0), (g = l.current) == null || g.addEventListener("animationstart", h), (E = l.current) == null || E.addEventListener("transitionstart", h), (P = l.current) == null || P.addEventListener("animationend", y), (O = l.current) == null || O.addEventListener("transitionend", y), (L = l.current) == null || L.style.setProperty("height", (m ? 0 : (w = l.current) == null ? void 0 : w.scrollHeight) + "px"), (S = l.current) == null || S.classList.remove("show"), (x = l.current) == null || x.classList.remove(C), (D = l.current) == null || D.classList.add(b), setTimeout(() => {
+      var j, I;
+      (I = l.current) == null || I.style.setProperty("height", (m ? (j = l.current) == null ? void 0 : j.scrollHeight : 0) + "px");
+    }, 10), f.current = setTimeout(y, 50), () => {
+      var j, I, U, $e;
+      h(), (j = l.current) == null || j.removeEventListener("animationstart", h), (I = l.current) == null || I.removeEventListener("transitionstart", h), (U = l.current) == null || U.removeEventListener("animationend", y), ($e = l.current) == null || $e.removeEventListener("transitionend", y);
     };
-  }, [m]), D(() => {
+  }, [m]), k(() => {
     t !== m && c(t);
-  }, [t]), /* @__PURE__ */ s(xt.Provider, { value: l, children: /* @__PURE__ */ A("nav", { className: ["item", ...m || d ? ["active"] : []].join(" "), children: [
-    /* @__PURE__ */ A(
+  }, [t]), /* @__PURE__ */ o(wt.Provider, { value: p, children: /* @__PURE__ */ v("nav", { className: ["item", ...m || d ? ["active"] : []].join(" "), children: [
+    /* @__PURE__ */ v(
       V,
       {
-        to: n ? "#" : o(e.route),
+        to: n ? "#" : s(e.route),
         ...e.icon && { icon: e.icon },
         ...n && {
           onClick: () => {
@@ -2076,93 +2124,93 @@ const St = {}, Fe = "dakataa_crud", Nr = ({ connection: e, templates: t }) => {
           }
         },
         children: [
-          /* @__PURE__ */ s("span", { className: "icon" }),
-          /* @__PURE__ */ s("span", { className: "title", children: e.title })
+          /* @__PURE__ */ o("span", { className: "icon" }),
+          /* @__PURE__ */ o("span", { className: "title", children: e.title })
         ]
       }
     ),
-    n && !!((E = e.items) != null && E.length) && /* @__PURE__ */ s("nav", { ref: p, className: C, children: /* @__PURE__ */ s(Tt, { items: e.items }) })
+    n && !!((_ = e.items) != null && _.length) && /* @__PURE__ */ o("nav", { ref: l, className: C, children: /* @__PURE__ */ o(Mt, { items: e.items }) })
   ] }) });
-}, Tt = ({ items: e }) => e.map(
+}, Mt = ({ items: e }) => e.map(
   (t) => {
     const n = [parent, t.title].filter((r) => r).join("-").toLowerCase();
-    return /* @__PURE__ */ s(fr, { item: t }, n);
+    return /* @__PURE__ */ o(_r, { item: t }, n);
   }
-), mr = Q(({ items: e, className: t, open: n = !1 }, r) => {
-  const o = T(null), [a, i] = L.useState(n);
-  r = r || It();
+), Nr = Q(({ items: e, className: t, open: n = !1 }, r) => {
+  const s = T(null), [a, i] = A.useState(n);
+  r = r || Ht();
   const d = {
     toggle: (m) => {
       i(m !== void 0 ? m : !a);
     }
   };
-  return fe(r, () => d), D(() => {
+  return fe(r, () => d), k(() => {
     document.body.classList.toggle("toggle-nav", a);
     const m = (c) => {
       var N;
-      (N = o.current) != null && N.contains(c.target) || (i(!1), document.body.removeEventListener("click", m));
+      (N = s.current) != null && N.contains(c.target) || (i(!1), document.body.removeEventListener("click", m));
     };
     if (a)
       return document.body.addEventListener("click", m), () => {
         document.body.removeEventListener("click", m);
       };
-  }, [a]), /* @__PURE__ */ s("nav", { ref: o, children: /* @__PURE__ */ s(Tt, { items: e }) });
-}), Ar = H(({ children: e, ...t }) => {
-  const n = T(null), [r, o] = M([]);
-  return D(() => {
+  }, [a]), /* @__PURE__ */ o("nav", { ref: s, children: /* @__PURE__ */ o(Mt, { items: e }) });
+}), kr = Y(({ children: e, ...t }) => {
+  const n = T(null), [r, s] = M([]);
+  return k(() => {
     ne().get({
       url: "/_crud/navigation"
     }).then(({ status: a, data: i }) => {
-      a === 200 && o(i);
+      a === 200 && s(i);
     });
-  }, []), /* @__PURE__ */ A(Qe, { children: [
-    /* @__PURE__ */ s("header", { children: /* @__PURE__ */ A("div", { className: "wrap", children: [
-      /* @__PURE__ */ s("button", { onClick: (a) => {
+  }, []), /* @__PURE__ */ v(Ze, { children: [
+    /* @__PURE__ */ o("header", { children: /* @__PURE__ */ v("div", { className: "wrap", children: [
+      /* @__PURE__ */ o("button", { onClick: (a) => {
         var i;
         return (i = n.current) == null ? void 0 : i.toggle();
-      }, className: "btn btn-mobile", children: /* @__PURE__ */ s("i", {}) }),
-      /* @__PURE__ */ s("nav", { className: "first-nav", children: /* @__PURE__ */ s(V, { className: "logo", to: "/", children: "Admin" }) }),
-      /* @__PURE__ */ s("nav", { className: "second-nav", children: /* @__PURE__ */ A(Me, { className: "user", children: [
-        /* @__PURE__ */ s("span", { className: "initials", children: "YL" }),
-        /* @__PURE__ */ s(V, { to: "#", children: "Yordan Lazarov" }),
-        /* @__PURE__ */ s(V, { to: "#", children: "Logout" })
+      }, className: "btn btn-mobile", children: /* @__PURE__ */ o("i", {}) }),
+      /* @__PURE__ */ o("nav", { className: "first-nav", children: /* @__PURE__ */ o(V, { className: "logo", to: "/", children: "Admin" }) }),
+      /* @__PURE__ */ o("nav", { className: "second-nav", children: /* @__PURE__ */ v(Ie, { className: "user", children: [
+        /* @__PURE__ */ o("span", { className: "initials", children: "YL" }),
+        /* @__PURE__ */ o(V, { to: "#", children: "Yordan Lazarov" }),
+        /* @__PURE__ */ o(V, { to: "#", children: "Logout" })
       ] }) })
     ] }) }),
-    /* @__PURE__ */ A("main", { children: [
-      !!r.length && /* @__PURE__ */ s("div", { className: "navigation d-print-none", children: /* @__PURE__ */ s(mr, { ref: n, items: r }) }),
-      /* @__PURE__ */ s("div", { className: "content", children: e })
+    /* @__PURE__ */ v("main", { children: [
+      !!r.length && /* @__PURE__ */ o("div", { className: "navigation d-print-none", children: /* @__PURE__ */ o(Nr, { ref: n, items: r }) }),
+      /* @__PURE__ */ o("div", { className: "content", children: e })
     ] })
   ] });
 });
 export {
-  Yt as ActionProvider,
-  rn as AlertProvider,
-  Qe as BaseLayout,
-  Cr as Crud,
-  Nr as CrudConfiguration,
-  lr as CrudLoader,
-  ur as CrudProvider,
-  q as DynamicView,
-  Vt as ErrorBoundary,
-  me as Exception,
-  tt as Form,
-  je as FormField,
-  Gt as FormGroup,
-  Jt as FormWidget,
-  an as GridView,
-  ae as HttpException,
-  Qt as Input,
-  ir as List,
-  Ar as MainLayout,
-  nr as ModalProvider,
-  Be as Modify,
-  U as TemplateBlock,
+  Jt as ActionProvider,
+  un as AlertProvider,
+  Ze as BaseLayout,
+  Tr as Crud,
+  Sr as CrudConfiguration,
+  br as CrudLoader,
+  yr as CrudProvider,
+  H as DynamicView,
+  qt as ErrorBoundary,
+  pe as Exception,
+  rt as Form,
+  we as FormField,
+  tn as FormGroup,
+  rn as FormWidget,
+  hn as GridView,
+  ie as HttpException,
+  nn as Input,
+  hr as List,
+  kr as MainLayout,
+  ur as ModalProvider,
+  He as Modify,
+  $ as TemplateBlock,
   K as TemplateExtend,
-  Y as UseActions,
-  lt as UseAlert,
-  tr as UseModal,
-  Pt as ViewLoader,
-  pe as nameToId,
-  ke as useForm,
-  Wt as withRouterContext
+  W as UseActions,
+  dt as UseAlert,
+  lr as UseModal,
+  jt as ViewLoader,
+  he as nameToId,
+  Re as useForm,
+  Zt as withRouterContext
 };

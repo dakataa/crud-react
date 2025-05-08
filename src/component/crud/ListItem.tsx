@@ -1,32 +1,32 @@
-import {GridViewType, OnClickAction} from "@src/component/crud/GridView.tsx";
 import ColumnValue from "@src/component/crud/ColumnValue.tsx";
 import React from "react";
 import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
-import {ListType} from "@src/type/ListType.tsx";
 import ColumnLabel from "@src/component/crud/ColumnLabel.tsx";
+import ColumnActions from "@src/component/crud/ColumnActions.tsx";
+import {UseList} from "@src/context/ListContext.tsx";
 
-const ListItem = ({row, data, onClick, namespace}: {
-    data: ListType;
-    row: number;
-    onClick?: (props: OnClickAction, event: React.MouseEvent) => void,
+const ListItem = ({namespace}: {
     namespace?: string,
 }) => {
 
-    const columns = (data?.entity?.columns || []).filter(c => c.visible).filter(c => c.group !== false);
+    const {columns} = UseList();
 
     return (
         <div className={"card mb-3"}>
             <div className={"card-body"}>
-                <BatchItemSelector row={row}/>
-                <div className={"d-flex flex-column flex-wrap gap-2"}>
-                    {columns.map((column, index) => (
-                        <div key={index}>
+                <div className={"d-flex flex-row align-items-start"}>
+                    <BatchItemSelector/>
+                    <div className={"d-flex flex-column flex-wrap gap-2"}>
+                        {columns.map((column, index) => (
+                            <div key={index}>
                             <span className={"text-secondary me-1"}>
-                                <ColumnLabel column={column} namespace={namespace} />:
+                                <ColumnLabel column={column} namespace={namespace}/>:
                             </span>
-                            <ColumnValue column={column} row={row} data={data} />
-                        </div>
-                    ))}
+                                <ColumnValue column={column} namespace={namespace}/>
+                            </div>
+                        ))}
+                    </div>
+                    <ColumnActions namespace={namespace}/>
                 </div>
             </div>
         </div>

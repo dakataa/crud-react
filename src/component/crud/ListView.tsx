@@ -1,30 +1,33 @@
-import React, {forwardRef, ReactElement, useRef, useState} from "react";
-import {UseActions} from "@src/context/ActionContext.tsx";
+import React, {forwardRef, ReactElement} from "react";
 import {GridViewType} from "@src/component/crud/GridView.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import ListItem from "@src/component/crud/ListItem.tsx";
+import {UseList} from "@src/context/ListContext.tsx";
+import {ListItemProvider} from "@src/context/ListItemContext.tsx";
 
 
 type ListViewType = GridViewType & {
     item?: ReactElement
 };
 
-const ListView = forwardRef(({item, data, columns, onClick, routeParams, namespace}: ListViewType, ref) => {
-
-    const primaryColumn = data?.entity?.primaryColumn;
-    const items = data?.entity.data.items ?? [];
+const ListView = forwardRef(({item, routeParams, namespace}: ListViewType, ref) => {
+    const {items, primaryColumn, data} = UseList();
 
     return !!data && (
-        <>
-            {items.length ? items.map((row, rowIndex) => (
-                <DynamicView key={data?.entity.data.items[rowIndex][primaryColumn?.field ?? '']} namespace={data?.entity.name || 'unknown'} data={row} prefix={"list"} view={"listItem"}>
-                    <ListItem row={rowIndex} data={data} onClick={onClick} namespace={namespace}/>
+        items.length ? items.map((row, index) => (
+            <ListItemProvider key={index} index={index}>
+                <DynamicView
+                    key={data?.entity.data.items[index][primaryColumn?.field ?? '']}
+                    namespace={data?.entity.name || 'unknown'} data={row} prefix={"list"}
+                    view={"listItem"}>
+                    {item ? item : <ListItem namespace={namespace}/>}
+
                 </DynamicView>
-            )) : (
-                <T>No results found.</T>
-            )}
-        </>
+            </ListItemProvider>
+        )) : (
+            <T>No results found.</T>
+        )
     );
 });
 
