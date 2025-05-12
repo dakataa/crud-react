@@ -1,8 +1,8 @@
-import ColumnValue from "@src/component/crud/ColumnValue.tsx";
+import ItemValue from "@src/component/crud/ItemValue.tsx";
 import React from "react";
 import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
-import ColumnLabel from "@src/component/crud/ColumnLabel.tsx";
-import ColumnActions from "@src/component/crud/ColumnActions.tsx";
+import ItemLabel from "@src/component/crud/ItemLabel.tsx";
+import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
 
 const ListItem = ({namespace}: {
@@ -20,13 +20,13 @@ const ListItem = ({namespace}: {
                         {columns.map((column, index) => (
                             <div key={index}>
                             <span className={"text-secondary me-1"}>
-                                <ColumnLabel column={column} namespace={namespace}/>:
+                                <ItemLabel column={column} namespace={namespace}/>:
                             </span>
-                                <ColumnValue column={column} namespace={namespace}/>
+                                <ItemValue column={column} namespace={namespace}/>
                             </div>
                         ))}
                     </div>
-                    <ColumnActions namespace={namespace}/>
+                    <ItemActions namespace={namespace}/>
                 </div>
             </div>
         </div>

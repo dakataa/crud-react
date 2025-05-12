@@ -43,11 +43,11 @@ const Crud = withRouterContext((
     templates = Object.assign(globalConfig.templates ?? {}, templates ?? {});
 
     return (
-        <CrudProvider config={{templates, link: {prefix}}}>
-            <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
+        <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
+            <CrudProvider config={{templates, link: {prefix}}}>
                 <CrudLoader path={path}/>
-            </ErrorBoundary>
-        </CrudProvider>
+            </CrudProvider>
+        </ErrorBoundary>
     );
 });
 

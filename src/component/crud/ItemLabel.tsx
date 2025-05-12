@@ -2,7 +2,7 @@ import {ColumnType} from "@src/type/ColumnType.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import React from "react";
 
-const ColumnLabel = ({column, namespace}: {
+const ItemLabel = ({column, namespace}: {
     column: ColumnType;
     namespace?: string;
 }) => {
@@ -14,4 +14,4 @@ const ColumnLabel = ({column, namespace}: {
     )
 }
 
-export default ColumnLabel;
+export default ItemLabel;

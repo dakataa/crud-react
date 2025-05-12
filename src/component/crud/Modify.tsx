@@ -1,4 +1,4 @@
-import React, {ReactNode, useRef} from "react";
+import React, {ReactNode, useEffect, useRef} from "react";
 import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
@@ -60,14 +60,18 @@ const Modify = ({action, children, onSuccess, modal, props}: {
     });
     const {open: openAlert} = UseAlert();
 
-    // useEffect(() => {
-    //     setParameters(routeParams);
-    // }, [JSON.stringify(routeParams)]);
+    useEffect(() => {
+        if(!results) {
+            return;
+        }
+        
+        modalRef.current?.open()
+    }, [JSON.stringify(results)]);
 
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 
     return (
-        <ComponentTemplate ref={modalRef} {...props} action={action} routeParams={routeParams}>
+        <ComponentTemplate ref={modalRef} {...props} action={action} routeParams={routeParams} open={false}>
             <TemplateExtend name={"title"}>
                 <TemplateBlock name={"title"} content={children} data={results}>
                     {results?.title || 'Title'}

@@ -2,9 +2,9 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import React from "react";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
-import Action from "@src/component/crud/Action.tsx";
+import ItemAction from "@src/component/crud/ItemAction.tsx";
 
-const ColumnActions = ({namespace, routeParams}: {
+const ItemActions = ({namespace, routeParams}: {
     namespace?: string;
     routeParams?: { [key: string]: any },
 }) => {
@@ -14,7 +14,7 @@ const ColumnActions = ({namespace, routeParams}: {
     return data && (
         <DynamicView namespace={namespace} data={data} prefix={"list"} view={"object.actions"}>
             {objectActions.map((action, index) => (
-                <Action
+                <ItemAction
                     key={index}
                     action={action}
                     routeParams={routeParams}
@@ -25,4 +25,4 @@ const ColumnActions = ({namespace, routeParams}: {
     )
 }
 
-export default ColumnActions;
+export default ItemActions;

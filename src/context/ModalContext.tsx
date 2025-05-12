@@ -2,6 +2,8 @@ import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
+import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
+import {Icon, UseAlert} from "@src/context/AlertContext.tsx";
 
 export type ModalActionType = {
     action: OnClickAction;
@@ -26,6 +28,7 @@ export function UseModal() {
 
 export function ModalProvider(props: PropsWithChildren) {
     const [modal, setModal] = useState<ModalActionType | null>();
+    const {open: openAlert} = UseAlert();
 
     const updates = useRef(0);
     useEffect(() => {
@@ -44,16 +47,29 @@ export function ModalProvider(props: PropsWithChildren) {
         <ModalContext.Provider value={{setModal}}>
             {props.children}
             {modal && (
-                <ViewLoader
-                    key={updates.current}
-                    view={modal.action.action.name || 'list'}
-                    namespace={modal.action.action.namespace || ''}
-                    props={{
-                        action: modal.action,
-                        modal: true,
-                        props: modalProps
-                    }}
-                />
+                <ErrorBoundary preventDefault={true} fallback={(error) => {
+                    setModal(null);
+                    openAlert({
+                        title: error?.detail ?? 'Unknown Error',
+                        icon: Icon.denied,
+                        actions: {
+                            close: {
+                                label: 'OK'
+                            }
+                        }
+                    })
+                }}>
+                    <ViewLoader
+                        key={updates.current}
+                        view={modal.action.action.name || 'list'}
+                        namespace={modal.action.action.namespace || ''}
+                        props={{
+                            action: modal.action,
+                            modal: true,
+                            props: modalProps
+                        }}
+                    />
+                </ErrorBoundary>
             )}
         </ModalContext.Provider>
     );

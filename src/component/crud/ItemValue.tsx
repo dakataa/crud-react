@@ -3,13 +3,11 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import React from "react";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 
-const ColumnValue = ({column, namespace}: {
+const ItemValue = ({column, namespace}: {
     column: ColumnType;
     namespace?: string;
 }) => {
-    const {index, data} = UseListItem();
-
-
+    const {data} = UseListItem();
 
     return data && (
         <DynamicView namespace={namespace} data={data} prefix={"list"} view={column.field}>
@@ -20,4 +18,4 @@ const ColumnValue = ({column, namespace}: {
     )
 }
 
-export default ColumnValue;
+export default ItemValue;

@@ -1,6 +1,7 @@
 import {ListMetaType} from "@src/type/ListMetaType";
 import {RouteType} from "@src/type/RouteType";
 import Link from "@src/component/Link.tsx";
+import {UseList} from "@src/context/ListContext.tsx";
 
 const PageItem = ({route, page, active = false, title, children}: {
     route?: RouteType,
@@ -24,7 +25,9 @@ const PageItem = ({route, page, active = false, title, children}: {
     )
 }
 
-const Paginator = ({meta}: { meta: ListMetaType, route?: RouteType }) => {
+const Paginator = () => {
+    const {data} = UseList();
+    const meta = data?.entity.data.meta;
     const firstPage = 1;
     const totalPages = meta?.totalPages;
     const page = meta?.page || firstPage;
@@ -47,7 +50,7 @@ const Paginator = ({meta}: { meta: ListMetaType, route?: RouteType }) => {
                         )}
                         {meta.links[0] !== firstPage && (
                             <>
-                                <PageItem key={1} page={1} active={firstPage === page}>{firstPage}</PageItem>
+                                <PageItem key={1} page={1} active={firstPage === page}/>
                                 <div className={"page-item"}>
                                     <a className="page-link">...</a>
                                 </div>
@@ -62,7 +65,7 @@ const Paginator = ({meta}: { meta: ListMetaType, route?: RouteType }) => {
                                     <a className="page-link">...</a>
                                 </div>
                                 <PageItem key={totalPages} page={totalPages}
-                                          active={totalPages === page}>{totalPages}</PageItem>
+                                          active={totalPages === page}/>
                             </>
                         )}
                         {page < totalPages && (

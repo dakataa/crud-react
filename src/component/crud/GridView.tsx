@@ -3,11 +3,11 @@ import React, {forwardRef, ReactElement} from "react";
 import {ActionType} from "@src/type/ActionType";
 import Link from "@src/component/Link.tsx";
 import {default as T} from "@src/component/Translation.tsx";
-import ColumnValue from "@src/component/crud/ColumnValue.tsx";
+import ItemValue from "@src/component/crud/ItemValue.tsx";
 import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
-import ColumnLabel from "@src/component/crud/ColumnLabel.tsx";
+import ItemLabel from "@src/component/crud/ItemLabel.tsx";
 import {ListItemProvider} from "@src/context/ListItemContext.tsx";
-import ColumnActions from "@src/component/crud/ColumnActions.tsx";
+import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
 
 type GridViewHeaderColumnAttributes = {
@@ -46,7 +46,7 @@ const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, re
                 <tr>
                     {columns.map((column, index) => (
                         <th key={index}>
-                            <ColumnLabel column={column} namespace={namespace}/>
+                            <ItemLabel column={column} namespace={namespace}/>
                             {column.sortable && data?.sort[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({
@@ -81,16 +81,16 @@ const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, re
                                     <td key={columnIndex}>
                                         {columnIndex === 0 &&
                                             (
-                                                <BatchItemSelector/>
+                                                <BatchItemSelector className={"me-2"}/>
                                             )
                                         }
-                                        <ColumnValue column={column} namespace={namespace}/>
+                                        <ItemValue column={column} namespace={namespace}/>
                                     </td>
                                 )
                             )}
                             {primaryColumn && objectActions.length > 0 && (
                                 <td className={"text-end text-nowrap"}>
-                                    <ColumnActions namespace={namespace}/>
+                                    <ItemActions routeParams={routeParams} namespace={namespace}/>
                                 </td>
                             )}
                         </tr>

@@ -1,5 +1,4 @@
 import React, {ReactNode} from "react";
-import {UseListItem} from "@src/context/ListItemContext.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
@@ -12,7 +11,6 @@ const Action = ({children, action, className, routeParams}: {
     children?: ReactNode;
 }) => {
     const {generateLink} = UseActions();
-    const {id} = UseListItem();
     const {onClick} = UseList();
 
     return <Link
@@ -20,16 +18,14 @@ const Action = ({children, action, className, routeParams}: {
             action: action,
             parameters: {
                 ...(routeParams || {}),
-                id: id
             }
         }, event)}
         className={className}
         to={generateLink(action.route, {
-            ...(routeParams || {}),
-            id: id
+            ...(routeParams || {})
         })}
     >
-        {children ?? action.title}
+        {children ?? action.title ?? action.name}
     </Link>
 }
 

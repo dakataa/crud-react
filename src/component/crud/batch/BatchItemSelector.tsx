@@ -2,7 +2,7 @@ import React from "react";
 import {UseBatchActions} from "@src/component/crud/batch/BatchActionsContext.tsx";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 
-const BatchItemSelector = () => {
+const BatchItemSelector = ({className}: {className?: string}) => {
 
     const {index} = UseListItem();
     const {toggle, isSelected} = UseBatchActions();
@@ -11,7 +11,7 @@ const BatchItemSelector = () => {
         <>
             <input
                 checked={isSelected(index)}
-                className={"me-2 float-start"}
+                className={className}
                 type="checkbox"
                 name={"batch"}
                 onChange={(e) => toggle(index, e.target.checked)}

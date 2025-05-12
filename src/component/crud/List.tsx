@@ -20,20 +20,20 @@ import {UseModal} from "@src/context/ModalContext.tsx";
 import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
-import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import FiltersView from "@src/component/crud/FiltersView.tsx";
 import ListView from "@src/component/crud/ListView.tsx";
 import {BatchActionsProvider} from "@src/component/crud/batch/BatchActionsContext.tsx";
 import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.tsx";
 import {ListProvider} from "@src/context/ListContext.tsx";
-import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
+// import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
+import Action from "@src/component/crud/Action.tsx";
 
 const List = memo(({action, embedded = false}: {
     action: OnClickAction,
     embedded?: boolean
 }) => {
-    const {generateLink, generateRoute, generateActionLink, location, navigate} = UseActions()
+    const {generateRoute, generateActionLink, location, navigate} = UseActions()
     let searchParams = new URLSearchParams(location.search);
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
@@ -169,17 +169,7 @@ const List = memo(({action, embedded = false}: {
                         {!!actions.length && (
                             <div className="btn-group btn-group-sm me-2">
                                 {actions.map((item, index) => (
-                                    <Link
-                                        key={index}
-                                        to={generateLink(item.route, action.parameters)}
-                                        onClick={(event) => handleAction({
-                                                action: item,
-                                                parameters: action.parameters
-                                            }, event)
-                                        }
-                                        className="btn btn-outline-secondary">
-                                        {item.title || item.name}
-                                    </Link>
+                                    <Action key={index} action={item} routeParams={action.parameters} className="btn btn-outline-secondary"/>
                                 ))}
                             </div>
                         )}
@@ -242,12 +232,12 @@ const List = memo(({action, embedded = false}: {
                             <GridView
                                 routeParams={action.parameters}
                             />
-                            <ListView
-                                item={<CustomUserItem/>}
-                                routeParams={action.parameters}/>
+                            {/*<ListView*/}
+                            {/*    item={<CustomUserItem/>}*/}
+                            {/*    routeParams={action.parameters}/>*/}
 
                     </DynamicView>
-                    <PaginatorView meta={results?.entity.data.meta}/>
+                    <PaginatorView/>
                 </BatchActionsProvider>
             </section>
         </ListProvider>
