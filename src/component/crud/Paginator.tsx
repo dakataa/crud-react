@@ -27,7 +27,7 @@ const PageItem = ({route, page, active = false, title, children}: {
 
 const Paginator = () => {
     const {data} = UseList();
-    const meta = data?.entity.data.meta;
+    const meta = data?.entity?.data.meta;
     const firstPage = 1;
     const totalPages = meta?.totalPages;
     const page = meta?.page || firstPage;

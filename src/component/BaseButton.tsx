@@ -13,11 +13,11 @@ export type Link = {
 const BaseButton = ({icon, rightIcon, rightIconProps, children, preload = false}: Link) => {
     return (
         <>
-            {/*{preload ?*/}
-            {/*    <Icon {...iconProps} icon={['far', 'spinner']} spin={true} className={"icon " + (children && "me-2")}/> :*/}
-            {/*    (icon && <Icon {...iconProps} icon={icon} className={"icon " + (children && "me-2")}/>)*/}
-            {/*}*/}
-            {children && children}
+            {preload ?
+                <Icon {...iconProps} icon={['far', 'spinner']} spin={true} className={"icon " + (children && "me-2")}/> :
+                (icon && <Icon {...iconProps} icon={icon} className={"icon " + (children && "me-2")}/>)
+            }
+            {children}
             {/*{rightIcon && <Icon className={"icon-right ms-2"} icon={rightIcon} {...rightIconProps} />}*/}
         </>
     );

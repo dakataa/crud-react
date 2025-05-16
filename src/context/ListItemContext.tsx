@@ -18,8 +18,8 @@ export function UseListItem() {
 
     return {
         index,
-        id: data?.entity.data.items[index][primaryColumn?.field || ''] ?? null,
-        data: data?.entity.data.items[index] ?? null
+        id: data?.entity?.data.items[index][primaryColumn?.field || ''] ?? null,
+        data: data?.entity?.data.items[index] ?? null
     }
 }
 

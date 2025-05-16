@@ -37,7 +37,7 @@ export type GridViewType = {
 
 const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, ref) => {
 
-    const {columns, primaryColumn, actions, objectActions, columnsTotal, items, data, onClick} = UseList();
+    const {columns, primaryColumn, objectActions, columnsTotal, items, data, onClick} = UseList();
 
     return (
         <div className={"table-responsive"}>

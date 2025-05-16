@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useRef, useState} from "react";
-import {ListType} from "@src/type/ListType.tsx";
 import {ChoiceType} from "@src/type/FormViewType.tsx";
+import {UseList} from "@src/context/ListContext.tsx";
 
 export type BatchContextType = {
     actions: {[action: string]: string}  | undefined;
@@ -24,14 +24,13 @@ export function UseBatchActions() {
     return context;
 }
 
-export function BatchActionsProvider({data, onClick, ...props}: {
-    data: ListType;
+export function BatchActionsProvider({onClick, ...props}: {
     onClick: (method: string, ids: any, data: FormData) => Promise<void>;
 } & PropsWithChildren) {
 
+    const {data, items, primaryColumn} = UseList();
     const selectedIds = useRef<number[]>([]);
-    const primaryColumn = data?.entity?.primaryColumn;
-    const currentIds: number[] = (data?.entity.data.items || []).map(row => (row[primaryColumn?.field || ''] || 0));
+    const currentIds: number[] = items.map(row => (row[primaryColumn?.field || ''] || 0));
     const isSelectedAll = !!currentIds.length && currentIds.reduce<boolean>((result: boolean, id) => result && selectedIds.current.includes(id), true);
     const actions = data?.form?.batch.view.children?.method?.choices?.reduce((result, choice: ChoiceType) => {
         const label = choice.label instanceof Function ? choice.label() : choice.label;

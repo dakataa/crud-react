@@ -222,7 +222,7 @@ const List = memo(({action, embedded = false}: {
                         )}
                     </div>
                 </header>
-                <BatchActionsProvider data={results} onClick={handleBatchAction}>
+                <BatchActionsProvider onClick={handleBatchAction}>
                     {results?.form?.filter && (
                         <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
                     )}

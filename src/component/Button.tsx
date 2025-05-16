@@ -6,7 +6,6 @@ export default forwardRef(({
                     preload,
                     ...props
                 }: Link & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, ref:ForwardedRef<HTMLButtonElement>) => {
-
     return (
         <button {...{disabled: preload}} {...props} ref={ref}>
             <BaseButton preload={preload} {...props}>{children}</BaseButton>

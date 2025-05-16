@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {convertObjectToURLSearchParams, Response} from "@dakataa/requester";
+import Requester, {convertObjectToURLSearchParams, InterceptEvent} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
@@ -69,7 +69,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     //     setCache(results);
     // }, [JSON.stringify(results)]);
 
-    const update = () => {
+    const update = (abortController?: AbortController) => {
         if (!entityAction) {
             return;
         }
@@ -77,7 +77,8 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
         CrudRequester()
             .get({
                 url: generateRoute(entityAction.route, parameters ?? null),
-                query: queryParameters
+                query: queryParameters,
+                signal: abortController?.signal
             })
             .then(({data, response}) => {
                 switch (response.status) {
@@ -87,7 +88,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                         break;
                     }
                     default: {
-                        if(data instanceof Object) {
+                        if (data instanceof Object) {
                             const exception = (data as ExceptionType);
                             throw new HttpException(exception.status, exception.detail, exception.trace);
                         }
@@ -115,7 +116,13 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
            }
         }*/
 
-       update();
+        const abortController = new AbortController();
+        update(abortController);
+
+        return () => {
+            abortController.abort();
+            console.log('cancel request');
+        }
     }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
 
     return {
@@ -125,7 +132,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             setQueryParameters(new URLSearchParams(value));
         },
         refresh: () => {
-            update();
+            setRefresh(refresh + 1);
         }
     }
 }

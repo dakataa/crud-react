@@ -21,7 +21,7 @@ export function UseList() {
     const actions = Object.values(data?.action || []);
     const objectActions = actions.filter(a => a.object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
-    const items = data?.entity.data.items ?? [];
+    const items = data?.entity?.data.items ?? [];
 
     return {
         data,

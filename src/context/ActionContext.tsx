@@ -9,7 +9,6 @@ import {RouteType} from "@src/type/RouteType.tsx";
 window.history.pushState = new Proxy(window.history.pushState, {
     apply: (target, thisArg, argArray: any) => {
         target.apply(thisArg, argArray);
-
         window.dispatchEvent(new Event('pushstate'));
     },
 });
@@ -34,7 +33,6 @@ const ActionContext = React.createContext<RouterContextType | undefined>(undefin
 
 export function UseActions() {
     const context = React.useContext<RouterContextType | undefined>(ActionContext);
-
 
     const config = UseConfig();
     const {actions, location, setLocation} = context ?? {
@@ -237,13 +235,11 @@ export function ActionProvider(props: PropsWithChildren) {
     );
 }
 
-export function withRouterContext<P extends {}>(component: ComponentType<P>): FC<P> {
+export function WithRouterContext<P extends {}>(Component: ComponentType): FC<P> {
     return (props: P) => {
-        const reactComponent = React.createElement(component, props);
-
         return (
             <ActionProvider>
-                {reactComponent}
+                <Component {...props}/>
             </ActionProvider>
         )
     };

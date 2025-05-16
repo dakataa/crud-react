@@ -18,7 +18,7 @@ const ListView = forwardRef(({item, routeParams, namespace}: ListViewType, ref) 
         items.length ? items.map((row, index) => (
             <ListItemProvider key={index} index={index}>
                 <DynamicView
-                    key={data?.entity.data.items[index][primaryColumn?.field ?? '']}
+                    key={data?.entity?.data.items[index][primaryColumn?.field ?? '']}
                     namespace={data?.entity.name || 'unknown'} data={row} prefix={"list"}
                     view={"listItem"}>
                     {item ? item : <ListItem namespace={namespace}/>}

@@ -1,27 +1,52 @@
-import React, {useEffect, useRef} from "react";
-import BaseButton, {Link as LinkType} from "./BaseButton";
+import React, {useEffect, useRef, useState} from "react";
+import {Link as LinkType} from "./BaseButton";
 import {UseActions} from "@src/context/ActionContext.tsx";
+import {UseLoaderIndicator} from "@src/context/LoaderContext.tsx";
 
-export default ({to, children, onClick, ...props}:  {to?: string} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & LinkType) => {
+export default ({to, children, onClick, ...props}: {
+    to?: string,
+} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & LinkType) => {
     const {navigate} = UseActions();
     const anchorRef = useRef<HTMLAnchorElement>(null);
+    const [clicked, setClicked] = useState(false);
+    const {isLoading} = UseLoaderIndicator(to?.toString());
 
     const onClickEvent = (event: Event) => {
-        if(onClick) {
-            onClick(event as any);
-        }
-
-        if(event.defaultPrevented) {
+        if(isLoading) {
+            event.preventDefault();
+            event.stopPropagation();
             return;
         }
 
-        if(!anchorRef?.current?.href) {
+        setClicked(true);
+
+        if (onClick) {
+            onClick(event as any);
+        }
+
+        if (event.defaultPrevented) {
+            return;
+        }
+
+        if (!to) {
             return;
         }
 
         event.preventDefault();
-        navigate(anchorRef.current.href);
+        navigate(to.toString());
     };
+
+    useEffect(() => {
+        if(!clicked) {
+            return;
+        }
+
+        if(!isLoading) {
+            setClicked(false);
+        }
+
+        console.log('loading', isLoading);
+    }, [isLoading]);
 
     useEffect(() => {
         anchorRef?.current?.addEventListener('click', onClickEvent);
@@ -33,7 +58,7 @@ export default ({to, children, onClick, ...props}:  {to?: string} & React.Detail
 
     return (
         <a ref={anchorRef} href={to} {...props}>
-            <BaseButton>{children && children}</BaseButton>
+            {clicked && isLoading && (<>*</>)} {children}
         </a>
     );
 }

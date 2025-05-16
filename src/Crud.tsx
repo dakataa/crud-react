@@ -5,7 +5,7 @@ import Error from "@src/layout/default/Error.tsx";
 import CrudLoader from "@src/component/crud/CrudLoader.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
 import {Templates} from "@src/context/ConfigContext.tsx";
-import {UseActions, withRouterContext} from "@src/context/ActionContext.tsx";
+import {UseActions, WithRouterContext} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
 const globalConfig: { templates?: Templates } = {};
@@ -25,7 +25,7 @@ const CrudRequester = (): Requester => {
     return requester;
 }
 
-const Crud = withRouterContext((
+const Crud = WithRouterContext((
     {path, prefix, errorFallback, templates}: {
         path?: string,
         prefix?: string,

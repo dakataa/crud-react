@@ -64,7 +64,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
         if(!results) {
             return;
         }
-        
+
         modalRef.current?.open()
     }, [JSON.stringify(results)]);
 
@@ -126,7 +126,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
                                 });
                             }}
                             onLoad={() => {
-                                console.log('loaded');
+
                             }}
                             embedded={modal}
                             parameters={routeParams}

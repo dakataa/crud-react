@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import React, {ReactNode, useRef} from "react";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
@@ -14,12 +14,14 @@ const Action = ({children, action, className, routeParams}: {
     const {onClick} = UseList();
 
     return <Link
-        onClick={(event) => onClick && onClick({
-            action: action,
-            parameters: {
-                ...(routeParams || {}),
-            }
-        }, event)}
+        onClick={(event) => {
+            onClick && onClick({
+                action: action,
+                parameters: {
+                    ...(routeParams || {}),
+                }
+            }, event)
+        }}
         className={className}
         to={generateLink(action.route, {
             ...(routeParams || {})
