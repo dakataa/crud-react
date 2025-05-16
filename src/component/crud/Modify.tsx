@@ -54,7 +54,7 @@ const Modify = ({action, children, onSuccess, modal, props}: {
     const routeParams = {...(action.parameters || {})}
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);
-    const {results, setParameters}: any & { results: ModifyType } = GetData({
+    const {results, setParameters, cancel}: any & { results: ModifyType } = GetData({
         entityAction: action.action,
         initParameters: routeParams
     });
@@ -67,6 +67,12 @@ const Modify = ({action, children, onSuccess, modal, props}: {
 
         modalRef.current?.open()
     }, [JSON.stringify(results)]);
+
+    useEffect(() => {
+        return () => {
+            cancel()
+        }
+    }, []);
 
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 

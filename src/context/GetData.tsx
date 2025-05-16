@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import Requester, {convertObjectToURLSearchParams, InterceptEvent} from "@dakataa/requester";
+import Requester, {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
@@ -15,6 +15,7 @@ export type GetDataType = {
     setParameters: (v: { [key: string]: string } | null) => void;
     setQueryParameters: (v: URLSearchParams | { [key: string]: string }) => void;
     refresh: () => void;
+    cancel: () => void;
 }
 
 type GetDataProps = {
@@ -34,6 +35,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     const [results, setResults] = useState<ListType | ModifyType | null>();
     const [parameters, setParameters] = useState<{ [key: string]: string } | null>(initParameters || null);
 
+    const loading = useRef<AbortController|null>(null);
     const lastKey = useRef<string | null>(null);
     const [queryParameters, setQueryParameters] = useState<URLSearchParams>(initQueryParameters instanceof URLSearchParams ? initQueryParameters : convertObjectToURLSearchParams(initQueryParameters || {}));
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
@@ -69,16 +71,18 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     //     setCache(results);
     // }, [JSON.stringify(results)]);
 
-    const update = (abortController?: AbortController) => {
+    const update = () => {
         if (!entityAction) {
             return;
         }
+
+        loading.current = new AbortController();
 
         CrudRequester()
             .get({
                 url: generateRoute(entityAction.route, parameters ?? null),
                 query: queryParameters,
-                signal: abortController?.signal
+                signal: loading.current?.signal
             })
             .then(({data, response}) => {
                 switch (response.status) {
@@ -96,34 +100,26 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                         throw new HttpException(response.status, response.statusText);
                     }
                 }
+            })
+            .catch((e) => {
+                console.log('error', e);
+            })
+            .finally(() => {
             });
     }
 
     useEffect(() => {
-        /*if(lastKey.current === key) {
-            return;
-        }
-
-        lastKey.current = key;
-
-        let cachedData = getCache();
-        if(cachedData) {
-           try {
-               setResults(cachedData);
-               return;
-           } catch (e) {
-               console.log('error', e);
-           }
-        }*/
-
-        const abortController = new AbortController();
-        update(abortController);
+        update();
 
         return () => {
-            abortController.abort();
-            console.log('cancel request');
+           cancel();
         }
     }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
+
+    const cancel = () => {
+        loading.current?.abort('canceled');
+        loading.current = null;
+    }
 
     return {
         results,
@@ -133,7 +129,8 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
         },
         refresh: () => {
             setRefresh(refresh + 1);
-        }
+        },
+        cancel
     }
 }
 

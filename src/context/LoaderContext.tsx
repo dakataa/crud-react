@@ -2,12 +2,14 @@ import React, {PropsWithChildren, useEffect, useReducer} from "react";
 import Requester, {InterceptEvent, Response} from "@dakataa/requester";
 import {UseActions} from "@src/context/ActionContext.tsx";
 
+type DataLoaderIndicatorItemType = {url: string, requestId: number};
+
 type DataLoaderIndicatorContextType = {
-    links: string[];
+    requests: DataLoaderIndicatorItemType[];
 }
 
 const DataLoaderIndicatorContext = React.createContext<DataLoaderIndicatorContextType>({
-    links: []
+    requests: []
 });
 
 export function UseLoaderIndicator(url?: string) {
@@ -16,7 +18,7 @@ export function UseLoaderIndicator(url?: string) {
         throw new Error("UseLoaderIndicator must be within DataLoaderIndicatorProvider")
     }
 
-    const {links: urls} = context;
+    const {requests: urls} = context;
     const {matchPath, getActionByPath, generateActionLink} = UseActions();
 
     const isLoading = (url: string) => {
@@ -28,7 +30,7 @@ export function UseLoaderIndicator(url?: string) {
         const {params: parameters} = matchPath(action.route?.path || '', url) ?? {params: undefined};
         const link = generateActionLink({action, parameters});
 
-        return urls.includes(link);
+        return !!urls.filter(v => v.url === link).length;
     };
 
     return {
@@ -39,37 +41,45 @@ export function UseLoaderIndicator(url?: string) {
 export function DataLoaderIndicatorProvider({...props}: PropsWithChildren) {
     const [state, dispatch] = useReducer((state: DataLoaderIndicatorContextType, command: {
         action: 'load' | 'complete' | 'cancel',
+        requestId: number;
         url: string
     }): DataLoaderIndicatorContextType => {
-        const {action, url} = command;
+        const {action, requestId, url} = command;
         const pathname = new URL(url).pathname;
+        state = {requests: state.requests.filter(v => v.requestId !== requestId)};
         switch (action) {
             case 'cancel':
             case 'complete': {
-                state = {links: state.links.filter(v => v !== pathname)};
+
                 break;
             }
             default: {
-                state = {links: [...state.links, pathname]};
+                state.requests.push({url: pathname, requestId: requestId});
+                state = {requests: state.requests};
             }
         }
 
         return state;
-    }, {links: []});
+    }, {requests: []});
 
     useEffect(() => {
         const requestInterceptId = Requester.on(InterceptEvent.PRE_REQUEST, (requestId: number, url: URL | string, options: any) => {
-            dispatch({action: 'load', url: url.toString()})
+            dispatch({action: 'load', requestId: requestId, url: url.toString()})
         });
 
         const preResponseInterceptId = Requester.on(InterceptEvent.POST_RESPONSE, (requestId: number, response: Response, url: URL | string, options: any) => {
-            dispatch({action: 'complete', url: url.toString()})
+            dispatch({action: 'complete', requestId: requestId, url: url.toString()})
+        });
+
+        const errorInterceptId = Requester.on(InterceptEvent.ERROR, (requestId: number, reason: any, url: URL | string, options: any) => {
+            dispatch({action: 'cancel', requestId: requestId,url: url.toString()})
         });
 
         return () => {
             Requester
                 .off(requestInterceptId)
-                .off(preResponseInterceptId);
+                .off(preResponseInterceptId)
+                .off(errorInterceptId);
         }
     }, []);
 
