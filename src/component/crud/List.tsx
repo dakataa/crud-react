@@ -28,11 +28,13 @@ import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.t
 import {ListProvider} from "@src/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 import Action from "@src/component/crud/Action.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
-const List = memo(({action, embedded = false}: {
-    action: OnClickAction,
+const List = memo(({embedded = false}: {
+    action?: OnClickAction,
     embedded?: boolean
 }) => {
+    const action = UseCurrentAction();
     const {generateRoute, generateActionLink, location, navigate} = UseActions()
     let searchParams = new URLSearchParams(location.search);
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);

@@ -12,6 +12,7 @@ import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Link from "@src/component/Link.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
 const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     action: ActionType;
@@ -44,13 +45,13 @@ const DefaultModifyTemplate = ({action, children, routeParams, results}: {
     )
 }
 
-const Modify = ({action, children, onSuccess, modal, props}: {
-    action: OnClickAction;
+const Modify = ({children, onSuccess, modal, props}: {
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
     props?: any;
 }) => {
+    const action = UseCurrentAction();
     const routeParams = {...(action.parameters || {})}
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);

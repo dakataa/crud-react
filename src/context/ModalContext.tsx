@@ -4,6 +4,8 @@ import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import {Icon, UseAlert} from "@src/context/AlertContext.tsx";
+import {ActionProvider} from "@src/context/ActionContext.tsx";
+import {CurrentActionProvider} from "@src/component/crud/CrudLoader.tsx";
 
 export type ModalActionType = {
     action: OnClickAction;
@@ -59,16 +61,17 @@ export function ModalProvider(props: PropsWithChildren) {
                         }
                     })
                 }}>
-                    <ViewLoader
-                        key={updates.current}
-                        view={modal.action.action.name || 'list'}
-                        namespace={modal.action.action.namespace || ''}
-                        props={{
-                            action: modal.action,
-                            modal: true,
-                            props: modalProps
-                        }}
-                    />
+                    <CurrentActionProvider action={modal.action}>
+                        <ViewLoader
+                            key={updates.current}
+                            view={modal.action.action.name || 'list'}
+                            namespace={modal.action.action.namespace || ''}
+                            props={{
+                                modal: true,
+                                props: modalProps
+                            }}
+                        />
+                    </CurrentActionProvider>
                 </ErrorBoundary>
             )}
         </ModalContext.Provider>

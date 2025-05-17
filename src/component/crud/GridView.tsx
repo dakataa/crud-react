@@ -9,6 +9,8 @@ import ItemLabel from "@src/component/crud/ItemLabel.tsx";
 import {ListItemProvider} from "@src/context/ListItemContext.tsx";
 import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -38,6 +40,7 @@ export type GridViewType = {
 const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, ref) => {
 
     const {columns, primaryColumn, objectActions, columnsTotal, items, data, onClick} = UseList();
+    const currentAction = UseCurrentAction();
 
     return (
         <div className={"table-responsive"}>

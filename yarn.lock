@@ -182,10 +182,9 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@dakataa/crud-theme@^1.0.1":
+"@dakataa/crud-theme@file:../admin-theme":
   version "1.0.1"
-  resolved "https://registry.npmjs.org/@dakataa/crud-theme/-/crud-theme-1.0.1.tgz"
-  integrity sha512-OwnJG5cVHoEoho0Yn+hVdAKt9GvtB5LDNpWbKItUiSFrEjDHG08f50wbmLSQMRwTulpNzcIqIvtX7a+6iTP3bw==
+  resolved "file:../admin-theme"
   dependencies:
     bootstrap "^5.3.3"
 
@@ -760,7 +759,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-bootstrap@^5.3.3, bootstrap@^5.3.5:
+bootstrap@^5.3.5:
   version "5.3.6"
   resolved "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.6.tgz"
   integrity sha512-jX0GAcRzvdwISuvArXn3m7KZscWWFAf1MKBcnzaN02qWMb3jpMoUX4/qgeiGzqyIb4ojulRzs89UCUmGcFSzTA==
