@@ -101,9 +101,6 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
                     }
                 }
             })
-            .catch((e) => {
-                console.log('error', e);
-            })
             .finally(() => {
             });
     }
