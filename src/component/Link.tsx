@@ -44,8 +44,6 @@ export default ({to, children, onClick, ...props}: {
         if(!isLoading) {
             setClicked(false);
         }
-
-        console.log('loading', isLoading);
     }, [isLoading]);
 
     useEffect(() => {
