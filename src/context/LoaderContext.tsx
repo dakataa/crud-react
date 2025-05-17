@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, useEffect, useReducer} from "react";
-import Requester, {InterceptEvent, Response} from "@dakataa/requester";
+import Requester, {convertURLSearchParamsToObject, InterceptEvent, Response} from "@dakataa/requester";
 import {UseActions} from "@src/context/ActionContext.tsx";
 
 type DataLoaderIndicatorItemType = {url: string, requestId: number};
@@ -18,23 +18,29 @@ export function UseLoaderIndicator(url?: string) {
         throw new Error("UseLoaderIndicator must be within DataLoaderIndicatorProvider")
     }
 
-    const {requests: urls} = context;
+    const {requests} = context;
     const {matchPath, getActionByPath, generateActionLink} = UseActions();
+    let link = null;
+    if(url) {
+        const action = getActionByPath(url?.toString() ?? '');
 
-    const isLoading = (url: string) => {
-        const action = getActionByPath(url);
-        if(!action) {
+        if(action) {
+            const routeParameters = convertURLSearchParamsToObject(new URL(url, location.origin).searchParams)
+            const {params: parameters} = matchPath(action.route?.path || '', url) ?? {params: undefined};
+            link = generateActionLink({action, parameters: {...parameters, ...routeParameters}});
+        }
+    }
+
+    const isLoading = () => {
+        if(!link) {
             return false;
         }
 
-        const {params: parameters} = matchPath(action.route?.path || '', url) ?? {params: undefined};
-        const link = generateActionLink({action, parameters});
-
-        return !!urls.filter(v => v.url === link).length;
+        return !!requests.filter(v => v.url === link).length;
     };
 
     return {
-        isLoading: url ? isLoading(url.toString()) : false
+        isLoading: isLoading()
     };
 }
 
@@ -45,7 +51,8 @@ export function DataLoaderIndicatorProvider({...props}: PropsWithChildren) {
         url: string
     }): DataLoaderIndicatorContextType => {
         const {action, requestId, url} = command;
-        const pathname = new URL(url).pathname;
+        const uri = new URL(url);
+        const pathname = uri.toString().replace(uri.origin, '');
         state = {requests: state.requests.filter(v => v.requestId !== requestId)};
         switch (action) {
             case 'cancel':

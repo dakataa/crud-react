@@ -125,8 +125,9 @@ export function UseActions() {
     }
 
     const matchPath = (pattern: string, path: string) => {
+        const url = new URL(path, location.origin);
         const regexp = '^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>[^/]+)')  + '$';
-        const hasMatch = new RegExp(regexp, 'giu').test(path);
+        const hasMatch = new RegExp(regexp, 'giu').test(url.pathname);
         if(!hasMatch) {
             return null;
         }
@@ -142,9 +143,21 @@ export function UseActions() {
     }
 
     const generatePath = (pattern: string, parameters?: {[key:string]: string}): string => {
-        return pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
-            return parameters?.[p1] || '';
+        const path = pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
+            const value = parameters?.[p1];
+            if(value !== undefined) {
+                delete parameters?.[p1];
+            }
+
+            return value ?? '';
         });
+
+        const url = new URL(path, location.origin);
+        Object.keys(parameters || {}).forEach((k) => {
+            url.searchParams.set(k, parameters?.[k] ?? '')
+        });
+
+        return url.pathname + url.search
     }
 
     return {
