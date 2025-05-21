@@ -47,8 +47,12 @@ export function UseActions() {
         return actions?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
     }
 
-    const getActionByPath = (path: string): ActionType | undefined => {
-        return actions?.find((a) => a.route?.path && matchPath(a.route.path, path));
+    const getActionByPath = (path: string): ActionType | undefined | null => {
+        if(!actions) {
+            return undefined;
+        }
+
+        return actions.find((a) => a.route?.path && matchPath(a.route.path, path)) ?? null;
     };
 
     const getOnClickActionByPath = (path: string): OnClickAction|null|undefined => {

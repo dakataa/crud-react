@@ -34,7 +34,7 @@ const Paginator = () => {
     const link = meta?.links;
     const hasPagination = !!meta?.totalPages;
 
-    return totalPages && (
+    return hasPagination && (
         <div className="d-flex flex-column justiry-content-center">
             <small className="mb-2">
                 {meta.totalResults} Results
