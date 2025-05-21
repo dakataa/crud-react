@@ -235,7 +235,7 @@ const List = memo(({embedded = false}: {
                                 routeParams={action.parameters}
                             />
                             {/*<ListView*/}
-                            {/*    item={<CustomUserItem/>}*/}
+                            {/*    // item={<CustomUserItem/>}*/}
                             {/*    routeParams={action.parameters}/>*/}
 
                     </DynamicView>

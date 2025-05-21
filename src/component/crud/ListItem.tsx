@@ -14,7 +14,7 @@ const ListItem = ({namespace}: {
     return (
         <div className={"card mb-3"}>
             <div className={"card-body"}>
-                <div className={"d-flex flex-row align-items-start"}>
+                <div className={"d-flex flex-row gap-3 align-items-start"}>
                     <BatchItemSelector/>
                     <div className={"d-flex flex-column flex-wrap gap-2"}>
                         {columns.map((column, index) => (
@@ -26,7 +26,9 @@ const ListItem = ({namespace}: {
                             </div>
                         ))}
                     </div>
-                    <ItemActions namespace={namespace}/>
+                    <div className={"ms-auto"}>
+                        <ItemActions namespace={namespace}/>
+                    </div>
                 </div>
             </div>
         </div>
