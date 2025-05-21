@@ -1,8 +1,7 @@
-import React, {ComponentType, FC, PropsWithChildren, ReactElement, useEffect, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, useEffect, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
-import Exception from "@src/component/error/Exception.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {RouteType} from "@src/type/RouteType.tsx";
 
@@ -33,14 +32,16 @@ const ActionContext = React.createContext<RouterContextType | undefined>(undefin
 
 export function UseActions() {
     const context = React.useContext<RouterContextType | undefined>(ActionContext);
+    if(!context) {
+        throw new Error('UseActions  must be used in ActionProvider');
+    }
+
+    const contextRef = useRef(context);
+    const [state, setState] = useState(1);
+    contextRef.current = context;
 
     const config = UseConfig();
-    const {actions, location, setLocation} = context ?? {
-        actions: null,
-        location: new URL(document.location.href),
-        setLocation: () => {
-        }
-    };
+    const {actions, location, setLocation} = context;
 
     const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
         return actions?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
@@ -50,38 +51,18 @@ export function UseActions() {
         return actions?.find((a) => a.route?.path && matchPath(a.route.path, path));
     };
 
-    const getOnClickActionByPath = (path: string): Promise<OnClickAction|null> => {
-        const getOnClickAction = () => {
-            const action = getActionByPath(path);
-            if(!action) {
-                return null;
-            }
-
-            const match = matchPath(action.route?.path || '', path);
-            return {
-                action,
-                parameters: match?.params
-            };
+    const getOnClickActionByPath = (path: string): OnClickAction|null|undefined => {
+        const action = getActionByPath(path);
+        if(!action) {
+            return action;
         }
 
-        return new Promise<OnClickAction|null>((resolve) => {
-            let retries = 0;
-            const timeout = () => {
-                if(retries > 10) {
-                    throw new Exception(0, 'Cannot load routes');
-                }
+        const match = matchPath(action.route?.path || '', path);
 
-                if(context) {
-                    return resolve(getOnClickAction());
-                }
-
-                setTimeout(timeout, 200);
-                retries++;
-            }
-
-            timeout();
-        });
-
+        return {
+            action,
+            parameters: match?.params
+        };
     }
 
     const crudToReactPathPattern = (path: string) => {
@@ -249,6 +230,7 @@ export function ActionProvider(props: PropsWithChildren) {
 }
 
 export function WithRouterContext<P extends {}>(Component: ComponentType): FC<P> {
+
     return (props: P) => {
         return (
             <ActionProvider>

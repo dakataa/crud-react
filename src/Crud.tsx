@@ -52,7 +52,8 @@ const Crud = WithRouterContext((
 });
 
 export {
-    Crud as default,
     CrudConfiguration,
     CrudRequester
 };
+
+export default Crud;

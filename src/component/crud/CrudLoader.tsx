@@ -36,17 +36,13 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {getOnClickActionByPath} = UseActions();
-    const [onClickAction, setOnClickAction] = useState<OnClickAction | null | undefined>();
-
-    useEffect(() => {
-        getOnClickActionByPath(path).then((v) => setOnClickAction(v));
-    }, [path]);
+    const onClickAction = getOnClickActionByPath(path);
 
     if (onClickAction === undefined) {
         return preloader ?? <>Loading</>
     }
 
-    if (!onClickAction) {
+    if (onClickAction === null) {
         throw new HttpException(404, 'Page Not Found');
     }
 
