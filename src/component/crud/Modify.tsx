@@ -60,6 +60,7 @@ const Modify = ({children, onSuccess, modal, props}: {
         initParameters: routeParams
     });
     const {open: openAlert} = UseAlert();
+    const {navigate, generateLink} = UseActions();
 
     useEffect(() => {
         if(!results) {
@@ -99,13 +100,13 @@ const Modify = ({children, onSuccess, modal, props}: {
                             ref={modifyFormRef}
                             data={results}
                             action={action.action}
-                            onSuccess={(data: ModifyType) => {
+                            onSuccess={(data: ModifyType) => new Promise((resolve, reject) => {
                                 modalRef.current?.close();
                                 const event = new CustomEvent('success', {detail: data})
                                 onSuccess && onSuccess(event, data);
 
                                 if (event.defaultPrevented) {
-                                    return;
+                                    return reject();
                                 }
 
                                 openAlert({
@@ -116,11 +117,13 @@ const Modify = ({children, onSuccess, modal, props}: {
                                         close: {
                                             label: 'OK'
                                         }
+                                    },
+                                    onResult: () => {
+                                        resolve();
                                     }
                                 });
-                            }}
+                            })}
                             onError={(error: ExceptionType) => {
-                                console.log(error);
                                 openAlert({
                                     title: error.status + ' ' + error.detail,
                                     text: error.detail,

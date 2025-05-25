@@ -24,7 +24,7 @@ const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, o
     data?: ModifyType;
     action: ActionType;
     parameters?: { [key: string]: any };
-    onSuccess?: (data: any) => void;
+    onSuccess?: (data: any) => Promise<void>;
     onError?: (data: ExceptionType) => void;
     onLoad?: () => void;
     children?: ReactNode;
@@ -74,13 +74,18 @@ const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, o
                 return;
             }
 
-            if (onSuccess) {
-                onSuccess(data);
+            const doAfter = () => {
+                if (data.redirect && !embedded) {
+                    navigate(generateLink(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
+                }
             }
 
-            if (data.redirect && !embedded) {
-                navigate(generateLink(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
+            if (onSuccess) {
+                onSuccess(data).then(() => doAfter());
+            } else {
+                doAfter();
             }
+
         }).catch((error: ExceptionType) => {
             if (onError) {
                 onError(error);

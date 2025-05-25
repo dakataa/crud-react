@@ -18,10 +18,10 @@ const ListItem = ({namespace}: {
                     <BatchItemSelector/>
                     <div className={"d-flex flex-column flex-wrap gap-2"}>
                         {columns.map((column, index) => (
-                            <div key={index}>
-                            <span className={"text-secondary me-1"}>
-                                <ItemLabel column={column} namespace={namespace}/>:
-                            </span>
+                            <div className={"d-flex align-items-start"} key={index}>
+                                <span className={"text-secondary me-1"}>
+                                    <ItemLabel column={column} namespace={namespace}/>:
+                                </span>
                                 <ItemValue column={column} namespace={namespace}/>
                             </div>
                         ))}
