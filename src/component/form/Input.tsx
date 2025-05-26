@@ -6,8 +6,9 @@ import {FormViewType} from "@src/type/FormViewType";
 export type FormFieldProps = {
     view: FormViewType;
     className?: string;
-    constraints?: Constraint[],
-    onChange?: Function
+    constraints?: Constraint[];
+    onChange?: Function;
+    prototype?: string;
 }
 
 export type InputProps = {} & FormFieldProps;
@@ -17,37 +18,41 @@ const Input = ({
                    constraints,
                    className,
                    onChange,
+                   prototype
                }: InputProps):
     React.JSX.Element => {
 
+    const elementFullName = view.full_name.replace('__name__', prototype ?? '');
+    const elementId = (view.id || nameToId(elementFullName)).replace('__name__', prototype ?? '');
     const [[formState, dispatch]] = useForm();
     const fieldRef = useRef<HTMLInputElement | null>(null);
-    const errorMessages = formState?.errors[view.full_name] || [];
+    const errorMessages = formState?.errors[elementFullName] || [];
 
     useEffect(() => {
         dispatch({
             action: 'constraints',
             payload: {
-                name: view.full_name,
+                name: elementFullName,
                 constraints: constraints || []
             }
         });
     }, [])
 
     const validate = (value: any) => {
-        dispatch({action: 'validate', payload: view.full_name});
+        dispatch({action: 'validate', payload: elementFullName});
         onChange && onChange(value);
     }
 
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
+
     return <>
         <input
             ref={fieldRef}
-            id={view.id || nameToId(view.full_name)}
+            id={elementId}
             key={key}
-            name={view.full_name}
+            name={elementFullName}
             type={view.type}
             defaultValue={view.data}
             aria-invalid={!errorMessages.length}

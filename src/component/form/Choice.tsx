@@ -7,6 +7,7 @@ export type ChoiceProps = {
     view: FormViewType,
     choiceValueTransform?: Function,
     choiceLabelTransform?: Function
+    prototype?: string
 } & FormFieldProps;
 
 const Choice = ({
@@ -16,14 +17,17 @@ const Choice = ({
                     onChange,
                     choiceValueTransform,
                     choiceLabelTransform,
+                    prototype,
                     ...props
                 }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
 
+    const elementName = view.full_name.replace('__name__', prototype ?? '');
+    const elementId = (view.id || nameToId(elementName)).replace('__name__', prototype ?? '');
     const [[formState, dispatch], formRef] = useForm();
     const fieldRef = useRef<HTMLSelectElement | HTMLInputElement | null>(null);
-    const errorMessages = formState?.errors[view.full_name] || [];
+    const errorMessages = formState?.errors[elementName] || [];
     const isInvalid = !!errorMessages.length;
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
 
@@ -45,7 +49,7 @@ const Choice = ({
     if (view?.expanded) {
         return <>
             {Object.values(view.choices || []).map((choice: ChoiceType, choiceIndex: number) => {
-                    const elementId = nameToId(view.full_name, choiceIndex);
+                    const elementId = nameToId(elementName, choiceIndex);
                     const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
                     const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
                     const attributes = {
@@ -62,13 +66,13 @@ const Choice = ({
                             defaultValue={choiceValue}
                             type={view?.multiple ? 'checkbox' : 'radio'}
                             defaultChecked={view?.data?.includes(choiceValue)}
-                            name={view?.full_name + '[]'}
+                            name={elementName + '[]'}
                             id={elementId}
                             className={"form-check-input"}
                             {...attributes}
                             onChange={(e) => {
                                 return validate({
-                                    value: (view?.multiple ? formRef?.current?.getFormData().getAll(view?.full_name) : formRef?.current?.getFormData().get(view?.full_name)) || e.target.value,
+                                    value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
                                     targetValue: e.target.value,
                                     checked: e.target.checked
                                 })
@@ -90,11 +94,11 @@ const Choice = ({
                 <select
                     ref={fieldRef}
                     key={key}
-                    name={view.full_name}
+                    name={elementName}
                     multiple={view.multiple}
                     aria-invalid={isInvalid}
                     onChange={(e) => validate({
-                        value: (view.multiple ? formRef?.current?.getFormData().getAll(view.full_name) : formRef?.current?.getFormData().get(view.full_name)) || e.target.value
+                        value: (view.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value
                     })}
                     className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
                     {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}

@@ -28,6 +28,7 @@ export type FormViewType = {
     attr?: { [key: string]: string } | Function;
     data?: any;
     rendered?: boolean;
+    prototype?: FormViewType;
 }
 
 export type ChoiceType = {
