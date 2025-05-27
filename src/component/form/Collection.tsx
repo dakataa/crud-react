@@ -44,8 +44,8 @@ const Collection = ({
             {items.map((name) => {
                 const itemFormView = view.children?.[name] ?? (view.prototype as FormViewType);
                 return (
-                    <DynamicView data={{view: itemFormView, prototype: name, delete: () => dispatchItem({action: 'delete', name})}} prefix={"modify/form"} view={view.name + ".item"}>
-                        <div key={name} className={"mb-3"}>
+                    <DynamicView key={name} data={{view: itemFormView, prototype: name, delete: () => dispatchItem({action: 'delete', name})}} prefix={"modify/form"} view={view.name + ".item"}>
+                        <div className={"mb-3"}>
                             <FormField
                                 view={itemFormView}
                                 prototype={name}/>
@@ -62,7 +62,6 @@ const Collection = ({
             })}
             {isPrototype && (
                 <Link
-                    to={"#"}
                     onClick={() => dispatchItem({action: 'add'})}
                     className={"btn btn-outline-primary btn-sm"}>+ Add</Link>
             )}
