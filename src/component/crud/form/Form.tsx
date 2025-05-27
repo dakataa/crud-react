@@ -76,7 +76,7 @@ const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, o
 
             const doAfter = () => {
                 if (data.redirect && !embedded) {
-                    navigate(generateLink(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}));
+                    navigate(generateLink(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}), true);
                 }
             }
 

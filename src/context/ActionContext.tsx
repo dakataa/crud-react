@@ -101,9 +101,13 @@ export function UseActions() {
         return path;
     }
 
-    const navigate = (to: string) => {
+    const navigate = (to: string, replace?: boolean) => {
         try {
-            history.pushState(null, '', to);
+            if(replace) {
+                history.replaceState(null, '', to);
+            } else {
+                history.pushState(null, '', to);
+            }
         } catch (e) {
             window.location.assign(to);
         }

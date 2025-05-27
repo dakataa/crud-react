@@ -3,6 +3,7 @@ import {FormViewType} from "@src/type/FormViewType";
 import {FormField} from "../../../lib/main.ts";
 import Link from "@src/component/Link.tsx";
 import T from "@src/component/Translation.tsx";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -17,7 +18,7 @@ const Collection = ({
                     }: InputProps):
     React.JSX.Element => {
 
-    const [newItems, dispatchItem] = useReducer((state: string[], command: {
+    const [items, dispatchItem] = useReducer((state: string[], command: {
         action: 'add' | 'delete',
         name?: string
     }) => {
@@ -33,8 +34,6 @@ const Collection = ({
             }
         }
 
-        console.log('state', state);
-
         return state;
     }, Object.keys(view.children ?? []));
 
@@ -42,20 +41,23 @@ const Collection = ({
 
     return (
         <>
-            {newItems.map((name) => {
+            {items.map((name) => {
+                const itemFormView = view.children?.[name] ?? (view.prototype as FormViewType);
                 return (
-                    <div key={name} className={"mb-3"}>
-                        <FormField
-                            view={view.children?.[name] ?? (view.prototype as FormViewType)}
-                            prototype={name}/>
+                    <DynamicView data={{view: itemFormView, prototype: name, delete: () => dispatchItem({action: 'delete', name})}} prefix={"modify/form"} view={view.name + ".item"}>
+                        <div key={name} className={"mb-3"}>
+                            <FormField
+                                view={itemFormView}
+                                prototype={name}/>
 
-                        {isPrototype && (
-                            <Link
-                                to={"#"}
-                                onClick={() => dispatchItem({action: 'delete', name})}
-                                className={"btn btn-outline-danger  btn-sm"}><T>Delete</T></Link>
-                        )}
-                    </div>
+                            {isPrototype && (
+                                <Link
+                                    to={"#"}
+                                    onClick={() => dispatchItem({action: 'delete', name})}
+                                    className={"btn btn-outline-danger  btn-sm"}><T>Delete</T></Link>
+                            )}
+                        </div>
+                    </DynamicView>
                 )
             })}
             {isPrototype && (

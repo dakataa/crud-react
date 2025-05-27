@@ -85,7 +85,7 @@ export function AlertProvider(props: PropsWithChildren) {
     const open = (config?: AlertConfigOptionalType): void => {
         let alertConfig = {
             title: 'Are you confirm?',
-            icon: Icon.success,
+            icon: Icon.info,
             animation: Animation.scale,
             size: Size.default,
             allowClose: false,

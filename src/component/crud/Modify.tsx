@@ -60,7 +60,6 @@ const Modify = ({children, onSuccess, modal, props}: {
         initParameters: routeParams
     });
     const {open: openAlert} = UseAlert();
-    const {navigate, generateLink} = UseActions();
 
     useEffect(() => {
         if(!results) {
