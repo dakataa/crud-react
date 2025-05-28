@@ -142,6 +142,9 @@ const Modal = forwardRef(({
                                         Title
                                     </TemplateBlock>
                                 </h5>
+                                <TemplateBlock name={"navigation"} content={children} data={null}>
+                                    <nav>{children}</nav>
+                                </TemplateBlock>
                                 <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
                             </div>
                         </TemplateBlock>

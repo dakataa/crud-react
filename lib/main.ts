@@ -1,6 +1,6 @@
 export {default as Crud, CrudConfiguration} from "@src/Crud.tsx";
 export {default as CrudProvider} from "@src/context/CrudProvider.tsx";
-export {default as CrudLoader, CurrentActionProvider} from "@src/component/crud/CrudLoader.tsx";
+export {default as CrudLoader, CurrentActionProvider, UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "@src/component/crud/Modify.tsx";
 export {default as List} from "@src/component/crud/List.tsx";
 export {default as GridView} from "@src/component/crud/GridView.tsx";

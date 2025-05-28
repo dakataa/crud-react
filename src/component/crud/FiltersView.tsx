@@ -12,9 +12,11 @@ const FiltersView = ({formView, onClick}: { formView: FormViewType, onClick: (ke
         return view.data;
     }
 
-    return (
+    const appliedFilters = Object.values<FormViewType>(formView.children || []).filter(item => item.data !== null);
+
+    return !!appliedFilters.length && (
         <div className={"filters d-flex mb-sm overflow-auto"}>
-            {Object.values<FormViewType>(formView.children || []).filter(item => item.data !== null).map((item, index) => (
+            {appliedFilters.filter(item => item.data !== null).map((item, index) => (
                 <div key={index} className="filters-item d-flex text-nowrap flex-column me-2 mb-2">
                     <small className="mb-2">{item.label}</small>
                     <div className="btn btn-sm btn-primary me-1 mb-1">

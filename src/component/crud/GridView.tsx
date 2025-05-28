@@ -59,7 +59,7 @@ const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, re
                                         },
                                         parameters: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
                                     }, event)}
-                                    className={"btn"}
+                                    className={"btn btn-sm"}
                                     to={"#"}
                                 >
                                     {data.sort[column.field] ? (data.sort[column.field] === 'ASC' ? '\u21D1' : '\u21D3') : '\u21C5'}

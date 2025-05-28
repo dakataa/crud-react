@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useRef} from "react";
+import React, {memo, ReactElement, useEffect, useRef} from "react";
 import {
     convertFormDataToObject,
     convertObjectToURLSearchParams,
@@ -30,9 +30,10 @@ import {ListProvider} from "@src/context/ListContext.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
-const List = memo(({embedded = false}: {
+const List = memo(({embedded = false, title}: {
     action?: OnClickAction,
     embedded?: boolean
+    title?: string | ReactElement | false
 }) => {
     const action = UseCurrentAction();
     const {generateRoute, generateActionLink, location, navigate} = UseActions()
@@ -84,7 +85,7 @@ const List = memo(({embedded = false}: {
                         CrudRequester().post({
                             url: generateActionLink(action),
                             body: data
-                        }).catch((e:any) => {
+                        }).catch((e: any) => {
                             reject();
                         }).finally(() => {
                             refresh();
@@ -127,7 +128,7 @@ const List = memo(({embedded = false}: {
                             CrudRequester().fetch({
                                 url: generateRoute(onClickAction.action.route, {...action.parameters, ...onClickAction.parameters}),
                                 method: Method.DELETE
-                            }).catch((e:any) => {
+                            }).catch((e: any) => {
                                 console.log('error', e);
                             }).finally(() => {
                                 refresh();
@@ -164,79 +165,88 @@ const List = memo(({embedded = false}: {
         <ListProvider data={results} onClick={handleAction}>
             <section className={"list"}>
                 <header className="content-header d-md-flex mb-3 justify-content-between align-items-center">
-                    <h2>
-                        {results?.title}
-                    </h2>
+                    {title !== false && (
+                        <h2>
+                            {title ?? results?.title}
+                        </h2>
+                    )}
                     <div className={"d-flex align-items-center"}>
                         {!!actions.length && (
                             <div className="btn-group btn-group-sm me-2">
                                 {actions.map((item, index) => (
-                                    <Action key={index} action={item} routeParams={action.parameters} className="btn btn-outline-secondary"/>
+                                    <>
+                                        <Action
+                                            key={index}
+                                            action={item}
+                                            routeParams={action.parameters}
+                                            className="btn btn-outline-secondary"
+                                        />
+                                    </>
                                 ))}
                             </div>
                         )}
-                        {results?.form?.filter && (
+                        {results?.form?.filter.view && (
                             <div className={"btn-group btn-group-sm"}>
-                            <Dropdown className={"btn-group btn-group-sm"}>
-                                <DropdownButton className={"btn-outline-dark"}>
-                                    <T>Filter</T>
-                                </DropdownButton>
-                                <DropdownContent>
-                                    <div className="filter">
-                                        <Form
-                                            id={"filter_" + nameToId(entity)}
-                                            ref={filterFormRef}
-                                            onSubmit={(formData: FormData) => handleAction({
-                                                action: {
-                                                    name: 'filter',
-                                                    object: false,
-                                                    namespace: action.action.namespace,
-                                                    entity: entity
-                                                }, parameters: convertFormDataToObject(formData)
-                                            })}
-                                            onReset={() => handleAction({
-                                                action: {
-                                                    name: 'filter',
-                                                    object: false,
-                                                    namespace: action.action.namespace,
-                                                    entity: entity
+                                <Dropdown className={"btn-group btn-group-sm"}>
+                                    <DropdownButton className={"btn-outline-dark"}>
+                                        <T>Filter</T>
+                                    </DropdownButton>
+                                    <DropdownContent>
+                                        <div className="filter">
+                                            <Form
+                                                id={"filter_" + nameToId(entity)}
+                                                ref={filterFormRef}
+                                                onSubmit={(formData: FormData) => handleAction({
+                                                    action: {
+                                                        name: 'filter',
+                                                        object: false,
+                                                        namespace: action.action.namespace,
+                                                        entity: entity
+                                                    }, parameters: convertFormDataToObject(formData)
+                                                })}
+                                                onReset={() => handleAction({
+                                                    action: {
+                                                        name: 'filter',
+                                                        object: false,
+                                                        namespace: action.action.namespace,
+                                                        entity: entity
+                                                    }
+                                                })}
+                                            >
+                                                {
+                                                    results?.form?.filter && (
+                                                        <FormField view={results.form.filter.view}/>
+                                                    )
                                                 }
-                                            })}
-                                        >
-                                            {
-                                                results?.form?.filter && (
-                                                    <FormField view={results.form.filter.view}/>
-                                                )
-                                            }
-                                            <button className={"btn btn-primary me-2"} type={"submit"}>
-                                                <T>Submit</T>
-                                            </button>
-                                        </Form>
-                                    </div>
-                                </DropdownContent>
-                            </Dropdown>
-                            {!!Object.values(filter.current?.filter || []).length && (
-                                <Button onClick={() => {
-                                    filterFormRef.current?.reset();
-                                }} className="btn btn-outline-dark">x</Button>
-                            )}
-                        </div>
+                                                <button className={"btn btn-primary me-2"} type={"submit"}>
+                                                    <T>Submit</T>
+                                                </button>
+                                            </Form>
+                                        </div>
+                                    </DropdownContent>
+                                </Dropdown>
+                                {!!Object.values(filter.current?.filter || []).length && (
+                                    <Button onClick={() => {
+                                        filterFormRef.current?.reset();
+                                    }} className="btn btn-outline-dark">x</Button>
+                                )}
+                            </div>
                         )}
                     </div>
                 </header>
                 <BatchActionsProvider onClick={handleBatchAction}>
-                    {results?.form?.filter && (
+                    {results?.form?.filter?.view && (
                         <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
                     )}
                     <BatchActionSelector/>
                     <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>
 
-                            <GridView
-                                routeParams={action.parameters}
-                            />
-                            {/*<ListView*/}
-                            {/*    // item={<CustomUserItem/>}*/}
-                            {/*    routeParams={action.parameters}/>*/}
+                        <GridView
+                            routeParams={action.parameters}
+                        />
+                        {/*<ListView*/}
+                        {/*    // item={<CustomUserItem/>}*/}
+                        {/*    routeParams={action.parameters}/>*/}
 
                     </DynamicView>
                     <PaginatorView/>

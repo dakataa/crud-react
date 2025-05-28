@@ -5,9 +5,9 @@ import {UseListItem} from "@src/context/ListItemContext.tsx";
 const BatchItemSelector = ({className}: {className?: string}) => {
 
     const {index} = UseListItem();
-    const {toggle, isSelected} = UseBatchActions();
+    const {actions, toggle, isSelected} = UseBatchActions();
 
-    return (
+    return actions && (
         <>
             <input
                 checked={isSelected(index)}
