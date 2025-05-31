@@ -53,7 +53,6 @@ const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, re
                                     onClick={(event) => onClick && onClick({
                                         action: {
                                             name: 'sort',
-                                            object: false,
                                             namespace: namespace,
                                             entity: data?.entity.name
                                         },

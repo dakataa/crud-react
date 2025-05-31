@@ -8,11 +8,11 @@ import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 
-const CurrentActionContext = React.createContext<OnClickAction|undefined>(undefined);
+const CurrentActionContext = React.createContext<OnClickAction | undefined>(undefined);
 
 export function UseCurrentAction(): OnClickAction {
-    const action =  React.useContext<OnClickAction|undefined>(CurrentActionContext);
-    if(!action) {
+    const action = React.useContext<OnClickAction | undefined>(CurrentActionContext);
+    if (!action) {
         throw new Error('UseCurrentAction must be used in CurrentActionProvider');
     }
 
@@ -20,9 +20,23 @@ export function UseCurrentAction(): OnClickAction {
 }
 
 export function CurrentActionProvider({action, ...props}: { action: OnClickAction } & PropsWithChildren) {
+    const {getAction} = UseActions();
+
+    const routeAction = getAction(action.action.entity, action.action.name, action.action.namespace);
+    if(!routeAction) {
+        throw new Error('Invalid Current Action');
+    }
+
+    const currentAction: OnClickAction = {
+        ...action,
+        action: routeAction
+    }
+
     return (
-        <CurrentActionContext.Provider value={action}>
-            {props.children}
+        <CurrentActionContext.Provider value={currentAction}>
+            <NamespaceProvider namespace={currentAction.action.namespace || ''}>
+                {props.children}
+            </NamespaceProvider>
         </CurrentActionContext.Provider>
     );
 }
@@ -48,9 +62,7 @@ const CrudLoader = ({path, preloader}: {
 
     return (
         <CurrentActionProvider action={onClickAction}>
-            <NamespaceProvider namespace={onClickAction.action.namespace || ''}>
-                <ViewLoader view={onClickAction.action.name}/>
-            </NamespaceProvider>
+            <ViewLoader view={onClickAction.action.name}/>
         </CurrentActionProvider>
     );
 }

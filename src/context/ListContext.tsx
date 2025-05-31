@@ -1,6 +1,7 @@
 import React, {PropsWithChildren} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
+import {ActionVisibility} from "@src/type/ActionType.tsx";
 
 type ListContextType = {
     data?: ListType;
@@ -19,7 +20,7 @@ export function UseList() {
     const primaryColumn = data?.entity?.primaryColumn;
     const columns = (data?.entity?.columns || []).filter(c => c.visible).filter(c => c.group !== false);
     const actions = Object.values(data?.action || []);
-    const objectActions = actions.filter(a => a.object);
+    const objectActions = actions.filter(a => a.visibility === ActionVisibility.Object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
     const items = data?.entity?.data.items ?? [];
 

@@ -15,14 +15,13 @@ import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import GetData, {GetDataType} from "@src/context/GetData.tsx";
 import {ListType} from "@src/type/ListType.tsx";
-import {ActionType} from "@src/type/ActionType.tsx";
+import {ActionType, ActionVisibility} from "@src/type/ActionType.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import FiltersView from "@src/component/crud/FiltersView.tsx";
-import ListView from "@src/component/crud/ListView.tsx";
 import {BatchActionsProvider} from "@src/component/crud/batch/BatchActionsContext.tsx";
 import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.tsx";
 import {ListProvider} from "@src/context/ListContext.tsx";
@@ -30,10 +29,11 @@ import {ListProvider} from "@src/context/ListContext.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
-const List = memo(({embedded = false, title}: {
+const List = memo(({embedded = false, title, className}: {
     action?: OnClickAction,
     embedded?: boolean
-    title?: string | ReactElement | false
+    title?: string | ReactElement | false,
+    className?: string,
 }) => {
     const action = UseCurrentAction();
     const {generateRoute, generateActionLink, location, navigate} = UseActions()
@@ -53,7 +53,7 @@ const List = memo(({embedded = false, title}: {
     const {results, refresh, setQueryParameters}: GetDataType & {
         results: ListType | null;
     } = GetData({entityAction: action.action, initParameters: action.parameters, initQueryParameters: filter.current});
-    const actions = (Object.values(results?.action ?? []) as ActionType[]).filter(a => !a.object && a.name !== action.action.name);
+    const actions = (Object.values(results?.action ?? []) as ActionType[]).filter(a => a.visibility === ActionVisibility.List && a.name !== action.action.name);
 
     const filterData = (excludeFilterParameters?: [string]): void => {
         excludeFilterParameters?.forEach((key) => {
@@ -144,6 +144,7 @@ const List = memo(({embedded = false, title}: {
                     openModal({
                         action: onClickAction,
                         props: {
+                            size: 'lg',
                             onClose: () => {
                                 refresh();
                             }
@@ -163,12 +164,14 @@ const List = memo(({embedded = false, title}: {
 
     return (
         <ListProvider data={results} onClick={handleAction}>
-            <section className={"list"}>
+            <section className={className || "list"}>
                 <header className="content-header d-md-flex mb-3 justify-content-between align-items-center">
                     {title !== false && (
-                        <h2>
-                            {title ?? results?.title}
-                        </h2>
+                        React.isValidElement(title) ? (
+                            title
+                        ) : (
+                            <h2>{title ?? results?.title}</h2>
+                        )
                     )}
                     <div className={"d-flex align-items-center"}>
                         {!!actions.length && (
@@ -185,7 +188,7 @@ const List = memo(({embedded = false, title}: {
                                 ))}
                             </div>
                         )}
-                        {results?.form?.filter.view && (
+                        {results?.form?.filter?.view && (
                             <div className={"btn-group btn-group-sm"}>
                                 <Dropdown className={"btn-group btn-group-sm"}>
                                     <DropdownButton className={"btn-outline-dark"}>
@@ -199,7 +202,6 @@ const List = memo(({embedded = false, title}: {
                                                 onSubmit={(formData: FormData) => handleAction({
                                                     action: {
                                                         name: 'filter',
-                                                        object: false,
                                                         namespace: action.action.namespace,
                                                         entity: entity
                                                     }, parameters: convertFormDataToObject(formData)
@@ -207,7 +209,6 @@ const List = memo(({embedded = false, title}: {
                                                 onReset={() => handleAction({
                                                     action: {
                                                         name: 'filter',
-                                                        object: false,
                                                         namespace: action.action.namespace,
                                                         entity: entity
                                                     }
