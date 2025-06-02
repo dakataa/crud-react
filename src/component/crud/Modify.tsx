@@ -9,7 +9,6 @@ import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
-import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";

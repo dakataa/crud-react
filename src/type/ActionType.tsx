@@ -1,9 +1,9 @@
 import {RouteType} from "@src/type/RouteType";
 
 export enum ActionVisibility {
-    List  = 'List',
-    Object = 'Object',
-    Internal = 'Internal'
+    List  = 'list',
+    Object = 'object',
+    Internal = 'internal'
 };
 
 export type ActionType = {

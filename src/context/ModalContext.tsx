@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
+import React, {PropsWithChildren, useEffect, useReducer, useRef, useState} from "react";
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
@@ -23,33 +23,48 @@ export function UseModal() {
     return {
         openModal: (modal: ModalActionType) => {
             setModal && setModal(modal)
-        },
+        }
     };
 }
 
 export function ModalProvider(props: PropsWithChildren) {
-    const [modal, setModal] = useState<ModalActionType | null>();
+
+    const [path, dispatch] = useReducer((state: ModalActionType[], newModal: ModalActionType | null) => {
+        const newState = [...state];
+        if(newModal) {
+            newState.push(newModal);
+        } else {
+            newState.pop();
+        }
+
+        return newState;
+    }, [])
+
+    const currentModal = path[path.length - 1] ?? null;
+
     const {open: openAlert} = UseAlert();
 
     const updates = useRef(0);
     useEffect(() => {
         updates.current += 1;
-    }, [modal]);
+    }, [currentModal]);
 
     const modalProps = {
-        ...modal?.props || {},
+        ...currentModal?.props || {},
         onClose: () => {
-            modal?.props?.onClose && modal.props.onClose();
-            setModal(null);
+            currentModal?.props?.onClose && currentModal.props.onClose();
+            dispatch(null);
         }
     }
 
     return (
-        <ModalContext.Provider value={{setModal}}>
+        <ModalContext.Provider value={{setModal: (newModal: ModalActionType | null): void => {
+                dispatch(newModal);
+          }}}>
             {props.children}
-            {modal && (
+            {currentModal && (
                 <ErrorBoundary preventDefault={true} fallback={(error) => {
-                    setModal(null);
+                    dispatch(null);
                     openAlert({
                         title: error?.detail ?? 'Unknown Error',
                         icon: Icon.denied,
@@ -61,10 +76,10 @@ export function ModalProvider(props: PropsWithChildren) {
                     })
                 }}>
                     <AlertProvider>
-                        <CurrentActionProvider action={modal.action}>
+                        <CurrentActionProvider action={currentModal.action}>
                                 <ViewLoader
                                     key={updates.current}
-                                    view={modal.action.action.name || 'list'}
+                                    view={currentModal.action.action.name || 'list'}
                                     props={{
                                         modal: true,
                                         props: modalProps

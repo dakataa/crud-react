@@ -28,6 +28,7 @@ import {ListProvider} from "@src/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import modal from "@src/component/Modal.tsx";
 
 const List = memo(({embedded = false, title, className}: {
     action?: OnClickAction,
@@ -41,7 +42,7 @@ const List = memo(({embedded = false, title, className}: {
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
     const filterFormRef = useRef<FormRef | null>(null);
-    const {openModal} = UseModal()
+    const {getModal, openModal} = UseModal()
     const {open: openAlert} = UseAlert();
 
     const entity = action.action.entity;
