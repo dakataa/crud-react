@@ -39,4 +39,7 @@ export {default as GetData} from "@src/context/GetData.tsx";
 export type {GetDataType} from "@src/context/GetData.tsx";
 export type {ListType} from "@src/type/ListType.tsx"
 
+// Dropdown
+export {default as Dropdown, DropdownContent, DropdownButton} from "@src/component/Dropdown"
+
 export * from "src/component/form/Choice.tsx"

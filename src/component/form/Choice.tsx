@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from "react";
 import {nameToId, useForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
-import {ChoiceType, FormViewType} from "@src/type/FormViewType";
+import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
 
 export type ChoiceProps = {
     view: FormViewType,
@@ -9,6 +9,27 @@ export type ChoiceProps = {
     choiceLabelTransform?: Function
     prototype?: string
 } & FormFieldProps;
+
+const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }) => {
+    return (
+        <option
+            value={choice.value || choice.label}
+            {...(view.choice_attr && (view.choice_attr instanceof Function ? view.choice_attr(choice) : view.choice_attr))}
+        >
+            {choice.label}
+        </option>
+    )
+}
+
+const SelectGroupOption = ({view, group}: { view: FormViewType, group: ChoiceGroupType }) => {
+    return (
+        <optgroup label={group.label}>
+            {Object.values(group.choices).map((c) => (
+                <SelectOption view={view} choice={c}/>
+            ))}
+        </optgroup>
+    )
+}
 
 const Choice = ({
                     view,
@@ -105,15 +126,13 @@ const Choice = ({
                     defaultValue={view.data}
                 >
                     {view.placeholder && <option value={''}>{view.placeholder}</option>}
-                    {Object.values(view.choices || []).map((choice: any, index: number) =>
-                        <option
-                            key={index}
-                            value={choice.value || choice.label}
-                            {...(view.choice_attr && (view.choice_attr instanceof Function ? view.choice_attr(choice) : view.choice_attr))}
-                        >
-                            {choice.label}
-                        </option>
-                    )}
+                    {Object.values(view.choices || []).map((choice: any, index: number) => (
+                        <>
+                            {choice.choices !== undefined ?
+                                <SelectGroupOption view={view} group={choice as ChoiceGroupType}/> :
+                                <SelectOption view={view} choice={choice as ChoiceType}/>}
+                        </>
+                    ))}
                 </select>
             </>
         )

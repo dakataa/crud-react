@@ -22,7 +22,7 @@ export type FormViewType = {
     valid?: boolean;
     errors?: string[];
     children?: { [key: string]: FormViewType };
-    choices?: ChoiceType[];
+    choices?: ChoiceType[] | ChoiceGroupType[];
     choice_attr?: {[key: string]: {[key: string]: string}} | Function
     preferred_choices?: { [key: string]: any };
     attr?: { [key: string]: string } | Function;
@@ -35,4 +35,9 @@ export type ChoiceType = {
     value: string | number | null | Function;
     label: string | (() => string);
     attr?: {[key: string]: {[key: string]: string}} | Function;
+}
+
+export type ChoiceGroupType = {
+    label: string;
+    choices: ChoiceType[];
 }

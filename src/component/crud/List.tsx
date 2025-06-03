@@ -42,7 +42,7 @@ const List = memo(({embedded = false, title, className}: {
     const sort = useRef<{ [key: string]: any } | undefined>(undefined);
     const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
     const filterFormRef = useRef<FormRef | null>(null);
-    const {getModal, openModal} = UseModal()
+    const {openModal} = UseModal()
     const {open: openAlert} = UseAlert();
 
     const entity = action.action.entity;
