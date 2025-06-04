@@ -1,10 +1,9 @@
-import React, {ReactNode, useEffect, useRef} from "react";
+import React, {ReactNode, useRef} from "react";
 import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import GetData from "@src/context/GetData.tsx";
-import {ActionType} from "@src/type/ActionType.tsx";
+import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
 import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
@@ -13,91 +12,69 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
-const DefaultModifyTemplate = ({action, children, routeParams, results}: {
-    action: ActionType;
+const DefaultModifyTemplate = ({children}: {
     children?: ReactNode;
-    routeParams?: { [key: string]: any };
     results?: ModifyType;
 }) => {
 
+    const currentAction = UseCurrentAction();
     const {getAction, generateLink} = UseActions();
-    const listAction = getAction(action.entity, 'list', action.namespace);
+    const listAction = getAction(currentAction.action.entity, 'list', currentAction.action.namespace);
 
     return (
         <section className="edit">
             <header>
                 <h2 className="title">
                     {listAction && (
-                        <Link to={generateLink(listAction.route, routeParams)}>&larr;</Link>
+                        <Link to={generateLink(listAction.route, currentAction.parameters)}>&larr;</Link>
                     )}
-                    <TemplateBlock name={"title"} content={children} data={results}/>
+                    <TemplateBlock name={"title"} content={children}/>
                 </h2>
                 <nav>
-                    <TemplateBlock name={"navigation"} content={children} data={results}/>
+                    <TemplateBlock name={"navigation"} content={children}/>
                 </nav>
             </header>
 
             <main>
-                <TemplateBlock name={"content"} content={children} data={results}/>
+                <TemplateBlock name={"content"} content={children}/>
             </main>
         </section>
     )
 }
 
-const Modify = ({children, onSuccess, modal, props}: {
+const Modify = WithDataProvider(({children, onSuccess, modal, props}: {
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
     props?: any;
 }) => {
-    const action = UseCurrentAction();
-    const routeParams = {...(action.parameters || {})}
+    const {open: openAlert} = UseAlert();
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);
-    const {results, setParameters, cancel}: any & { results: ModifyType } = GetData({
-        entityAction: action.action,
-        initParameters: routeParams
-    });
-    const {open: openAlert} = UseAlert();
-
-    useEffect(() => {
-        if(!results) {
-            return;
-        }
-
-        modalRef.current?.open()
-    }, [JSON.stringify(results)]);
-
-    useEffect(() => {
-        return () => {
-            cancel()
-        }
-    }, []);
+    const dataProvider = UseDataProvider();
 
     const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
 
-    return (
-        <ComponentTemplate ref={modalRef} {...props} action={action} routeParams={routeParams} open={false}>
+    return dataProvider && (
+        <ComponentTemplate ref={modalRef} {...props} open={true}>
             <TemplateExtend name={"title"}>
-                <TemplateBlock name={"title"} content={children} data={results}>
-                    {results?.title || 'Title'}
+                <TemplateBlock name={"title"} content={children}>
+                    {dataProvider?.results?.title || 'Title'}
                 </TemplateBlock>
             </TemplateExtend>
 
             <TemplateExtend name={"navigation"}>
-                <DynamicView namespace={action.action.namespace} view={"navigation"} prefix={"modify"}>
-                    <TemplateBlock name={"navigation"} content={children} data={results}>
+                <DynamicView view={"navigation"} prefix={"modify"}>
+                    <TemplateBlock name={"navigation"} content={children}>
                     </TemplateBlock>
                 </DynamicView>
             </TemplateExtend>
 
             <TemplateExtend name={"content"}>
-                <DynamicView namespace={action.action.namespace} view={"content"} prefix={"modify"}>
-                    <TemplateBlock name={"content"} content={children} data={results}>
+                <DynamicView view={"content"} prefix={"modify"}>
+                    <TemplateBlock name={"content"} content={children}>
                         <Form
                             ref={modifyFormRef}
-                            data={results}
-                            action={action.action}
                             onSuccess={(data: ModifyType) => new Promise((resolve, reject) => {
                                 modalRef.current?.close();
                                 const event = new CustomEvent('success', {detail: data})
@@ -137,7 +114,6 @@ const Modify = ({children, onSuccess, modal, props}: {
 
                             }}
                             embedded={modal}
-                            parameters={routeParams}
                         >
                             {modal && <TemplateExtend name={"actions"}></TemplateExtend>}
                         </Form>
@@ -145,7 +121,7 @@ const Modify = ({children, onSuccess, modal, props}: {
                 </DynamicView>
             </TemplateExtend>
             <TemplateExtend name={"actions"}>
-                <TemplateBlock name={"actions"} content={children} data={results}>
+                <TemplateBlock name={"actions"} content={children}>
                     <button
                         type={"submit"}
                         className={"btn btn-primary"}
@@ -157,6 +133,6 @@ const Modify = ({children, onSuccess, modal, props}: {
 
         </ComponentTemplate>
     );
-};
+});
 
 export default Modify;

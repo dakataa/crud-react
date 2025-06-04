@@ -1,12 +1,13 @@
-import React, {ReactNode, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import Requester, {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
+import {ActionProvider, UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -131,12 +132,16 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     }
 }
 
-const DataProvider = ({entityAction, initParameters, initQueryParameters, suspense, children}: GetDataProps & {
+const DataProvider = ({suspense, children}: GetDataProps & {
     children: ReactNode,
     suspense?: ReactNode
 }) => {
 
-    const data = GetData({entityAction, initParameters, initQueryParameters});
+    const {action, parameters} = UseCurrentAction();
+
+    const data = GetData({entityAction: action, initParameters: parameters});
+
+    suspense ??= <>Loading</>;
 
     return (
         <GetDataContext.Provider value={data}>
@@ -145,4 +150,15 @@ const DataProvider = ({entityAction, initParameters, initQueryParameters, suspen
     );
 }
 
-export {DataProvider, GetData as default};
+function WithDataProvider<P extends {}>(Component: ComponentType): FC<P> {
+
+    return (props: P) => {
+        return (
+            <DataProvider>
+                <Component {...props}/>
+            </DataProvider>
+        )
+    };
+}
+
+export {DataProvider, WithDataProvider, GetData as default};

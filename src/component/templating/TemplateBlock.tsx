@@ -5,7 +5,7 @@ const TemplateBlock = memo(({name, content, children, data}: {
     name: string,
     content: any,
     children?: any,
-    data: any
+    data?: any
 }) => {
     const templateElement = React.Children.toArray(content).find(x => React.isValidElement(x) && x.type === TemplateExtend && (x as any).props.name === name);
     let contentElement = null;

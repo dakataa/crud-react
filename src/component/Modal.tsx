@@ -135,27 +135,27 @@ const Modal = forwardRef(({
                  className={["modal", (size && "modal-" + size), animation && animation, className].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
-                        <TemplateBlock name={"header"} content={children} data={null}>
+                        <TemplateBlock name={"header"} content={children}>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">
-                                    <TemplateBlock name={"title"} content={children} data={null}>
+                                    <TemplateBlock name={"title"} content={children}>
                                         Title
                                     </TemplateBlock>
                                 </h5>
-                                <TemplateBlock name={"navigation"} content={children} data={null}>
+                                <TemplateBlock name={"navigation"} content={children}>
                                     <nav>{children}</nav>
                                 </TemplateBlock>
                                 <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
                             </div>
                         </TemplateBlock>
                         <div className="modal-body">
-                            <TemplateBlock name={"content"} content={children} data={null}>
+                            <TemplateBlock name={"content"} content={children}>
                                 {children}
                             </TemplateBlock>
                         </div>
-                        <TemplateBlock name={"footer"} content={children} data={null}>
+                        <TemplateBlock name={"footer"} content={children}>
                             <div className="modal-footer">
-                                <TemplateBlock name={"actions"} content={children} data={null}>
+                                <TemplateBlock name={"actions"} content={children}>
                                     <button onClick={startClosing} type="button" className="btn btn-secondary">
                                         Close
                                     </button>

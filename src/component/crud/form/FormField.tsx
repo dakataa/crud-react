@@ -4,8 +4,10 @@ import React, {memo} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 const FormField = memo(({view, namespace, name, prototype}: {
-    view: FormViewType, namespace?: string, name?: string,
-    prototype?: string
+    view: FormViewType;
+    namespace?: string;
+    name?: string;
+    prototype?: string;
 }) => {
     return (
         <>

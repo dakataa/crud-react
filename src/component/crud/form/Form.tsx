@@ -13,17 +13,16 @@ import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
     getFormRef: () => FormRef | null
 };
 
-const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, onError, onLoad, children, embedded = false}: {
+const Form = forwardRef(({name, data: initData, onSuccess, onError, onLoad, children, embedded = false}: {
     name?: string,
     data?: ModifyType;
-    action: ActionType;
-    parameters?: { [key: string]: any };
     onSuccess?: (data: any) => Promise<void>;
     onError?: (data: ExceptionType) => void;
     onLoad?: () => void;
@@ -32,7 +31,10 @@ const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, o
 }, ref) => {
     const [preload, setPreloader] = useState(false);
     const {navigate, generateLink, generateRoute} = UseActions();
-    const actionURL = generateRoute(action.route, (parameters || {}));
+    const currentRoute = UseCurrentAction();
+
+    const actionURL = generateRoute(currentRoute.action.route, currentRoute.parameters);
+
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
     const [data, setData] = useState<ModifyType | undefined>();
@@ -76,7 +78,7 @@ const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, o
 
             const doAfter = () => {
                 if (data.redirect && !embedded) {
-                    navigate(generateLink(data.redirect.route, {...(parameters || {}), ...data.redirect.parameters}), true);
+                    navigate(generateLink(data.redirect.route, {...(currentRoute.parameters || {}), ...data.redirect.parameters}), true);
                 }
             }
 
@@ -120,7 +122,6 @@ const Form = forwardRef(({name, data: initData, action, parameters, onSuccess, o
                         <>
                             <FormField
                                 name={name}
-                                namespace={action.namespace}
                                 key={data.form.modify.view.id}
                                 view={data.form.modify.view}
                             />

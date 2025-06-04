@@ -35,7 +35,7 @@ export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";
 
 export {default as BaseLayout} from "@src/layout/default/Base.tsx";
 export {default as MainLayout} from "@src/layout/default/Main.tsx";
-export {default as GetData} from "@src/context/GetData.tsx";
+export {UseDataProvider, default as GetData} from "@src/context/GetData.tsx";
 export type {GetDataType} from "@src/context/GetData.tsx";
 export type {ListType} from "@src/type/ListType.tsx"
 
