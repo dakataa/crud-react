@@ -1,20 +1,12 @@
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import FormGroup from "@src/component/form/FormGroup.tsx";
-import React, {memo, useEffect, useId} from "react";
+import React, {memo} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {UseCrudForm} from "@src/component/crud/form/Form.tsx";
 
 const FormFieldViewLoader = memo(({view, prototype}: {
     view: FormViewType;
     prototype?: string;
 }) => {
-    const id = useId()
-    const {isRendered, setRendered} = UseCrudForm();
-    setRendered?.(view, id);
-
-    if (isRendered?.(id)) {
-        return;
-    }
 
     return (
         <>

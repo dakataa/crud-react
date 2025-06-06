@@ -1,8 +1,10 @@
 import Choice from "@src/component/form/Choice";
-import React from "react";
+import React, {useId} from "react";
 import {FormViewType} from "@src/type/FormViewType";
 import Input from "@src/component/form/Input.tsx";
 import Collection from "@src/component/form/Collection.tsx";
+import {UseCrudForm} from "@src/component/crud/form/Form.tsx";
+import {UseFormGroup} from "@src/component/form/FormGroup.tsx";
 
 const FormWidget = ({
                         view,
@@ -10,8 +12,16 @@ const FormWidget = ({
                     }: {
     view: FormViewType,
     prototype?: string
-}):
-    React.JSX.Element => {
+}) => {
+    const id = useId()
+    const {canRender, setRendered} = UseCrudForm();
+    const group = UseFormGroup()
+    if(!group) {
+        setRendered?.(view, id);
+        if (!canRender?.(view, id)) {
+            return;
+        }
+    }
 
     switch (view.type) {
         case 'entity':

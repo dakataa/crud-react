@@ -32,7 +32,7 @@ export type ModifyFormRefType = {
 type CrudFormContextType = {
     form?: FormViewType | null | undefined,
     setRendered?: (e: FormViewType, id: string) => void,
-    isRendered?: (id: string) => boolean
+    canRender?: (e: FormViewType, id: string) => boolean
 }
 
 const CrudFormContext = React.createContext<CrudFormContextType>({});
@@ -141,7 +141,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 renderedFormElements.current[e.full_name] = id;
             }
         },
-        isRendered: (id: string) => !Object.values(renderedFormElements.current).includes(id)
+        canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id)
     }}>
         {formView && (
             <>
