@@ -1,5 +1,4 @@
 import Choice from "@src/component/form/Choice";
-import {FormGroupProps} from "@src/component/form/FormGroup";
 import React from "react";
 import {FormViewType} from "@src/type/FormViewType";
 import Input from "@src/component/form/Input.tsx";
@@ -11,7 +10,7 @@ const FormWidget = ({
                     }: {
     view: FormViewType,
     prototype?: string
-} & FormGroupProps):
+}):
     React.JSX.Element => {
 
     switch (view.type) {

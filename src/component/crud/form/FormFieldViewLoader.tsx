@@ -1,6 +1,6 @@
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import FormGroup from "@src/component/form/FormGroup.tsx";
-import React, {memo, useId} from "react";
+import React, {memo, useEffect, useId} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {UseCrudForm} from "@src/component/crud/form/Form.tsx";
 

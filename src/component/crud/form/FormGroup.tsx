@@ -1,7 +1,7 @@
 import {UseCrudForm} from "@src/component/crud/form/Form.tsx";
-import {default as BaseFormWidget} from "@src/component/form/FormWidget.tsx";
+import {default as BaseFormGroup} from "@src/component/form/FormGroup.tsx";
 
-const FormField = ({name}: { name: string }) => {
+const FormGroup = ({name}: { name: string }) => {
     const {form} = UseCrudForm();
     const formView = form?.children?.[name] ?? null;
 
@@ -9,8 +9,8 @@ const FormField = ({name}: { name: string }) => {
         return;
     }
 
-    return <BaseFormWidget view={formView}/>
+    return <BaseFormGroup view={formView}/>
 }
 
 
-export default FormField;
+export default FormGroup;

@@ -11,7 +11,7 @@ export const FormGroup = ({
                               className,
                           }: {
     view: FormViewType
-    className: string;
+    className?: string;
     prototype?: string;
 }): React.JSX.Element => {
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');

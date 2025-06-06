@@ -1,6 +1,15 @@
 import {Form as BaseForm, FormRef} from "@src/component/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
-import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useReducer, useRef, useState} from "react";
+import React, {
+    createRef,
+    forwardRef,
+    ReactNode,
+    useEffect,
+    useImperativeHandle,
+    useReducer,
+    useRef,
+    useState
+} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
@@ -112,6 +121,10 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
     useEffect(() => {
         if (onLoad) {
             onLoad();
+        }
+
+        return () => {
+            renderedFormElements.current = {};
         }
     }, []);
 
