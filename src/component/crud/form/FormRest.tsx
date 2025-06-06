@@ -1,16 +1,15 @@
 import {UseCrudForm} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
-const FormField = ({name}: { name: string }) => {
+const FormRest = ({name}: { name: string }) => {
     const {form} = UseCrudForm();
-    const formView = form?.children?.[name] ?? null;
 
-    if(!formView) {
+    if(!form) {
         return;
     }
 
-    return <FormFieldViewLoader view={formView}/>
+    return <FormFieldViewLoader view={form}/>
 }
 
 
-export default FormField;
+export default FormRest;

@@ -1,5 +1,5 @@
 import Choice from "@src/component/form/Choice";
-import {FormGroup, FormGroupProps} from "@src/component/form/FormGroup";
+import {FormGroupProps} from "@src/component/form/FormGroup";
 import React from "react";
 import {FormViewType} from "@src/type/FormViewType";
 import Input from "@src/component/form/Input.tsx";
@@ -14,26 +14,18 @@ const FormWidget = ({
 } & FormGroupProps):
     React.JSX.Element => {
 
-    const elements = () => {
-        switch (view.type) {
-            case 'entity':
-            case 'choice':
-            case 'enum': {
-                return <Choice view={view} prototype={prototype}/>
-            }
-            case 'collection': {
-                return <Collection view={view} prototype={prototype}/>
-            }
-            default:
-                return <Input view={view} prototype={prototype}/>
+    switch (view.type) {
+        case 'entity':
+        case 'choice':
+        case 'enum': {
+            return <Choice view={view} prototype={prototype}/>
         }
+        case 'collection': {
+            return <Collection view={view} prototype={prototype}/>
+        }
+        default:
+            return <Input view={view} prototype={prototype}/>
     }
-
-    return (
-        <FormGroup className={"mb-3"} view={view}>
-            {elements()}
-        </FormGroup>
-    )
 }
 
 export default FormWidget;

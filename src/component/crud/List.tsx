@@ -10,7 +10,7 @@ import PaginatorView from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Button from "@src/component/Button.tsx";
-import FormField from "@src/component/crud/form/FormField.tsx";
+import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import GetData, {GetDataType} from "@src/context/GetData.tsx";
@@ -217,7 +217,7 @@ const List = memo(({embedded = false, title, className}: {
                                             >
                                                 {
                                                     results?.form?.filter && (
-                                                        <FormField view={results.form.filter.view}/>
+                                                        <FormFieldViewLoader view={results.form.filter.view}/>
                                                     )
                                                 }
                                                 <button className={"btn btn-primary me-2"} type={"submit"}>

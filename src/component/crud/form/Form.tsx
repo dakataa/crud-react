@@ -1,28 +1,38 @@
 import {Form as BaseForm, FormRef} from "@src/component/form/Form.tsx";
-import FormField from "@src/component/crud/form/FormField.tsx";
-import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
+import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
+import React, {forwardRef, ReactNode, useEffect, useImperativeHandle, useReducer, useRef, useState} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
-import {ActionType} from "@src/type/ActionType.tsx";
 import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/context/GetData.tsx";
-import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
     getFormRef: () => FormRef | null
 };
 
-const Form = forwardRef(({name, data: initData, onSuccess, onError, onLoad, children, embedded = false}: {
-    name?: string,
-    data?: ModifyType;
+type CrudFormContextType = {
+    form?: FormViewType | null | undefined,
+    setRendered?: (e: FormViewType, id: string) => void,
+    isRendered?: (id: string) => boolean
+}
+
+const CrudFormContext = React.createContext<CrudFormContextType>({});
+
+export function UseCrudForm(): CrudFormContextType {
+    return React.useContext<CrudFormContextType>(CrudFormContext);
+}
+
+const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false}: {
     onSuccess?: (data: any) => Promise<void>;
     onError?: (data: ExceptionType) => void;
     onLoad?: () => void;
@@ -34,13 +44,13 @@ const Form = forwardRef(({name, data: initData, onSuccess, onError, onLoad, chil
     const currentRoute = UseCurrentAction();
 
     const actionURL = generateRoute(currentRoute.action.route, currentRoute.parameters);
-
+    const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
-    const [data, setData] = useState<ModifyType | undefined>();
+    const renderedFormElements = useRef<{ [key: string]: string }>({})
 
     useImperativeHandle(ref, () => ({
-        getData: (): ModifyType | undefined => data,
+        getData: (): ModifyType | undefined => dataProvider?.results as ModifyType,
         getFormRef: (): FormRef | null => formRef.current
     }));
 
@@ -63,32 +73,34 @@ const Form = forwardRef(({name, data: initData, onSuccess, onError, onLoad, chil
     const onSubmit = (formData: FormData) => {
         setPreloader(true);
 
-        CrudRequester().post({url: actionURL, body: formData, bodyType: RequestBodyType.FormData}).then(({status, data}) => {
-            if (![200, 201, 400].includes(status)) {
-                return Promise.reject(data);
-            }
-
-            setData(data);
-
-            const errors = getFormErrors(data.form.modify.view);
-            if (Object.entries(errors).length) {
-                formRef.current?.setErrors(errors);
-                return;
-            }
-
-            const doAfter = () => {
-                if (data.redirect && !embedded) {
-                    navigate(generateLink(data.redirect.route, {...(currentRoute.parameters || {}), ...data.redirect.parameters}), true);
+        CrudRequester()
+            .post({url: actionURL, body: formData, bodyType: RequestBodyType.FormData})
+            .then(({status, data}) => {
+                if (![200, 201, 400].includes(status)) {
+                    return Promise.reject(data);
                 }
-            }
 
-            if (onSuccess) {
-                onSuccess(data).then(() => doAfter());
-            } else {
-                doAfter();
-            }
+                setData(data);
 
-        }).catch((error: ExceptionType) => {
+                const errors = getFormErrors(data.form.modify.view);
+                if (Object.entries(errors).length) {
+                    formRef.current?.setErrors(errors);
+                    return;
+                }
+
+                const doAfter = () => {
+                    if (data.redirect && !embedded) {
+                        navigate(generateLink(data.redirect.route, {...(currentRoute.parameters || {}), ...data.redirect.parameters}), true);
+                    }
+                }
+
+                if (onSuccess) {
+                    onSuccess(data).then(() => doAfter());
+                } else {
+                    doAfter();
+                }
+
+            }).catch((error: ExceptionType) => {
             if (onError) {
                 onError(error);
             }
@@ -103,38 +115,46 @@ const Form = forwardRef(({name, data: initData, onSuccess, onError, onLoad, chil
         }
     }, []);
 
-    initData = (dataProvider?.results as ModifyType) ?? initData;
     useEffect(() => {
-        setData(initData);
-    }, [JSON.stringify(initData)])
+        setData(dataProvider?.results);
+    }, [dataProvider?.results])
 
-    return data && (
-        <>
-            {Object.keys(data?.messages || {}).map((messageType, index) => (
-                <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
-                    {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
-                </div>
-            ))}
+    const formView = data?.form.modify.view;
 
-            <BaseForm id={data?.form?.modify?.view?.id} ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
-                {
-                    data?.form?.modify?.view !== undefined && (
-                        <>
-                            <FormField
-                                name={name}
-                                key={data.form.modify.view.id}
-                                view={data.form.modify.view}
-                            />
-                            <FormFieldError name={data.form.modify.view.full_name} className={"alert alert-danger"}/>
-                        </>
-                    )
-                }
-                <TemplateBlock name={"actions"} content={children} data={{formRef}}>
-                    <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
-                </TemplateBlock>
-            </BaseForm>
-        </>
-    )
+    return <CrudFormContext.Provider value={{
+        form: formView,
+        setRendered: (e: FormViewType, id) => {
+            if (renderedFormElements.current[e.full_name] === undefined) {
+                renderedFormElements.current[e.full_name] = id;
+            }
+        },
+        isRendered: (id: string) => !Object.values(renderedFormElements.current).includes(id)
+    }}>
+        {formView && (
+            <>
+                {Object.keys(data?.messages || {}).map((messageType, index) => (
+                    <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
+                        {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
+                    </div>
+                ))}
+
+                <BaseForm ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
+                    <DynamicView
+                        key={formView.id}
+                        view={formView.name || 'form'}
+                        prefix={"modify/form"}
+                        data={formView}
+                    >
+                        <FormFieldViewLoader view={formView}/>
+                    </DynamicView>
+                    <FormFieldError name={formView.full_name} className={"alert alert-danger"}/>
+                    <TemplateBlock name={"actions"} content={children} data={{formRef}}>
+                        <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
+                    </TemplateBlock>
+                </BaseForm>
+            </>
+        )}
+    </CrudFormContext.Provider>
 });
 
 export default Form;

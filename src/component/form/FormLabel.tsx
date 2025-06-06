@@ -1,0 +1,36 @@
+import {FormViewType} from "@src/type/FormViewType";
+import {titlize} from "@src/helper/StingUtils";
+import {nameToId} from "@src/component/form/Form.tsx";
+import React from "react";
+
+export const FormLabel = ({
+                              view,
+                              className
+                          }: {
+    view: FormViewType
+    className?: string
+}): React.JSX.Element => {
+    const label = view.label || titlize(view.name);
+    const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
+
+    return (
+        <>
+            {isCheckbox ? (
+                <label
+                    className={className ?? "form-check-label"}
+                    htmlFor={view.id || nameToId(view.full_name)}
+                    {...(view.label_attr && (view.label_attr instanceof Function ? view.label_attr() : view.label_attr))}>
+                    {label}
+                </label>
+            ) : (
+                <label
+                    className={className ?? "form-label"}
+                    {...(view.label_attr && (view.label_attr instanceof Function ? view.label_attr() : view.label_attr))}>
+                    {label}
+                </label>
+            )}
+        </>
+    );
+}
+
+export default FormLabel;

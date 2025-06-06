@@ -6,7 +6,9 @@ export {default as List} from "@src/component/crud/List.tsx";
 export {default as GridView} from "@src/component/crud/GridView.tsx";
 export {default as ListView} from "@src/component/crud/ListView.tsx";
 export {default as ListItem} from "@src/component/crud/ListItem.tsx";
+export {default as FormFieldViewLoader} from "@src/component/crud/form/FormFieldViewLoader.tsx";
 export {default as FormField} from "@src/component/crud/form/FormField.tsx";
+export {default as FormRest} from "@src/component/crud/form/FormRest.tsx";
 export {default as FormWidget} from "@src/component/form/FormWidget.tsx";
 export {default as DynamicView} from "@src/component/crud/DynamicView.tsx";
 export {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
@@ -28,8 +30,11 @@ export {default as Link} from "@src/component/Link.tsx";
 export {default as Translation} from "@src/component/Translation.tsx";
 export {default as Action} from "@src/component/crud/Action.tsx";
 
-export * from "src/component/form/FormGroup.tsx"
 export * from "@src/component/form/Form.tsx";
+export * from "src/component/form/FormGroup.tsx"
+export * from "src/component/form/FormFieldError.tsx"
+export * from "src/component/form/FormLabel.tsx"
+export * from "src/component/form/FormHelp.tsx"
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";
 

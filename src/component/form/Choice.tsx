@@ -129,8 +129,8 @@ const Choice = ({
                     {Object.values(view.choices || []).map((choice: any, index: number) => (
                         <>
                             {choice.choices !== undefined ?
-                                <SelectGroupOption view={view} group={choice as ChoiceGroupType}/> :
-                                <SelectOption view={view} choice={choice as ChoiceType}/>}
+                                <SelectGroupOption key={index} view={view} group={choice as ChoiceGroupType}/> :
+                                <SelectOption key={index} view={view} choice={choice as ChoiceType}/>}
                         </>
                     ))}
                 </select>

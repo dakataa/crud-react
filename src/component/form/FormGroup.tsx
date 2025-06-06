@@ -1,21 +1,19 @@
 import {FormFieldError} from "@src/component/form/FormFieldError";
-import {FormViewType} from "@src/type/FormViewType";
-import {titlize} from "@src/helper/StingUtils";
-import {nameToId} from "@src/component/form/Form.tsx";
 import React from "react";
+import FormLabel from "@src/component/form/FormLabel.tsx";
+import FormHelp from "@src/component/form/FormHelp.tsx";
+import FormWidget from "@src/component/form/FormWidget.tsx";
+import {FormViewType} from "@src/type/FormViewType.tsx";
 
-export type FormGroupProps = {
-    view: FormViewType
-};
 export const FormGroup = ({
                               view,
-                              children,
-                              className
-                          }: FormGroupProps & {
-    className: string,
-    children: React.JSX.Element
+                              prototype,
+                              className,
+                          }: {
+    view: FormViewType
+    className: string;
+    prototype?: string;
 }): React.JSX.Element => {
-    const label = view.label || titlize(view.name);
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
 
     return (
@@ -23,31 +21,13 @@ export const FormGroup = ({
             className={[...(className?.split(' ') || []), 'mb-3', (isCheckbox && 'form-check')].filter(v => v).join(' ')}
             {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
         >
-            {!isCheckbox && (
-                <label
-                    className={"form-label"}
-                    {...(view.label_attr && (view.label_attr instanceof Function ? view.label_attr() : view.label_attr))}>
-                    {label}
-                </label>
-            )}
-            {children}
-            {isCheckbox && (
-                <label
-                    className={"form-check-label"}
-                    htmlFor={view.id || nameToId(view.full_name)}
-                    {...(view.label_attr && (view.label_attr instanceof Function ? view.label_attr() : view.label_attr))}>
-                    {label}
-                </label>
-            )}
+            {!isCheckbox && (<FormLabel view={view}/>)}
+            <FormWidget view={view} prototype={prototype}/>
+            {isCheckbox && (<FormLabel view={view}/>)}
             <FormFieldError name={view.full_name} className={"invalid-feedback"}/>
-            {view.help && (
-                <div
-                    className={'form-help'}
-                    {...(view.help_attr && (view.help_attr instanceof Function ? view.help_attr() : view.help_attr))}
-                >
-                    {view.help}
-                </div>
-            )}
+            <FormHelp view={view}/>
         </div>
     );
 }
+
+export default FormGroup;
