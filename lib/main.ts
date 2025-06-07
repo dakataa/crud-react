@@ -51,5 +51,7 @@ export {UseDataProvider, default as GetData} from "@src/context/GetData.tsx";
 export type {GetDataType} from "@src/context/GetData.tsx";
 export type {ListType} from "@src/type/ListType.tsx"
 
+export {default as Money} from "@src/component/Money.tsx";
+
 // Dropdown
 export {default as Dropdown, DropdownContent, DropdownButton} from "@src/component/Dropdown"

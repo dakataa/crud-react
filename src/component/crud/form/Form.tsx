@@ -35,10 +35,10 @@ type CrudFormContextType = {
     canRender?: (e: FormViewType, id: string) => boolean
 }
 
-const CrudFormContext = React.createContext<CrudFormContextType>({});
+const CrudFormContext = React.createContext<CrudFormContextType|undefined>(undefined);
 
-export function UseCrudForm(): CrudFormContextType {
-    return React.useContext<CrudFormContextType>(CrudFormContext);
+export function UseCrudForm(): CrudFormContextType|undefined {
+    return React.useContext<CrudFormContextType|undefined>(CrudFormContext);
 }
 
 const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false}: {

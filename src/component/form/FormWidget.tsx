@@ -14,12 +14,15 @@ const FormWidget = ({
     prototype?: string
 }) => {
     const id = useId()
-    const {canRender, setRendered} = UseCrudForm();
-    const group = UseFormGroup()
-    if(!group) {
-        setRendered?.(view, id);
-        if (!canRender?.(view, id)) {
-            return;
+    const crudFormContext = UseCrudForm();
+    if(crudFormContext) {
+        const {canRender, setRendered} = crudFormContext;
+        const group = UseFormGroup()
+        if (!group) {
+            setRendered?.(view, id);
+            if (canRender && !canRender?.(view, id)) {
+                return;
+            }
         }
     }
 

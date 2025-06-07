@@ -25,13 +25,15 @@ export const FormGroup = ({
     className?: string;
     prototype?: string;
 })=> {
+    const id = useId();
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
-
-    const {canRender, setRendered} = UseCrudForm();
-    const id = useId()
-    setRendered?.(view, id);
-    if (!canRender?.(view, id)) {
-        return;
+    const crudFormContext = UseCrudForm();
+    if(crudFormContext) {
+        const {canRender, setRendered} = crudFormContext;
+        setRendered?.(view, id);
+        if (!canRender?.(view, id)) {
+            return;
+        }
     }
 
     return (
