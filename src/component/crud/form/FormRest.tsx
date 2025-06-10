@@ -1,14 +1,14 @@
 import {UseCrudForm} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
-const FormRest = ({name}: { name: string }) => {
-    const {form} = UseCrudForm();
-
-    if(!form) {
+const FormRest = () => {
+    const crudFormContext = UseCrudForm();
+    const formView = crudFormContext?.form;
+    if(!formView) {
         return;
     }
 
-    return <FormFieldViewLoader view={form}/>
+    return <FormFieldViewLoader view={formView}/>
 }
 
 

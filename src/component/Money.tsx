@@ -1,8 +1,9 @@
-const Money = ({currency, locale, children}: { currency: string, locale?: string, children: number }) => {
+const Money = ({currency, locale, children}: { currency: string, locale?: string, children: number|null|string }) => {
     const userLocale = Intl.NumberFormat().resolvedOptions().locale;
+    const number = Number(children);
 
     return (
-        <>{Number(children).toLocaleString(locale ?? userLocale, {style: 'currency', currency: currency})}</>
+        <>{!isNaN(number) && number.toLocaleString(locale ?? userLocale, {style: 'currency', currency: currency})}</>
     )
 };
 

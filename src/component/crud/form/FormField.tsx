@@ -3,8 +3,8 @@ import {default as BaseFormWidget} from "@src/component/form/FormWidget.tsx";
 import {useId} from "react";
 
 const FormField = ({name}: { name: string }) => {
-    const {form} = UseCrudForm();
-    const formView = form?.children?.[name] ?? null;
+    const crudFormContext = UseCrudForm();
+    const formView = crudFormContext?.form?.children?.[name];
 
     if(!formView) {
         return;

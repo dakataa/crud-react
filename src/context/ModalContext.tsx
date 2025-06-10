@@ -12,15 +12,17 @@ export type ModalActionType = {
 }
 
 export type ModalContextType = {
+    modal?: ModalActionType | null,
     setModal?: (modal: ModalActionType | null) => void;
 }
 
 const ModalContext = React.createContext<ModalContextType>({});
 
 export function UseModal() {
-    const {setModal} = React.useContext<ModalContextType>(ModalContext);
+    const {modal, setModal} = React.useContext<ModalContextType>(ModalContext);
 
     return {
+        modal,
         openModal: (modal: ModalActionType) => {
             setModal && setModal(modal)
         }

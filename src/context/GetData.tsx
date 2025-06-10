@@ -1,8 +1,8 @@
 import React, {ComponentType, FC, ReactNode, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import Requester, {convertObjectToURLSearchParams} from "@dakataa/requester";
+import {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {ActionProvider, UseActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
@@ -132,7 +132,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     }
 }
 
-const DataProvider = ({suspense, children}: GetDataProps & {
+const DataProvider = ({suspense, children}: {
     children: ReactNode,
     suspense?: ReactNode
 }) => {

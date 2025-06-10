@@ -1,6 +1,6 @@
-import {memo} from "react";
+import React from "react";
 
-const Translation = memo(({children, domain, properties}: {
+const Translation = ({children, domain, properties}: {
     children?: string;
     domain?: string;
     properties?: { [key: string]: string | number | null }
@@ -14,6 +14,6 @@ const Translation = memo(({children, domain, properties}: {
     children = children?.replaceAll(new RegExp(':\w+', 'g'), '');
 
     return <>{children}</>
-})
+}
 
 export default Translation;
