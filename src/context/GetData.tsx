@@ -37,40 +37,10 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     const [parameters, setParameters] = useState<{ [key: string]: string } | null>(initParameters || null);
 
     const loading = useRef<AbortController|null>(null);
-    const lastKey = useRef<string | null>(null);
     const [queryParameters, setQueryParameters] = useState<URLSearchParams>(initQueryParameters instanceof URLSearchParams ? initQueryParameters : convertObjectToURLSearchParams(initQueryParameters || {}));
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
     const cache = useRef<{ [key: string]: string }>({});
     const [refresh, setRefresh] = useState(1);
-
-    const setCache = (results: any) => {
-        // cache.current[key] = btoa(encodeURIComponent(JSON.stringify(results)));
-        sessionStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(results))))
-    }
-
-    // const getCache = () => {
-    //     return null;
-    //     const cachedData = sessionStorage.getItem(key);
-    //     // let cachedData = cache.current[key] ?? null;
-    //
-    //     if(cachedData) {
-    //         try {
-    //             return JSON.parse(decodeURIComponent(atob(cachedData)));
-    //         } catch (e) {
-    //             console.log('error', e);
-    //         }
-    //     }
-    //
-    //     return null;
-    // }
-
-    // useEffect(() => {
-    //     if (!results) {
-    //         return;
-    //     }
-    //
-    //     setCache(results);
-    // }, [JSON.stringify(results)]);
 
     const update = () => {
         if (!entityAction) {
@@ -138,14 +108,18 @@ const DataProvider = ({suspense, children}: {
 }) => {
 
     const {action, parameters} = UseCurrentAction();
-
     const data = GetData({entityAction: action, initParameters: parameters});
+    const {results, setParameters} = data;
+
+    useEffect(() => {
+        setParameters(parameters || null);
+    }, [parameters]);
 
     suspense ??= <>Loading</>;
 
     return (
         <GetDataContext.Provider value={data}>
-            {suspense && !data.results ? suspense : children}
+            {suspense && !results ? suspense : children}
         </GetDataContext.Provider>
     );
 }

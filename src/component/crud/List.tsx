@@ -1,4 +1,4 @@
-import React, {memo, ReactElement, useEffect, useRef} from "react";
+import React, {ReactElement, useEffect, useRef} from "react";
 import {
     convertFormDataToObject,
     convertObjectToURLSearchParams,
@@ -13,8 +13,7 @@ import Button from "@src/component/Button.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import GetData, {GetDataType} from "@src/context/GetData.tsx";
-import {ListType} from "@src/type/ListType.tsx";
+import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
 import {ActionType, ActionVisibility} from "@src/type/ActionType.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
@@ -28,9 +27,8 @@ import {ListProvider} from "@src/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
-import modal from "@src/component/Modal.tsx";
 
-const List = memo(({embedded = false, title, className}: {
+const List = WithDataProvider(({embedded = false, title, className}: {
     action?: OnClickAction,
     embedded?: boolean
     title?: string | ReactElement | false,
@@ -51,9 +49,8 @@ const List = memo(({embedded = false, title, className}: {
         throw new Error('Invalid Entity');
     }
 
-    const {results, refresh, setQueryParameters}: GetDataType & {
-        results: ListType | null;
-    } = GetData({entityAction: action.action, initParameters: action.parameters, initQueryParameters: filter.current});
+    const {results,  refresh, setQueryParameters} = UseDataProvider() || {};
+
     const actions = (Object.values(results?.action ?? []) as ActionType[]).filter(a => a.visibility === ActionVisibility.List && a.name !== action.action.name);
 
     const filterData = (excludeFilterParameters?: [string]): void => {
@@ -68,7 +65,7 @@ const List = memo(({embedded = false, title, className}: {
 
         searchParams = convertObjectToURLSearchParams(objectRemoveEmpty(query));
         if (embedded) {
-            setQueryParameters(searchParams)
+            setQueryParameters?.(searchParams)
         } else {
             const url = new URL(document.location.href);
             url.search = searchParams.toString();
@@ -89,7 +86,7 @@ const List = memo(({embedded = false, title, className}: {
                         }).catch((e: any) => {
                             reject();
                         }).finally(() => {
-                            refresh();
+                            refresh?.();
                             resolve();
                         });
                     } else {
@@ -132,7 +129,7 @@ const List = memo(({embedded = false, title, className}: {
                             }).catch((e: any) => {
                                 console.log('error', e);
                             }).finally(() => {
-                                refresh();
+                                refresh?.();
                             });
                         }
                     }
@@ -147,7 +144,7 @@ const List = memo(({embedded = false, title, className}: {
                         props: {
                             size: 'lg',
                             onClose: () => {
-                                refresh();
+                                refresh?.();
                             }
                         }
                     });
@@ -160,7 +157,7 @@ const List = memo(({embedded = false, title, className}: {
     }
 
     useEffect(() => {
-        setQueryParameters(searchParams);
+        setQueryParameters?.(searchParams);
     }, [location.search]);
 
     return (
