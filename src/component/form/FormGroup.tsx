@@ -36,6 +36,10 @@ export const FormGroup = ({
         }
     }
 
+    if(view.name === view.type) {
+        return null;
+    }
+
     return (
         <FormGroupContext.Provider value={{id: id}}>
             <div

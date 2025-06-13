@@ -15,7 +15,7 @@ const FormWidget = ({
 }) => {
     const id = useId()
     const crudFormContext = UseCrudForm();
-    if(crudFormContext) {
+    if (crudFormContext) {
         const {canRender, setRendered} = crudFormContext;
         const group = UseFormGroup()
         if (!group) {
@@ -35,6 +35,13 @@ const FormWidget = ({
         case 'collection': {
             return <Collection view={view} prototype={prototype}/>
         }
+        case 'input':
+        case 'text':
+        case 'checkbox':
+        case 'radio':
+        case 'integer':
+        case 'password':
+        case 'email':
         default:
             return <Input view={view} prototype={prototype}/>
     }
