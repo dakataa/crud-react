@@ -10,6 +10,8 @@ export type Templates = { [path:string]: () => Promise<any> };
 export type Config = {
     link?: ConfigLink,
     templates?: { [path:string]: () => Promise<any> },
+    locale?: string,
+    currency?: string,
 }
 
 const ConfigContext = React.createContext<Config>({});

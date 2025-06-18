@@ -4,7 +4,7 @@ import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
 import CrudLoader from "@src/component/crud/CrudLoader.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
-import {Templates} from "@src/context/ConfigContext.tsx";
+import {Config, Templates} from "@src/context/ConfigContext.tsx";
 import {UseActions, WithRouterContext} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
@@ -26,11 +26,11 @@ const CrudRequester = (): Requester => {
 }
 
 const Crud = WithRouterContext((
-    {path, prefix, errorFallback, templates}: {
+    {path, prefix, errorFallback, config}: {
         path?: string,
         prefix?: string,
         errorFallback?: ReactElement,
-        templates?: { [path: string]: () => Promise<any> }
+        config?: Config
     }) => {
 
     const {location} = UseActions();
@@ -40,11 +40,11 @@ const Crud = WithRouterContext((
         path = path.replace(new RegExp('^/' + prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
     }
 
-    templates = Object.assign(globalConfig.templates ?? {}, templates ?? {});
+    const templates = Object.assign(globalConfig.templates ?? {}, config?.templates ?? {});
 
     return (
         <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
-            <CrudProvider config={{templates, link: {prefix}}}>
+            <CrudProvider config={{...(config || {}), templates, link: {prefix}}}>
                 <CrudLoader path={path}/>
             </CrudProvider>
         </ErrorBoundary>

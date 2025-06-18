@@ -46,6 +46,7 @@ const Input = ({
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
+    const attr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
 
     return <>
         <input
@@ -60,7 +61,8 @@ const Input = ({
             onChange={(e: ChangeEvent<HTMLInputElement>) => validate({value: e.target.value})}
             className={[defaultFieldClassName, ...(errorMessages.length ? ['is-invalid'] : [])].join(' ')}
             defaultChecked={view?.checked}
-            {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
+            {...attr}
+            {...(attr.inputmode === "decimal" && {step: "any"})}
         />
     </>
 }
