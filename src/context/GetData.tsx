@@ -1,4 +1,4 @@
-import React, {ComponentType, FC, ReactNode, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, ReactNode, useCallback, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
@@ -22,14 +22,20 @@ export type GetDataType = {
 type GetDataProps = {
     entityAction: ActionType,
     initParameters?: { [key: string]: any };
-    initQueryParameters?: URLSearchParams | { [key: string]: any }
+    initQueryParameters?: URLSearchParams | { [key: string]: any },
+    loadOnInit?: boolean
 }
 
 export function UseDataProvider(): GetDataType | null {
     return React.useContext<GetDataType | null>(GetDataContext);
 }
 
-const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataProps): GetDataType => {
+const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit = true}: GetDataProps): GetDataType => {
+    if(!entityAction) {
+        throw new Error('Invalid Entity Action');
+    }
+
+    const enabled = useRef(loadOnInit);
     const {getAction, generateRoute} = UseActions();
     entityAction = getAction(entityAction.entity, entityAction.name, entityAction.namespace) || entityAction;
 
@@ -42,8 +48,13 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
     const cache = useRef<{ [key: string]: string }>({});
     const [refresh, setRefresh] = useState(1);
 
-    const update = () => {
+    const update = useCallback(() => {
         if (!entityAction) {
+            return;
+        }
+
+        if(!enabled.current) {
+            enabled.current = true;
             return;
         }
 
@@ -74,15 +85,22 @@ const GetData = ({entityAction, initParameters, initQueryParameters}: GetDataPro
             })
             .finally(() => {
             });
-    }
+
+        return () => {
+            enabled.current = loadOnInit;
+        }
+    }, [parameters, queryParameters, refresh])
 
     useEffect(() => {
         update();
+    }, [parameters, queryParameters, refresh]);
 
+    useEffect(() => {
         return () => {
-           cancel();
+            cancel();
+            enabled.current = loadOnInit;
         }
-    }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
+    }, []);
 
     const cancel = () => {
         loading.current?.abort('canceled');

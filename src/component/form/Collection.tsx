@@ -46,9 +46,7 @@ const Collection = ({
                 return (
                     <DynamicView key={name} data={{view: itemFormView, prototype: name, delete: () => dispatchItem({action: 'delete', name})}} prefix={"modify/form"} view={view.name + ".item"}>
                         <div className={"mb-3"}>
-                            <FormField
-                                view={itemFormView}
-                                prototype={name}/>
+                            <FormField name={name}/>
 
                             {isPrototype && (
                                 <Link

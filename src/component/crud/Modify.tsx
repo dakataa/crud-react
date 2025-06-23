@@ -16,7 +16,6 @@ const DefaultModifyTemplate = ({children}: {
     children?: ReactNode;
     results?: ModifyType;
 }) => {
-
     const currentAction = UseCurrentAction();
     const {getAction, generateLink} = UseActions();
     const listAction = getAction(currentAction.action.entity, 'list', currentAction.action.namespace);
