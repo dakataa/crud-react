@@ -1,8 +1,8 @@
 import React from "react";
-import {FormError, useForm} from "@src/component/form/Form";
+import {FormError, UseForm} from "@src/component/form/Form";
 
 export const FormAlert = ({name = 'global'}: { name: string; }) => {
-    const [[form]] = useForm();
+    const [[form]] = UseForm();
     const errorMessages = form?.errors[name] || [];
 
     return (

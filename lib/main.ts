@@ -19,6 +19,7 @@ export {default as DynamicView} from "@src/component/crud/DynamicView.tsx";
 export {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 export {default as TemplateBlock} from "@src/component/templating/TemplateBlock.tsx";
 export {default as TemplateExtend} from "@src/component/templating/TemplateExtend.tsx";
+export {default as TemplateParentBlock} from "@src/component/templating/TemplateParentBlock.tsx";
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
 export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.tsx";
 export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
@@ -35,12 +36,17 @@ export {default as Link} from "@src/component/Link.tsx";
 export {default as Translation} from "@src/component/Translation.tsx";
 export {default as Action} from "@src/component/crud/Action.tsx";
 
+// Form
 export * from "@src/component/form/Form.tsx";
 export * from "src/component/form/FormGroup.tsx"
 export * from "src/component/form/FormFieldError.tsx"
 export * from "src/component/form/FormLabel.tsx"
 export * from "src/component/form/FormHelp.tsx"
 export * from "src/component/form/Choice.tsx"
+
+
+// CRUD Form
+export * from "src/component/crud/form/Form.tsx"
 
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";

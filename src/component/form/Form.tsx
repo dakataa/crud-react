@@ -1,4 +1,12 @@
-import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useReducer, useRef} from "react";
+import React, {
+    ForwardedRef,
+    forwardRef,
+    PropsWithChildren,
+    useEffect,
+    useImperativeHandle,
+    useReducer,
+    useRef, useState
+} from "react";
 import {Constraint} from "@src/component/form/constraint/Contraint";
 
 export type FormError = {
@@ -7,10 +15,11 @@ export type FormError = {
     messageTemplate?: string;
 }
 
-const FormContext: any = React.createContext<any>(null);
+type FormContextType = [FormState, FormRef, HTMLFormElement | null];
+const FormContext: any = React.createContext<FormContextType | undefined>(undefined);
 
-export function useForm(): any {
-    const context = React.useContext(FormContext);
+export function UseForm(): any {
+    const context = React.useContext<FormContextType | undefined>(FormContext);
     if (!context) {
         throw new Error("useForm must be used in Form");
     }
@@ -40,6 +49,7 @@ type FormProps = {
     method?: 'GET' | 'POST',
     className?: string,
     data?: FormData,
+    name?: string,
     id?: string
 }
 
@@ -79,30 +89,30 @@ export const Form = forwardRef(({
         getFormData: () => new FormData(formElementRef.current || undefined),
         setFormData: (data: FormData) => {
             [...formElementRef.current?.elements || []].forEach((inputEl: any) => {
-                    const value: any = data.get(inputEl.name);
+                const value: any = data.get(inputEl.name);
 
-                    switch (inputEl.tagName.toLowerCase()) {
-                        case 'select': {
-                            if(inputEl.multiple) {
-                                [...(inputEl as HTMLSelectElement).options].forEach((element: HTMLOptionElement) => {
-                                    element.selected = data.getAll(inputEl.name).includes(element.value);
-                                })
-                            } else {
-                                inputEl.value = value;
-                            }
-                            break;
+                switch (inputEl.tagName.toLowerCase()) {
+                    case 'select': {
+                        if (inputEl.multiple) {
+                            [...(inputEl as HTMLSelectElement).options].forEach((element: HTMLOptionElement) => {
+                                element.selected = data.getAll(inputEl.name).includes(element.value);
+                            })
+                        } else {
+                            inputEl.value = value;
                         }
-                        default: {
-                            switch (inputEl.type) {
-                                case 'checkbox':
-                                    inputEl.checked = !!value;
-                                    break;
-                                default:
-                                    inputEl.value = value;
-                                    break;
-                            }
+                        break;
+                    }
+                    default: {
+                        switch (inputEl.type) {
+                            case 'checkbox':
+                                inputEl.checked = !!value;
+                                break;
+                            default:
+                                inputEl.value = value;
+                                break;
                         }
                     }
+                }
 
             });
         },

@@ -36,6 +36,7 @@ const DefaultModifyTemplate = ({children}: {
 
             <main>
                 <TemplateBlock name={"content"} content={children}/>
+                <TemplateBlock name={"actions"} content={children}/>
             </main>
         </section>
     )
@@ -114,7 +115,7 @@ const Modify = WithDataProvider(({children, onSuccess, modal, props}: {
                             }}
                             embedded={modal}
                         >
-                            {modal && <TemplateExtend name={"actions"}></TemplateExtend>}
+                            <TemplateExtend name={"actions"}></TemplateExtend>
                         </Form>
                     </TemplateBlock>
                 </DynamicView>

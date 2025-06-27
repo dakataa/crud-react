@@ -151,7 +151,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                     </div>
                 ))}
 
-                <BaseForm ref={formRef} action={actionURL} method={"POST"} onSubmit={onSubmit}>
+                <BaseForm ref={formRef} id={formView.id} name={formView.name || 'form'} action={actionURL} method={"POST"} onSubmit={onSubmit}>
                     <DynamicView
                         key={formView.id}
                         view={formView.name || 'form'}

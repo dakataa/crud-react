@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {nameToId, useForm} from "./Form";
+import {nameToId, UseForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
 
@@ -46,7 +46,7 @@ const Choice = ({
 
     const elementName = view.full_name.replace('__name__', prototype ?? '');
     const elementId = (view.id || nameToId(elementName)).replace('__name__', prototype ?? '');
-    const [[formState, dispatch], formRef] = useForm();
+    const [[formState, dispatch], formRef] = UseForm();
     const fieldRef = useRef<HTMLSelectElement | HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[elementName] || [];
     const isInvalid = !!errorMessages.length;

@@ -89,11 +89,11 @@ const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit 
         return () => {
             enabled.current = loadOnInit;
         }
-    }, [parameters, queryParameters, refresh])
+    }, [JSON.stringify(parameters), queryParameters.toString(), refresh])
 
     useEffect(() => {
         update();
-    }, [parameters, queryParameters, refresh]);
+    }, [JSON.stringify(parameters), queryParameters.toString(), refresh]);
 
     useEffect(() => {
         return () => {

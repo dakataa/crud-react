@@ -1,8 +1,8 @@
-import {FormError, useForm} from "@src/component/form/Form";
+import {FormError, UseForm} from "@src/component/form/Form";
 import React from "react";
 
 export const FormFieldError = ({name, className}: { name: string, className?: string }) => {
-    const [[form]] = useForm();
+    const [[form]] = UseForm();
     const errorMessages = form?.errors[name] || [];
 
     if (!errorMessages.length)

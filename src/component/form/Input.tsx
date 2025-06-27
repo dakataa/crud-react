@@ -1,5 +1,5 @@
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
-import {nameToId, useForm} from "./Form";
+import {nameToId, UseForm} from "./Form";
 import {Constraint} from "./constraint/Contraint";
 import {FormViewType} from "@src/type/FormViewType";
 
@@ -24,7 +24,7 @@ const Input = ({
 
     const elementFullName = view.full_name.replace('__name__', prototype ?? '');
     const elementId = (view.id || nameToId(elementFullName)).replace('__name__', prototype ?? '');
-    const [[formState, dispatch]] = useForm();
+    const [[formState, dispatch]] = UseForm();
     const fieldRef = useRef<HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[elementFullName] || [];
 
