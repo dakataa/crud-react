@@ -135,7 +135,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
     }, [dataProvider?.results])
 
     const formView = data?.form.modify.view;
-    const setValue = (name: string, value: string) => {
+    const setValue = (name: string, value: string | string[]) => {
         const view = name.split('.').reduce((result: FormViewType | null, v: string) => {
             return result?.children?.[v] || null;
         }, formView || null);
@@ -143,6 +143,8 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
         if(!view) {
             return;
         }
+
+        view.data = value;
 
         formRef.current?.setValue(view.full_name, value)
     };

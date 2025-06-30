@@ -56,7 +56,7 @@ type FormProps = {
 export type FormRef = {
     getFormData: () => FormData,
     setFormData: (data: FormData) => void,
-    setValue: (name: string, value: string | null) => void,
+    setValue: (name: string, value: string | string[] | null) => void,
     setValues: (data: { [key: string]: string }) => void,
     setErrors: Function,
     reset: Function,
@@ -87,12 +87,30 @@ export const Form = forwardRef(({
         errors: {}
     };
 
-    const setValue = (name: string, value: string | null) => {
+    const setValue = (name: string, value: string | string[] | null) => {
         const element = formElementRef.current?.elements.namedItem(name);
-        console.log('set', element, value);
 
-        if(element instanceof HTMLInputElement) {
-            element.value = value || '';
+        if (element instanceof HTMLInputElement) {
+            switch (element.type) {
+                case 'checkbox':
+                case 'radio': {
+                    if (value !== null && !(value instanceof Array)) {
+                        value = [value];
+                    }
+
+                    if(value?.includes(element.value)) {
+                        element.checked = true;
+                    }
+
+                    break;
+                }
+                default:
+                    if (value instanceof Array) {
+                        throw new Error('Invalid Value');
+                    }
+
+                    element.value = value || '';
+            }
         }
     };
 
