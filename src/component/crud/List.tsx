@@ -49,7 +49,7 @@ const List = WithDataProvider(({embedded = false, title, className}: {
         throw new Error('Invalid Entity');
     }
 
-    const {results,  refresh, setQueryParameters} = UseDataProvider() || {};
+    const {results, refresh, setQueryParameters} = UseDataProvider() || {};
 
     const actions = (Object.values(results?.action ?? []) as ActionType[]).filter(a => a.visibility === ActionVisibility.List && a.name !== action.action.name);
 
@@ -175,14 +175,12 @@ const List = WithDataProvider(({embedded = false, title, className}: {
                         {!!actions.length && (
                             <div className="btn-group btn-group-sm me-2">
                                 {actions.map((item, index) => (
-                                    <>
-                                        <Action
-                                            key={index}
-                                            action={item}
-                                            routeParams={action.parameters}
-                                            className="btn btn-outline-secondary"
-                                        />
-                                    </>
+                                    <Action
+                                        key={index}
+                                        action={item}
+                                        routeParams={action.parameters}
+                                        className="btn btn-outline-secondary"
+                                    />
                                 ))}
                             </div>
                         )}

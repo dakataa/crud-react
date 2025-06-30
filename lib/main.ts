@@ -46,7 +46,7 @@ export * from "src/component/form/Choice.tsx"
 
 
 // CRUD Form
-export * from "src/component/crud/form/Form.tsx"
+export {default as CrudForm, UseCrudForm} from "src/component/crud/form/Form.tsx"
 
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";

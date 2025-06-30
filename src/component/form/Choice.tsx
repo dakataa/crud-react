@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {Fragment, useEffect, useRef} from "react";
 import {nameToId, UseForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
@@ -127,11 +127,11 @@ const Choice = ({
                 >
                     {view.placeholder && <option value={''}>{view.placeholder}</option>}
                     {Object.values(view.choices || []).map((choice: any, index: number) => (
-                        <>
+                        <Fragment key={index}>
                             {choice.choices !== undefined ?
-                                <SelectGroupOption key={index} view={view} group={choice as ChoiceGroupType}/> :
-                                <SelectOption key={index} view={view} choice={choice as ChoiceType}/>}
-                        </>
+                                <SelectGroupOption view={view} group={choice as ChoiceGroupType}/> :
+                                <SelectOption view={view} choice={choice as ChoiceType}/>}
+                        </Fragment>
                     ))}
                 </select>
             </>

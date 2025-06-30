@@ -20,15 +20,17 @@ export const FormGroup = ({
                               view,
                               prototype,
                               className,
+                              type
                           }: {
     view: FormViewType
     className?: string;
     prototype?: string;
-})=> {
+    type?: string
+}) => {
     const id = useId();
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
     const crudFormContext = UseCrudForm();
-    if(crudFormContext) {
+    if (crudFormContext) {
         const {canRender, setRendered} = crudFormContext;
         setRendered?.(view, id);
         if (!canRender?.(view, id)) {
@@ -36,22 +38,24 @@ export const FormGroup = ({
         }
     }
 
-    if(view.name === view.type) {
-        return null;
-    }
+    view.type = type || view.type;
 
     return (
         <FormGroupContext.Provider value={{id: id}}>
-            <div
-                className={[...(className?.split(' ') || []), 'mb-3', (isCheckbox && 'form-check')].filter(v => v).join(' ')}
-                {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
-            >
-                {!isCheckbox && (<FormLabel view={view}/>)}
+            {view.type === 'hidden' ? (
                 <FormWidget view={view} prototype={prototype}/>
-                {isCheckbox && (<FormLabel view={view}/>)}
-                <FormFieldError name={view.full_name} className={"invalid-feedback"}/>
-                <FormHelp view={view}/>
-            </div>
+            ) : (
+                <div
+                    className={[...(className?.split(' ') || []), 'mb-3', (isCheckbox && 'form-check')].filter(v => v).join(' ')}
+                    {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
+                >
+                    {!isCheckbox && (<FormLabel view={view}/>)}
+                    <FormWidget view={view} prototype={prototype}/>
+                    {isCheckbox && (<FormLabel view={view}/>)}
+                    <FormFieldError name={view.full_name} className={"invalid-feedback"}/>
+                    <FormHelp view={view}/>
+                </div>
+            )}
         </FormGroupContext.Provider>
     );
 }

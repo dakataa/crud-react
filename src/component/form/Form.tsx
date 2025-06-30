@@ -56,6 +56,8 @@ type FormProps = {
 export type FormRef = {
     getFormData: () => FormData,
     setFormData: (data: FormData) => void,
+    setValue: (name: string, value: string | null) => void,
+    setValues: (data: { [key: string]: string }) => void,
     setErrors: Function,
     reset: Function,
     submit: Function
@@ -83,6 +85,15 @@ export const Form = forwardRef(({
         response: null,
         constraints: {},
         errors: {}
+    };
+
+    const setValue = (name: string, value: string | null) => {
+        const element = formElementRef.current?.elements.namedItem(name);
+        console.log('set', element, value);
+
+        if(element instanceof HTMLInputElement) {
+            element.value = value || '';
+        }
     };
 
     const handler: FormRef = {
@@ -115,6 +126,10 @@ export const Form = forwardRef(({
                 }
 
             });
+        },
+        setValue,
+        setValues: (data: { [key: string]: string }) => {
+            Object.keys(data).map(k => setValue(k, data[k]));
         },
         setErrors: (errors: { [key: string]: FormError[] }) => {
             const [, dispatch] = context;

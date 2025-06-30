@@ -31,6 +31,8 @@ export type ModifyFormRefType = {
 
 type CrudFormContextType = {
     form?: FormViewType | null | undefined,
+    setValue?: (name: string, value: string) => void,
+    setValues?: (data: { [key: string]: string }) => void,
     setRendered?: (e: FormViewType, id: string) => void,
     canRender?: (e: FormViewType, id: string) => boolean
 }
@@ -56,7 +58,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
-    const renderedFormElements = useRef<{ [key: string]: string }>({})
+    const renderedFormElements = useRef<{ [key: string]: string }>({});
 
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => dataProvider?.results as ModifyType,
@@ -133,6 +135,17 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
     }, [dataProvider?.results])
 
     const formView = data?.form.modify.view;
+    const setValue = (name: string, value: string) => {
+        const view = name.split('.').reduce((result: FormViewType | null, v: string) => {
+            return result?.children?.[v] || null;
+        }, formView || null);
+
+        if(!view) {
+            return;
+        }
+
+        formRef.current?.setValue(view.full_name, value)
+    };
 
     return <CrudFormContext.Provider value={{
         form: formView,
@@ -141,7 +154,11 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 renderedFormElements.current[e.full_name] = id;
             }
         },
-        canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id)
+        canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id),
+        setValue,
+        setValues: (data: { [key: string]: string }) => {
+            Object.keys(data).map(k => setValue(k, data[k]));
+        }
     }}>
         {formView && (
             <>
