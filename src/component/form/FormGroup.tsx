@@ -1,5 +1,5 @@
 import {FormFieldError} from "@src/component/form/FormFieldError";
-import React, {useId} from "react";
+import React, {useEffect, useId} from "react";
 import FormLabel from "@src/component/form/FormLabel.tsx";
 import FormHelp from "@src/component/form/FormHelp.tsx";
 import FormWidget from "@src/component/form/FormWidget.tsx";
@@ -30,6 +30,16 @@ export const FormGroup = ({
     const id = useId();
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
     const crudFormContext = UseCrudForm();
+
+    useEffect(() => {
+        return () => {
+            if (crudFormContext) {
+                const {unsetRendered} = crudFormContext;
+                unsetRendered?.(view, id);
+            }
+        }
+    }, []);
+
     if (crudFormContext) {
         const {canRender, setRendered} = crudFormContext;
         setRendered?.(view, id);

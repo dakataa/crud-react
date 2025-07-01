@@ -34,6 +34,7 @@ type CrudFormContextType = {
     setValue?: (name: string, value: string) => void,
     setValues?: (data: { [key: string]: string }) => void,
     setRendered?: (e: FormViewType, id: string) => void,
+    unsetRendered?: (e: FormViewType, id: string) => void,
     canRender?: (e: FormViewType, id: string) => boolean
 }
 
@@ -154,6 +155,11 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
         setRendered: (e: FormViewType, id) => {
             if (renderedFormElements.current[e.full_name] === undefined) {
                 renderedFormElements.current[e.full_name] = id;
+            }
+        },
+        unsetRendered: (e: FormViewType, id) => {
+            if(renderedFormElements.current[e.full_name] === id) {
+                delete renderedFormElements.current[e.full_name];
             }
         },
         canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id),

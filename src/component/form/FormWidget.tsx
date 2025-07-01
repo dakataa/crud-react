@@ -1,5 +1,5 @@
 import Choice from "@src/component/form/Choice";
-import React, {useId} from "react";
+import React, {useEffect, useId} from "react";
 import {FormViewType} from "@src/type/FormViewType";
 import Input from "@src/component/form/Input.tsx";
 import Collection from "@src/component/form/Collection.tsx";
@@ -15,14 +15,23 @@ const FormWidget = ({
 }) => {
     const id = useId()
     const crudFormContext = UseCrudForm();
-    if (crudFormContext) {
-        const {canRender, setRendered} = crudFormContext;
-        const group = UseFormGroup()
-        if (!group) {
-            setRendered?.(view, id);
-            if (canRender && !canRender?.(view, id)) {
-                return;
+    const group = UseFormGroup()
+
+    useEffect(() => {
+        return () => {
+            if (crudFormContext && !group) {
+                const {unsetRendered} = crudFormContext;
+                unsetRendered?.(view, id);
             }
+        }
+    }, []);
+
+    if (crudFormContext && !group) {
+        const {canRender, setRendered} = crudFormContext;
+
+        setRendered?.(view, id);
+        if (canRender && !canRender?.(view, id)) {
+            return;
         }
     }
 
