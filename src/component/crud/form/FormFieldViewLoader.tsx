@@ -9,32 +9,23 @@ const FormFieldViewLoader = memo(({view, prototype}: {
 }) => {
 
     return (
-        <>
-            {view && (
-                <>
-                    {view && (
-                        Object.keys(view.children || []).length && !view.prototype ?
-                            Object.values(view.children || []).map((child) => {
-                                return (
-                                    <FormFieldViewLoader key={child.id} view={child} prototype={prototype}/>
-                                )
-                            })
-                            :
-                            <>
-                                <DynamicView
-                                    key={view.id}
-                                    view={view.name || 'form'}
-                                    prefix={"modify/form"}
-                                    data={view}
-                                >
-                                    <FormGroup key={view.id} view={view} prototype={prototype}/>
-                                </DynamicView>
-                            </>
-                    )}
-                </>
-            )}
-        </>
-    );
+        Object.keys(view?.children || []).length && !view.prototype ?
+            Object.values(view.children || []).map((child) => {
+                return (
+                    <FormFieldViewLoader key={child.id} view={child} prototype={prototype}/>
+                )
+            })
+            :
+            <DynamicView
+                key={view.id}
+                view={view.name || 'form'}
+                prefix={"modify/form"}
+                data={view}
+            >
+                <FormGroup key={view.id} view={view} prototype={prototype}/>
+            </DynamicView>
+
+    )
 });
 
 export default FormFieldViewLoader;

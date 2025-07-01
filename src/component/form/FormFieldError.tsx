@@ -3,8 +3,8 @@ import React from "react";
 
 export const FormFieldError = ({name, className}: { name: string, className?: string }) => {
     const [[form]] = UseForm() || {};
-    const errorMessages = form?.errors[name] || [];
 
+    const errorMessages = form?.errors[name] || [];
     if (!errorMessages.length) {
         return null;
     }
