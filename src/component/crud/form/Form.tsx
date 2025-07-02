@@ -1,15 +1,6 @@
-import {Form as BaseForm, FormRef} from "@src/component/form/Form.tsx";
+import {Form as BaseForm, FormRef, UseForm} from "@src/component/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
-import React, {
-    createRef,
-    forwardRef,
-    ReactNode,
-    useEffect,
-    useImperativeHandle,
-    useReducer,
-    useRef,
-    useState
-} from "react";
+import React, {forwardRef, PropsWithChildren, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
@@ -38,10 +29,59 @@ type CrudFormContextType = {
     canRender?: (e: FormViewType, id: string) => boolean
 }
 
-const CrudFormContext = React.createContext<CrudFormContextType|undefined>(undefined);
+const CrudFormContext = React.createContext<CrudFormContextType | undefined>(undefined);
 
-export function UseCrudForm(): CrudFormContextType|undefined {
-    return React.useContext<CrudFormContextType|undefined>(CrudFormContext);
+export const FormProvider = ({view, children}: PropsWithChildren & { view: FormViewType }) => {
+
+    const renderedFormElements = useRef<{ [key: string]: string }>({});
+    const [, formRef] = UseForm();
+
+    const setValue = (name: string, value: string | string[]) => {
+        const childView = name.split('.').reduce((result: FormViewType | null, v: string) => {
+            return result?.children?.[v] || null;
+        }, view);
+
+        if (!childView) {
+            return;
+        }
+
+        childView.data = value;
+
+        formRef.current?.setValue(childView.full_name, value)
+    };
+
+    useEffect(() => {
+        return () => {
+            renderedFormElements.current = {};
+        }
+    }, []);
+
+    return (
+        <CrudFormContext.Provider value={{
+            form: view,
+            setRendered: (e: FormViewType, id) => {
+                if (renderedFormElements.current[e.full_name] === undefined) {
+                    renderedFormElements.current[e.full_name] = id;
+                }
+            },
+            unsetRendered: (e: FormViewType, id) => {
+                if (renderedFormElements.current[e.full_name] === id) {
+                    delete renderedFormElements.current[e.full_name];
+                }
+            },
+            canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id),
+            setValue,
+            setValues: (data: { [key: string]: string }) => {
+                Object.keys(data).map(k => setValue(k, data[k]));
+            }
+        }}>
+            {children}
+        </CrudFormContext.Provider>
+    );
+}
+
+export function UseCrudForm(): CrudFormContextType | undefined {
+    return React.useContext<CrudFormContextType | undefined>(CrudFormContext);
 }
 
 const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false}: {
@@ -59,7 +99,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
-    const renderedFormElements = useRef<{ [key: string]: string }>({});
+
 
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => dataProvider?.results as ModifyType,
@@ -125,10 +165,6 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
         if (onLoad) {
             onLoad();
         }
-
-        return () => {
-            renderedFormElements.current = {};
-        }
     }, []);
 
     useEffect(() => {
@@ -136,47 +172,23 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
     }, [dataProvider?.results])
 
     const formView = data?.form.modify.view;
-    const setValue = (name: string, value: string | string[]) => {
-        const view = name.split('.').reduce((result: FormViewType | null, v: string) => {
-            return result?.children?.[v] || null;
-        }, formView || null);
 
-        if(!view) {
-            return;
-        }
+    if (!formView) {
+        return;
+    }
 
-        view.data = value;
+    return (
+        <>
+            {Object.keys(data?.messages || {}).map((messageType, index) => (
+                <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
+                    {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
+                </div>
+            ))}
 
-        formRef.current?.setValue(view.full_name, value)
-    };
-
-    return <CrudFormContext.Provider value={{
-        form: formView,
-        setRendered: (e: FormViewType, id) => {
-            if (renderedFormElements.current[e.full_name] === undefined) {
-                renderedFormElements.current[e.full_name] = id;
-            }
-        },
-        unsetRendered: (e: FormViewType, id) => {
-            if(renderedFormElements.current[e.full_name] === id) {
-                delete renderedFormElements.current[e.full_name];
-            }
-        },
-        canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id),
-        setValue,
-        setValues: (data: { [key: string]: string }) => {
-            Object.keys(data).map(k => setValue(k, data[k]));
-        }
-    }}>
-        {formView && (
-            <>
-                {Object.keys(data?.messages || {}).map((messageType, index) => (
-                    <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
-                        {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
-                    </div>
-                ))}
-
-                <BaseForm ref={formRef} id={formView.id} name={formView.name || 'form'} action={actionURL} method={"POST"} onSubmit={onSubmit}>
+            <BaseForm ref={formRef} id={formView.id} name={formView.name || 'form'} action={actionURL}
+                      method={"POST"} onSubmit={onSubmit}>
+                <FormProvider view={formView}>
+                    <FormFieldError name={formView.full_name} className={"alert alert-danger"}/>
                     <DynamicView
                         key={formView.id}
                         view={formView.name || 'form'}
@@ -185,14 +197,14 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                     >
                         <FormFieldViewLoader view={formView}/>
                     </DynamicView>
-                    <FormFieldError name={formView.full_name} className={"alert alert-danger"}/>
+
                     <TemplateBlock name={"actions"} content={children} data={{formRef}}>
                         <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
                     </TemplateBlock>
-                </BaseForm>
-            </>
-        )}
-    </CrudFormContext.Provider>
+                </FormProvider>
+            </BaseForm>
+        </>
+    )
 });
 
 export default Form;

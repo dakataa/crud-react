@@ -11,7 +11,9 @@ export const FormFieldError = ({name, className}: { name: string, className?: st
 
     return (
         <div className={className}>
-            {errorMessages.map((error: FormError, i: number) => <span key={i}>{error.message}</span>)}
+            <ul className={"mb-0"}>
+                {errorMessages.map((error: FormError, i: number) => <li key={i}>{error.message}</li>)}
+            </ul>
         </div>
     )
 }

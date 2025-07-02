@@ -4,6 +4,9 @@ import {FormField} from "../../../lib/main.ts";
 import Link from "@src/component/Link.tsx";
 import T from "@src/component/Translation.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import {FormProvider} from "@src/component/crud/form/Form.tsx";
+import FormWidget from "@src/component/form/FormWidget.tsx";
+import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -39,23 +42,32 @@ const Collection = ({
 
     const isPrototype = !!view.prototype;
 
+    const removeItem = (name: string) => {
+        dispatchItem({action: 'delete', name});
+    }
+
     return (
         <>
             {items.map((name) => {
                 const itemFormView = view.children?.[name] ?? (view.prototype as FormViewType);
                 return (
-                    <DynamicView key={name} data={{view: itemFormView, prototype: name, delete: () => dispatchItem({action: 'delete', name})}} prefix={"modify/form"} view={view.name + ".item"}>
-                        <div className={"mb-3"}>
-                            <FormField name={name}/>
-
-                            {isPrototype && (
-                                <Link
-                                    to={"#"}
-                                    onClick={() => dispatchItem({action: 'delete', name})}
-                                    className={"btn btn-outline-danger  btn-sm"}><T>Delete</T></Link>
-                            )}
-                        </div>
-                    </DynamicView>
+                    <FormProvider view={itemFormView}>
+                        <DynamicView key={name} data={{
+                            view: itemFormView,
+                            prototype: name,
+                            delete: () => removeItem(name)
+                        }} prefix={"modify/form"} view={view.name + ".item"}>
+                            <div className={"mb-3"}>
+                                <FormFieldViewLoader view={itemFormView} prototype={name}/>
+                                {isPrototype && (
+                                    <Link
+                                        to={"#"}
+                                        onClick={() => removeItem(name)}
+                                        className={"btn btn-outline-danger  btn-sm"}><T>Delete</T></Link>
+                                )}
+                            </div>
+                        </DynamicView>
+                    </FormProvider>
                 )
             })}
             {isPrototype && (

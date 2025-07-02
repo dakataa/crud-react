@@ -20,7 +20,7 @@ export type FormViewType = {
     priority?: number;
     type: 'form' | string;
     valid?: boolean;
-    errors?: string[];
+    errors?: FormViewErrorType[];
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
     choice_attr?: {[key: string]: {[key: string]: string}} | Function
@@ -29,6 +29,13 @@ export type FormViewType = {
     data?: any;
     rendered?: boolean;
     prototype?: FormViewType;
+}
+
+export type FormViewErrorType = {
+    message: string;
+    origin: string | null;
+    messageParameters: {[key: string]: string};
+    messageTemplate: string;
 }
 
 export type ChoiceType = {
