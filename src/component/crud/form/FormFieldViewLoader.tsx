@@ -1,4 +1,4 @@
-import {FormViewType} from "@src/type/FormViewType.tsx";
+import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 import FormGroup from "@src/component/form/FormGroup.tsx";
 import React, {memo} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
@@ -9,7 +9,7 @@ const FormFieldViewLoader = memo(({view, prototype}: {
 }) => {
 
     return (
-        Object.keys(view?.children || []).length && !view.prototype ?
+        Object.keys(view?.children || []).length && !Object.values(FormViewTypeEnum).includes(view.type as FormViewTypeEnum) ?
             Object.values(view.children || []).map((child) => {
                 return (
                     <FormFieldViewLoader key={child.id} view={child} prototype={prototype}/>
@@ -18,7 +18,7 @@ const FormFieldViewLoader = memo(({view, prototype}: {
             :
             <DynamicView
                 key={view.id}
-                view={view.name || 'form'}
+                view={view?.name || 'form'}
                 prefix={"modify/form"}
                 data={view}
             >

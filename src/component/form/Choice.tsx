@@ -24,8 +24,8 @@ const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }
 const SelectGroupOption = ({view, group}: { view: FormViewType, group: ChoiceGroupType }) => {
     return (
         <optgroup label={group.label}>
-            {Object.values(group.choices).map((c) => (
-                <SelectOption view={view} choice={c}/>
+            {Object.values(group.choices).map((c, index) => (
+                <SelectOption key={index} view={view} choice={c}/>
             ))}
         </optgroup>
     )

@@ -43,8 +43,8 @@ export const FormGroup = ({
     if (crudFormContext) {
         const {canRender, setRendered} = crudFormContext;
         setRendered?.(view, id);
-        if (!canRender?.(view, id)) {
-            return;
+        if (canRender && !canRender?.(view, id)) {
+            return null;
         }
     }
 

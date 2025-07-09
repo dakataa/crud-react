@@ -27,12 +27,14 @@ type CrudFormContextType = {
     setRendered?: (e: FormViewType, id: string) => void,
     unsetRendered?: (e: FormViewType, id: string) => void,
     canRender?: (e: FormViewType, id: string) => boolean
+    getElements?: () => { [key: string]: string }
 }
 
 const CrudFormContext = React.createContext<CrudFormContextType | undefined>(undefined);
 
-export const FormProvider = ({view, children}: PropsWithChildren & { view: FormViewType }) => {
+export const FormViewProvider = ({view, children}: PropsWithChildren & { view: FormViewType }) => {
 
+    const {canRender: parentCanRender} = UseCrudForm() || {};
     const renderedFormElements = useRef<{ [key: string]: string }>({});
     const [, formRef] = UseForm();
 
@@ -69,11 +71,14 @@ export const FormProvider = ({view, children}: PropsWithChildren & { view: FormV
                     delete renderedFormElements.current[e.full_name];
                 }
             },
-            canRender: (e: FormViewType, id: string) => Object.values(renderedFormElements.current).includes(id),
+            canRender: (e: FormViewType, id: string) => {
+                return Object.values(renderedFormElements.current).includes(id) || [true].includes(parentCanRender?.(e, id) || false);
+            },
             setValue,
             setValues: (data: { [key: string]: string }) => {
                 Object.keys(data).map(k => setValue(k, data[k]));
-            }
+            },
+            getElements: () => renderedFormElements.current
         }}>
             {children}
         </CrudFormContext.Provider>
@@ -153,12 +158,12 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 }
 
             }).catch((error: ExceptionType) => {
-            if (onError) {
-                onError(error);
-            }
-        }).finally(() => {
-            setPreloader(false);
-        });
+                if (onError) {
+                    onError(error);
+                }
+            }).finally(() => {
+                setPreloader(false);
+            });
     }
 
     useEffect(() => {
@@ -187,7 +192,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
 
             <BaseForm ref={formRef} id={formView.id} name={formView.name || 'form'} action={actionURL}
                       method={"POST"} onSubmit={onSubmit}>
-                <FormProvider view={formView}>
+                <FormViewProvider view={formView}>
                     <FormFieldError name={formView.full_name} className={"alert alert-danger"}/>
                     <DynamicView
                         key={formView.id}
@@ -201,7 +206,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                     <TemplateBlock name={"actions"} content={children} data={{formRef}}>
                         <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
                     </TemplateBlock>
-                </FormProvider>
+                </FormViewProvider>
             </BaseForm>
         </>
     )
