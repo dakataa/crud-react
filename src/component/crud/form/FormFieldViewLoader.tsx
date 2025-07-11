@@ -11,9 +11,9 @@ const FormFieldViewLoader = memo(() => {
     return (
         <FormGroupProvider id={id} view={view}>
             {view?.type === FormViewTypeEnum.Form ?
-                Object.values(view.children || []).map((child) => {
+                Object.values(view.children || []).map((child, index) => {
                     return (
-                        <FormViewProvider view={child}>
+                        <FormViewProvider key={index} view={child}>
                             <FormFieldViewLoader/>
                         </FormViewProvider>
                     )

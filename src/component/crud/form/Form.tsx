@@ -1,11 +1,10 @@
 import {Form as BaseForm, FormRef, UseForm} from "@src/component/form/Form.tsx";
-import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 import React, {
     forwardRef,
-    memo,
     PropsWithChildren,
     ReactNode,
-    useEffect, useId,
+    useEffect,
+    useId,
     useImperativeHandle,
     useRef,
     useState
@@ -36,14 +35,15 @@ type FormViewContextType = {
     setValues?: (data: { [key: string]: string }) => void,
     setRendered?: (e: FormViewType, id: string) => void,
     unsetRendered?: (e: FormViewType, id: string) => void,
-    canRender?: (e: FormViewType, id: string) => boolean
-    getElements?: () => { [key: string]: string }
+    canRender?: (e: FormViewType, id: string) => boolean,
+    getElements?: () => { [key: string]: string },
+    allowDuplicates?: boolean
 }
 
 const FormViewContext = React.createContext<FormViewContextType | undefined>(undefined);
 
-export const FormViewProvider = ({view, children}: PropsWithChildren & { view: FormViewType }) => {
-    const {form: parentFormView, getElements} = UseParentFormView() || {};
+export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChildren & { view: FormViewType, allowDuplicates?: boolean }) => {
+    const {form: parentFormView, getElements, allowDuplicates: parentAllowDuplicates} = UseParentFormView() || {};
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const [, formRef] = UseForm();
 
@@ -81,13 +81,14 @@ export const FormViewProvider = ({view, children}: PropsWithChildren & { view: F
                 }
             },
             canRender: (e: FormViewType, id: string) => {
-                return  view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
+                return  allowDuplicates || parentAllowDuplicates || view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
             },
             setValue,
             setValues: (data: { [key: string]: string }) => {
                 Object.keys(data).map(k => setValue(k, data[k]));
             },
-            getElements: () => renderedFormElements.current
+            getElements: () => renderedFormElements.current,
+            allowDuplicates
         }}>
             <FormRenderer>
                 {children}

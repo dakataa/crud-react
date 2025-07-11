@@ -24,6 +24,7 @@ const Collection = ({
         value?: string | string[]
     }) => {
         const {action, value} = command;
+
         switch (action) {
             case 'delete': {
                 if(value && typeof value !== 'string') {
@@ -70,11 +71,11 @@ const Collection = ({
                 const itemFormView = view.children?.[name] ?? (view.prototype as FormViewType);
 
                 if(!itemFormView) {
-                    return <></>;
+                    return null;
                 }
 
                 return (
-                    <FormViewProvider view={itemFormView}>
+                    <FormViewProvider view={itemFormView} allowDuplicates={!!view.prototype}>
                         <DynamicView key={itemFormView.full_name} data={{
                             view: itemFormView,
                             prototype: name,
