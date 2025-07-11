@@ -14,7 +14,7 @@ export {default as FormLabel} from "@src/component/crud/form/FormLabel.tsx";
 export {default as FormRest} from "@src/component/crud/form/FormRest.tsx";
 export {default as FormError} from "@src/component/crud/form/FormError.tsx";
 
-export {default as FormWidget} from "@src/component/form/FormWidget.tsx";
+export {default as FormWidget} from "@src/component/crud/form/FormField.tsx";
 export {default as DynamicView} from "@src/component/crud/DynamicView.tsx";
 export {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 export {default as TemplateBlock} from "@src/component/templating/TemplateBlock.tsx";
@@ -46,7 +46,7 @@ export * from "src/component/form/Choice.tsx"
 
 
 // CRUD Form
-export {default as CrudForm, UseCrudForm} from "src/component/crud/form/Form.tsx"
+export {default as CrudForm, UseFormView, FormViewProvider} from "src/component/crud/form/Form.tsx"
 
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";

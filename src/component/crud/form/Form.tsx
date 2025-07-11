@@ -1,6 +1,15 @@
 import {Form as BaseForm, FormRef, UseForm} from "@src/component/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
-import React, {forwardRef, PropsWithChildren, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
+import React, {
+    forwardRef,
+    memo,
+    PropsWithChildren,
+    ReactNode,
+    useEffect, useId,
+    useImperativeHandle,
+    useRef,
+    useState
+} from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
@@ -12,16 +21,17 @@ import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
-import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import FormError from "@src/component/crud/form/FormError.tsx";
+import FormRest from "@src/component/crud/form/FormRest.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
     getFormRef: () => FormRef | null
 };
 
-type CrudFormContextType = {
-    form?: FormViewType | null | undefined,
+type FormViewContextType = {
+    form: FormViewType,
     setValue?: (name: string, value: string) => void,
     setValues?: (data: { [key: string]: string }) => void,
     setRendered?: (e: FormViewType, id: string) => void,
@@ -30,12 +40,11 @@ type CrudFormContextType = {
     getElements?: () => { [key: string]: string }
 }
 
-const CrudFormContext = React.createContext<CrudFormContextType | undefined>(undefined);
+const FormViewContext = React.createContext<FormViewContextType | undefined>(undefined);
 
 export const FormViewProvider = ({view, children}: PropsWithChildren & { view: FormViewType }) => {
-
-    const {canRender: parentCanRender} = UseCrudForm() || {};
-    const renderedFormElements = useRef<{ [key: string]: string }>({});
+    const {form: parentFormView, getElements} = UseParentFormView() || {};
+    const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const [, formRef] = UseForm();
 
     const setValue = (name: string, value: string | string[]) => {
@@ -59,7 +68,7 @@ export const FormViewProvider = ({view, children}: PropsWithChildren & { view: F
     }, []);
 
     return (
-        <CrudFormContext.Provider value={{
+        <FormViewContext.Provider value={{
             form: view,
             setRendered: (e: FormViewType, id) => {
                 if (renderedFormElements.current[e.full_name] === undefined) {
@@ -72,7 +81,7 @@ export const FormViewProvider = ({view, children}: PropsWithChildren & { view: F
                 }
             },
             canRender: (e: FormViewType, id: string) => {
-                return Object.values(renderedFormElements.current).includes(id) || [true].includes(parentCanRender?.(e, id) || false);
+                return  view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
             },
             setValue,
             setValues: (data: { [key: string]: string }) => {
@@ -80,13 +89,42 @@ export const FormViewProvider = ({view, children}: PropsWithChildren & { view: F
             },
             getElements: () => renderedFormElements.current
         }}>
-            {children}
-        </CrudFormContext.Provider>
+            <FormRenderer>
+                {children}
+            </FormRenderer>
+        </FormViewContext.Provider>
     );
 }
 
-export function UseCrudForm(): CrudFormContextType | undefined {
-    return React.useContext<CrudFormContextType | undefined>(CrudFormContext);
+const FormRenderer = ({children}: PropsWithChildren) => {
+    const id = useId();
+    const {form: view, unsetRendered, setRendered, canRender} = UseFormView();
+
+    useEffect(() => {
+        return () => {
+            unsetRendered?.(view, id);
+        }
+    }, []);
+
+    setRendered?.(view, id);
+    if (false === canRender?.(view, id)) {
+        return null;
+    }
+
+    return children;
+}
+
+export function UseFormView(): FormViewContextType {
+    const context = React.useContext<FormViewContextType | undefined>(FormViewContext);
+    if (!context) {
+        throw new Error('UseCrudForm must be used within a CrudFormProvider.');
+    }
+
+    return context;
+}
+
+export function UseParentFormView(): FormViewContextType | undefined {
+    return React.useContext<FormViewContextType | undefined>(FormViewContext);
 }
 
 const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false}: {
@@ -158,12 +196,12 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 }
 
             }).catch((error: ExceptionType) => {
-                if (onError) {
-                    onError(error);
-                }
-            }).finally(() => {
-                setPreloader(false);
-            });
+            if (onError) {
+                onError(error);
+            }
+        }).finally(() => {
+            setPreloader(false);
+        });
     }
 
     useEffect(() => {
@@ -190,17 +228,22 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 </div>
             ))}
 
-            <BaseForm ref={formRef} id={formView.id} name={formView.name || 'form'} action={actionURL}
-                      method={"POST"} onSubmit={onSubmit}>
+            <BaseForm
+                ref={formRef}
+                id={formView.id}
+                name={formView.name || 'form'}
+                action={actionURL}
+                method={"POST"} onSubmit={onSubmit}
+            >
                 <FormViewProvider view={formView}>
-                    <FormFieldError name={formView.full_name} className={"alert alert-danger"}/>
+                    <FormError className={"alert alert-danger"}/>
                     <DynamicView
                         key={formView.id}
                         view={formView.name || 'form'}
                         prefix={"modify/form"}
                         data={formView}
                     >
-                        <FormFieldViewLoader view={formView}/>
+                        <FormRest/>
                     </DynamicView>
 
                     <TemplateBlock name={"actions"} content={children} data={{formRef}}>

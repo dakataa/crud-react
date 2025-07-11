@@ -1,7 +1,3 @@
-import Choice from "@src/component/form/Choice.tsx";
-import Collection from "@src/component/form/Collection.tsx";
-import React from "react";
-
 export type FormViewType = {
     id: string;
     name: string;
@@ -23,6 +19,7 @@ export type FormViewType = {
     checked?: boolean;
     priority?: number;
     type: FormViewTypeEnum | string;
+    block_prefixes?: [FormViewTypeEnum | string];
     valid?: boolean;
     errors?: FormViewErrorType[];
     children?: { [key: string]: FormViewType };
@@ -33,11 +30,14 @@ export type FormViewType = {
     data?: any;
     rendered?: boolean;
     prototype?: FormViewType;
+    prototype_name?: string;
 }
 
 export enum FormViewTypeEnum {
     Form = 'form',
     Input = 'input',
+    Hidden = 'hidden',
+    Number = 'number',
     Text = 'text',
     Checkbox = 'checkbox',
     Radio = 'radio',

@@ -8,6 +8,7 @@ import React, {
     useRef, useState
 } from "react";
 import {Constraint} from "@src/component/form/constraint/Contraint";
+import {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 export type FormError = {
     message: string;
@@ -90,27 +91,29 @@ export const Form = forwardRef(({
     const setValue = (name: string, value: string | string[] | null) => {
         const element = formElementRef.current?.elements.namedItem(name);
 
-        if (element instanceof HTMLInputElement) {
-            switch (element.type) {
-                case 'checkbox':
-                case 'radio': {
-                    if (value !== null && !(value instanceof Array)) {
-                        value = [value];
-                    }
+        if (!(element instanceof HTMLInputElement)) {
+            throw new Error('Cannot Set Value on missing Form Element with name: ' + name);
+        }
 
-                    if(value?.includes(element.value)) {
-                        element.checked = true;
-                    }
-
-                    break;
+        switch (element.type) {
+            case FormViewTypeEnum.Checkbox:
+            case FormViewTypeEnum.Radio: {
+                if (value !== null && !(value instanceof Array)) {
+                    value = [value];
                 }
-                default:
-                    if (value instanceof Array) {
-                        throw new Error('Invalid Value');
-                    }
 
-                    element.value = value || '';
+                if(value?.includes(element.value)) {
+                    element.checked = true;
+                }
+
+                break;
             }
+            default:
+                if (value instanceof Array) {
+                    throw new Error('Invalid Value');
+                }
+
+                element.value = value || '';
         }
     };
 

@@ -8,7 +8,6 @@ export type FormFieldProps = {
     className?: string;
     constraints?: Constraint[];
     onChange?: Function;
-    prototype?: string;
 }
 
 export type InputProps = {} & FormFieldProps;
@@ -18,10 +17,10 @@ const Input = ({
                    constraints,
                    className,
                    onChange,
-                   prototype
                }: InputProps):
     React.JSX.Element => {
 
+    const prototype = view.prototype_name;
     const elementFullName = view.full_name.replace('__name__', prototype ?? '');
     const elementId = (view.id || nameToId(elementFullName)).replace('__name__', prototype ?? '');
     const [[formState, dispatch]] = UseForm();

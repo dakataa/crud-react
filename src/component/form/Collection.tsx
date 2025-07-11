@@ -8,14 +8,12 @@ import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.ts
 
 export type FormFieldProps = {
     view: FormViewType;
-    prototype?: string;
 }
 
 export type InputProps = {} & FormFieldProps;
 
 const Collection = ({
                         view,
-                        prototype,
                     }: InputProps):
     React.JSX.Element => {
 
@@ -83,7 +81,7 @@ const Collection = ({
                             delete: () => removeItem(name)
                         }} prefix={"modify/form"} view={view.name + ".item"}>
                             <div className={"mb-3"}>
-                                <FormFieldViewLoader view={itemFormView} {...(isPrototype ? {prototype: name} : {})}/>
+                                <FormFieldViewLoader />
                                 {isPrototype && (
                                     <Link
                                         to={"#"}

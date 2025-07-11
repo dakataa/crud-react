@@ -27,6 +27,7 @@ import {ListProvider} from "@src/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 
 const List = WithDataProvider(({embedded = false, title, className}: {
     action?: OnClickAction,
@@ -212,7 +213,9 @@ const List = WithDataProvider(({embedded = false, title, className}: {
                                             >
                                                 {
                                                     results?.form?.filter && (
-                                                        <FormFieldViewLoader view={results.form.filter.view}/>
+                                                        <FormViewProvider view={results.form.filter.view}>
+                                                            <FormFieldViewLoader/>
+                                                        </FormViewProvider>
                                                     )
                                                 }
                                                 <button className={"btn btn-primary me-2"} type={"submit"}>

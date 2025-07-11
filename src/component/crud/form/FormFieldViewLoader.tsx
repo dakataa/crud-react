@@ -1,29 +1,32 @@
-import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
-import FormGroup from "@src/component/form/FormGroup.tsx";
-import React, {memo} from "react";
+import {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
+import React, {memo, useEffect, useId} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
+import FormGroup, {FormGroupProvider, UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
 
-const FormFieldViewLoader = memo(({view, prototype}: {
-    view: FormViewType;
-    prototype?: string;
-}) => {
+const FormFieldViewLoader = memo(() => {
+    const id = useId();
+    const {form: view} = UseFormView();
 
     return (
-        Object.keys(view?.children || []).length && !Object.values(FormViewTypeEnum).includes(view.type as FormViewTypeEnum) ?
-            Object.values(view.children || []).map((child) => {
-                return (
-                    <FormFieldViewLoader key={child.id} view={child} prototype={prototype}/>
-                )
-            })
-            :
-            <DynamicView
-                key={view.id}
-                view={view?.name || 'form'}
-                prefix={"modify/form"}
-                data={view}
-            >
-                <FormGroup key={view.id} view={view} prototype={prototype}/>
-            </DynamicView>
+        <FormGroupProvider id={id} view={view}>
+            {view?.type === FormViewTypeEnum.Form ?
+                Object.values(view.children || []).map((child) => {
+                    return (
+                        <FormViewProvider view={child}>
+                            <FormFieldViewLoader/>
+                        </FormViewProvider>
+                    )
+                })
+                :
+                <DynamicView
+                    view={view?.name || 'form'}
+                    prefix={"modify/form"}
+                    data={view}
+                >
+                    <FormGroup/>
+                </DynamicView>}
+        </FormGroupProvider>
 
     )
 });
