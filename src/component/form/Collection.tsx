@@ -68,14 +68,18 @@ const Collection = ({
     return (
         <>
             {items.map((name) => {
-                const itemFormView = view.children?.[name] ?? (view.prototype as FormViewType);
+                const itemFormView = view.children?.[name] ?? {...view.prototype} as FormViewType;
 
                 if(!itemFormView) {
                     return null;
                 }
 
+                if(view.children?.[name] === undefined) {
+                    itemFormView.prototype_name = name;
+                }
+
                 return (
-                    <FormViewProvider view={itemFormView} allowDuplicates={!!view.prototype}>
+                    <FormViewProvider view={itemFormView} allowDuplicates={isPrototype}>
                         <DynamicView key={itemFormView.full_name} data={{
                             view: itemFormView,
                             prototype: name,

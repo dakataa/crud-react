@@ -1,10 +1,10 @@
-import {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
-import React, {memo, useEffect, useId} from "react";
+import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
+import React, {memo, useId} from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
-import FormGroup, {FormGroupProvider, UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
+import FormGroup, {FormGroupProvider} from "@src/component/crud/form/FormGroup.tsx";
 
-const FormFieldViewLoader = memo(() => {
+const FormFieldViewLoader = memo(({options}: {options?: FormViewType}) => {
     const id = useId();
     const {form: view} = UseFormView();
 
@@ -27,7 +27,6 @@ const FormFieldViewLoader = memo(() => {
                     <FormGroup/>
                 </DynamicView>}
         </FormGroupProvider>
-
     )
 });
 

@@ -21,8 +21,8 @@ const Input = ({
     React.JSX.Element => {
 
     const prototype = view.prototype_name;
-    const elementFullName = view.full_name.replace('__name__', prototype ?? '');
-    const elementId = (view.id || nameToId(elementFullName)).replace('__name__', prototype ?? '');
+    const elementFullName = view.full_name.replace('__name__', prototype || '');
+    const elementId = (view.id || nameToId(elementFullName)).replace('__name__', prototype || '');
     const [[formState, dispatch]] = UseForm();
     const fieldRef = useRef<HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[elementFullName] || [];
@@ -44,7 +44,7 @@ const Input = ({
 
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
-    const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
+    const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(view.data)));
     const attr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
 
     return <>

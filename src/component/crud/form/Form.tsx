@@ -62,6 +62,10 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     };
 
     useEffect(() => {
+        if(!view.prototype_name) {
+            view.prototype_name = parentFormView?.prototype_name;
+        }
+
         return () => {
             renderedFormElements.current = {};
         }

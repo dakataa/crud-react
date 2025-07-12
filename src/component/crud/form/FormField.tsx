@@ -1,21 +1,12 @@
 import Choice from "@src/component/form/Choice.tsx";
 import React from "react";
-import {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
+import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 import Input from "@src/component/form/Input.tsx";
 import Collection from "@src/component/form/Collection.tsx";
-import {UseFormView} from "@src/component/crud/form/Form.tsx";
+import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
-const FormField = ({name}: {
-    name?: string;
-}) => {
-    const {form} = UseFormView();
-    const view = name ? form.children?.[name] : form;
-
-    if (!view) {
-       throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
-    }
-
+const FormFieldSelector = ({view}:{view: FormViewType}) => {
     switch (view.type) {
         case FormViewTypeEnum.Entity:
         case FormViewTypeEnum.Choice:
@@ -45,6 +36,27 @@ const FormField = ({name}: {
             throw new Error('Invalid view type: ' + view.type);
         }
     }
+}
+
+const FormField = ({name}: {
+    name?: string;
+}) => {
+    const {form} = UseFormView();
+    const view = name ? form.children?.[name] : form;
+
+    if (!view) {
+       throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
+    }
+
+    if(name) {
+        return (
+          <FormViewProvider view={view}>
+              <FormFieldSelector view={view}/>
+          </FormViewProvider>
+        );
+    }
+
+    return <FormFieldSelector view={view}/>;
 }
 
 export default FormField;
