@@ -48,7 +48,7 @@ const FormField = ({name}: {
        throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
     }
 
-    if(name) {
+    if(name !== undefined) {
         return (
           <FormViewProvider view={view}>
               <FormFieldSelector view={view}/>

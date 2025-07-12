@@ -43,7 +43,7 @@ type FormViewContextType = {
 const FormViewContext = React.createContext<FormViewContextType | undefined>(undefined);
 
 export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChildren & { view: FormViewType, allowDuplicates?: boolean }) => {
-    const {form: parentFormView, getElements, allowDuplicates: parentAllowDuplicates} = UseParentFormView() || {};
+    const {form: parentFormView, getElements, allowDuplicates: parentAllowDuplicates, unsetRendered: parentUnsetRendered} = UseParentFormView() || {};
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const [, formRef] = UseForm();
 
@@ -83,6 +83,8 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
                 if (renderedFormElements.current[e.full_name] === id) {
                     delete renderedFormElements.current[e.full_name];
                 }
+
+                parentUnsetRendered?.(e, id);
             },
             canRender: (e: FormViewType, id: string) => {
                 return  allowDuplicates || parentAllowDuplicates || view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
