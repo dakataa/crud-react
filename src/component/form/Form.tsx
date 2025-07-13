@@ -1,20 +1,6 @@
-import React, {
-    ForwardedRef,
-    forwardRef,
-    PropsWithChildren,
-    useEffect,
-    useImperativeHandle,
-    useReducer,
-    useRef, useState
-} from "react";
+import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useReducer, useRef} from "react";
 import {Constraint} from "@src/component/form/constraint/Contraint";
-import {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
-
-export type FormError = {
-    message: string;
-    messageParameters?: { [key: string]: string };
-    messageTemplate?: string;
-}
+import {FormViewErrorType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 type FormContextType = [FormState, FormRef, HTMLFormElement | null];
 const FormContext: any = React.createContext<FormContextType | undefined>(undefined);
@@ -36,7 +22,7 @@ type FormStatePayload = {
 type FormState = {
     response?: any;
     constraints?: any;
-    errors?: { [key: string]: FormError[] };
+    errors?: { [key: string]: FormViewErrorType[] };
 }
 
 type FormProps = {
@@ -152,7 +138,7 @@ export const Form = forwardRef(({
         setValues: (data: { [key: string]: string }) => {
             Object.keys(data).map(k => setValue(k, data[k]));
         },
-        setErrors: (errors: { [key: string]: FormError[] }) => {
+        setErrors: (errors: { [key: string]: FormViewErrorType[] }) => {
             const [, dispatch] = context;
             dispatch({action: 'errors', payload: errors});
         },

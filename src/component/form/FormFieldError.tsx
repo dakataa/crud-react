@@ -1,5 +1,6 @@
-import {FormError, UseForm} from "@src/component/form/Form";
+import {UseForm} from "@src/component/form/Form";
 import React from "react";
+import {FormViewErrorType} from "@src/type/FormViewType.tsx";
 
 export const FormFieldError = ({name, className}: { name: string, className?: string }) => {
     const [[form]] = UseForm() || {};
@@ -12,7 +13,7 @@ export const FormFieldError = ({name, className}: { name: string, className?: st
     return (
         <div className={className}>
             <ul className={"mb-0"}>
-                {errorMessages.map((error: FormError, i: number) => <li key={i}>{error.message}</li>)}
+                {errorMessages.map((error: FormViewErrorType, i: number) => <li key={i}>{error.message}</li>)}
             </ul>
         </div>
     )

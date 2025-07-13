@@ -18,6 +18,7 @@ const FormFieldSelector = ({view}:{view: FormViewType}) => {
         }
         case FormViewTypeEnum.Hidden:
         case FormViewTypeEnum.Input:
+        case FormViewTypeEnum.Money:
         case FormViewTypeEnum.Text:
         case FormViewTypeEnum.Checkbox:
         case FormViewTypeEnum.Radio:

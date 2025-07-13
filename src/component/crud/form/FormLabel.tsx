@@ -1,15 +1,15 @@
 import {UseFormView} from "@src/component/crud/form/Form.tsx";
 import {default as BaseFormLabel} from "@src/component/form/FormLabel.tsx";
 
-const FormLabel = ({name}: { name: string }) => {
+const FormLabel = ({name}: { name?: string }) => {
     const {form} = UseFormView();
-    const formView = form?.children?.[name] ?? null;
+    const view = name ? form.children?.[name] : form;
 
-    if(!formView) {
-        return;
+    if (!view) {
+        throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
     }
 
-    return <BaseFormLabel view={formView}/>
+    return <BaseFormLabel view={view}/>
 }
 
 

@@ -1,5 +1,6 @@
 import React from "react";
-import {FormError, UseForm} from "@src/component/form/Form";
+import {UseForm} from "@src/component/form/Form";
+import {FormViewErrorType} from "@src/type/FormViewType.tsx";
 
 export const FormAlert = ({name = 'global'}: { name: string; }) => {
     const [[form]] = UseForm();
@@ -10,7 +11,7 @@ export const FormAlert = ({name = 'global'}: { name: string; }) => {
             {
                 errorMessages.length > 0 && (
                     <div className={"alert alert-danger"}>
-                        {errorMessages.map((m: FormError) => m.message).join(' ')}
+                        {errorMessages.map((m: FormViewErrorType) => m.message).join(' ')}
                     </div>
                 )
             }

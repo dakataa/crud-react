@@ -36,6 +36,7 @@ export type FormViewType = {
 export enum FormViewTypeEnum {
     Form = 'form',
     Input = 'input',
+    Money = 'money',
     Hidden = 'hidden',
     Number = 'number',
     Text = 'text',
@@ -52,9 +53,9 @@ export enum FormViewTypeEnum {
 
 export type FormViewErrorType = {
     message: string;
-    origin: string | null;
-    messageParameters: {[key: string]: string};
-    messageTemplate: string;
+    origin?: string | null;
+    messageParameters?: {[key: string]: string};
+    messageTemplate?: string;
 }
 
 export type ChoiceType = {

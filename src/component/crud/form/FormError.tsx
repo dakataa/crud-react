@@ -1,10 +1,9 @@
 import {UseFormView} from "@src/component/crud/form/Form.tsx";
 import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
-import React, {useEffect, useId} from "react";
+import React from "react";
 
 const FormError = ({name, className}: { name?: string, className?: string }) => {
     const {form} = UseFormView();
-    const {setRendered, unsetRendered, canRender} = UseFormView();
     const view = name ? form.children?.[name] : form;
 
     if (!view) {

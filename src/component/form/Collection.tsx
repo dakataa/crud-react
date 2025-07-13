@@ -68,7 +68,7 @@ const Collection = ({
     return (
         <>
             {items.map((name) => {
-                const itemFormView = view.children?.[name] ?? {...view.prototype} as FormViewType;
+                const itemFormView = view.children?.[name] ?? {...(view.prototype || view)} as FormViewType;
 
                 if(!itemFormView) {
                     return null;
