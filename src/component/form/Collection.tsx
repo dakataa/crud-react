@@ -84,7 +84,7 @@ const Collection = ({
                             view: itemFormView,
                             prototype: name,
                             delete: () => removeItem(name)
-                        }} prefix={"modify/form"} view={view.name + ".item"}>
+                        }} prefix={"modify/form"} view={[...itemFormView.block_prefixes || [], view.name + ".item"]}>
                             <div className={"mb-3"}>
                                 <FormFieldViewLoader />
                                 {isPrototype && (

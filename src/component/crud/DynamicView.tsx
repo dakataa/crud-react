@@ -6,9 +6,9 @@ import {UseNamespace} from "@src/context/NamespaceContext.tsx";
 
 type DynamicViewContextType = {
     parent?: ReactElement | ReactNode;
-    template: string;
+    template: string | string[];
     data?: any;
-    view?: string;
+    view?: string | string[];
     namespace?: string;
     isImported: boolean;
 }
@@ -20,26 +20,37 @@ export function UseDynamicView() {
 }
 
 const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
-    view: string,
+    view: string | string[],
     namespace?: string,
     prefix?: string,
     children?: ReactNode,
     data?: any
     props?: any
 }) => {
-    view = view.split(/[._]/).map((v) => capitalize(v)).join('');
-    namespace ??= UseNamespace();
-
-    const parentDynamicView = UseDynamicView();
-
     const {templates: files} = UseConfig();
-
-    const templateFilePath = ['crud', namespace, prefix, view].filter(v => v).join('/') + '.tsx';
-
-    const [key, importMethod] = Object.entries(files ?? {}).filter(([path, importMethod]) => path.endsWith(templateFilePath)).shift() || [];
+    const parentDynamicView = UseDynamicView();
     const [update, setUpdate] = useState(1);
     const LoadedView = useRef<any>(Empty);
-    const isDuplicated = parentDynamicView?.template === templateFilePath && parentDynamicView?.isImported;
+
+    namespace ??= UseNamespace();
+
+    if(!(view instanceof Array)) {
+        view = [view];
+    }
+
+    const [templateFilePath, isDuplicated, importMethod] = view.reduce<any>((result, item) => {
+        if(result) {
+            return result;
+        }
+
+        item = item.split(/[._]/).filter(v => v).map((v) => capitalize(v)).join('');
+        const templateFilePath = ['crud', namespace, prefix, item].filter(v => v).join('/') + '.tsx';
+        const [, importMethod] = Object.entries(files ?? {}).filter(([path,]) => path.endsWith(templateFilePath)).shift() || [];
+        const isDuplicated = parentDynamicView?.template === templateFilePath && parentDynamicView?.isImported;
+
+        return importMethod !== undefined ? [templateFilePath, isDuplicated, importMethod] : null;
+    }, null) || [false, undefined];
+
 
     useEffect(() => {
         if(isDuplicated) {
