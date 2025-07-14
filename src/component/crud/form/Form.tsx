@@ -75,12 +75,12 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         <FormViewContext.Provider value={{
             form: view,
             setRendered: (e: FormViewType, id) => {
-                if (renderedFormElements.current[e.full_name] === undefined) {
+                if (e.full_name  && renderedFormElements.current[e.full_name] === undefined) {
                     renderedFormElements.current[e.full_name] = id;
                 }
             },
             unsetRendered: (e: FormViewType, id) => {
-                if (renderedFormElements.current[e.full_name] === id) {
+                if (e.full_name && renderedFormElements.current[e.full_name] === id) {
                     delete renderedFormElements.current[e.full_name];
                 }
 
@@ -158,14 +158,14 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
 
     const getFormErrors = (view: FormViewType): { [key: string]: any } => {
         let result: { [key: string]: any } = {
-            ...(view.errors?.length ? {[view.full_name]: view.errors} : {})
+            ...(view.errors?.length ? {[view.full_name || '']: view.errors} : {})
         }
 
         for (let [, child] of Object.entries(view?.children || [])) {
             if (child.children && Object.values(child.children).length) {
                 result = {...result, ...getFormErrors(child)};
             } else if (child.errors?.length) {
-                result[child.full_name] = child.errors;
+                result[child.full_name || ''] = child.errors;
             }
         }
 
@@ -237,7 +237,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
 
             <BaseForm
                 ref={formRef}
-                id={formView.id}
+                id={formView.id || 'form'}
                 name={formView.name || 'form'}
                 action={actionURL}
                 method={"POST"} onSubmit={onSubmit}
@@ -245,7 +245,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 <FormViewProvider view={formView}>
                     <FormError className={"alert alert-danger"}/>
                     <DynamicView
-                        key={formView.id}
+                        key={formView.id || 'form'}
                         view={formView.name || 'form'}
                         prefix={"modify/form"}
                         data={formView}

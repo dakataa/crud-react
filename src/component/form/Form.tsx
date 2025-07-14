@@ -76,6 +76,10 @@ export const Form = forwardRef(({
 
     const setValue = (name: string, value: string | string[] | null) => {
         const element = formElementRef.current?.elements.namedItem(name);
+        if(!element) {
+            console.warn('Cannot Set Value on missing Form Element with name: ' + name);
+            return;
+        }
 
         if (!(element instanceof HTMLInputElement)) {
             throw new Error('Cannot Set Value on missing Form Element with name: ' + name);

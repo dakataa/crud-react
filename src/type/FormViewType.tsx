@@ -1,8 +1,8 @@
 export type FormViewType = {
-    id: string;
-    name: string;
-    full_name: string
-    label: string | undefined;
+    id?: string;
+    name?: string;
+    full_name?: string
+    label?: string | undefined;
     label_attr?: { [key: string]: string } | Function;
     label_html?: boolean;
     placeholder?: string | undefined;
