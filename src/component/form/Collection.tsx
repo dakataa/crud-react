@@ -3,7 +3,7 @@ import {FormViewType} from "@src/type/FormViewType";
 import Link from "@src/component/Link.tsx";
 import T from "@src/component/Translation.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
+import {FormViewProvider, UseFormView, UseParentFormView} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
 export type FormFieldProps = {
@@ -11,6 +11,24 @@ export type FormFieldProps = {
 }
 
 export type InputProps = {} & FormFieldProps;
+
+export type CollectionContextType = {
+    addItem: () => void;
+    removeItem: (name: string) => void;
+    items: string[];
+    isPrototype: boolean;
+};
+
+const CollectionContext = React.createContext<CollectionContextType | undefined>(undefined);
+
+const UseCollection = () => {
+    const context = React.useContext(CollectionContext);
+    if (!context) {
+        throw new Error('UseCollection must be used within a Collection');
+    }
+
+    return context;
+}
 
 const Collection = ({
                         view,
@@ -27,7 +45,7 @@ const Collection = ({
 
         switch (action) {
             case 'delete': {
-                if(value && typeof value !== 'string') {
+                if (value && typeof value !== 'string') {
                     throw new Error('Invalid value. Should be a string.');
                 }
 
@@ -35,7 +53,7 @@ const Collection = ({
                 break;
             }
             case 'set': {
-                if(!(value instanceof Array)) {
+                if (!(value instanceof Array)) {
                     throw new Error('Invalid value. Should be a array.');
                 }
 
@@ -43,7 +61,7 @@ const Collection = ({
                 break;
             }
             default: {
-                if(value && typeof value !== 'string') {
+                if (value && typeof value !== 'string') {
                     throw new Error('Invalid value. Should be a string.');
                 }
 
@@ -57,6 +75,8 @@ const Collection = ({
 
     const isPrototype = !!view.prototype;
 
+    const addItem = () => dispatchItem({action: 'add'});
+
     const removeItem = (name: string) => {
         dispatchItem({action: 'delete', value: name});
     }
@@ -66,45 +86,101 @@ const Collection = ({
     }, [JSON.stringify(initItems)]);
 
     return (
+        <CollectionContext.Provider value={{
+            addItem,
+            removeItem,
+            items,
+            isPrototype
+        }}>
+            <DynamicView
+                key={view.full_name}
+                prefix={"modify/form"}
+                view={[...view.block_prefixes || [], view.name + ".collection"]}
+            >
+                <CollectionList/>
+                {isPrototype && (
+                    <Link
+                        onClick={() => addItem()}
+                        className={"btn btn-outline-primary btn-sm"}>+ Add</Link>
+                )}
+            </DynamicView>
+        </CollectionContext.Provider>
+    )
+}
+
+const CollectionList = () => {
+    const {items} = UseCollection();
+    const {form: view} = UseFormView();
+    const isPrototype = !!view.prototype;
+
+    return (
         <>
             {items.map((name) => {
                 const itemFormView = view.children?.[name] ?? {...(view.prototype || view)} as FormViewType;
 
-                if(!itemFormView) {
+                if (!itemFormView) {
                     return null;
                 }
 
-                if(view.children?.[name] === undefined) {
+                if (view.children?.[name] === undefined) {
                     itemFormView.prototype_name = name;
                 }
 
-                return (
-                    <FormViewProvider view={itemFormView} allowDuplicates={isPrototype}>
-                        <DynamicView key={itemFormView.full_name} data={{
-                            view: itemFormView,
-                            prototype: name,
-                            delete: () => removeItem(name)
-                        }} prefix={"modify/form"} view={[...itemFormView.block_prefixes || [], view.name + ".item"]}>
-                            <div className={"mb-3"}>
-                                <FormFieldViewLoader />
-                                {isPrototype && (
-                                    <Link
-                                        to={"#"}
-                                        onClick={() => removeItem(name)}
-                                        className={"btn btn-outline-danger  btn-sm"}><T>Delete</T></Link>
-                                )}
-                            </div>
-                        </DynamicView>
-                    </FormViewProvider>
-                )
+                return <>
+                    <CollectionItem key={name} view={itemFormView} isPrototype={isPrototype}/>
+                </>
             })}
-            {isPrototype && (
-                <Link
-                    onClick={() => dispatchItem({action: 'add'})}
-                    className={"btn btn-outline-primary btn-sm"}>+ Add</Link>
-            )}
         </>
     )
 }
 
-export default Collection;
+export type CollectionItemContextType = {
+    removeItem: () => void;
+}
+const CollectionItemContext = React.createContext<CollectionItemContextType | undefined>(undefined);
+
+const UseCollectionItem = () => {
+    const context = React.useContext(CollectionItemContext);
+    if (!context) {
+        throw new Error('UseCollectionItem must be used within a CollectionItem');
+    }
+
+    return context;
+}
+
+const CollectionItem = ({view, isPrototype}: { view: FormViewType, isPrototype: boolean }) => {
+    const {removeItem} = UseCollection();
+    const {form: parentView} = UseParentFormView() || {form: view};
+    const name = view.prototype_name || view.name || '';
+
+    return (
+        <CollectionItemContext.Provider value={{removeItem: () => removeItem(name)}}>
+            <FormViewProvider view={view} allowDuplicates={isPrototype}>
+                <DynamicView
+                    key={parentView?.full_name + '.item'}
+                    data={{
+                        view: view,
+                        name
+                    }}
+                    prefix={"modify/form"}
+                    view={[...view.block_prefixes || [], parentView.name + ".item"]}
+                >
+                    <div className={"mb-3"}>
+                        <FormFieldViewLoader/>
+                        {isPrototype && (
+                            <Link
+                                to={"#"}
+                                onClick={() => removeItem(name)}
+                                className={"btn btn-outline-danger btn-sm"}
+                            >
+                                <T>Delete</T>
+                            </Link>
+                        )}
+                    </div>
+                </DynamicView>
+            </FormViewProvider>
+        </CollectionItemContext.Provider>
+    )
+}
+
+export {Collection as default, CollectionList, CollectionItem, UseCollection, UseCollectionItem};

@@ -43,6 +43,8 @@ export * from "src/component/form/FormFieldError.tsx"
 export * from "src/component/form/FormLabel.tsx"
 export * from "src/component/form/FormHelp.tsx"
 export * from "src/component/form/Choice.tsx"
+export {default as Collection, CollectionItem, CollectionList, UseCollection, UseCollectionItem} from "src/component/form/Collection.tsx"
+export type {CollectionContextType, CollectionItemContextType} from "src/component/form/Collection.tsx"
 
 
 // CRUD Form

@@ -130,7 +130,6 @@ const Modify = WithDataProvider(({children, onSuccess, modal, props}: {
                     </button>
                 </TemplateBlock>
             </TemplateExtend>
-
         </ComponentTemplate>
     );
 });

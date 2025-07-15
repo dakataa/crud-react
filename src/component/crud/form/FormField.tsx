@@ -6,7 +6,7 @@ import Collection from "@src/component/form/Collection.tsx";
 import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
-const FormFieldSelector = ({view}:{view: FormViewType}) => {
+const FormFieldSelector = ({view}: { view: FormViewType }) => {
     switch (view.type) {
         case FormViewTypeEnum.Entity:
         case FormViewTypeEnum.Choice:
@@ -47,20 +47,24 @@ const FormField = ({name, options}: {
     const view = name ? form.children?.[name] : form;
 
     if (!view) {
-       throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
+        throw new Error('Missing Form View' + (name ? ': ' + name : ''));
     }
 
     const compiledView = {...view, ...options || {}};
 
-    if(name !== undefined) {
+    if (name !== undefined) {
         return (
-          <FormViewProvider view={compiledView}>
-              <FormFieldSelector view={compiledView}/>
-          </FormViewProvider>
+            <FormViewProvider view={compiledView}>
+                <FormFieldSelector view={compiledView}/>
+            </FormViewProvider>
         );
     }
 
-    return <FormFieldSelector view={compiledView}/>;
+    return (
+        <>
+            <FormFieldSelector view={compiledView}/>
+        </>
+    )
 }
 
 export default FormField;
