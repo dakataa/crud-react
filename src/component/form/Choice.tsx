@@ -38,13 +38,13 @@ const Choice = ({
                     onChange,
                     choiceValueTransform,
                     choiceLabelTransform,
-                    prototype,
                     ...props
                 }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
 
-    const elementName = view.full_name.replace('__name__', prototype ?? '');
+    const prototype = view.prototype_name
+    const elementName = view.full_name?.replace('__name__', prototype ?? '') || '';
     const elementId = (view.id || nameToId(elementName)).replace('__name__', prototype ?? '');
     const [[formState, dispatch], formRef] = UseForm();
     const errorMessages = formState?.errors[elementName] || [];

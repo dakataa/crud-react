@@ -39,8 +39,9 @@ const FormFieldSelector = ({view}:{view: FormViewType}) => {
     }
 }
 
-const FormField = ({name}: {
+const FormField = ({name, options}: {
     name?: string;
+    options?: FormViewType;
 }) => {
     const {form} = UseFormView();
     const view = name ? form.children?.[name] : form;
@@ -49,15 +50,17 @@ const FormField = ({name}: {
        throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
     }
 
+    const compiledView = {...view, ...options || {}};
+
     if(name !== undefined) {
         return (
-          <FormViewProvider view={view}>
-              <FormFieldSelector view={view}/>
+          <FormViewProvider view={compiledView}>
+              <FormFieldSelector view={compiledView}/>
           </FormViewProvider>
         );
     }
 
-    return <FormFieldSelector view={view}/>;
+    return <FormFieldSelector view={compiledView}/>;
 }
 
 export default FormField;

@@ -47,6 +47,10 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const [, formRef] = UseForm();
 
+    if(!view.prototype_name) {
+        view.prototype_name = parentFormView?.prototype_name;
+    }
+
     const setValue = (name: string, value: string | string[]) => {
         const childView = name.split('.').reduce((result: FormViewType | null, v: string) => {
             return result?.children?.[v] || null;
@@ -62,10 +66,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     };
 
     useEffect(() => {
-        if(!view.prototype_name) {
-            view.prototype_name = parentFormView?.prototype_name;
-        }
-
         return () => {
             renderedFormElements.current = {};
         }
