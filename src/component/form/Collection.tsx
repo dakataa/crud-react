@@ -115,7 +115,7 @@ const CollectionList = () => {
 
     return (
         <>
-            {items.map((name) => {
+            {items.map((name, index) => {
                 const itemFormView = view.children?.[name] ?? {...(view.prototype || view)} as FormViewType;
 
                 if (!itemFormView) {
@@ -127,7 +127,7 @@ const CollectionList = () => {
                 }
 
                 return <>
-                    <CollectionItem key={name} view={itemFormView} isPrototype={isPrototype}/>
+                    <CollectionItem key={name} index={index} view={itemFormView} isPrototype={isPrototype}/>
                 </>
             })}
         </>
@@ -135,6 +135,7 @@ const CollectionList = () => {
 }
 
 export type CollectionItemContextType = {
+    index: number,
     removeItem: () => void;
 }
 const CollectionItemContext = React.createContext<CollectionItemContextType | undefined>(undefined);
@@ -148,20 +149,16 @@ const UseCollectionItem = () => {
     return context;
 }
 
-const CollectionItem = ({view, isPrototype}: { view: FormViewType, isPrototype: boolean }) => {
+const CollectionItem = ({view, index, isPrototype}: { view: FormViewType, index: number, isPrototype: boolean }) => {
     const {removeItem} = UseCollection();
     const {form: parentView} = UseParentFormView() || {form: view};
     const name = view.prototype_name || view.name || '';
 
     return (
-        <CollectionItemContext.Provider value={{removeItem: () => removeItem(name)}}>
+        <CollectionItemContext.Provider value={{index, removeItem: () => removeItem(name)}}>
             <FormViewProvider view={view} allowDuplicates={isPrototype}>
                 <DynamicView
                     key={parentView?.full_name + '.item'}
-                    data={{
-                        view: view,
-                        name
-                    }}
                     prefix={"modify/form"}
                     view={[...view.block_prefixes || [], parentView.name + ".item"]}
                 >

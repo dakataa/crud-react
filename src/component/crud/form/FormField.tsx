@@ -47,7 +47,7 @@ const FormField = ({name, options}: {
     const view = name ? form.children?.[name] : form;
 
     if (!view) {
-        throw new Error('Missing Form View' + (name ? ': ' + name : ''));
+        throw new Error('Missing Form View for FormField' + (name ? ': ' + name : ''));
     }
 
     const compiledView = {...view, ...options || {}};

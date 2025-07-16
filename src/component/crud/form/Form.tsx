@@ -1,4 +1,4 @@
-import {Form as BaseForm, FormRef, UseForm} from "@src/component/form/Form.tsx";
+import {Form as BaseForm, FormRef, nameToId, UseForm} from "@src/component/form/Form.tsx";
 import React, {
     forwardRef,
     PropsWithChildren,
@@ -49,6 +49,14 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
 
     if(!view.prototype_name) {
         view.prototype_name = parentFormView?.prototype_name;
+    }
+
+    if(view.prototype_name) {
+        const elementFullName = view.full_name?.replace('__name__', view.prototype_name || '') || '';
+        const elementId = (view.id || nameToId(elementFullName)).replace('__name__', view.prototype_name || '');
+
+        view.full_name = elementFullName;
+        view.id = elementId;
     }
 
     const setValue = (name: string, value: string | string[]) => {

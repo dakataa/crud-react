@@ -6,7 +6,7 @@ const FormLabel = ({name}: { name?: string }) => {
     const view = name ? form.children?.[name] : form;
 
     if (!view) {
-        throw new Error('Missing Form View'+ (name ? ': ' + name : ''));
+        throw new Error('Missing Form View for FormLabel'+ (name ? ': ' + name : ''));
     }
 
     return <BaseFormLabel view={view}/>

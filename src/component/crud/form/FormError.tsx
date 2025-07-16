@@ -7,7 +7,7 @@ const FormError = ({name, className}: { name?: string, className?: string }) => 
     const view = name ? form.children?.[name] : form;
 
     if (!view) {
-        throw new Error('Missing Form View' + (name ? ': ' + name : ''));
+        throw new Error('Missing Form View for FormError' + (name ? ': ' + name : ''));
     }
 
     return <FormFieldError name={view.full_name || ''} className={className}/>

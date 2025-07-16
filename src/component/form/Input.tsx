@@ -20,12 +20,10 @@ const Input = ({
                }: InputProps):
     React.JSX.Element => {
 
-    const prototype = view.prototype_name;
-    const elementFullName = view.full_name?.replace('__name__', prototype || '') || '';
-    const elementId = (view.id || nameToId(elementFullName)).replace('__name__', prototype || '');
+    const elementFullName = view.full_name;
     const [[formState, dispatch]] = UseForm();
     const fieldRef = useRef<HTMLInputElement | null>(null);
-    const errorMessages = formState?.errors[elementFullName] || [];
+    const errorMessages = formState?.errors[elementFullName || ''] || [];
 
     useEffect(() => {
         dispatch({
@@ -50,7 +48,7 @@ const Input = ({
     return <>
         <input
             ref={fieldRef}
-            id={elementId}
+            id={view.id}
             key={key}
             name={elementFullName}
             type={view.type}

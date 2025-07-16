@@ -10,7 +10,7 @@ export const FormLabel = ({
     view: FormViewType
     className?: string
 }): React.JSX.Element => {
-    const label = view.label || titlize(view.name);
+    const label = view.label || titlize(view.name || '');
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
 
     return (
@@ -18,7 +18,7 @@ export const FormLabel = ({
             {isCheckbox ? (
                 <label
                     className={className ?? "form-check-label"}
-                    htmlFor={view.id || nameToId(view.full_name)}
+                    htmlFor={view.id || nameToId(view.full_name || '')}
                     {...(view.label_attr && (view.label_attr instanceof Function ? view.label_attr() : view.label_attr))}>
                     {label}
                 </label>

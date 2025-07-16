@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useRef} from "react";
+import React, {Fragment, useEffect} from "react";
 import {nameToId, UseForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
@@ -43,11 +43,9 @@ const Choice = ({
     React.JSX.Element => {
     constraints = constraints || [];
 
-    const prototype = view.prototype_name
-    const elementName = view.full_name?.replace('__name__', prototype ?? '') || '';
-    const elementId = (view.id || nameToId(elementName)).replace('__name__', prototype ?? '');
+    const elementName = view.full_name;
     const [[formState, dispatch], formRef] = UseForm();
-    const errorMessages = formState?.errors[elementName] || [];
+    const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
 
@@ -70,7 +68,7 @@ const Choice = ({
         return (
             <div className={[...(isInvalid ? ['is-invalid'] : [])].join(' ')}>
                 {Object.values(view.choices || []).map((choice: ChoiceType, choiceIndex: number) => {
-                        const elementId = nameToId(elementName, choiceIndex);
+                        const elementId = nameToId(elementName || '', choiceIndex);
                         const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
                         const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
                         const attributes = {
