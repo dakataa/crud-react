@@ -47,18 +47,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const [, formRef] = UseForm();
 
-    if(!view.prototype_name) {
-        view.prototype_name = parentFormView?.prototype_name;
-    }
-
-    if(view.prototype_name) {
-        const elementFullName = view.full_name?.replace('__name__', view.prototype_name || '') || '';
-        const elementId = (view.id || nameToId(elementFullName)).replace('__name__', view.prototype_name || '');
-
-        view.full_name = elementFullName;
-        view.id = elementId;
-    }
-
     const setValue = (name: string, value: string | string[]) => {
         const childView = name.split('.').reduce((result: FormViewType | null, v: string) => {
             return result?.children?.[v] || null;

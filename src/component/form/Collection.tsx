@@ -5,6 +5,7 @@ import T from "@src/component/Translation.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {FormViewProvider, UseFormView, UseParentFormView} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
+import {nameToId} from "@src/component/form/Form.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -113,10 +114,30 @@ const CollectionList = () => {
     const {form: view} = UseFormView();
     const isPrototype = !!view.prototype;
 
+    const updatePrototype = (view: FormViewType) => {
+        if (view.prototype_name) {
+            const elementFullName = view.full_name?.replace('__name__', view.prototype_name || '') || '';
+            const elementId = (view.id || nameToId(elementFullName)).replace('__name__', view.prototype_name || '');
+
+            view.full_name = elementFullName;
+            view.id = elementId;
+
+            Object.keys(view.children || {}).map((childKey) => {
+                const childView = view.children?.[childKey];
+                if(childView !== undefined) {
+                    if (!childView.prototype_name) {
+                        childView.prototype_name = view.prototype_name;
+                        updatePrototype(childView as FormViewType);
+                    }
+                }
+            }, {})
+        }
+    }
+
     return (
         <>
             {items.map((name, index) => {
-                const itemFormView = view.children?.[name] ?? {...(view.prototype || view)} as FormViewType;
+                const itemFormView = JSON.parse(JSON.stringify((view.children?.[name] ?? (view.prototype || view))))  as FormViewType;
 
                 if (!itemFormView) {
                     return null;
@@ -126,8 +147,10 @@ const CollectionList = () => {
                     itemFormView.prototype_name = name;
                 }
 
+                updatePrototype(itemFormView);
+
                 return <>
-                    <CollectionItem key={name} index={index} view={itemFormView} isPrototype={isPrototype}/>
+                    <CollectionItem index={index} view={itemFormView} isPrototype={isPrototype}/>
                 </>
             })}
         </>
@@ -155,10 +178,9 @@ const CollectionItem = ({view, index, isPrototype}: { view: FormViewType, index:
     const name = view.prototype_name || view.name || '';
 
     return (
-        <CollectionItemContext.Provider value={{index, removeItem: () => removeItem(name)}}>
-            <FormViewProvider view={view} allowDuplicates={isPrototype}>
+        <FormViewProvider view={view} allowDuplicates={isPrototype}>
+            <CollectionItemContext.Provider value={{index, removeItem: () => removeItem(name)}}>
                 <DynamicView
-                    key={parentView?.full_name + '.item'}
                     prefix={"modify/form"}
                     view={[...view.block_prefixes || [], parentView.name + ".item"]}
                 >
@@ -175,8 +197,8 @@ const CollectionItem = ({view, index, isPrototype}: { view: FormViewType, index:
                         )}
                     </div>
                 </DynamicView>
-            </FormViewProvider>
-        </CollectionItemContext.Provider>
+            </CollectionItemContext.Provider>
+        </FormViewProvider>
     )
 }
 
