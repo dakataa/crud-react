@@ -1,4 +1,4 @@
-import {Form as BaseForm, FormRef, nameToId, UseForm} from "@src/component/form/Form.tsx";
+import {Form as BaseForm, FormRef, UseForm} from "@src/component/form/Form.tsx";
 import React, {
     forwardRef,
     PropsWithChildren,
@@ -10,7 +10,7 @@ import React, {
     useState
 } from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {FormViewType} from "@src/type/FormViewType.tsx";
+import {FormViewErrorType, FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
 import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
@@ -21,8 +21,8 @@ import {CrudRequester} from "@src/Crud.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import FormError from "@src/component/crud/form/FormError.tsx";
 import FormRest from "@src/component/crud/form/FormRest.tsx";
+import FormRestError from "@src/component/crud/form/FormRestError.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -37,14 +37,31 @@ type FormViewContextType = {
     unsetRendered?: (e: FormViewType, id: string) => void,
     canRender?: (e: FormViewType, id: string) => boolean,
     getElements?: () => { [key: string]: string },
-    allowDuplicates?: boolean
+    allowDuplicates?: boolean,
+    getParentViewContext: () => FormViewContextType | null,
+    getRootViewContext: () => FormViewContextType,
+    setRenderedError: (name: string) => void;
+    isRenderedError: (name: string) => boolean;
+    getRenderedErrors: () => string[];
 }
 
 const FormViewContext = React.createContext<FormViewContextType | undefined>(undefined);
 
-export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChildren & { view: FormViewType, allowDuplicates?: boolean }) => {
-    const {form: parentFormView, getElements, allowDuplicates: parentAllowDuplicates, unsetRendered: parentUnsetRendered} = UseParentFormView() || {};
+export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChildren & {
+    view: FormViewType,
+    allowDuplicates?: boolean
+}) => {
+    const parentFormViewContext = UseParentFormView();
+    const {
+        form: parentFormView,
+        getParentViewContext,
+        getElements,
+        allowDuplicates: parentAllowDuplicates,
+        unsetRendered: parentUnsetRendered
+    } = parentFormViewContext || {};
+
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
+    const renderedErrors = useRef<string[]>([]);
     const [, formRef] = UseForm();
 
     const setValue = (name: string, value: string | string[]) => {
@@ -61,6 +78,52 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         formRef.current?.setValue(childView.full_name, value)
     };
 
+
+    const getRootViewContext = () => {
+        return parentFormViewContext?.getRootViewContext() || parentFormViewContext || context;
+    };
+
+    const context = {
+        form: view,
+        setRendered: (e: FormViewType, id: string) => {
+            if (e.full_name && renderedFormElements.current[e.full_name] === undefined) {
+                renderedFormElements.current[e.full_name] = id;
+            }
+        },
+        unsetRendered: (e: FormViewType, id: string) => {
+            if (e.full_name && renderedFormElements.current[e.full_name] === id) {
+                delete renderedFormElements.current[e.full_name];
+            }
+
+            parentUnsetRendered?.(e, id);
+        },
+        canRender: (e: FormViewType, id: string) => {
+            return allowDuplicates || parentAllowDuplicates || view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
+        },
+        setValue,
+        setValues: (data: { [key: string]: string }) => {
+            Object.keys(data).map(k => setValue(k, data[k]));
+        },
+        getElements: () => renderedFormElements.current,
+        allowDuplicates,
+        getParentViewContext: () => {
+            return parentFormViewContext || null;
+        },
+        getRootViewContext,
+        setRenderedError: (name: string) => {
+            if (!renderedErrors.current.includes(name)) {
+                renderedErrors.current.push(name);
+            }
+        },
+        isRenderedError: (name: string) => {
+            return renderedErrors.current.includes(name);
+        },
+        getRenderedErrors: () => {
+            return renderedErrors.current;
+        }
+    };
+
+
     useEffect(() => {
         return () => {
             renderedFormElements.current = {};
@@ -68,30 +131,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     }, []);
 
     return (
-        <FormViewContext.Provider value={{
-            form: view,
-            setRendered: (e: FormViewType, id) => {
-                if (e.full_name  && renderedFormElements.current[e.full_name] === undefined) {
-                    renderedFormElements.current[e.full_name] = id;
-                }
-            },
-            unsetRendered: (e: FormViewType, id) => {
-                if (e.full_name && renderedFormElements.current[e.full_name] === id) {
-                    delete renderedFormElements.current[e.full_name];
-                }
-
-                parentUnsetRendered?.(e, id);
-            },
-            canRender: (e: FormViewType, id: string) => {
-                return  allowDuplicates || parentAllowDuplicates || view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
-            },
-            setValue,
-            setValues: (data: { [key: string]: string }) => {
-                Object.keys(data).map(k => setValue(k, data[k]));
-            },
-            getElements: () => renderedFormElements.current,
-            allowDuplicates
-        }}>
+        <FormViewContext.Provider value={context}>
             <FormRenderer>
                 {children}
             </FormRenderer>
@@ -152,17 +192,15 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
         getFormRef: (): FormRef | null => formRef.current
     }));
 
-    const getFormErrors = (view: FormViewType): { [key: string]: any } => {
-        let result: { [key: string]: any } = {
-            ...(view.errors?.length ? {[view.full_name || '']: view.errors} : {})
-        }
+    const getFormErrors = (view: FormViewType): { [key: string]: FormViewErrorType[] } => {
+        let result = (view.errors || []).reduce((errors: { [key: string]: FormViewErrorType[] }, error) => {
+            const origin = error.origin || view.full_name || '';
+            return {...errors, [origin]: [...(errors[origin] || []), error]};
+        }, {});
+
 
         for (let [, child] of Object.entries(view?.children || [])) {
-            if (child.children && Object.values(child.children).length) {
-                result = {...result, ...getFormErrors(child)};
-            } else if (child.errors?.length) {
-                result[child.full_name || ''] = child.errors;
-            }
+            result = {...result, ...getFormErrors(child)};
         }
 
         return result;
@@ -239,7 +277,7 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 method={"POST"} onSubmit={onSubmit}
             >
                 <FormViewProvider view={formView}>
-                    <FormError className={"alert alert-danger"}/>
+                    <FormRestError className={"alert alert-danger"}/>
                     <DynamicView
                         key={formView.id || 'form'}
                         view={formView.name || 'form'}

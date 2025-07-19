@@ -2,10 +2,12 @@ import {UseForm} from "@src/component/form/Form";
 import React from "react";
 import {FormViewErrorType} from "@src/type/FormViewType.tsx";
 
-export const FormFieldError = ({name, className}: { name: string, className?: string }) => {
+export const FormFieldError = ({name, className}: { name: string | string[], className?: string }) => {
     const [[form]] = UseForm() || {};
 
-    const errorMessages = form?.errors[name] || [];
+    name = name instanceof Array ? name : [name];
+
+    const errorMessages = [].concat(...name.map((name) => form?.errors[name] || []));
     if (!errorMessages.length) {
         return null;
     }
