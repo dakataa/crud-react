@@ -23,6 +23,7 @@ import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import FormRest from "@src/component/crud/form/FormRest.tsx";
 import FormRestError from "@src/component/crud/form/FormRestError.tsx";
+import {UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -98,7 +99,9 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
             parentUnsetRendered?.(e, id);
         },
         canRender: (e: FormViewType, id: string) => {
-            return allowDuplicates || parentAllowDuplicates || view.full_name === parentFormView?.full_name || Object.values(renderedFormElements.current).includes(id);
+            const formGroup = UseFormGroup();
+
+            return formGroup?.view.full_name === e.full_name || getParentViewContext?.()?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
         },
         setValue,
         setValues: (data: { [key: string]: string }) => {

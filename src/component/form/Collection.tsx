@@ -124,7 +124,7 @@ const CollectionList = () => {
 
             Object.keys(view.children || {}).map((childKey) => {
                 const childView = view.children?.[childKey];
-                if(childView !== undefined) {
+                if (childView !== undefined) {
                     if (!childView.prototype_name) {
                         childView.prototype_name = view.prototype_name;
                         updatePrototype(childView as FormViewType);
@@ -137,7 +137,7 @@ const CollectionList = () => {
     return (
         <>
             {items.map((name, index) => {
-                const itemFormView = JSON.parse(JSON.stringify((view.children?.[name] ?? (view.prototype || view))))  as FormViewType;
+                const itemFormView = JSON.parse(JSON.stringify((view.children?.[name] ?? (view.prototype || view)))) as FormViewType;
 
                 if (!itemFormView) {
                     return null;
@@ -149,9 +149,7 @@ const CollectionList = () => {
 
                 updatePrototype(itemFormView);
 
-                return <>
-                    <CollectionItem index={index} view={itemFormView} isPrototype={isPrototype}/>
-                </>
+                return <CollectionItem index={index} view={itemFormView} isPrototype={isPrototype}/>
             })}
         </>
     )
