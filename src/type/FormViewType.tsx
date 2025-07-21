@@ -49,6 +49,7 @@ export enum FormViewTypeEnum {
     Enum = 'enum',
     Entity = 'entity',
     Collection = 'collection',
+    Repeated = 'repeated',
 }
 
 export type FormViewErrorType = {

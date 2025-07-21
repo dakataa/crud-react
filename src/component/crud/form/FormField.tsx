@@ -28,6 +28,7 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
         case FormViewTypeEnum.Email: {
             return <Input view={view}/>
         }
+        case FormViewTypeEnum.Repeated:
         case FormViewTypeEnum.Form: {
             return (
                 <FormFieldViewLoader/>

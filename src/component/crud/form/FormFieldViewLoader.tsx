@@ -25,7 +25,8 @@ const FormFieldViewLoader = memo(({options}: { options?: FormViewType }) => {
                     data={view}
                 >
                     <FormGroup/>
-                </DynamicView>}
+                </DynamicView>
+            }
         </FormGroupProvider>
     )
 });
