@@ -12,7 +12,7 @@ const DataLoaderIndicatorContext = React.createContext<DataLoaderIndicatorContex
     requests: []
 });
 
-export function UseLoaderIndicator(url?: string) {
+export function UseDataLoaderIndicator(url?: string) {
     const context = React.useContext<DataLoaderIndicatorContextType>(DataLoaderIndicatorContext);
     if (context === undefined) {
         throw new Error("UseLoaderIndicator must be within DataLoaderIndicatorProvider")

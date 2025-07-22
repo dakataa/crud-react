@@ -3,8 +3,7 @@ import EmptyView from "@src/component/Empty.tsx";
 import List from "@src/component/crud/List.tsx";
 import React from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import HttpException from "@src/component/error/HttpException.tsx";
-import {NamespaceProvider, UseNamespace} from "@src/context/NamespaceContext.tsx";
+import {UseNamespace} from "@src/context/NamespaceContext.tsx";
 
 const DefaultViewComponent = ({view, props}: {
     view: string,

@@ -25,6 +25,9 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
         case FormViewTypeEnum.Integer:
         case FormViewTypeEnum.Number:
         case FormViewTypeEnum.Password:
+        case FormViewTypeEnum.Datetime:
+        case FormViewTypeEnum.Date:
+        case FormViewTypeEnum.Time:
         case FormViewTypeEnum.Email: {
             return <Input view={view}/>
         }

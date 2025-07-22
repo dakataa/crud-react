@@ -12,6 +12,8 @@ import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
 export type GetDataType = {
+    url: string;
+    action: ActionType;
     results: any;
     setParameters: (v: { [key: string]: string } | null) => void;
     setQueryParameters: (v: URLSearchParams | { [key: string]: string }) => void;
@@ -47,6 +49,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit 
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
     const cache = useRef<{ [key: string]: string }>({});
     const [refresh, setRefresh] = useState(1);
+    const url = generateRoute(entityAction.route, parameters ?? null);
 
     const update = useCallback(() => {
         if (!entityAction) {
@@ -62,7 +65,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit 
 
         CrudRequester()
             .get({
-                url: generateRoute(entityAction.route, parameters ?? null),
+                url,
                 query: queryParameters,
                 signal: loading.current?.signal
             })
@@ -108,6 +111,8 @@ const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit 
     }
 
     return {
+        url,
+        action: entityAction,
         results,
         setParameters,
         setQueryParameters: (value: URLSearchParams | { [key: string]: any }) => {
@@ -126,10 +131,17 @@ const DataProvider = ({suspense, children}: {
 }) => {
 
     const {action, parameters} = UseCurrentAction();
-    const data = GetData({entityAction: action, initParameters: parameters});
+    const parentDataProvider = UseDataProvider();
+    const hasParentDataProvider = parentDataProvider?.action === action;
+
+    const data = hasParentDataProvider ? parentDataProvider : GetData({entityAction: action, initParameters: parameters});
     const {results, setParameters} = data;
 
     useEffect(() => {
+        if(hasParentDataProvider) {
+            return;
+        }
+
         setParameters(parameters || null);
     }, [parameters]);
 
@@ -137,7 +149,7 @@ const DataProvider = ({suspense, children}: {
 
     return (
         <GetDataContext.Provider value={data}>
-            {suspense && !results ? suspense : children}
+            {suspense && !parentDataProvider && !results  ? suspense : children}
         </GetDataContext.Provider>
     );
 }

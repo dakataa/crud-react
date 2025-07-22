@@ -114,9 +114,7 @@ const Modify = WithDataProvider(({children, onSuccess, modal, props}: {
 
                             }}
                             embedded={modal}
-                        >
-                            <TemplateExtend name={"actions"}></TemplateExtend>
-                        </Form>
+                        />
                     </TemplateBlock>
                 </DynamicView>
             </TemplateExtend>

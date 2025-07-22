@@ -28,7 +28,7 @@ const FormGroup = ({name}: { name?: string }) => {
     const view = name ? form?.children?.[name] : form;
 
     if (!view) {
-        throw new Error('Missing Provided Form View to Form Group.');
+        throw new Error('Missing Provided Form View to Form Group' + (name ? ': ' + name : ''));
     }
 
     return (

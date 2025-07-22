@@ -236,7 +236,7 @@ const List = WithDataProvider(({embedded = false, title, className}: {
                 </header>
                 <BatchActionsProvider onClick={handleBatchAction}>
                     {results?.form?.filter?.view && (
-                        <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
+                        <FiltersView onClick={(key) => filterData([key])}/>
                     )}
                     <BatchActionSelector/>
                     <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>

@@ -280,19 +280,20 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 method={"POST"} onSubmit={onSubmit}
             >
                 <FormViewProvider view={formView}>
-                    <FormRestError className={"alert alert-danger"}/>
-                    <DynamicView
-                        key={formView.id || 'form'}
-                        view={formView.name || 'form'}
-                        prefix={"modify/form"}
-                        data={formView}
-                    >
-                        <FormRest/>
-                    </DynamicView>
-
-                    <TemplateBlock name={"actions"} content={children} data={{formRef}}>
-                        <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
-                    </TemplateBlock>
+                    {children ?? (
+                        <>
+                            <FormRestError className={"alert alert-danger"}/>
+                            <DynamicView
+                                key={formView.id || 'form'}
+                                view={formView.name || 'form'}
+                                prefix={"modify/form"}
+                                data={formView}
+                            >
+                                <FormRest/>
+                            </DynamicView>
+                            <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
+                        </>
+                    )}
                 </FormViewProvider>
             </BaseForm>
         </>

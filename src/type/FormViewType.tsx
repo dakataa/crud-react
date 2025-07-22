@@ -50,6 +50,9 @@ export enum FormViewTypeEnum {
     Entity = 'entity',
     Collection = 'collection',
     Repeated = 'repeated',
+    Datetime = 'datetime',
+    Date = 'date',
+    Time = 'time',
 }
 
 export type FormViewErrorType = {

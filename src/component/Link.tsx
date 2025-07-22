@@ -1,15 +1,15 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Link as LinkType} from "./BaseButton";
+import BaseButtonContent, {ButtonContentProps} from "./BaseButtonContent.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
-import {UseLoaderIndicator} from "@src/context/LoaderContext.tsx";
+import {UseDataLoaderIndicator} from "@src/context/LoaderContext.tsx";
 
 export default ({to, children, onClick, ...props}: {
     to?: string,
-} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & LinkType) => {
+} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & ButtonContentProps) => {
     const {navigate} = UseActions();
     const anchorRef = useRef<HTMLAnchorElement>(null);
     const [clicked, setClicked] = useState(false);
-    const {isLoading} = UseLoaderIndicator(to?.toString());
+    const {isLoading} = UseDataLoaderIndicator(to?.toString());
 
     const onClickEvent = (event: Event) => {
         if(isLoading) {
@@ -54,9 +54,11 @@ export default ({to, children, onClick, ...props}: {
         };
     }, [to, onClick]);
 
+    const preload = clicked && isLoading;
+
     return (
         <a ref={anchorRef} href={to} {...props}>
-            {clicked && isLoading && (<>*</>)} {children}
+            <BaseButtonContent preload={preload} {...props}>{children}</BaseButtonContent>
         </a>
     );
 }

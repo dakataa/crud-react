@@ -7,6 +7,7 @@ import Requester from "@dakataa/requester";
 import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
+import {DataProvider} from "@src/context/GetData.tsx";
 
 const CurrentActionContext = React.createContext<OnClickAction | undefined>(undefined);
 
@@ -23,7 +24,7 @@ export function CurrentActionProvider({action, ...props}: { action: OnClickActio
     const {getAction} = UseActions();
 
     const routeAction = getAction(action.action.entity, action.action.name, action.action.namespace);
-    if(!routeAction) {
+    if (!routeAction) {
         throw new Error('Invalid Current Action');
     }
 
@@ -62,7 +63,9 @@ const CrudLoader = ({path, preloader}: {
 
     return (
         <CurrentActionProvider action={onClickAction}>
-            <ViewLoader view={onClickAction.action.name}/>
+            <DataProvider>
+                <ViewLoader view={onClickAction.action.name}/>
+            </DataProvider>
         </CurrentActionProvider>
     );
 }
