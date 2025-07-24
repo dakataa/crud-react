@@ -1,9 +1,9 @@
 import '@src/assets/style/alert.scss';
 import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
-import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
 import Button from "@src/component/Button.tsx";
 import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
+import {Extend} from "@src/component/templating/Template.tsx";
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]
@@ -152,9 +152,9 @@ export function AlertProvider(props: PropsWithChildren) {
             {props.children}
             {alert && (
                 <Modal key={updates.current} size={alert.size as any} className={"modal-alert"} animation={alert.animation} open={true} ref={modalRef}>
-                    <TemplateExtend name={"header"}/>
-                    <TemplateExtend name={"footer"}/>
-                    <TemplateExtend name={"content"}>
+                    <Extend name={"header"}/>
+                    <Extend name={"footer"}/>
+                    <Extend name={"content"}>
                         <div className={"d-flex flex-column align-items-center"}>
                             {animationData !== null && (
                                 <LottieAnimation className={"modal-alert-icon"} animationData={animationData} />
@@ -173,7 +173,7 @@ export function AlertProvider(props: PropsWithChildren) {
                                 </div>
                             )}
                         </div>
-                    </TemplateExtend>
+                    </Extend>
                 </Modal>
             )}
         </AlertContext.Provider>

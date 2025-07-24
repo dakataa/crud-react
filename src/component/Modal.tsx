@@ -1,6 +1,7 @@
 import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import React, {forwardRef, KeyboardEvent, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {createPortal} from "react-dom";
+import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
 
 export type ModalType = {
     children?: ReactNode,
@@ -24,16 +25,16 @@ export enum Animation {
     fade = 'fade'
 }
 
-const Modal = forwardRef(({
-                              children,
-                              open = true,
-                              animation = Animation.fade,
-                              backdrop = true,
-                              keyboard = true,
-                              size,
-                              onClose,
-                              className,
-                          }: ModalType, ref) => {
+const Modal = AsTemplate(forwardRef(({
+                                         children,
+                                         open = true,
+                                         animation = Animation.fade,
+                                         backdrop = true,
+                                         keyboard = true,
+                                         size,
+                                         onClose,
+                                         className,
+                                     }: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
     useImperativeHandle(ref, () => ({
@@ -135,33 +136,33 @@ const Modal = forwardRef(({
                  className={["modal", (size && "modal-" + size), animation && animation, className].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
-                        <TemplateBlock name={"header"} content={children}>
+                        <Block name={"header"}>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">
-                                    <TemplateBlock name={"title"} content={children}>
+                                    <Block name={"title"}>
                                         Title
-                                    </TemplateBlock>
+                                    </Block>
                                 </h5>
-                                <TemplateBlock name={"navigation"} content={children}>
+                                <Block name={"navigation"}>
                                     <nav>{children}</nav>
-                                </TemplateBlock>
+                                </Block>
                                 <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
                             </div>
-                        </TemplateBlock>
+                        </Block>
                         <div className="modal-body">
-                            <TemplateBlock name={"content"} content={children}>
+                            <Block name={"content"}>
                                 {children}
-                            </TemplateBlock>
+                            </Block>
                         </div>
-                        <TemplateBlock name={"footer"} content={children}>
+                        <Block name={"footer"}>
                             <div className="modal-footer">
-                                <TemplateBlock name={"actions"} content={children}>
+                                <Block name={"actions"}>
                                     <button onClick={startClosing} type="button" className="btn btn-secondary">
                                         Close
                                     </button>
-                                </TemplateBlock>
+                                </Block>
                             </div>
-                        </TemplateBlock>
+                        </Block>
                     </div>
                 </div>
             </div>
@@ -171,6 +172,6 @@ const Modal = forwardRef(({
             )}
         </>
     ), document.body);
-});
+}), {name: 'modal'});
 
 export default Modal;

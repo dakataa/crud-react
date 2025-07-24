@@ -2,8 +2,7 @@ import {FormViewType} from "@src/type/FormViewType.tsx";
 import React from "react";
 import {UseFormView} from "@src/component/crud/form/Form.tsx";
 
-const FiltersView = ({onClick}: { onClick: (key: string) => void }) => {
-    const {form: formView} = UseFormView();
+const FiltersView = ({formView, onClick}: {formView: FormViewType, onClick: (key: string) => void }) => {
     const getValue = (view: FormViewType) => {
         if (view.choices !== undefined) {
             return (view.choices ? Object.values(view.data instanceof Object ? view.data : [view.data]).map((k: any) => view.choices?.[k]?.label ?? k).join(', ') : view.data);

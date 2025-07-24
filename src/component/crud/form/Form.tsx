@@ -24,6 +24,7 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import FormRest from "@src/component/crud/form/FormRest.tsx";
 import FormRestError from "@src/component/crud/form/FormRestError.tsx";
 import {UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
+import {AsTemplate, Block, Template} from "@src/component/templating/Template.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -163,7 +164,7 @@ const FormRenderer = ({children}: PropsWithChildren) => {
 export function UseFormView(): FormViewContextType {
     const context = React.useContext<FormViewContextType | undefined>(FormViewContext);
     if (!context) {
-        throw new Error('UseCrudForm must be used within a CrudFormProvider.');
+        throw new Error('UseFormView must be used within a FormViewProvider.');
     }
 
     return context;
@@ -173,12 +174,12 @@ export function UseParentFormView(): FormViewContextType | undefined {
     return React.useContext<FormViewContextType | undefined>(FormViewContext);
 }
 
-const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false}: {
+const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = false}: {
     onSuccess?: (data: any) => Promise<void>;
     onError?: (data: ExceptionType) => void;
     onLoad?: () => void;
-    children?: ReactNode;
     embedded?: boolean;
+    children?: ReactNode;
 }, ref) => {
     const [preload, setPreloader] = useState(false);
     const {navigate, generateLink, generateRoute} = UseActions();
@@ -280,8 +281,8 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                 method={"POST"} onSubmit={onSubmit}
             >
                 <FormViewProvider view={formView}>
-                    {children ?? (
-                        <>
+                    <>
+                        <Block name={"content"}>
                             <FormRestError className={"alert alert-danger"}/>
                             <DynamicView
                                 key={formView.id || 'form'}
@@ -291,13 +292,15 @@ const Form = forwardRef(({onSuccess, onError, onLoad, children, embedded = false
                             >
                                 <FormRest/>
                             </DynamicView>
+                        </Block>
+                        <Block name={"actions"}>
                             <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
-                        </>
-                    )}
+                        </Block>
+                    </>
                 </FormViewProvider>
             </BaseForm>
         </>
     )
-});
+}), {name: 'form'});
 
 export default Form;

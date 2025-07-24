@@ -19,9 +19,15 @@ export {default as FormRestError} from "@src/component/crud/form/FormRestError.t
 
 export {default as DynamicView} from "@src/component/crud/DynamicView.tsx";
 export {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
+
+// Templates
+export {AsTemplate, Template, Block, Extend, Parent} from "@src/component/templating/Template.tsx";
+
 export {default as TemplateBlock} from "@src/component/templating/TemplateBlock.tsx";
 export {default as TemplateExtend} from "@src/component/templating/TemplateExtend.tsx";
 export {default as TemplateParentBlock} from "@src/component/templating/TemplateParentBlock.tsx";
+
+
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
 export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.tsx";
 export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
