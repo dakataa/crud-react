@@ -69,7 +69,7 @@ export function UseAlert() {
     return context;
 }
 
-export function AlertProvider(props: PropsWithChildren) {
+export function AlertProvider({children}: PropsWithChildren) {
     const [alert, setAlert] = useState<AlertConfigType>();
 
     const updates = useRef(0);
@@ -104,7 +104,7 @@ export function AlertProvider(props: PropsWithChildren) {
         if (Object.hasOwn(iconMap, alertConfig.icon)) {
             const iconPath = iconMap[alertConfig.icon as Icon];
             const iconFilePath = Object.keys(animationFiles).filter(k => k.endsWith(iconPath)).pop()
-            if(iconFilePath) {
+            if (iconFilePath) {
                 animationFiles[iconFilePath]().then((module: any) => {
                     setAnimationData(module.default)
                 });
@@ -149,15 +149,22 @@ export function AlertProvider(props: PropsWithChildren) {
 
     return (
         <AlertContext.Provider value={{open}}>
-            {props.children}
+            {children}
             {alert && (
-                <Modal key={updates.current} size={alert.size as any} className={"modal-alert"} animation={alert.animation} open={true} ref={modalRef}>
+                <Modal
+                    key={updates.current}
+                    size={alert.size as any}
+                    className={"modal-alert"}
+                    animation={alert.animation}
+                    open={true}
+                    ref={modalRef}
+                >
                     <Extend name={"header"}/>
                     <Extend name={"footer"}/>
                     <Extend name={"content"}>
                         <div className={"d-flex flex-column align-items-center"}>
                             {animationData !== null && (
-                                <LottieAnimation className={"modal-alert-icon"} animationData={animationData} />
+                                <LottieAnimation className={"modal-alert-icon"} animationData={animationData}/>
                             )}
                             <h3 className={"modal-alert-title"}>{alert.title}</h3>
                             {!!alert.text?.length && (

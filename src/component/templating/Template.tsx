@@ -1,8 +1,9 @@
-import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useReducer} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useId, useReducer} from "react";
 
-type TemplateBlocksType = { [key: string]: (ReactNode | null)[] }
+type TemplateBlocksType = { [key: string]: ({ id: string, element: ReactNode | null })[] };
 
 type TemplateBlockDispatchType = {
+    id: string,
     action: 'set' | 'unset',
     block: string,
     template?: string,
@@ -33,21 +34,33 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
 
     const [blocks, dispatch] = useReducer((state: TemplateBlocksType, command: TemplateBlockDispatchType) => {
 
-        if(command.template && command.template !== name) {
+        if (command.template && command.template !== name) {
             parentTemplate?.dispatch(command);
 
             return state;
         }
 
         const currentBlock = state[command.block] || [];
+        const element = command.element || null;
 
         if (command.action === 'set') {
-            currentBlock.push(command.element || null);
+            const existBlock = currentBlock.find(b => b.id === command.id);
+            if(existBlock) {
+                existBlock.element = element;
+            } else {
+                currentBlock.push({
+                    id: command.id,
+                    element
+                })
+            }
+
         } else {
-            currentBlock.pop();
+            currentBlock.filter(b => b.id === command.id).forEach(b => {
+                b.element = null;
+            });
         }
 
-        // console.log('block', command.action, command.block, name, currentBlock);
+        //console.log(command.action, name, command.block, currentBlock);
 
         return {
             ...state,
@@ -60,13 +73,13 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
             name,
             blocks,
             getBlock: (blockName: string, template?: string) => {
-                if(template && template !== name) {
+                if (template && template !== name) {
                     return parentTemplate?.getBlock(blockName, template);
                 }
 
-                return [...(blocks[blockName] || [])].pop()
+                return [...(blocks[blockName] || [])].pop()?.element;
             },
-            getParent: (blockName: string) => [...(blocks[blockName] || [])].slice(-2).shift(),
+            getParent: (blockName: string) => [...(blocks[blockName] || [])].slice(-2).shift()?.element,
             dispatch
         }}>
             {children}
@@ -90,24 +103,35 @@ const Block = ({name, template, children}: PropsWithChildren & { name: string, t
 
 
 const Extend = ({name, template, children}: PropsWithChildren & { name: string, template?: string }) => {
+    const id = useId();
     const {dispatch} = UseTemplate();
+
+    const unset = () => {
+        dispatch({
+            id,
+            action: 'unset',
+            template,
+            block: name,
+        })
+    }
 
     useEffect(() => {
         dispatch({
+            id,
             action: 'set',
             block: name,
             template,
             element: children
-        })
+        });
+
+        return () => {
+            unset();
+        }
     }, [children])
 
     useEffect(() => {
         return () => {
-            dispatch({
-                action: 'unset',
-                template,
-                block: name,
-            })
+            unset();
         }
     }, []);
 
@@ -121,9 +145,9 @@ const Parent = () => {
     return (name ? getParent(name) : null) || children || null;
 };
 
-function AsTemplate<P extends { }>(Component: ComponentType<P>, options: { name: string }): FC<P> {
+function AsTemplate<P extends {}>(Component: ComponentType<P>, options: { name: string }): FC<P> {
 
-    return (props: P & {children?: ReactNode}) => {
+    return (props: P & { children?: ReactNode }) => {
         // React.Children.toArray(props.children).map((c) => {
         //     if (!React.isValidElement(c) || c.type !== Extend) {
         //        throw new Error('Template children must contains only elements of type Extend');
