@@ -8,10 +8,12 @@ import FormError from "@src/component/crud/form/FormError.tsx";
 export const FormGroup = ({
                               view,
                               className,
-                              type
+                              size,
+                              type,
                           }: {
     view: FormViewType;
     className?: string;
+    size?: 'lg' | 'sm'
     type?: string
 }) => {
     const id = useId();
@@ -29,7 +31,7 @@ export const FormGroup = ({
                     {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 >
                     {!isCheckbox && (<FormLabel view={view}/>)}
-                    <FormField/>
+                    <FormField size={size}/>
                     {isCheckbox && (<FormLabel view={view}/>)}
                     <FormError className={"invalid-feedback"}/>
                     <FormHelp view={view}/>

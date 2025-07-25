@@ -2,6 +2,7 @@ import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
 import {nameToId, UseForm} from "./Form";
 import {Constraint} from "./constraint/Contraint";
 import {FormViewType} from "@src/type/FormViewType";
+import {UseFormSettings} from "@src/component/form/FormSetting.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -15,7 +16,6 @@ export type InputProps = {} & FormFieldProps;
 const Input = ({
                    view,
                    constraints,
-                   className,
                    onChange,
                }: InputProps):
     React.JSX.Element => {
@@ -44,6 +44,7 @@ const Input = ({
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
     const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(view.data)));
     const attr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
+    const settings = UseFormSettings();
 
     return <>
         <input
@@ -56,7 +57,12 @@ const Input = ({
             aria-invalid={!errorMessages.length}
             onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => validate({value: (e.target as HTMLInputElement).value})}
             onChange={(e: ChangeEvent<HTMLInputElement>) => validate({value: e.target.value})}
-            className={[defaultFieldClassName, ...(errorMessages.length ? ['is-invalid'] : [])].join(' ')}
+            className={settings?.className || [
+                defaultFieldClassName,
+                settings?.size ? 'form-control-' + settings.size : null,
+                settings?.extraClassName,
+                ...(errorMessages.length ? ['is-invalid'] : [])
+            ].filter(v => v).join(' ')}
             defaultChecked={view?.checked}
             {...attr}
             {...(attr.inputmode === "decimal" && {step: "any"})}

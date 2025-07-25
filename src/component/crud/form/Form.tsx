@@ -283,18 +283,19 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                 <FormViewProvider view={formView}>
                     <>
                         <Block name={"content"}>
-                            <FormRestError className={"alert alert-danger"}/>
                             <DynamicView
                                 key={formView.id || 'form'}
                                 view={formView.name || 'form'}
                                 prefix={"modify/form"}
                                 data={formView}
                             >
+                                <FormRestError className={"alert alert-danger"}/>
                                 <FormRest/>
+
+                                <Block name={"actions"}>
+                                    <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
+                                </Block>
                             </DynamicView>
-                        </Block>
-                        <Block name={"actions"}>
-                            <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
                         </Block>
                     </>
                 </FormViewProvider>

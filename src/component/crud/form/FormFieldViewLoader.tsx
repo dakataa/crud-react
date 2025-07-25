@@ -4,7 +4,7 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
 import FormGroup, {FormGroupProvider} from "@src/component/crud/form/FormGroup.tsx";
 
-const FormFieldViewLoader = memo(({options}: { options?: FormViewType }) => {
+const FormFieldViewLoader = memo(() => {
     const id = useId();
     const {form: view} = UseFormView();
 

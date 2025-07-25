@@ -5,13 +5,14 @@ type TemplateBlocksType = { [key: string]: (ReactNode | null)[] }
 type TemplateBlockDispatchType = {
     action: 'set' | 'unset',
     block: string,
+    template?: string,
     element?: ReactNode
 }
 
 type TemplateContextType = {
     name: string,
     blocks: TemplateBlocksType,
-    getBlock: (name: string) => ReactNode | null | undefined,
+    getBlock: (name: string, template?: string) => ReactNode | null | undefined,
     getParent: (name: string) => ReactNode | null | undefined,
     dispatch: React.Dispatch<TemplateBlockDispatchType>
 }
@@ -32,6 +33,12 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
 
     const [blocks, dispatch] = useReducer((state: TemplateBlocksType, command: TemplateBlockDispatchType) => {
 
+        if(command.template && command.template !== name) {
+            parentTemplate?.dispatch(command);
+
+            return state;
+        }
+
         const currentBlock = state[command.block] || [];
 
         if (command.action === 'set') {
@@ -40,7 +47,7 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
             currentBlock.pop();
         }
 
-        console.log('block', command.action, name, currentBlock);
+        // console.log('block', command.action, command.block, name, currentBlock);
 
         return {
             ...state,
@@ -52,7 +59,13 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
         <TemplateContext.Provider value={{
             name,
             blocks,
-            getBlock: (blockName: string) => [...(blocks[blockName] || [])].pop(),
+            getBlock: (blockName: string, template?: string) => {
+                if(template && template !== name) {
+                    return parentTemplate?.getBlock(blockName, template);
+                }
+
+                return [...(blocks[blockName] || [])].pop()
+            },
             getParent: (blockName: string) => [...(blocks[blockName] || [])].slice(-2).shift(),
             dispatch
         }}>
@@ -62,11 +75,11 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
 }
 
 
-const BlockContext = React.createContext<{name: string, children: ReactNode | undefined} | undefined>(undefined);
+const BlockContext = React.createContext<{ name: string, children: ReactNode | undefined } | undefined>(undefined);
 
-const Block = ({name, children}: PropsWithChildren & { name: string, template?: string }) => {
-    const {dispatch, getBlock} = UseTemplate();
-    const block = getBlock(name);
+const Block = ({name, template, children}: PropsWithChildren & { name: string, template?: string }) => {
+    const {getBlock} = UseTemplate();
+    const block = getBlock(name, template);
 
     return (
         <BlockContext.Provider value={{name, children}}>
@@ -76,23 +89,27 @@ const Block = ({name, children}: PropsWithChildren & { name: string, template?: 
 }
 
 
-const Extend = ({name, children}: PropsWithChildren & { name: string }) => {
+const Extend = ({name, template, children}: PropsWithChildren & { name: string, template?: string }) => {
     const {dispatch} = UseTemplate();
 
     useEffect(() => {
         dispatch({
             action: 'set',
             block: name,
+            template,
             element: children
         })
+    }, [children])
 
+    useEffect(() => {
         return () => {
             dispatch({
                 action: 'unset',
+                template,
                 block: name,
             })
         }
-    }, [children])
+    }, []);
 
     return null;
 }
@@ -104,9 +121,9 @@ const Parent = () => {
     return (name ? getParent(name) : null) || children || null;
 };
 
-function AsTemplate<P extends { children?: ReactNode }>(Component: ComponentType, options: { name: string }): FC<P> {
+function AsTemplate<P extends { }>(Component: ComponentType<P>, options: { name: string }): FC<P> {
 
-    return (props: P & { children?: ReactNode }) => {
+    return (props: P & {children?: ReactNode}) => {
         // React.Children.toArray(props.children).map((c) => {
         //     if (!React.isValidElement(c) || c.type !== Extend) {
         //        throw new Error('Template children must contains only elements of type Extend');

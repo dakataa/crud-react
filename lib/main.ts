@@ -46,6 +46,7 @@ export {default as Translation} from "@src/component/Translation.tsx";
 export {default as Action} from "@src/component/crud/Action.tsx";
 
 // Form
+export * from "@src/component/form/FormSetting.tsx";
 export * from "@src/component/form/Form.tsx";
 export * from "src/component/form/FormGroup.tsx"
 export * from "src/component/form/FormFieldError.tsx"

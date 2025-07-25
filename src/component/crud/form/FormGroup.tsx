@@ -22,7 +22,12 @@ export function FormGroupProvider({id, view, children}: FormGroupContextType & P
     );
 }
 
-const FormGroup = ({name}: { name?: string }) => {
+const FormGroup = (
+    {
+        name
+    }: {
+        name?: string
+    }) => {
     const id = useId();
     const {form} = UseFormView();
     const view = name ? form?.children?.[name] : form;

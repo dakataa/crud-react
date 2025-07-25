@@ -46,6 +46,7 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
 const FormField = ({name, options}: {
     name?: string;
     options?: FormViewType;
+    size?: 'lg' | 'sm'
 }) => {
     const {form} = UseFormView();
     const view = name ? form.children?.[name] : form;

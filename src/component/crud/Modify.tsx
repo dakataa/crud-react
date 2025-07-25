@@ -42,7 +42,8 @@ const DefaultModifyTemplate = ({children}: {
     )
 };
 
-const Modify = AsTemplate(WithDataProvider(({children, onSuccess, modal, props}: {
+const Modify = AsTemplate(WithDataProvider(({template, children, onSuccess, modal, props}: {
+    template?: ReactNode;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
@@ -53,7 +54,7 @@ const Modify = AsTemplate(WithDataProvider(({children, onSuccess, modal, props}:
     const modalRef = useRef<ModalRefType>(undefined);
     const dataProvider = UseDataProvider();
 
-    const ComponentTemplate = modal ? Modal : DefaultModifyTemplate;
+    const ComponentTemplate = modal ? Modal : (template || DefaultModifyTemplate);
 
     return dataProvider && (
         <ComponentTemplate ref={modalRef} {...props} open={true}>
