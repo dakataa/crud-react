@@ -10,7 +10,7 @@ const FormFieldViewLoader = memo(() => {
 
     return (
         <FormGroupProvider id={id} view={view}>
-            {view?.type === FormViewTypeEnum.Form ?
+            {[FormViewTypeEnum.Form, FormViewTypeEnum.Repeated].includes(view?.type as FormViewTypeEnum) ?
                 Object.values(view.children || []).map((child, index) => {
                     return (
                         <FormViewProvider key={index} view={child}>
