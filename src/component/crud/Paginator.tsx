@@ -29,7 +29,7 @@ const Paginator = () => {
     const {data} = UseList();
     const meta = data?.entity?.data.meta;
     const firstPage = 1;
-    const totalPages = meta?.totalPages;
+    const totalPages = meta?.totalPages || 0;
     const page = meta?.page || firstPage;
     const link = meta?.links;
     const hasPagination = !!meta?.totalPages;

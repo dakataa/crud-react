@@ -76,7 +76,7 @@ export const Form = forwardRef(({
 
     const setValue = (name: string, value: string | string[] | null) => {
         const element = formElementRef.current?.elements.namedItem(name);
-        if(!element) {
+        if (!element) {
             console.warn('Cannot Set Value on missing Form Element with name: ' + name);
             return;
         }
@@ -92,7 +92,7 @@ export const Form = forwardRef(({
                     value = [value];
                 }
 
-                if(value?.includes(element.value)) {
+                if (value?.includes(element.value)) {
                     element.checked = true;
                 }
 

@@ -4,6 +4,7 @@ type FormSettingContextType = {
     size?: 'lg' | 'sm';
     extraClassName?: string;
     className?: string;
+    placeholder?: string;
 };
 
 const FormSettingContext = React.createContext<FormSettingContextType | undefined>(undefined);

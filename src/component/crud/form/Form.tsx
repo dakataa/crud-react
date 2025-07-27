@@ -12,7 +12,6 @@ import React, {
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewErrorType, FormViewType} from "@src/type/FormViewType.tsx";
 import {RequestBodyType} from "@dakataa/requester";
-import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/context/GetData.tsx";
 import {default as T} from "@src/component/Translation.tsx";
@@ -24,7 +23,7 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import FormRest from "@src/component/crud/form/FormRest.tsx";
 import FormRestError from "@src/component/crud/form/FormRestError.tsx";
 import {UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
-import {AsTemplate, Block, Template} from "@src/component/templating/Template.tsx";
+import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -90,11 +89,13 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         setRendered: (e: FormViewType, id: string) => {
             if (e.full_name && renderedFormElements.current[e.full_name] === undefined) {
                 renderedFormElements.current[e.full_name] = id;
+                // console.log('set', e.full_name, id, renderedFormElements.current);
             }
         },
         unsetRendered: (e: FormViewType, id: string) => {
             if (e.full_name && renderedFormElements.current[e.full_name] === id) {
                 delete renderedFormElements.current[e.full_name];
+                // console.log('unset', e.full_name, id, renderedFormElements.current);
             }
 
             parentUnsetRendered?.(e, id);
@@ -126,13 +127,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
             return renderedErrors.current;
         }
     };
-
-
-    useEffect(() => {
-        return () => {
-            renderedFormElements.current = {};
-        }
-    }, []);
 
     return (
         <FormViewContext.Provider value={context}>

@@ -65,6 +65,7 @@ const Input = ({
             ].filter(v => v).join(' ')}
             defaultChecked={view?.checked}
             {...attr}
+            placeholder={settings?.placeholder || view?.placeholder || undefined}
             {...(attr.inputmode === "decimal" && {step: "any"})}
         />
     </>

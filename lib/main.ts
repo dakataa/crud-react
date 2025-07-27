@@ -6,6 +6,7 @@ export {default as List} from "@src/component/crud/List.tsx";
 export {default as GridView} from "@src/component/crud/GridView.tsx";
 export {default as ListView} from "@src/component/crud/ListView.tsx";
 export {default as ListItem} from "@src/component/crud/ListItem.tsx";
+export {default as Paginator} from "@src/component/crud/Paginator.tsx"
 
 // CRUD Form
 export {default as CrudForm, UseFormView, FormViewProvider} from "src/component/crud/form/Form.tsx"
