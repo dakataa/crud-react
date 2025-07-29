@@ -217,8 +217,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                 setData(data);
 
                 const errors = getFormErrors(data.form.modify.view);
+                formRef.current?.setErrors(errors);
                 if (Object.entries(errors).length) {
-                    formRef.current?.setErrors(errors);
                     return;
                 }
 

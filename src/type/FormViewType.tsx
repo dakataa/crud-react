@@ -66,6 +66,7 @@ export type ChoiceType = {
     value: string | number | null | Function;
     label: string | ((v: ChoiceType) => string);
     attr?: {[key: string]: {[key: string]: string}} | Function;
+    data?: object
 }
 
 export type ChoiceGroupType = {
