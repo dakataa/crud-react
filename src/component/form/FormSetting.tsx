@@ -4,6 +4,7 @@ type FormSettingContextType = {
     size?: 'lg' | 'sm';
     extraClassName?: string;
     className?: string;
+    label?: string;
     placeholder?: string;
 };
 

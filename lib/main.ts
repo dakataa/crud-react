@@ -60,6 +60,7 @@ export type {CollectionContextType, CollectionItemContextType} from "src/compone
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";
 export type * from "@src/type/FormViewType.tsx";
+export {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 export {default as BaseLayout} from "@src/layout/default/Base.tsx";
 export {default as MainLayout} from "@src/layout/default/Main.tsx";
