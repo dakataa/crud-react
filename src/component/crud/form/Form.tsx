@@ -24,6 +24,7 @@ import FormRest from "@src/component/crud/form/FormRest.tsx";
 import FormRestError from "@src/component/crud/form/FormRestError.tsx";
 import {UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
+import {Preloader, UsePreloaderProvider} from "@src/component/Preloader.tsx";
 
 export type ModifyFormRefType = {
     getData: () => ModifyType | null;
@@ -175,7 +176,6 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     embedded?: boolean;
     children?: ReactNode;
 }, ref) => {
-    const [preload, setPreloader] = useState(false);
     const {navigate, generateLink, generateRoute} = UseActions();
     const currentRoute = UseCurrentAction();
 
@@ -183,6 +183,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
+    const {startLoading, stopLoading} = UsePreloaderProvider() || {};
 
 
     useImperativeHandle(ref, () => ({
@@ -205,7 +206,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     };
 
     const onSubmit = (formData: FormData) => {
-        setPreloader(true);
+        startLoading?.(formView?.full_name || 'form');
 
         CrudRequester()
             .post({url: actionURL, body: formData, bodyType: RequestBodyType.FormData})
@@ -239,7 +240,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                 onError(error);
             }
         }).finally(() => {
-            setPreloader(false);
+            stopLoading?.(formView?.full_name || 'form');
         });
     }
 
@@ -260,13 +261,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     }
 
     return (
-        <>
-            {Object.keys(data?.messages || {}).map((messageType, index) => (
-                <div key={"alert-" + messageType} className={['alert', 'alert-' + messageType].join(' ')}>
-                    {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
-                </div>
-            ))}
-
+        <Preloader loader={formView.full_name}>
             <BaseForm
                 ref={formRef}
                 id={formView.id || 'form'}
@@ -275,26 +270,33 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                 method={"POST"} onSubmit={onSubmit}
             >
                 <FormViewProvider view={formView}>
-                    <>
-                        <Block name={"content"}>
-                            <DynamicView
-                                key={formView.id || 'form'}
-                                view={formView.name || 'form'}
-                                prefix={"modify/form"}
-                                data={formView}
-                            >
-                                <FormRestError className={"alert alert-danger"}/>
-                                <FormRest/>
+                    <Block name={"content"}>
+                        <DynamicView
+                            key={formView.id || 'form'}
+                            view={formView.name || 'form'}
+                            prefix={"modify/form"}
+                            data={formView}
+                        >
+                            <Block name={"messages"}>
+                                {Object.keys(data?.messages || {}).map((messageType, index) => (
+                                    <div key={"alert-" + messageType}
+                                         className={['alert', 'alert-' + messageType].join(' ')}>
+                                        {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
+                                    </div>
+                                ))}
+                            </Block>
 
-                                <Block name={"actions"}>
-                                    <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
-                                </Block>
-                            </DynamicView>
-                        </Block>
-                    </>
+                            <FormRestError className={"alert alert-danger"}/>
+                            <FormRest/>
+
+                            <Block name={"actions"}>
+                                <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
+                            </Block>
+                        </DynamicView>
+                    </Block>
                 </FormViewProvider>
             </BaseForm>
-        </>
+        </Preloader>
     )
 }), {name: 'form'});
 

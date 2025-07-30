@@ -1,4 +1,5 @@
 import React, {PropsWithChildren, ReactElement} from "react";
+import {PreloaderIndicator} from "@src/component/Preloader.tsx";
 
 export type ButtonContentProps = {
     icon?: ReactElement,
