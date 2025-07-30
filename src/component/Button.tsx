@@ -6,15 +6,16 @@ export default forwardRef((
     {
         children,
         type,
+        form,
         ...props
-    }: ButtonContentProps & PropsWithChildren & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, ref: ForwardedRef<HTMLButtonElement>) => {
+    }: {loader?: string} & ButtonContentProps & PropsWithChildren & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, ref: ForwardedRef<HTMLButtonElement>) => {
 
     const {isLoading} = UsePreloaderProvider() || {};
-    const loader = UsePreloader();
-    const preload = type === 'submit' && isLoading?.(loader || 'form');
+    const loader = UsePreloader() || form || 'form';
+    const preload = type === 'submit' && isLoading?.(loader);
 
     return (
-        <button {...{disabled: preload}} {...props} ref={ref}>
+        <button {...{disabled: preload}} form={form} {...props} ref={ref}>
             <BaseButtonContent preload={preload} {...props}>{children}</BaseButtonContent>
         </button>
     );

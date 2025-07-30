@@ -10,6 +10,8 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Link from "@src/component/Link.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {AsTemplate, Block, Extend} from "@src/component/templating/Template.tsx";
+import Button from "@src/component/Button.tsx";
+import {default as T} from "@src/component/Translation.tsx";
 
 const DefaultModifyTemplate = ({children}: {
     children?: ReactNode;
@@ -115,12 +117,13 @@ const Modify = AsTemplate(WithDataProvider(({template, children, onSuccess, moda
                 </DynamicView>
             </Extend>
             <Extend name={"actions"}>
-                <button
+                <Button
                     type={"submit"}
                     className={"btn btn-primary"}
-                    onClick={() => modifyFormRef.current?.getFormRef()?.submit()}>
-                    Submit
-                </button>
+                    form={dataProvider?.results?.form?.modify.view.full_name || 'modify'}
+                >
+                    <T>Submit</T>
+                </Button>
             </Extend>
         </ComponentTemplate>
     );
