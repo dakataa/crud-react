@@ -185,7 +185,6 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const dataProvider = UseDataProvider();
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
 
-
     useImperativeHandle(ref, () => ({
         getData: (): ModifyType | undefined => dataProvider?.results as ModifyType,
         getFormRef: (): FormRef | null => formRef.current

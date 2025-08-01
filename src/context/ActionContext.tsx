@@ -1,4 +1,4 @@
-import React, {ComponentType, FC, PropsWithChildren, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
@@ -160,7 +160,8 @@ export function UseActions() {
         generateRoutePath,
         crudToReactPathPattern,
         generateActionLink,
-        generateLink
+        generateLink,
+        internalToExternalPath
     };
 }
 
@@ -239,7 +240,7 @@ export function ActionProvider(props: PropsWithChildren) {
 
 export function WithRouterContext<P extends object>(Component: ComponentType<P>): FC<P> {
 
-    return (props: P) => {
+    return (props: P & { children?: ReactNode }) => {
         return (
             <ActionProvider>
                 <Component {...props}/>

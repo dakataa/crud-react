@@ -1,6 +1,6 @@
 import React, {ComponentType, FC, ReactNode, useCallback, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {convertObjectToURLSearchParams} from "@dakataa/requester";
+import {convertObjectToURLSearchParams, Redirect} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
@@ -33,18 +33,18 @@ export function UseDataProvider(): GetDataType | null {
 }
 
 const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit = true}: GetDataProps): GetDataType => {
-    if(!entityAction) {
+    if (!entityAction) {
         throw new Error('Invalid Entity Action');
     }
 
     const enabled = useRef(loadOnInit);
-    const {getAction, generateRoute} = UseActions();
+    const {getAction, navigate, generateRoute, internalToExternalPath} = UseActions();
     entityAction = getAction(entityAction.entity, entityAction.name, entityAction.namespace) || entityAction;
 
     const [results, setResults] = useState<ListType | ModifyType | null>();
     const [parameters, setParameters] = useState<{ [key: string]: string } | null>(initParameters || null);
 
-    const loading = useRef<AbortController|null>(null);
+    const loading = useRef<AbortController | null>(null);
     const [queryParameters, setQueryParameters] = useState<URLSearchParams>(initQueryParameters instanceof URLSearchParams ? initQueryParameters : convertObjectToURLSearchParams(initQueryParameters || {}));
     const key = btoa(encodeURIComponent([entityAction.entity, entityAction.name, entityAction.namespace, ...Object.entries(parameters || {}).map(([key, value]) => key + '-' + value), (queryParameters instanceof URLSearchParams ? queryParameters : convertObjectToURLSearchParams(queryParameters)).toString()].filter(v => v).join('.')));
     const cache = useRef<{ [key: string]: string }>({});
@@ -56,7 +56,7 @@ const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit 
             return;
         }
 
-        if(!enabled.current) {
+        if (!enabled.current) {
             enabled.current = true;
             return;
         }
@@ -67,9 +67,15 @@ const GetData = ({entityAction, initParameters, initQueryParameters, loadOnInit 
             .get({
                 url,
                 query: queryParameters,
-                signal: loading.current?.signal
+                signal: loading.current?.signal,
             })
             .then(({data, response}) => {
+                if(response.redirected) {
+                    const newURL = internalToExternalPath(new URL(response.url).pathname);
+                    navigate(newURL);
+                    return;
+                }
+
                 switch (response.status) {
                     case 201:
                     case 200: {
@@ -134,11 +140,14 @@ const DataProvider = ({suspense, children}: {
     const parentDataProvider = UseDataProvider();
     const hasParentDataProvider = parentDataProvider?.action === action;
 
-    const data = hasParentDataProvider ? parentDataProvider : GetData({entityAction: action, initParameters: parameters});
+    const data = hasParentDataProvider ? parentDataProvider : GetData({
+        entityAction: action,
+        initParameters: parameters
+    });
     const {results, setParameters} = data;
 
     useEffect(() => {
-        if(hasParentDataProvider) {
+        if (hasParentDataProvider) {
             return;
         }
 
@@ -149,7 +158,7 @@ const DataProvider = ({suspense, children}: {
 
     return (
         <GetDataContext.Provider value={data}>
-            {suspense && !parentDataProvider && !results  ? suspense : children}
+            {suspense && !parentDataProvider && !results ? suspense : children}
         </GetDataContext.Provider>
     );
 }
