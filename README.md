@@ -89,7 +89,7 @@ createRoot(document.getElementById('root')!).render(
 ## Hooks
 ### Data Provider
 
-`GetData` is a Hook that allows you to fetch data based on CRUD action (see section [Actions](#legend)).
+`GetDataByAction` is a Hook that allows you to fetch data based on CRUD action (see section [Actions](#legend)).
 
 ```js
 const {
@@ -97,7 +97,7 @@ const {
 	setParameters,
 	setQueryParameters,
 	refresh
-} = GetData({entityAction: action});
+} = GetDataByAction({entityAction: action});
 ```
 
 ### Actions

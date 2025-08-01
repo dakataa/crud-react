@@ -64,8 +64,8 @@ export {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 export {default as BaseLayout} from "@src/layout/default/Base.tsx";
 export {default as MainLayout} from "@src/layout/default/Main.tsx";
-export {UseDataProvider, DataProvider, default as GetData} from "@src/context/GetData.tsx";
-export type {GetDataType} from "@src/context/GetData.tsx";
+export {UseDataProvider, DataProvider, GetData, GetDataByAction} from "@src/context/GetData.tsx";
+export type {GetDataType, GetDataProps, GetDataByActionProps} from "@src/context/GetData.tsx";
 export type {ListType} from "@src/type/ListType.tsx"
 
 export {default as Money} from "@src/component/Money.tsx";

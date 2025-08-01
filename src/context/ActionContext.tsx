@@ -37,7 +37,6 @@ export function UseActions() {
     }
 
     const contextRef = useRef(context);
-    const [state, setState] = useState(1);
     contextRef.current = context;
 
     const config = UseConfig();
@@ -115,7 +114,7 @@ export function UseActions() {
 
     const matchPath = (pattern: string, path: string) => {
         const url = new URL(path, location.origin);
-        const regexp = '^' +pattern.replace(new RegExp('[{:](\\w+)}?', 'g'), '(?<$1>[^/]+)')  + '$';
+        const regexp = '^' +pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?')  + '$';
         const hasMatch = new RegExp(regexp, 'giu').test(url.pathname);
         if(!hasMatch) {
             return null;
@@ -171,7 +170,6 @@ export function ActionProvider(props: PropsWithChildren) {
         const data = sessionStorage.getItem(STORAGE_KEY);
         initActions = JSON.parse(atob(data || '')) as ActionType[];
     } catch (e) {
-
     }
 
     const [actions, setActions] = useState<ActionType[] | null>(initActions);
@@ -210,8 +208,9 @@ export function ActionProvider(props: PropsWithChildren) {
     }, []);
 
     useEffect(() => {
-        if (initActions)
+        if (initActions) {
             return;
+        }
 
         CrudRequester().get({url: '/_crud/actions'}).then(({status, data}) => {
             if (status !== 200) {
