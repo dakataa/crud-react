@@ -237,7 +237,7 @@ export function ActionProvider(props: PropsWithChildren) {
     );
 }
 
-export function WithRouterContext<P extends object>(Component: ComponentType<P>): FC<P> {
+export function WithRouterContext<P extends {}>(Component: ComponentType<P>): FC<P> {
 
     return (props: P & { children?: ReactNode }) => {
         return (

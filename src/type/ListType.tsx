@@ -11,7 +11,8 @@ export type ListType = {
         primaryColumn: ColumnType;
         data: {
             items: [{ [key: string]: any }],
-            meta: ListMetaType
+            meta: ListMetaType,
+            acl: [{ [key: string]: [number|string] }],
         }
     },
     form: { [key: string]: FormType, filter: FormType, batch: FormType },
