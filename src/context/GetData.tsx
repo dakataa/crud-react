@@ -163,8 +163,10 @@ const DataProvider = ({suspense, children}: {
 }) => {
 
     const {action, parameters} = UseCurrentAction();
+    const {generateRoute} = UseActions();
     const parentDataProvider = UseDataProvider();
-    const hasParentDataProvider = parentDataProvider?.action === action;
+    const path = generateRoute(action.route, parameters ?? null);
+    const hasParentDataProvider = parentDataProvider?.url === path;
 
     const data = hasParentDataProvider ? parentDataProvider : GetDataByAction({
         entityAction: action,

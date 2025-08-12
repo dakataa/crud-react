@@ -1,5 +1,5 @@
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import React, {PropsWithChildren, ReactElement, useEffect, useState} from "react";
+import React, {PropsWithChildren, ReactElement} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
