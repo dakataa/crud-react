@@ -7,7 +7,7 @@ const BatchItemSelector = ({className}: {className?: string}) => {
     const {index} = UseListItem();
     const {actions, toggle, isSelected} = UseBatchActions();
 
-    return actions && (
+    return Object.keys(actions || {}).length > 0 && (
         <>
             <input
                 checked={isSelected(index)}

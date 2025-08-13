@@ -33,7 +33,7 @@ export function BatchActionsProvider({onClick, ...props}: {
     const currentIds: number[] = items.map(row => (row[primaryColumn?.field || ''] || 0));
     const isSelectedAll = !!currentIds.length && currentIds.reduce<boolean>((result: boolean, id) => result && selectedIds.current.includes(id), true);
     const actions = data?.form?.batch?.view?.children?.method?.choices?.reduce((result, choice: ChoiceType) => {
-        const label = choice.label instanceof Function ? choice.label() : choice.label;
+        const label = choice.label instanceof Function ? choice.label(choice) : choice.label;
         const method = choice.value instanceof Function ? choice.value() : choice.value?.toString();
         return {...result, [method]: label };
     }, {});

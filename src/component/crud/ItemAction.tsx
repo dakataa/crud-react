@@ -2,9 +2,9 @@ import React, {ReactNode} from "react";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import Action from "@src/component/crud/Action.tsx";
-import {UseDataProvider} from "@src/context/GetData.tsx";
+import IsItemActionGranted from "@src/component/crud/IsItemActionGranted.tsx";
 
-const ItemAction = ({routeParams, ...props}: {
+const ItemAction = ({routeParams, action, ...props}: {
     action: ActionType;
     routeParams?: { [key: string]: any };
     className?: string;
@@ -12,13 +12,14 @@ const ItemAction = ({routeParams, ...props}: {
 }) => {
 
     const {id} = UseListItem();
-    const {results: data} = UseDataProvider() || {};
 
-    if(!Object.values(data.entity.data.acl[props.action.name] || []).includes(id)) {
-        return null;
-    }
-
-    return <Action {...props} routeParams={{...routeParams, id}} />
+    return (
+        <>
+            <IsItemActionGranted action={action.name}>
+                <Action action={action} {...props} routeParams={{...routeParams, id}}/>
+            </IsItemActionGranted>
+        </>
+    )
 }
 
 export default ItemAction;
