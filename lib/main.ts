@@ -46,7 +46,7 @@ export {default as Button} from "src/component/Button.tsx"
 export {default as Translation} from "@src/component/Translation.tsx";
 export {default as Action} from "@src/component/crud/Action.tsx";
 export {default as ItemAction} from "@src/component/crud/ItemAction.tsx";
-export {default as IsItemActionGranted} from "@src/component/crud/IsItemActionGranted.tsx";
+export {default as IsListItemActionGranted} from "@src/component/crud/IsListItemActionGranted.tsx";
 
 // Form
 export * from "@src/component/form/FormSetting.tsx";
@@ -69,6 +69,7 @@ export {default as MainLayout} from "@src/layout/default/Main.tsx";
 export {UseDataProvider, DataProvider, GetData, GetDataByAction} from "@src/context/GetData.tsx";
 export type {GetDataType, GetDataProps, GetDataByActionProps} from "@src/context/GetData.tsx";
 export type {ListType} from "@src/type/ListType.tsx"
+export type {ViewType} from "@src/type/ViewType.tsx"
 
 export {default as Money} from "@src/component/Money.tsx";
 

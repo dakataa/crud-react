@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import Action from "@src/component/crud/Action.tsx";
-import IsItemActionGranted from "@src/component/crud/IsItemActionGranted.tsx";
+import IsListItemActionGranted from "@src/component/crud/IsListItemActionGranted.tsx";
 
 const ItemAction = ({routeParams, action, ...props}: {
     action: ActionType;
@@ -15,9 +15,9 @@ const ItemAction = ({routeParams, action, ...props}: {
 
     return (
         <>
-            <IsItemActionGranted action={action.name}>
+            <IsListItemActionGranted action={action.name}>
                 <Action action={action} {...props} routeParams={{...routeParams, id}}/>
-            </IsItemActionGranted>
+            </IsListItemActionGranted>
         </>
     )
 }

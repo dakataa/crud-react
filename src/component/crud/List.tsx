@@ -29,7 +29,7 @@ import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
-import IsItemActionGranted from "@src/component/crud/IsItemActionGranted.tsx";
+import IsListItemActionGranted from "@src/component/crud/IsListItemActionGranted.tsx";
 
 
 const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: {
