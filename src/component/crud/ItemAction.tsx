@@ -15,7 +15,7 @@ const ItemAction = ({routeParams, action, ...props}: {
 
     return (
         <>
-            <IsListItemActionGranted action={action.name}>
+            <IsListItemActionGranted permission={action.permission}>
                 <Action action={action} {...props} routeParams={{...routeParams, id}}/>
             </IsListItemActionGranted>
         </>

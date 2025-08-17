@@ -12,5 +12,6 @@ export type ActionType = {
     name: string;
     title?: string;
     visibility?: ActionVisibility;
-    route?: RouteType
+    route?: RouteType;
+    permission?: string;
 }
