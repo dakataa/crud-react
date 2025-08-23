@@ -31,6 +31,7 @@ export {default as TemplateExtend} from "@src/component/templating/TemplateExten
 export {default as TemplateParentBlock} from "@src/component/templating/TemplateParentBlock.tsx";
 
 
+export {default as Modal} from "@src/component/Modal.tsx";
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
 export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.tsx";
 export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
@@ -68,7 +69,7 @@ export {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 export {default as BaseLayout} from "@src/layout/default/Base.tsx";
 export {default as MainLayout} from "@src/layout/default/Main.tsx";
-export {UseDataProvider, DataProvider, GetData, GetDataByAction} from "@src/context/GetData.tsx";
+export {UseDataProvider, DataProvider, GetData, GetDataByAction, WithDataProvider} from "@src/context/GetData.tsx";
 export type {GetDataType, GetDataProps, GetDataByActionProps} from "@src/context/GetData.tsx";
 export type {ListType} from "@src/type/ListType.tsx"
 export type {ViewType} from "@src/type/ViewType.tsx"

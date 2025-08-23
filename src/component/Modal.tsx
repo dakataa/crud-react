@@ -1,4 +1,3 @@
-import TemplateBlock from "@src/component/templating/TemplateBlock.tsx";
 import React, {forwardRef, KeyboardEvent, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";

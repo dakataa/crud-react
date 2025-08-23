@@ -32,7 +32,7 @@ const ActionContext = React.createContext<RouterContextType | undefined>(undefin
 
 export function UseActions() {
     const context = React.useContext<RouterContextType | undefined>(ActionContext);
-    if(!context) {
+    if (!context) {
         throw new Error('UseActions  must be used in ActionProvider');
     }
 
@@ -47,16 +47,16 @@ export function UseActions() {
     }
 
     const getActionByPath = (path: string): ActionType | undefined | null => {
-        if(!actions) {
+        if (!actions) {
             return undefined;
         }
 
         return actions.find((a) => a.route?.path && matchPath(a.route.path, path)) ?? null;
     };
 
-    const getOnClickActionByPath = (path: string): OnClickAction|null|undefined => {
+    const getOnClickActionByPath = (path: string): OnClickAction | null | undefined => {
         const action = getActionByPath(path);
-        if(!action) {
+        if (!action) {
             return action;
         }
 
@@ -102,7 +102,7 @@ export function UseActions() {
 
     const navigate = (to: string, replace?: boolean) => {
         try {
-            if(replace) {
+            if (replace) {
                 history.replaceState(null, '', to);
             } else {
                 history.pushState(null, '', to);
@@ -114,9 +114,9 @@ export function UseActions() {
 
     const matchPath = (pattern: string, path: string) => {
         const url = new URL(path, location.origin);
-        const regexp = '^' +pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?')  + '$';
+        const regexp = '^' + pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?') + '$';
         const hasMatch = new RegExp(regexp, 'giu').test(url.pathname);
-        if(!hasMatch) {
+        if (!hasMatch) {
             return null;
         }
 
@@ -125,15 +125,15 @@ export function UseActions() {
 
         return {
             pathname: path,
-            params:  params,
+            params: params,
             pattern: pattern
         };
     }
 
-    const generatePath = (pattern: string, parameters?: {[key:string]: string}): string => {
+    const generatePath = (pattern: string, parameters?: { [key: string]: string }): string => {
         const path = pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
             const value = parameters?.[p1];
-            if(value !== undefined) {
+            if (value !== undefined) {
                 delete parameters?.[p1];
             }
 
@@ -176,11 +176,11 @@ export function ActionProvider(props: PropsWithChildren) {
     const [location, setLocation] = useState<URL>(new URL(document.location.href));
 
     useEffect(() => {
-        if(!location) {
+        if (!location) {
             return;
         }
 
-        if(location.toString() === document.location.toString()) {
+        if (location.toString() === document.location.toString()) {
             return;
         }
 
@@ -239,11 +239,9 @@ export function ActionProvider(props: PropsWithChildren) {
 
 export function WithRouterContext<P extends {}>(Component: ComponentType<P>): FC<P> {
 
-    return (props: P & { children?: ReactNode }) => {
-        return (
-            <ActionProvider>
-                <Component {...props}/>
-            </ActionProvider>
-        )
-    };
+    return (props: P & { children?: ReactNode }) => (
+        <ActionProvider>
+            <Component {...props}/>
+        </ActionProvider>
+    );
 }
