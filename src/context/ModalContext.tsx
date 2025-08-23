@@ -14,6 +14,7 @@ export type ModalActionType = {
 export type ModalContextType = {
     modal?: ModalActionType | null,
     setModal?: (modal: ModalActionType | null) => void;
+    closeModal?: () => void;
 }
 
 const ModalContext = React.createContext<ModalContextType>({});
@@ -25,6 +26,9 @@ export function UseModal() {
         modal,
         openModal: (modal: ModalActionType) => {
             setModal && setModal(modal)
+        },
+        closeModal: () => {
+            setModal?.(null)
         }
     };
 }
@@ -52,17 +56,16 @@ export function ModalProvider(props: PropsWithChildren) {
     }, [currentModal]);
 
     const modalProps = {
-        ...currentModal?.props || {},
-        onClose: () => {
-            currentModal?.props?.onClose && currentModal.props.onClose();
-            dispatch(null);
-        }
+        ...currentModal?.props || {}
     }
 
     return (
-        <ModalContext.Provider value={{setModal: (newModal: ModalActionType | null): void => {
+        <ModalContext.Provider value={{
+            modal: currentModal,
+            setModal: (newModal: ModalActionType | null): void => {
                 dispatch(newModal);
-          }}}>
+            }
+        }}>
             {props.children}
             {currentModal && (
                 <ErrorBoundary preventDefault={true} fallback={(error) => {

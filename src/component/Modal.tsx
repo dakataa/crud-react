@@ -1,6 +1,7 @@
 import React, {forwardRef, KeyboardEvent, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
+import {UseModal} from "@src/context/ModalContext.tsx";
 
 export type ModalType = {
     children?: ReactNode,
@@ -35,6 +36,7 @@ const Modal = AsTemplate(forwardRef(({
                                          className,
                                      }: ModalType, ref) => {
     const [isOpen, setIsOpen] = useState<boolean>(open);
+    const {closeModal} = UseModal();
 
     useImperativeHandle(ref, () => ({
         toggle: () => setIsOpen(!isOpen),
@@ -96,6 +98,8 @@ const Modal = AsTemplate(forwardRef(({
     const endClosing = () => {
         setIsOpen(false);
         onClose && onClose();
+
+        closeModal?.();
     }
     const startClosing = (): Promise<void> => {
         return new Promise((resolve: Function, reject: Function) => {
