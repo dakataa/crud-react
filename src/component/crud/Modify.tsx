@@ -125,6 +125,7 @@ const Modify = AsTemplate(WithDataProvider(({template, children, onSuccess, moda
                     <T>Submit</T>
                 </Button>
             </Extend>
+            {children}
         </ComponentTemplate>
     );
 }), {name: 'modify'});
