@@ -80,7 +80,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         formRef.current?.setValue(childView.full_name, value)
     };
 
-
     const getRootViewContext = () => {
         return parentFormViewContext?.getRootViewContext() || parentFormViewContext || context;
     };
@@ -104,7 +103,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         canRender: (e: FormViewType, id: string) => {
             const formGroup = UseFormGroup();
 
-            return formGroup?.view.full_name === e.full_name || getParentViewContext?.()?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
+            return formGroup?.view.full_name === e.full_name || parentFormViewContext?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
         },
         setValue,
         setValues: (data: { [key: string]: string }) => {

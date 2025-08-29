@@ -1,7 +1,7 @@
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
-import {nameToId, UseForm} from "./Form";
+import {UseForm} from "./Form";
 import {Constraint} from "./constraint/Contraint";
-import {FormViewType} from "@src/type/FormViewType";
+import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType";
 import {UseFormSettings} from "@src/component/form/FormSetting.tsx";
 
 export type FormFieldProps = {
@@ -46,13 +46,18 @@ const Input = ({
     const attr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
     const settings = UseFormSettings();
 
+    let type = view.type;
+    if(type === FormViewTypeEnum.Datetime) {
+        type = 'datetime-local'
+    }
+
     return <>
         <input
             ref={fieldRef}
             id={view.id}
             key={key}
             name={elementFullName}
-            type={view.type}
+            type={type}
             defaultValue={view.data}
             aria-invalid={!errorMessages.length}
             onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => validate({value: (e.target as HTMLInputElement).value})}
