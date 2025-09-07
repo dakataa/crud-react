@@ -20,7 +20,7 @@ const FormFieldViewLoader = memo(() => {
                 })
                 :
                 <DynamicView
-                    view={view?.name || 'form'}
+                    view={[...view.block_prefixes || [], view.name || 'form']}
                     prefix={"modify/form"}
                     data={view}
                 >
