@@ -47,8 +47,16 @@ const Input = ({
     const settings = UseFormSettings();
 
     let type = view.type;
+    let value = view.data;
     if(type === FormViewTypeEnum.Datetime) {
+        const date = value?.date ? new Date(value?.date) : null
         type = 'datetime-local'
+        value =  date?.toISOString();
+    }
+
+    if(type === FormViewTypeEnum.Date) {
+        const date = value?.date ? new Date(value?.date) : null
+        value =  date?.toISOString().split('T').shift();
     }
 
     return <>
@@ -58,7 +66,7 @@ const Input = ({
             key={key}
             name={elementFullName}
             type={type}
-            defaultValue={view.data}
+            defaultValue={value}
             aria-invalid={!errorMessages.length}
             onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => validate({value: (e.target as HTMLInputElement).value})}
             onChange={(e: ChangeEvent<HTMLInputElement>) => validate({value: e.target.value})}
