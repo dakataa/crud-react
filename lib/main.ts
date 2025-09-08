@@ -1,4 +1,4 @@
-export {default as Crud, CrudConfiguration} from "@src/Crud.tsx";
+export {default as Crud, CrudConfiguration, CrudRequester} from "@src/Crud.tsx";
 export {default as CrudProvider} from "@src/context/CrudProvider.tsx";
 export {default as CrudLoader, CurrentActionProvider, UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "@src/component/crud/Modify.tsx";
