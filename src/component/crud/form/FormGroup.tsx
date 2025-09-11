@@ -2,6 +2,7 @@ import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
 import {default as BaseFormGroup} from "@src/component/form/FormGroup.tsx";
 import React, {PropsWithChildren, useId} from "react";
 import {FormViewType} from "@src/type/FormViewType.tsx";
+import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
 type FormGroupContextType = {
     id: string;
@@ -38,9 +39,7 @@ const FormGroup = (
 
     return (
         <FormViewProvider view={view}>
-            <FormGroupProvider {...{id: id, view: view}}>
-                <BaseFormGroup view={view}/>
-            </FormGroupProvider>
+            <FormFieldViewLoader/>
         </FormViewProvider>
     );
 }

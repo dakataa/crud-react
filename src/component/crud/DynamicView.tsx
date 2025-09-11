@@ -44,11 +44,20 @@ const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
         }
 
         item = item.split(/[._]/).filter(v => v).map((v) => capitalize(v)).join('');
-        const templateFilePath = ['crud', namespace, prefix, item].filter(v => v).join('/') + '.tsx';
-        const [, importMethod] = Object.entries(files ?? {}).filter(([path,]) => path.endsWith(templateFilePath)).shift() || [];
-        const isDuplicated = parentDynamicView?.template === templateFilePath && parentDynamicView?.isImported;
+        const templateFilePaths = [
+            ['crud', namespace, prefix, item].filter(v => v).join('/') + '.tsx',
+            ['crud', 'general', prefix, item].filter(v => v).join('/') + '.tsx'
+        ];
 
-        return importMethod !== undefined ? [templateFilePath, isDuplicated, importMethod] : null;
+        const results = templateFilePaths.map((templateFilePath) => {
+            const [, importMethod] = Object.entries(files ?? {}).filter(([path,]) => path.endsWith(templateFilePath)).shift() || [];
+            const isDuplicated = parentDynamicView?.template === templateFilePath && parentDynamicView?.isImported;
+
+            return importMethod !== undefined ? [templateFilePath, isDuplicated, importMethod] : null;
+        }).filter(v => v);
+
+        return results.shift() || null;
+
     }, null) || [false, undefined];
 
 
