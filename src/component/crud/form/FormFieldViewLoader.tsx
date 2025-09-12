@@ -11,23 +11,23 @@ const FormFieldViewLoader = memo(() => {
 
     return (
         <FormGroupProvider id={id} view={view}>
-            {[FormViewTypeEnum.Form, FormViewTypeEnum.Repeated].includes(view?.type as FormViewTypeEnum) ?
-                Object.values(view.children || []).map((child, index) => {
-                    return (
-                        <FormViewProvider key={index} view={child}>
-                            <FormFieldViewLoader/>
-                        </FormViewProvider>
-                    )
-                })
-                :
-                <DynamicView
-                    view={[...view.block_prefixes || [], view.name || 'form']}
-                    prefix={"modify/form"}
-                    data={view}
-                >
+            <DynamicView
+                view={[...view.block_prefixes || [], view.name || 'form']}
+                prefix={"modify/form"}
+                data={view}
+            >
+                {[FormViewTypeEnum.Form, FormViewTypeEnum.Repeated].includes(view?.type as FormViewTypeEnum) ?
+                    Object.values(view.children || []).map((child, index) => {
+                        return (
+                            <FormViewProvider key={index} view={child}>
+                                <FormFieldViewLoader/>
+                            </FormViewProvider>
+                        )
+                    })
+                    :
                     <BaseFormGroup view={view}/>
-                </DynamicView>
-            }
+                }
+            </DynamicView>
         </FormGroupProvider>
     )
 });
