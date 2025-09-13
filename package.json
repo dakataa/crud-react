@@ -52,8 +52,8 @@
 		]
 	},
 	"peerDependencies": {
-		"@dakataa/crud-theme": "^1.0.1",
-		"@dakataa/requester": "^2.0.1",
+		"@dakataa/crud-theme": "^1.0.2",
+		"@dakataa/requester": "^2.0.2",
 		"@popperjs/core": "^2.11.8",
 		"lottie-web": "^5.12.2",
 		"react": "^19.1.0",
