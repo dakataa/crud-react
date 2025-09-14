@@ -102,7 +102,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         },
         canRender: (e: FormViewType, id: string) => {
             const formGroup = UseFormGroup();
-
             return formGroup?.view.full_name === e.full_name || parentFormViewContext?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
         },
         setValue,

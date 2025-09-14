@@ -79,7 +79,7 @@ const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
 
     // Prevent recursion
     if(isDuplicated) {
-        return;
+        return children;
     }
 
     return (
