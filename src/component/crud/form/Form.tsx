@@ -66,10 +66,10 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     const renderedErrors = useRef<string[]>([]);
     const [, formRef] = UseForm();
 
-    const setValue = (name: string, value: string | string[]) => {
-        const childView = name.split('.').reduce((result: FormViewType | null, v: string) => {
+    const setValue = (name: string | null, value: string | string[]) => {
+        const childView = name ? name.split('.').reduce((result: FormViewType | null, v: string) => {
             return result?.children?.[v] || null;
-        }, view);
+        }, view) : view;
 
         if (!childView) {
             return;
