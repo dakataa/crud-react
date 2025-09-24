@@ -44,7 +44,7 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
         const element = command.element || null;
 
         if (command.action === 'set') {
-            const existBlock = currentBlock.find(b => b.id === command.id);
+            const existBlock = currentBlock.find(b => b.id === command.id || b.element === element);
             if(existBlock) {
                 existBlock.element = element;
             } else {
