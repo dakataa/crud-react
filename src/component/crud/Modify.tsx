@@ -13,7 +13,7 @@ import {AsTemplate, Block, Extend} from "@src/component/templating/Template.tsx"
 import Button from "@src/component/Button.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 
-const DefaultModifyTemplate = ({children}: {
+const DefaultModifyTemplate = AsTemplate(({children}: {
     children?: ReactNode;
     results?: ModifyType;
 }) => {
@@ -42,9 +42,9 @@ const DefaultModifyTemplate = ({children}: {
             {children}
         </section>
     )
-};
+}, {name: 'modify'});
 
-const Modify = AsTemplate(WithDataProvider(({template, children, onSuccess, modal, props}: {
+const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: {
     template?: ReactNode;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
@@ -128,6 +128,6 @@ const Modify = AsTemplate(WithDataProvider(({template, children, onSuccess, moda
             {children}
         </ComponentTemplate>
     );
-}), {name: 'modify'});
+});
 
 export default Modify;

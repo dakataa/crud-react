@@ -44,7 +44,7 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
         const element = command.element || null;
 
         if (command.action === 'set') {
-            const existBlock = currentBlock.find(b => b.id === command.id || b.element === element);
+            const existBlock = currentBlock.find(b => b.id === command.id);
             if(existBlock) {
                 existBlock.element = element;
             } else {
@@ -60,7 +60,7 @@ const Template = ({name, children}: { name: string } & PropsWithChildren) => {
             });
         }
 
-        //console.log(command.action, name, command.block, currentBlock);
+        // console.log(command.action, name, command.block, currentBlock);
 
         return {
             ...state,
@@ -140,9 +140,10 @@ const Extend = ({name, template, children}: PropsWithChildren & { name: string, 
 
 const Parent = () => {
     const {name, children} = React.useContext(BlockContext) || {};
-    const {getParent} = UseTemplate();
+    const {name: templateName, getParent} = UseTemplate();
+    const parent = (name ? getParent(name) : null);
 
-    return (name ? getParent(name) : null) || children || null;
+    return parent || children || null;
 };
 
 function AsTemplate<P extends {}>(Component: ComponentType<P>, options: { name: string }): FC<P> {
