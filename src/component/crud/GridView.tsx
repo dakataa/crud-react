@@ -48,7 +48,7 @@ const GridView = forwardRef(({options, routeParams, namespace}: GridViewType, re
                     {columns.map((column, index) => (
                         <th key={index}>
                             <ItemLabel column={column} namespace={namespace}/>
-                            {column.sortable && data?.sort[column.field] !== undefined && (
+                            {column.sortable && data?.sort?.[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({
                                         action: {

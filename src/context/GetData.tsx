@@ -141,14 +141,14 @@ const GetDataByAction =
         const {generateRoute} = UseActions();
         const [parameters, setParameters] = useState<{
             [key: string]: string
-        } | undefined>(initParameters || undefined);
+        } | undefined>(initParameters);
 
         const action = getAction(entityAction.entity, entityAction.name, entityAction.namespace);
         if (!action) {
             throw new Error('Invalid Entity Action');
         }
 
-        const path = generateRoute(action.route, parameters ?? null);
+        const path = generateRoute(action.route, parameters ?? initParameters ?? null);
         const data = GetData({path, initQueryParameters, loadOnInit});
 
         return {

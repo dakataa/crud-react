@@ -1,6 +1,7 @@
 import React, {PropsWithChildren} from "react";
 
 export type ConfigLink = {
+    path?: string,
     prefix?: string,
     includePrefix?: boolean,
 }

@@ -66,13 +66,15 @@ CrudConfiguration({
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
-		<BrowserRouter>
-			<Routes>
-				<Route element={<MainLayout><Outlet/></MainLayout>}>
-					<Route path={"*"} element={<Crud/>}/>
-				</Route>
-			</Routes>
-		</BrowserRouter>
+		<Crud>
+			<BrowserRouter>
+				<Routes>
+					<Route element={<MainLayout><Outlet/></MainLayout>}>
+						<Route path={"*"} element={<CrudLoader/>}/>
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</Crud>
 	</StrictMode>
 )
 ```

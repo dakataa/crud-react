@@ -4,6 +4,7 @@ import Crud, {CrudConfiguration} from './Crud.tsx';
 import {BrowserRouter, Outlet, Route, Routes} from "react-router";
 import Main from "@src/layout/default/Main.tsx";
 import Requester from "@dakataa/requester";
+import CrudLoader from "@src/component/crud/CrudLoader.tsx";
 
 Requester.defaults = {
     headers: {
@@ -25,12 +26,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route element={<Main><Outlet/></Main>}>
-                    <Route path={"*"} element={<Crud/>}/>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <Crud>
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<Main><Outlet/></Main>}>
+                        <Route path={"*"} element={<CrudLoader/>}/>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </Crud>
     </React.StrictMode>
 );

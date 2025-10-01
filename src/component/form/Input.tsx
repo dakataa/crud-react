@@ -48,6 +48,7 @@ const Input = ({
 
     let type = view.type;
     let value = view.data;
+
     if(type === FormViewTypeEnum.Datetime) {
         const date = value?.date ? new Date(value?.date) : null
         type = 'datetime-local'

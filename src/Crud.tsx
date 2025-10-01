@@ -1,11 +1,10 @@
-import React, {ReactElement} from 'react';
+import React, {PropsWithChildren, ReactElement} from 'react';
 import Requester, {Config as RequesterConfig} from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
-import CrudLoader from "@src/component/crud/CrudLoader.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
 import {Config, Templates} from "@src/context/ConfigContext.tsx";
-import {UseActions, WithRouterContext} from "@src/context/ActionContext.tsx";
+import {WithRouterContext} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
 const globalConfig: { templates?: Templates } = {};
@@ -26,26 +25,17 @@ const CrudRequester = (): Requester => {
 }
 
 const Crud = WithRouterContext((
-    {path, prefix, errorFallback, config}: {
-        path?: string,
-        prefix?: string,
+    {children, config, errorFallback}: {
         errorFallback?: ReactElement,
         config?: Config
-    }) => {
-
-    const {location} = UseActions();
-    path ??= location.pathname;
-
-    if (prefix) {
-        path = path.replace(new RegExp('^/' + prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
-    }
+    } & PropsWithChildren) => {
 
     const templates = Object.assign(globalConfig.templates ?? {}, config?.templates ?? {});
 
     return (
-        <ErrorBoundary key={path} fallback={errorFallback ?? <Error/>}>
-            <CrudProvider config={{...(config || {}), templates, link: {prefix}}}>
-                <CrudLoader path={path}/>
+        <ErrorBoundary fallback={errorFallback ?? <Error/>}>
+            <CrudProvider config={{...(config || {}), templates}}>
+                {children}
             </CrudProvider>
         </ErrorBoundary>
     );

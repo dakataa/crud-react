@@ -8,6 +8,7 @@ import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 import {DataProvider} from "@src/context/GetData.tsx";
+import {UseConfig} from "@src/context/ConfigContext.tsx";
 
 const CurrentActionContext = React.createContext<OnClickAction | undefined>(undefined);
 
@@ -43,12 +44,19 @@ export function CurrentActionProvider({action, ...props}: { action: OnClickActio
 }
 
 const CrudLoader = ({path, preloader}: {
-    path: string,
+    path?: string,
     errorFallback?: ReactElement,
     preloader?: ReactElement
 }) => {
     if (!Requester.namespace[CRUD_NAMESPACE])
         throw new Exception(500, 'Invalid Configuration.');
+
+    const {link} = UseConfig();
+    path ??= link?.path ?? location.pathname;
+
+    if (link?.prefix) {
+        path = path.replace(new RegExp('^/' + link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
+    }
 
     const {getOnClickActionByPath} = UseActions();
     const onClickAction = getOnClickActionByPath(path);
