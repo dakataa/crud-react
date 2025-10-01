@@ -71,7 +71,7 @@ const CrudLoader = ({path, preloader}: {
 
     return (
         <CurrentActionProvider action={onClickAction}>
-            <DataProvider>
+            <DataProvider key={path}>
                 <ViewLoader view={onClickAction.action.name}/>
             </DataProvider>
         </CurrentActionProvider>
