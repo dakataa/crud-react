@@ -3,7 +3,7 @@ import React, {PropsWithChildren, ReactElement} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
-import Requester from "@dakataa/requester";
+import Requester, {convertURLSearchParamsToObject} from "@dakataa/requester";
 import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
@@ -52,7 +52,7 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {link} = UseConfig();
-    path ??= link?.path ?? location.pathname;
+    path ??= link?.path ?? (location.pathname + location.search);
 
     if (link?.prefix) {
         path = path.replace(new RegExp('^/' + link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
@@ -69,8 +69,10 @@ const CrudLoader = ({path, preloader}: {
         throw new HttpException(404, 'Page Not Found');
     }
 
+    const url = new URL(path, location.origin);
+
     return (
-        <CurrentActionProvider action={onClickAction}>
+        <CurrentActionProvider action={{...onClickAction, parameters: {...onClickAction.parameters, ...convertURLSearchParamsToObject(url.searchParams)}}}>
             <DataProvider key={path}>
                 <ViewLoader view={onClickAction.action.name}/>
             </DataProvider>
