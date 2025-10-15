@@ -8,6 +8,7 @@ import HttpException from "@src/component/error/HttpException.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {OnClickAction} from "@src/component/crud/GridView.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -27,8 +28,7 @@ export type GetDataProps = {
 }
 
 export type GetDataByActionProps = GetDataProps & {
-    initParameters?: { [key: string]: any };
-    entityAction: ActionType;
+    action: OnClickAction;
 }
 
 export function UseDataProvider(): GetDataType | null {
@@ -128,28 +128,24 @@ const GetData = (
 
 const GetDataByAction =
     ({
-         entityAction,
-         initParameters,
-         initQueryParameters,
+         action,
          loadOnInit = true
-     }: GetDataByActionProps): GetDataType => {
-        if (!entityAction) {
-            throw new Error('Invalid Entity Action');
-        }
-
-        const {getAction} = UseActions();
-        const {generateRoute} = UseActions();
+     }: GetDataByActionProps): GetDataType|null => {
+        const {generateActionLink} = UseActions();
         const [parameters, setParameters] = useState<{
             [key: string]: string
-        } | undefined>(initParameters);
+        } | undefined>(action.parameters);
 
-        const action = getAction(entityAction.entity, entityAction.name, entityAction.namespace);
-        if (!action) {
-            throw new Error('Invalid Entity Action');
+        useEffect(() => {
+            action.parameters = parameters;
+        }, [parameters]);
+
+        if(!action) {
+            return null;
         }
 
-        const path = generateRoute(action.route, parameters ?? initParameters ?? null);
-        const data = GetData({path, initQueryParameters, loadOnInit});
+        const path = generateActionLink(action);
+        const data = GetData({path, initQueryParameters: action.query, loadOnInit});
 
         return {
             ...data,
@@ -162,25 +158,16 @@ const DataProvider = ({suspense, children}: {
     suspense?: ReactNode
 }) => {
 
-    const {action, parameters} = UseCurrentAction();
-    const {generateRoute} = UseActions();
+    const action = UseCurrentAction();
+    const {generateActionLink} = UseActions();
     const parentDataProvider = UseDataProvider();
-    const path = generateRoute(action.route, parameters ?? null);
+    const path = generateActionLink(action);
     const hasParentDataProvider = parentDataProvider?.url === path;
 
     const data = hasParentDataProvider ? parentDataProvider : GetDataByAction({
-        entityAction: action,
-        initParameters: parameters
+        action,
     });
-    const {results, setParameters} = data;
-
-    useEffect(() => {
-        if (hasParentDataProvider) {
-            return;
-        }
-
-        setParameters?.(parameters);
-    }, [parameters]);
+    const {results} = data || {};
 
     suspense ??= <>Loading</>;
 

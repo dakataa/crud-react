@@ -16,8 +16,7 @@ const ItemActions = ({namespace, routeParams}: {
             {objectActions.map((action, index) => (
                 <ItemAction
                     key={index}
-                    action={action}
-                    routeParams={routeParams}
+                    action={{action, parameters: routeParams}}
                     className={['btn', 'btn-sm', 'mb-1', 'ms-1', (action.route?.methods ?? []).includes('DELETE') ? 'btn-outline-danger' : 'btn-outline-secondary'].join(' ')}
                 />
             ))}

@@ -183,8 +183,7 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                                     {actions.map((item, index) => (
                                         <Action
                                             key={index}
-                                            action={item}
-                                            routeParams={action.parameters}
+                                            action={{...action, action: item}}
                                             className="btn btn-outline-secondary"
                                         />
                                     ))}
@@ -248,9 +247,7 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                     <Block name={"content"}>
                         <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>
 
-                            <GridView
-                                routeParams={action.parameters}
-                            />
+                            <GridView/>
                             {/*<ListView*/}
                             {/*    // item={<CustomUserItem/>}*/}
                             {/*    routeParams={action.parameters}/>*/}

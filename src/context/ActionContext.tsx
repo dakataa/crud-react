@@ -4,6 +4,7 @@ import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {RouteType} from "@src/type/RouteType.tsx";
+import {convertURLSearchParamsToObject} from "@dakataa/requester";
 
 window.history.pushState = new Proxy(window.history.pushState, {
     apply: (target, thisArg, argArray: any) => {
@@ -64,7 +65,8 @@ export function UseActions() {
 
         return {
             action,
-            parameters: match?.params
+            parameters: match?.params,
+            query: match?.query,
         };
     }
 
@@ -72,22 +74,23 @@ export function UseActions() {
         return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');
     }
 
-    const generateRoutePath = (path: string, parameters: {} | undefined = undefined): string => {
-        return generatePath(crudToReactPathPattern(path), parameters);
+    const generateRoutePath = (path: string, parameters?: { [key: string]: any }, query?: { [key: string]: any }): string => {
+        return generatePath(crudToReactPathPattern(path), parameters, query);
     }
 
-    const generateRoute = (route?: RouteType, parameters?: { [key: string]: any } | null): string => {
-        return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}) : '#';
+    const generateRoute = (route?: RouteType, parameters?: { [key: string]: any }, query?: { [key: string]: any }): string => {
+        return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}, query) : '#';
     }
 
     const generateActionLink = (onClickAction: OnClickAction): string => {
+        console.log('gem', onClickAction);
         const action = getAction(onClickAction.action.entity, onClickAction.action.name, onClickAction.action.namespace);
 
-        return generateRoute(action?.route, onClickAction.parameters)
+        return generateRoute(action?.route, onClickAction.parameters, onClickAction.query)
     }
 
-    const generateLink = (route?: RouteType, parameters?: { [key: string]: string } | null): string => {
-        const path = generateRoute(route, parameters);
+    const generateLink = (route?: RouteType, parameters?: { [key: string]: string }, query?: { [key: string]: string }): string => {
+        const path = generateRoute(route, parameters, query);
 
         return internalToExternalPath(path);
     }
@@ -120,17 +123,19 @@ export function UseActions() {
             return null;
         }
 
-        const match = path.matchAll(new RegExp(regexp, 'giu'));
+        const match = url.pathname.matchAll(new RegExp(regexp, 'giu'));
         const params = match?.next().value?.groups;
+        const queryParams = convertURLSearchParamsToObject(url.searchParams);
 
         return {
-            pathname: path,
+            pathname: url.pathname,
             params: params,
+            query: queryParams,
             pattern: pattern
         };
     }
 
-    const generatePath = (pattern: string, parameters?: { [key: string]: string }): string => {
+    const generatePath = (pattern: string, parameters?: { [key: string]: string }, query?: { [key: string]: string }): string => {
         const path = pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
             const value = parameters?.[p1];
             if (value !== undefined) {
@@ -141,8 +146,8 @@ export function UseActions() {
         });
 
         const url = new URL(path, location.origin);
-        Object.keys(parameters || {}).forEach((k) => {
-            url.searchParams.set(k, parameters?.[k] ?? '')
+        Object.keys(query || {}).forEach((k) => {
+            url.searchParams.set(k, query?.[k] ?? '')
         });
 
         return url.pathname + url.search

@@ -1,33 +1,25 @@
-import React, {ReactNode, useRef} from "react";
+import React, {ReactNode} from "react";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
-import {ActionType} from "@src/type/ActionType.tsx";
+import {OnClickAction} from "@src/component/crud/GridView.tsx";
 
-const Action = ({children, action, className, routeParams}: {
-    action: ActionType;
-    routeParams?: { [key: string]: any };
+const Action = ({children, action, className}: {
+    action: OnClickAction;
     className?: string;
     children?: ReactNode;
 }) => {
-    const {generateLink} = UseActions();
+    const {generateActionLink} = UseActions();
     const {onClick} = UseList();
 
     return <Link
         onClick={(event) => {
-            onClick && onClick({
-                action: action,
-                parameters: {
-                    ...(routeParams || {}),
-                }
-            }, event)
+            onClick && onClick(action, event)
         }}
         className={className}
-        to={generateLink(action.route, {
-            ...(routeParams || {})
-        })}
+        to={generateActionLink(action)}
     >
-        {children ?? action.title ?? action.name}
+        {children ?? action.action.title ?? action.action.name}
     </Link>
 }
 
