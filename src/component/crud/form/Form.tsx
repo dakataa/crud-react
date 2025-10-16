@@ -174,10 +174,10 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     embedded?: boolean;
     children?: ReactNode;
 }, ref) => {
-    const {navigate, generateLink, generateRoute} = UseActions();
+    const {navigate, generateLink, generateActionLink} = UseActions();
     const currentRoute = UseCurrentAction();
 
-    const actionURL = generateRoute(currentRoute.action.route, currentRoute.parameters);
+    const actionURL = generateActionLink(currentRoute);
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();

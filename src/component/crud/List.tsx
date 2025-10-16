@@ -247,7 +247,9 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                     <Block name={"content"}>
                         <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>
 
-                            <GridView/>
+                            <GridView
+                                routeParams={action.parameters}
+                            />
                             {/*<ListView*/}
                             {/*    // item={<CustomUserItem/>}*/}
                             {/*    routeParams={action.parameters}/>*/}
