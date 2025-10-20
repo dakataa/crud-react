@@ -9,6 +9,7 @@ import ItemLabel from "@src/component/crud/ItemLabel.tsx";
 import {ListItemProvider} from "@src/context/ListItemContext.tsx";
 import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -38,6 +39,7 @@ export type GridViewType = {
 
 const GridView = forwardRef(({routeParams, namespace}: GridViewType, ref) => {
     const {columns, primaryColumn, objectActions, columnsTotal, items, data, onClick} = UseList();
+    const {action: currentAction} = UseCurrentAction();
 
     return (
         <div className={"table-responsive"}>
@@ -50,12 +52,11 @@ const GridView = forwardRef(({routeParams, namespace}: GridViewType, ref) => {
                             {column.sortable && data?.sort?.[column.field] !== undefined && (
                                 <Link
                                     onClick={(event) => onClick && onClick({
-                                        action: {
-                                            name: 'sort',
-                                            namespace: namespace,
-                                            entity: data?.entity.name
-                                        },
-                                        parameters: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
+                                        ...currentAction,
+                                        query: {
+                                            ...currentAction.query,
+                                            sort: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
+                                        }
                                     }, event)}
                                     className={"btn btn-sm"}
                                     to={"#"}

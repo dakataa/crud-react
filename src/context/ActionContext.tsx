@@ -4,7 +4,7 @@ import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {RouteType} from "@src/type/RouteType.tsx";
-import {convertURLSearchParamsToObject} from "@dakataa/requester";
+import {convertObjectToURLSearchParams, convertURLSearchParamsToObject} from "@dakataa/requester";
 
 window.history.pushState = new Proxy(window.history.pushState, {
     apply: (target, thisArg, argArray: any) => {
@@ -83,7 +83,6 @@ export function UseActions() {
     }
 
     const generateActionLink = (onClickAction: OnClickAction): string => {
-        console.log('gem', onClickAction);
         const action = getAction(onClickAction.action.entity, onClickAction.action.name, onClickAction.action.namespace);
 
         return generateRoute(action?.route, onClickAction.parameters, onClickAction.query)
@@ -146,8 +145,9 @@ export function UseActions() {
         });
 
         const url = new URL(path, location.origin);
-        Object.keys(query || {}).forEach((k) => {
-            url.searchParams.set(k, query?.[k] ?? '')
+        const querySearch = convertObjectToURLSearchParams(query || {});
+        querySearch.entries().forEach(([key, value]) => {
+            url.searchParams.set(key, value);
         });
 
         return url.pathname + url.search

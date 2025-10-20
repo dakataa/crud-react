@@ -1,6 +1,5 @@
 import React, {ComponentType, FC, ReactNode, useCallback, useEffect, useRef, useState} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {convertObjectToURLSearchParams} from "@dakataa/requester";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
@@ -14,16 +13,12 @@ const GetDataContext = React.createContext<GetDataType | null>(null);
 
 export type GetDataType = {
     url: string;
-    action?: ActionType;
     results: any;
-    setParameters?: (v: { [key: string]: string } | undefined) => void;
-    setQueryParameters: (v: URLSearchParams | { [key: string]: string }) => void;
     refresh: () => void;
     cancel: () => void;
 }
 
 export type GetDataProps = {
-    initQueryParameters?: URLSearchParams | { [key: string]: any };
     loadOnInit?: boolean;
 }
 
@@ -38,7 +33,6 @@ export function UseDataProvider(): GetDataType | null {
 const GetData = (
     {
         path,
-        initQueryParameters,
         loadOnInit = true
     }: GetDataProps & { path: string }): GetDataType => {
 
@@ -48,7 +42,6 @@ const GetData = (
     const [results, setResults] = useState<ListType | ModifyType | null>();
 
     const loading = useRef<AbortController | null>(null);
-    const [queryParameters, setQueryParameters] = useState<URLSearchParams>(initQueryParameters instanceof URLSearchParams ? initQueryParameters : convertObjectToURLSearchParams(initQueryParameters || {}));
     const [refresh, setRefresh] = useState(1);
 
     const update = useCallback(() => {
@@ -62,7 +55,6 @@ const GetData = (
         CrudRequester()
             .get({
                 url: path,
-                query: queryParameters,
                 signal: loading.current?.signal,
             })
             .then(({data, response}) => {
@@ -95,11 +87,11 @@ const GetData = (
         return () => {
             enabled.current = loadOnInit;
         }
-    }, [queryParameters.toString(), refresh, path])
+    }, [refresh, path])
 
     useEffect(() => {
         update();
-    }, [queryParameters.toString(), refresh, path]);
+    }, [refresh, path]);
 
     useEffect(() => {
         return () => {
@@ -116,9 +108,6 @@ const GetData = (
     return {
         url: path,
         results,
-        setQueryParameters: (value: URLSearchParams | { [key: string]: any }) => {
-            setQueryParameters(new URLSearchParams(value));
-        },
         refresh: () => {
             setRefresh(refresh + 1);
         },
@@ -126,59 +115,43 @@ const GetData = (
     }
 }
 
-const GetDataByAction =
-    ({
+const GetDataByAction = ({
          action,
          loadOnInit = true
-     }: GetDataByActionProps): GetDataType|null => {
+     }: GetDataByActionProps): GetDataType | null => {
         const {generateActionLink} = UseActions();
-        const [parameters, setParameters] = useState<{
-            [key: string]: string
-        } | undefined>(action.parameters);
-
-        useEffect(() => {
-            action.parameters = parameters;
-        }, [parameters]);
-
-        if(!action) {
-            return null;
-        }
 
         const path = generateActionLink(action);
-        const data = GetData({path, initQueryParameters: action.query, loadOnInit});
-
-        return {
-            ...data,
-            setParameters
-        }
+        return GetData({path, loadOnInit});
     }
 
 const DataProvider = ({suspense, children}: {
     children: ReactNode,
     suspense?: ReactNode
 }) => {
-
-    const action = UseCurrentAction();
+    const {action} = UseCurrentAction();
     const {generateActionLink} = UseActions();
     const parentDataProvider = UseDataProvider();
-    const path = generateActionLink(action);
-    const hasParentDataProvider = parentDataProvider?.url === path;
+    const url = generateActionLink(action);
+    if(parentDataProvider?.url === url) {
+        return children;
+    }
 
-    const data = hasParentDataProvider ? parentDataProvider : GetDataByAction({
-        action,
+    const data = GetDataByAction({
+        action
     });
-    const {results} = data || {};
 
-    suspense ??= <>Loading</>;
+
+    suspense ??= <>Data Loading</>;
 
     return (
         <GetDataContext.Provider value={data}>
-            {suspense && !parentDataProvider && !results ? suspense : children}
+            {suspense && !data?.results ? suspense : children}
         </GetDataContext.Provider>
     );
 }
 
-function WithDataProvider<P extends {}>(Component: ComponentType): FC<P> {
+function WithDataProvider<P extends object>(Component: ComponentType<P>): FC<P> {
 
     return (props: P) => {
         return (

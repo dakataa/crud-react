@@ -25,15 +25,21 @@ export function FormGroupProvider({id, view, children}: FormGroupContextType & P
 
 const FormGroup = (
     {
-        name
+        name,
+        optional // Stop throwing error when Form View is missing.
     }: {
-        name?: string
+        name?: string,
+        optional?: boolean;
     }) => {
     const id = useId();
     const {form} = UseFormView();
     const view = name ? form?.children?.[name] : form;
 
     if (!view) {
+        if(optional) {
+            return  null;
+        }
+
         throw new Error('Missing Provided Form View to Form Group' + (name ? ': ' + name : ''));
     }
 

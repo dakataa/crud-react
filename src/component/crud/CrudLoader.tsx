@@ -1,24 +1,29 @@
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import React, {PropsWithChildren, ReactElement} from "react";
+import React, {PropsWithChildren, ReactElement, useEffect, useState} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {OnClickAction} from "@src/component/crud/GridView.tsx";
-import Requester, {convertURLSearchParamsToObject} from "@dakataa/requester";
+import Requester from "@dakataa/requester";
 import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 import {DataProvider} from "@src/context/GetData.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 
-const CurrentActionContext = React.createContext<OnClickAction | undefined>(undefined);
+type CurrentActionContextType = {
+    action: OnClickAction,
+    setAction: (action: OnClickAction) => void;
+}
 
-export function UseCurrentAction(): OnClickAction {
-    const action = React.useContext<OnClickAction | undefined>(CurrentActionContext);
-    if (!action) {
+const CurrentActionContext = React.createContext<CurrentActionContextType | undefined>(undefined);
+
+export function UseCurrentAction(): CurrentActionContextType {
+    const context = React.useContext<CurrentActionContextType | undefined>(CurrentActionContext);
+    if (!context) {
         throw new Error('UseCurrentAction must be used in CurrentActionProvider');
     }
 
-    return action;
+    return context;
 }
 
 export function CurrentActionProvider({action, ...props}: { action: OnClickAction } & PropsWithChildren) {
@@ -29,13 +34,19 @@ export function CurrentActionProvider({action, ...props}: { action: OnClickActio
         throw new Error('Invalid Current Action');
     }
 
-    const currentAction: OnClickAction = {
+    action = {
         ...action,
         action: routeAction
-    }
+    };
+
+    const [currentAction, setCurrentAction] = useState(action);
+
+    useEffect(() => {
+        setCurrentAction(action);
+    }, [JSON.stringify(action)])
 
     return (
-        <CurrentActionContext.Provider value={currentAction}>
+        <CurrentActionContext.Provider value={{action: currentAction, setAction: setCurrentAction}}>
             <NamespaceProvider namespace={currentAction.action.namespace || ''}>
                 {props.children}
             </NamespaceProvider>
@@ -59,22 +70,20 @@ const CrudLoader = ({path, preloader}: {
     }
 
     const {getOnClickActionByPath} = UseActions();
-    const onClickAction = getOnClickActionByPath(path);
+    const action = getOnClickActionByPath(path);
 
-    if (onClickAction === undefined) {
+    if (action === undefined) {
         return preloader ?? <>Loading</>
     }
 
-    if (onClickAction === null) {
+    if (action === null) {
         throw new HttpException(404, 'Page Not Found');
     }
 
-    const url = new URL(path, location.origin);
-
     return (
-        <CurrentActionProvider action={{...onClickAction, parameters: {...onClickAction.parameters, ...convertURLSearchParamsToObject(url.searchParams)}}}>
-            <DataProvider key={path}>
-                <ViewLoader view={onClickAction.action.name}/>
+        <CurrentActionProvider action={action}>
+            <DataProvider>
+                <ViewLoader view={action.action.name}/>
             </DataProvider>
         </CurrentActionProvider>
     );

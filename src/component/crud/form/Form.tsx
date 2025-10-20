@@ -175,9 +175,9 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     children?: ReactNode;
 }, ref) => {
     const {navigate, generateLink, generateActionLink} = UseActions();
-    const currentRoute = UseCurrentAction();
+    const {action} = UseCurrentAction();
 
-    const actionURL = generateActionLink(currentRoute);
+    const actionURL = generateActionLink(action);
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
@@ -222,7 +222,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
                 const doAfter = () => {
                     if (data.redirect && !embedded) {
-                        navigate(generateLink(data.redirect.route, {...(currentRoute.parameters || {}), ...data.redirect.parameters}), true);
+                        navigate(generateLink(data.redirect.route, {...(action.parameters || {}), ...data.redirect.parameters}), true);
                     }
                 }
 
@@ -251,7 +251,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
         setData(dataProvider?.results);
     }, [dataProvider?.results])
 
-    const formView = data?.form.modify.view;
+    const formView = data?.form?.modify?.view;
 
     if (!formView) {
         return;

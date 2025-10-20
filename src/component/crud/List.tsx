@@ -1,10 +1,5 @@
 import React, {ReactElement, useEffect, useRef} from "react";
-import {
-    convertFormDataToObject,
-    convertObjectToURLSearchParams,
-    convertURLSearchParamsToObject,
-    Method
-} from "@dakataa/requester";
+import {convertFormDataToObject, Method} from "@dakataa/requester";
 import GridView, {OnClickAction} from "@src/component/crud/GridView.tsx";
 import Paginator from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
@@ -31,48 +26,40 @@ import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
 
 
-const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: {
+const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: {
     action?: OnClickAction,
     embedded?: boolean
     title?: string | ReactElement | false,
     className?: string,
 }) => {
-    const action = UseCurrentAction();
-    const {generateRoute, generateActionLink, location, navigate} = UseActions()
-    let searchParams = new URLSearchParams(location.search);
-    const sort = useRef<{ [key: string]: any } | undefined>(undefined);
-    const filter = useRef<{ [key: string]: any } | undefined>(convertURLSearchParamsToObject(searchParams));
+    const {action, setAction} = UseCurrentAction();
+    const {generateActionLink, location, navigate} = UseActions()
     const filterFormRef = useRef<FormRef | null>(null);
     const {openModal} = UseModal()
     const {open: openAlert} = UseAlert();
 
     const entity = action.action.entity;
-
     if (!entity) {
         throw new Error('Invalid Entity');
     }
 
-    const {results, refresh, setQueryParameters} = UseDataProvider() || {};
-
+    const {results, refresh} = UseDataProvider() || {};
     const actions = (Object.values(results?.action ?? []) as ActionType[]).filter(a => a.visibility === ActionVisibility.List && a.name !== action.action.name);
 
-    const filterData = (excludeFilterParameters?: [string]): void => {
+    const filterData = ({newAction, excludeFilterParameters}: {
+        newAction?: OnClickAction,
+        excludeFilterParameters?: [string]
+    }): void => {
+        const filterAction = {...(newAction ?? action)};
         excludeFilterParameters?.forEach((key) => {
-            delete filter.current?.filter?.[key];
+            delete filterAction.query?.filter?.[key];
         })
 
-        const query = {
-            ...(filter.current && filter.current),
-            ...(sort.current && {sort: sort.current}),
-        };
-
-        searchParams = convertObjectToURLSearchParams(objectRemoveEmpty(query));
         if (embedded) {
-            setQueryParameters?.(searchParams)
+            setAction(filterAction);
         } else {
-            const url = new URL(document.location.href);
-            url.search = searchParams.toString();
-            navigate(url.toString())
+            const url = generateActionLink(filterAction);
+            navigate(url);
         }
     }
 
@@ -101,33 +88,30 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
     }
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
-        if (onClickAction.parameters !== undefined) {
-            onClickAction.parameters = objectRemoveEmpty(onClickAction.parameters as object);
-            if (!Object.keys(onClickAction.parameters as object).length) {
-                onClickAction.parameters = undefined;
+        event?.preventDefault();
+
+        onClickAction.parameters = {...(onClickAction.parameters || {}), ...(action.parameters || {})}
+        onClickAction.parameters = objectRemoveEmpty(onClickAction.parameters as object);
+        if (!Object.keys(onClickAction.parameters as object).length) {
+            onClickAction.parameters = undefined;
+        }
+
+        if (onClickAction.query !== undefined) {
+            onClickAction.query = objectRemoveEmpty(onClickAction.query as object);
+            if (!Object.keys(onClickAction.query as object).length) {
+                onClickAction.query = undefined;
             }
         }
 
         switch (onClickAction.action.name) {
-            case 'filter': {
-                event?.preventDefault();
-                filter.current = onClickAction.parameters;
-                break;
-            }
-            case 'sort': {
-                event?.preventDefault();
-                sort.current = onClickAction.parameters;
-                break;
-            }
             case 'delete': {
-                event?.preventDefault();
                 openAlert({
                     title: 'Are you sure?',
                     icon: Icon.confirm,
                     onResult: (result: Result) => {
                         if (result.isConfirmed) {
                             CrudRequester().fetch({
-                                url: generateRoute(onClickAction.action.route, {...action.parameters, ...onClickAction.parameters}),
+                                url: generateActionLink(onClickAction),
                                 method: Method.DELETE
                             }).catch((e: any) => {
                                 console.log('error', e);
@@ -139,29 +123,24 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                 });
                 return;
             }
-            default: {
-                if (embedded) {
-                    event?.preventDefault();
-                    openModal({
-                        action: onClickAction,
-                        props: {
-                            size: 'lg',
-                            onClose: () => {
-                                refresh?.();
-                            }
-                        }
-                    });
-                }
-                return;
-            }
         }
 
-        filterData();
-    }
+        if (embedded) {
+            openModal({
+                action: onClickAction,
+                props: {
+                    size: 'lg',
+                    onClose: () => {
+                        refresh?.();
+                    }
+                }
+            });
 
-    useEffect(() => {
-        setQueryParameters?.(searchParams);
-    }, [location.search]);
+            return;
+        }
+
+        filterData({newAction: onClickAction});
+    }
 
     return (
         <ListProvider data={results} onClick={handleAction}>
@@ -200,19 +179,13 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                                                 <Form
                                                     id={"filter_" + nameToId(entity)}
                                                     ref={filterFormRef}
-                                                    onSubmit={(formData: FormData) => handleAction({
-                                                        action: {
-                                                            name: 'filter',
-                                                            namespace: action.action.namespace,
-                                                            entity: entity
-                                                        }, parameters: convertFormDataToObject(formData)
+                                                    onSubmit={(formData: FormData) => setAction({
+                                                        ...action,
+                                                        query: objectRemoveEmpty(convertFormDataToObject(formData))
                                                     })}
-                                                    onReset={() => handleAction({
-                                                        action: {
-                                                            name: 'filter',
-                                                            namespace: action.action.namespace,
-                                                            entity: entity
-                                                        }
+                                                    onReset={() => setAction({
+                                                        ...action,
+                                                        query: undefined
                                                     })}
                                                 >
                                                     {
@@ -229,7 +202,7 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                                             </div>
                                         </DropdownContent>
                                     </Dropdown>
-                                    {!!Object.values(filter.current?.filter || []).length && (
+                                    {location.searchParams.has('filter') && (
                                         <Button onClick={() => {
                                             filterFormRef.current?.reset();
                                         }} className="btn btn-outline-dark">x</Button>
@@ -241,7 +214,7 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
                 </Block>
                 <BatchActionsProvider onClick={handleBatchAction}>
                     {results?.form?.filter?.view && (
-                        <FiltersView formView={results.form.filter.view} onClick={(key) => filterData([key])}/>
+                        <FiltersView formView={results.form.filter.view} onClick={(key) => filterData({excludeFilterParameters: [key]})}/>
                     )}
                     <BatchActionSelector/>
                     <Block name={"content"}>
@@ -261,7 +234,7 @@ const List = AsTemplate(WithDataProvider(({embedded = false, title, className}: 
             </section>
         </ListProvider>
     );
-}), {name: 'list'});
+}, {name: 'list'}));
 
 
 export default List;

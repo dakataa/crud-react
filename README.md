@@ -96,10 +96,11 @@ createRoot(document.getElementById('root')!).render(
 ```js
 const {
 	results,
+	setAction,
 	setParameters,
 	setQueryParameters,
 	refresh
-} = GetDataByAction({entityAction: action});
+} = GetDataByAction({action});
 ```
 
 ### Actions

@@ -2,7 +2,7 @@ import React, {ReactNode, useRef} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
+import {UseDataProvider} from "@src/context/GetData.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
@@ -17,7 +17,7 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
     children?: ReactNode;
     results?: ModifyType;
 }) => {
-    const currentAction = UseCurrentAction();
+    const {action: currentAction} = UseCurrentAction();
     const {getAction, generateLink} = UseActions();
     const listAction = getAction(currentAction.action.entity, 'list', currentAction.action.namespace);
 
@@ -44,21 +44,25 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
     )
 }, {name: 'modify'});
 
-const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: {
+const Modify = ({template, children, onSuccess, modal, props}: {
     template?: ReactNode;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
     props?: any;
 }) => {
+
     const {open: openAlert} = UseAlert();
     const modifyFormRef = useRef<ModifyFormRefType>(undefined);
     const modalRef = useRef<ModalRefType>(undefined);
     const dataProvider = UseDataProvider();
-
     const ComponentTemplate = modal ? Modal : (template || DefaultModifyTemplate);
 
-    return dataProvider && (
+    if(!dataProvider) {
+        return;
+    }
+
+    return (
         <ComponentTemplate ref={modalRef} {...props} open={true}>
             <Extend name={"title"}>
                 {dataProvider?.results?.title || 'Title'}
@@ -120,7 +124,7 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: 
                 <Button
                     type={"submit"}
                     className={"btn btn-primary"}
-                    form={dataProvider?.results?.form?.modify.view.full_name || 'modify'}
+                    form={dataProvider?.results?.form?.modify?.view.full_name || "modify"}
                 >
                     <T>Submit</T>
                 </Button>
@@ -128,6 +132,6 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: 
             {children}
         </ComponentTemplate>
     );
-});
+};
 
 export default Modify;
