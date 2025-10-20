@@ -2,7 +2,7 @@ import React, {ReactNode, useRef} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
-import {UseDataProvider} from "@src/context/GetData.tsx";
+import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
@@ -44,7 +44,7 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
     )
 }, {name: 'modify'});
 
-const Modify = ({template, children, onSuccess, modal, props}: {
+const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: {
     template?: ReactNode;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
@@ -132,6 +132,6 @@ const Modify = ({template, children, onSuccess, modal, props}: {
             {children}
         </ComponentTemplate>
     );
-};
+});
 
 export default Modify;
