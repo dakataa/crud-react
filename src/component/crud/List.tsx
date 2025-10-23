@@ -104,6 +104,9 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
         }
 
         switch (onClickAction.action.name) {
+            case 'list': {
+                return setAction(onClickAction);
+            }
             case 'delete': {
                 openAlert({
                     title: 'Are you sure?',
@@ -179,11 +182,11 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
                                                 <Form
                                                     id={"filter_" + nameToId(entity)}
                                                     ref={filterFormRef}
-                                                    onSubmit={(formData: FormData) => setAction({
+                                                    onSubmit={(formData: FormData) => handleAction({
                                                         ...action,
                                                         query: objectRemoveEmpty(convertFormDataToObject(formData))
                                                     })}
-                                                    onReset={() => setAction({
+                                                    onReset={() => handleAction({
                                                         ...action,
                                                         query: undefined
                                                     })}
