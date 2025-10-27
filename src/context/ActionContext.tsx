@@ -41,7 +41,7 @@ export function UseActions() {
     contextRef.current = context;
 
     const config = UseConfig();
-    const {actions, location, setLocation} = context;
+    const {actions, location} = context;
 
     const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
         return actions?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
@@ -116,7 +116,8 @@ export function UseActions() {
 
     const matchPath = (pattern: string, path: string) => {
         const url = new URL(path, location.origin);
-        const regexp = '^' + pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?') + '$';
+        const regexp = '^' + pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?').replace('*', '.*') + '$';
+
         const hasMatch = new RegExp(regexp, 'giu').test(url.pathname);
         if (!hasMatch) {
             return null;
@@ -179,22 +180,6 @@ export function ActionProvider(props: PropsWithChildren) {
 
     const [actions, setActions] = useState<ActionType[] | null>(initActions);
     const [location, setLocation] = useState<URL>(new URL(document.location.href));
-
-    useEffect(() => {
-        if (!location) {
-            return;
-        }
-
-        if (location.toString() === document.location.toString()) {
-            return;
-        }
-
-        try {
-            history.pushState(null, '', location);
-        } catch (e) {
-            window.location.assign(location);
-        }
-    }, [location.toString()]);
 
     useEffect(() => {
         const onUrlChange = (() => {

@@ -105,7 +105,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
 
         switch (onClickAction.action.name) {
             case 'list': {
-                return setAction(onClickAction);
+                return filterData({newAction: onClickAction});
             }
             case 'delete': {
                 openAlert({
@@ -142,7 +142,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
             return;
         }
 
-        filterData({newAction: onClickAction});
+        setAction(onClickAction);
     }
 
     return (
