@@ -142,7 +142,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
             return;
         }
 
-        setAction(onClickAction);
+        filterData({newAction: onClickAction});
     }
 
     return (
