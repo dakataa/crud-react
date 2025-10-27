@@ -46,10 +46,6 @@ class ErrorBoundaryHandler extends React.Component<ErrorBoundaryProps & { defaul
     }
 
     private promiseRejectionHandler = (e: PromiseRejectionEvent) => {
-        if (!(e.reason instanceof Exception)) {
-            return;
-        }
-
         if (this.props.preventDefault || this.props.defaultPrevented) {
             this.props.parentErrorBoundaryContext?.setPreventDefault(true);
         }
