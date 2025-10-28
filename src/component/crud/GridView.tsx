@@ -15,12 +15,6 @@ type GridViewHeaderColumnAttributes = {
     className?: string
 };
 
-export type OnClickAction = {
-    action: ActionType,
-    parameters?: { [key: string]: any }
-    query?: { [key: string]: any }
-};
-
 export type GridViewType = {
     options?: {
         columns: ColumnType[]

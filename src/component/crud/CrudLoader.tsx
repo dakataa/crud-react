@@ -2,13 +2,13 @@ import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 import React, {PropsWithChildren, ReactElement, useEffect, useState} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
-import {OnClickAction} from "@src/component/crud/GridView.tsx";
 import Requester from "@dakataa/requester";
 import Exception from "@src/component/error/Exception.tsx";
 import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 import {DataProvider} from "@src/context/GetData.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
+import {OnClickAction} from "@src/type/OnClickAction.tsx";
 
 type CurrentActionContextType = {
     action: OnClickAction,
@@ -81,7 +81,7 @@ const CrudLoader = ({path, preloader}: {
     }
 
     if (action === null) {
-        throw new HttpException(404, 'Page Not Found');
+        return null;
     }
 
     return (

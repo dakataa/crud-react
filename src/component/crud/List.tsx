@@ -128,6 +128,8 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
             }
         }
 
+        console.log('onClickAction', onClickAction.action.name, embedded);
+
         if (embedded) {
             openModal({
                 action: onClickAction,

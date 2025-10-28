@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {OnClickAction} from "@src/component/crud/GridView.tsx";
+import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ActionVisibility} from "@src/type/ActionType.tsx";
 
 type ListContextType = {

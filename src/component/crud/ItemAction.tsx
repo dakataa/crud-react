@@ -3,7 +3,7 @@ import {UseListItem} from "@src/context/ListItemContext.tsx";
 import {ActionType} from "@src/type/ActionType.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import IsListItemActionGranted from "@src/component/crud/IsListItemActionGranted.tsx";
-import {OnClickAction} from "@src/component/crud/GridView.tsx";
+import {OnClickAction} from "@src/type/OnClickAction.tsx";
 
 const ItemAction = ({action, ...props}: {
     action: OnClickAction;

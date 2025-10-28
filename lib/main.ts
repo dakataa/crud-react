@@ -33,6 +33,9 @@ export {default as TemplateBlock} from "@src/component/templating/TemplateBlock.
 export {default as TemplateExtend} from "@src/component/templating/TemplateExtend.tsx";
 export {default as TemplateParentBlock} from "@src/component/templating/TemplateParentBlock.tsx";
 
+// Router
+export {Router, Route, Outlet} from "@src/component/router/Route.tsx";
+
 
 export {default as Modal} from "@src/component/Modal.tsx";
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
@@ -40,7 +43,7 @@ export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.
 export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
 export * from "@src/context/ActionContext.tsx";
 export type {AlertConfigType, Animation, Result} from "@src/context/AlertContext.tsx";
-export type {OnClickAction} from "@src/component/crud/GridView.tsx";
+export type {OnClickAction} from "@src/type/OnClickAction.tsx";
 export type {ActionType} from "@src/type/ActionType.tsx";
 export type {RouteType} from "@src/type/RouteType.tsx";
 
