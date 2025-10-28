@@ -74,7 +74,7 @@ const CrudLoader = ({path, preloader}: {
 
     useEffect(() => {
         setAction(getOnClickActionByPath(path));
-    }, ['path']);
+    }, [path]);
 
     if (action === undefined) {
         return preloader ?? <>Loading</>
