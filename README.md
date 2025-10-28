@@ -54,26 +54,31 @@ main.tsx
 ```jsx
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
-import {BrowserRouter, Outlet, Route, Routes} from "react-router";
-import {Crud, CrudConfiguration, MainLayout} from "@dakataa/crud-react";
+import {Crud, CrudConfiguration, MainLayout, Router, Route, Outlet} from "@dakataa/crud-react";
+
+const templates = import.meta.glob('./crud/**');
 
 CrudConfiguration({
-	baseURL: 'https://project.local',
-	headers: {
-		Accept: 'application/json'
-	}
+	connection: {
+		baseURL: 'https://project.local',
+		headers: {
+			Accept: 'application/json'
+		}
+	},
+	templates: import.meta.glob('./crud/**')
 });
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
-		<Crud>
-			<BrowserRouter>
-				<Routes>
-					<Route element={<MainLayout><Outlet/></MainLayout>}>
-						<Route path={"*"} element={<CrudLoader/>}/>
-					</Route>
-				</Routes>
-			</BrowserRouter>
+		<Crud
+			config={{templates, currency: 'BGN', locale: 'bg', env: import.meta.env.CRUD_ENV}}
+			errorFallback={<CrudErrorFallback/>}
+		>
+			<Router>
+				<Route element={<MainLayout><Outlet/></MainLayout>}>
+					<Route path={"*"} element={<CrudLoader/>}/>
+				</Route>
+			</Router>
 		</Crud>
 	</StrictMode>
 )
@@ -115,7 +120,7 @@ const {actions, getAction, getActionByPath} = UseActions();
 
 ## Components
 ### Dynamic View
-
+### Router
 ### Templates
 ### Modal
 ### Dropdown
