@@ -78,7 +78,7 @@ const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
     }, []);
 
     // Prevent recursion
-    if(isDuplicated) {
+    if(isDuplicated || !templateFilePath) {
         return children;
     }
 
@@ -91,16 +91,7 @@ const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
             namespace,
             isImported: !!importMethod
         }}>
-            <LoadedView.current
-                {...props}
-                view={view}
-                controller={namespace}
-                viewName={view}
-                data={data}
-                parent={children}
-            >
-                {(!importMethod || LoadedView.current !== Empty) && children}
-            </LoadedView.current>
+            <LoadedView.current {...props}/>
         </DynamicViewContext.Provider>
     );
 });

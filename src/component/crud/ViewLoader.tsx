@@ -3,7 +3,6 @@ import EmptyView from "@src/component/Empty.tsx";
 import List from "@src/component/crud/List.tsx";
 import React from "react";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {UseNamespace} from "@src/context/NamespaceContext.tsx";
 
 const DefaultViewComponent = ({view, props}: {
     view: string,
@@ -15,12 +14,13 @@ const DefaultViewComponent = ({view, props}: {
         list: List
     }
 
-    if (defaultComponents[view] === undefined)
+    if (defaultComponents[view] === undefined) {
         return (
-            <DynamicView view={view}>
-                View Not found.
+            <DynamicView view={view} props={props}>
+                View "{view}" Not found.
             </DynamicView>
         );
+    }
 
     return React.createElement(defaultComponents[view] || EmptyView, props);
 }
@@ -30,12 +30,8 @@ const ViewLoader = ({view, namespace, props}: {
     namespace?: string;
     props?: { [key: string]: any }
 }): any => {
-    namespace ??= UseNamespace();
-
     return (
-        <DynamicView view={view} key={namespace + view} props={props}>
-            <DefaultViewComponent view={view} props={props}/>
-        </DynamicView>
+        <DefaultViewComponent view={view} props={props}/>
     );
 }
 
