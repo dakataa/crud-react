@@ -69,12 +69,20 @@ const CrudLoader = ({path, preloader}: {
         path = path.replace(new RegExp('^/' + link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
     }
 
-    const {getOnClickActionByPath} = UseActions();
+    const {getOnClickActionByPath, actions} = UseActions();
     const [action, setAction] = useState<OnClickAction|undefined|null>(undefined);
 
     useEffect(() => {
         setAction(getOnClickActionByPath(path));
-    }, [path]);
+    }, [path, JSON.stringify(actions)]);
+
+    useEffect(() => {
+        if(action !== null) {
+            return;
+        }
+
+        throw new HttpException(404, 'Not Found');
+    }, [action]);
 
     if (action === undefined) {
         return preloader ?? <>Loading</>

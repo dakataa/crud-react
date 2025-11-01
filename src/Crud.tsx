@@ -4,7 +4,7 @@ import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
 import {Config, Templates} from "@src/context/ConfigContext.tsx";
-import {WithRouterContext} from "@src/context/ActionContext.tsx";
+import {ActionProvider, WithActionProviderContext} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
 const globalConfig: { templates?: Templates } = {};
@@ -24,7 +24,7 @@ const CrudRequester = (): Requester => {
     return requester;
 }
 
-const Crud = WithRouterContext((
+const Crud = (
     {children, config, errorFallback}: {
         errorFallback?: ReactElement,
         config?: Config
@@ -33,13 +33,15 @@ const Crud = WithRouterContext((
     const templates = Object.assign(globalConfig.templates ?? {}, config?.templates ?? {});
 
     return (
-        <ErrorBoundary fallback={errorFallback ?? <Error/>}>
-            <CrudProvider config={{...(config || {}), templates}}>
-                {children}
-            </CrudProvider>
-        </ErrorBoundary>
+        <ActionProvider>
+            <ErrorBoundary fallback={errorFallback ?? <Error/>}>
+                <CrudProvider config={{...(config || {}), templates}}>
+                    {children}
+                </CrudProvider>
+            </ErrorBoundary>
+        </ActionProvider>
     );
-});
+};
 
 export {
     CrudConfiguration,

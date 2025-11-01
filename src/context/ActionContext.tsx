@@ -1,4 +1,4 @@
-import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactNode, use, useEffect, useRef, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
@@ -36,9 +36,6 @@ export function UseActions() {
     if (!context) {
         throw new Error('UseActions  must be used in ActionProvider');
     }
-
-    const contextRef = useRef(context);
-    contextRef.current = context;
 
     const config = UseConfig();
     const {actions, location} = context;
@@ -159,6 +156,7 @@ export function UseActions() {
         getActionByPath,
         getOnClickActionByPath,
         navigate,
+        actions,
         location,
         matchPath,
         generateRoute,
@@ -227,7 +225,7 @@ export function ActionProvider(props: PropsWithChildren) {
     );
 }
 
-export function WithRouterContext<P extends {}>(Component: ComponentType<P>): FC<P> {
+export function WithActionProviderContext<P extends {}>(Component: ComponentType<P>): FC<P> {
 
     return (props: P & { children?: ReactNode }) => (
         <ActionProvider>

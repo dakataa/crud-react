@@ -4,9 +4,8 @@ import Base from "@src/layout/default/Base.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import Link from "@src/component/Link.tsx";
 import Dropdown from "@src/component/Dropdown.tsx";
-import {WithRouterContext} from "@src/context/ActionContext.tsx";
 
-const Main = WithRouterContext(({children, ...props}: {
+const Main = ({children, ...props}: {
     children?: any
 }) => {
     const mainMenuRef = useRef<NavigationItemContextType | null>(null);
@@ -59,6 +58,6 @@ const Main = WithRouterContext(({children, ...props}: {
             </main>
         </Base>
     );
-});
+}
 
 export default Main;
