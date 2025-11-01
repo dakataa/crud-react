@@ -39,7 +39,7 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
                 <Block name={"content"}/>
                 <Block name={"actions"}/>
             </main>
-            {children}
+            {/*{children}*/}
         </section>
     )
 }, {name: 'modify'});
