@@ -224,6 +224,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                     return;
                 }
 
+                formRef.current?.success();
+
                 const doAfter = () => {
                     if (data.redirect && !embedded) {
                         navigate(generateLink(data.redirect.route, {...(action.parameters || {}), ...data.redirect.parameters}), true);

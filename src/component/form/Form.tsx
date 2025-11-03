@@ -23,6 +23,7 @@ type FormState = {
     response?: any;
     constraints?: any;
     errors?: { [key: string]: FormViewErrorType[] };
+    success?: boolean;
 }
 
 type FormProps = {
@@ -46,6 +47,7 @@ export type FormRef = {
     setValue: (name: string, value: string | string[] | null) => void,
     setValues: (data: { [key: string]: string }) => void,
     setErrors: Function,
+    success: () => void,
     reset: Function,
     submit: Function
 };
@@ -149,6 +151,10 @@ export const Form = forwardRef(({
         reset: () => {
             formElementRef.current?.reset();
         },
+        success: () => {
+            const [, dispatch] = context;
+            dispatch({action: 'success', payload: true});
+        },
         submit: () => formElementRef.current?.requestSubmit()
     };
 
@@ -225,6 +231,12 @@ export const Form = forwardRef(({
                 return {
                     ...state,
                     errors: errors
+                }
+            }
+            case 'success': {
+                return {
+                    ...state,
+                    success: payload
                 }
             }
         }
