@@ -16,7 +16,7 @@ type DynamicViewContextType = {
 const DynamicViewContext = React.createContext<DynamicViewContextType | undefined>(undefined);
 
 export function UseDynamicView() {
-   return React.useContext<DynamicViewContextType | undefined>(DynamicViewContext);
+    return React.useContext<DynamicViewContextType | undefined>(DynamicViewContext);
 }
 
 const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
@@ -34,35 +34,30 @@ const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
 
     namespace ??= UseNamespace();
 
-    if(!(view instanceof Array)) {
+    if (!(view instanceof Array)) {
         view = [view];
     }
 
-    const [templateFilePath, isDuplicated, importMethod] = view.reduce<any>((result, item) => {
-        if(result) {
+    view = view.map(v => v.split(/[._]/).filter(v => v).map((v) => capitalize(v)).join(''));
+
+    const possibleTemplateFilePath = [
+        ...view.map(v => ['crud', namespace, prefix, v].filter(v => v).join('/') + '.tsx'),
+        ...view.map(v => ['crud', 'general', prefix, v].filter(v => v).join('/') + '.tsx'),
+    ];
+
+    const [templateFilePath, isDuplicated, importMethod] = possibleTemplateFilePath.reduce<any>((result, templateFilePath) => {
+        if (result) {
             return result;
         }
 
-        item = item.split(/[._]/).filter(v => v).map((v) => capitalize(v)).join('');
-        const templateFilePaths = [
-            ['crud', namespace, prefix, item].filter(v => v).join('/') + '.tsx',
-            ['crud', 'general', prefix, item].filter(v => v).join('/') + '.tsx'
-        ];
+        const [, importMethod] = Object.entries(files ?? {}).filter(([path,]) => path.endsWith(templateFilePath)).shift() || [];
+        const isDuplicated = parentDynamicView?.template === templateFilePath && parentDynamicView?.isImported;
 
-        const results = templateFilePaths.map((templateFilePath) => {
-            const [, importMethod] = Object.entries(files ?? {}).filter(([path,]) => path.endsWith(templateFilePath)).shift() || [];
-            const isDuplicated = parentDynamicView?.template === templateFilePath && parentDynamicView?.isImported;
-
-            return importMethod !== undefined ? [templateFilePath, isDuplicated, importMethod] : null;
-        }).filter(v => v);
-
-        return results.shift() || null;
-
+        return importMethod !== undefined ? [templateFilePath, isDuplicated, importMethod] : null;
     }, null) || [false, undefined];
 
-
     useEffect(() => {
-        if(isDuplicated) {
+        if (isDuplicated) {
             return;
         }
 
@@ -78,7 +73,7 @@ const DynamicView = memo(({view, prefix, namespace, children, props, data}: {
     }, []);
 
     // Prevent recursion
-    if(isDuplicated || !templateFilePath) {
+    if (isDuplicated || !templateFilePath) {
         return children;
     }
 

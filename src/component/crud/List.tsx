@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useRef} from "react";
 import {convertFormDataToObject, Method} from "@dakataa/requester";
-import GridView, {OnClickAction} from "@src/component/crud/GridView.tsx";
+import GridView from "@src/component/crud/GridView.tsx";
 import Paginator from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
@@ -24,6 +24,7 @@ import Action from "@src/component/crud/Action.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
+import {OnClickAction} from "@src/type/OnClickAction.tsx";
 
 
 const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: {
