@@ -76,6 +76,10 @@ const GetData = (
                 }
 
                 setResults({data, response});
+
+                if([401, 403, 500].includes(response.status)) {
+                    throw new HttpException(response.status, response.statusText || 'Error', data);
+                }
             })
             .finally(() => {
             });
