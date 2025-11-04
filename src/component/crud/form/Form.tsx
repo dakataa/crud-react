@@ -11,12 +11,11 @@ import React, {
 } from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewErrorType, FormViewType} from "@src/type/FormViewType.tsx";
-import {RequestBodyType} from "@dakataa/requester";
+import {Method, RequestBodyType} from "@dakataa/requester";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/context/GetData.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
-import {CrudRequester} from "@src/Crud.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
@@ -27,7 +26,6 @@ import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
 import {Preloader, UsePreloaderProvider} from "@src/component/Preloader.tsx";
 
 export type ModifyFormRefType = {
-    getData: () => ModifyType | null;
     getFormRef: () => FormRef | null
 };
 
@@ -179,7 +177,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     children?: ReactNode;
 }, ref) => {
     const {navigate, generateLink, generateActionLink} = UseActions();
-    const {action} = UseCurrentAction();
+    const {action, setAction} = UseCurrentAction();
 
     const actionURL = generateActionLink(action);
     const [data, setData] = useState<ModifyType | null>(null)
@@ -188,7 +186,6 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
 
     useImperativeHandle(ref, () => ({
-        getData: (): ModifyType | undefined => dataProvider?.results as ModifyType,
         getFormRef: (): FormRef | null => formRef.current
     }));
 
@@ -209,42 +206,12 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const onSubmit = (formData: FormData) => {
         startLoading?.(formView?.full_name || 'form');
 
-        CrudRequester()
-            .post({url: actionURL, body: formData, bodyType: RequestBodyType.FormData})
-            .then(({status, data}) => {
-                if (![200, 201, 400].includes(status)) {
-                    return Promise.reject(data);
-                }
-
-                setData(data);
-
-                const errors = getFormErrors(data.form.modify.view);
-                formRef.current?.setErrors(errors);
-                if (Object.entries(errors).length) {
-                    return;
-                }
-
-                formRef.current?.success();
-
-                const doAfter = () => {
-                    if (data.redirect && !embedded) {
-                        navigate(generateLink(data.redirect.route, {...(action.parameters || {}), ...data.redirect.parameters}), true);
-                    }
-                }
-
-                if (onSuccess) {
-                    onSuccess(data).then(() => doAfter());
-                } else {
-                    doAfter();
-                }
-
-            }).catch((error: ExceptionType) => {
-            if (onError) {
-                onError(error);
-            }
-        }).finally(() => {
-            stopLoading?.(formView?.full_name || 'form');
-        });
+        setAction({
+            ...action,
+            method: Method.POST,
+            body: formData,
+            bodyType: RequestBodyType.FormData
+        })
     }
 
     useEffect(() => {
@@ -254,7 +221,37 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     }, []);
 
     useEffect(() => {
-        setData(dataProvider?.results);
+        const formView = dataProvider?.results?.form?.modify?.view;
+        if(!formView) {
+            return;
+        }
+
+        const data = dataProvider.results;
+        const errors = getFormErrors(formView);
+
+        setData(data);
+        stopLoading?.(formView?.full_name || 'form');
+        formRef.current?.setErrors(errors);
+
+
+        if (!formView.submitted || dataProvider?.status !== 200 || Object.entries(errors).length) {
+            return;
+        }
+
+        formRef.current?.success();
+
+        const doAfter = () => {
+            if (data.redirect && !embedded) {
+                navigate(generateLink(data.redirect.route, {...(action.parameters || {}), ...data.redirect.parameters}), true);
+            }
+        }
+
+        if (onSuccess) {
+            onSuccess(data).then(() => doAfter());
+        } else {
+            doAfter();
+        }
+
     }, [dataProvider?.results])
 
     const formView = data?.form?.modify?.view;

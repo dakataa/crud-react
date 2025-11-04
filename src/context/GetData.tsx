@@ -7,11 +7,13 @@ import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {Method, RequestBodyType, Response} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
 export type GetDataType = {
     url: string;
+    status: number;
     results: any;
     refresh: () => void;
     cancel: () => void;
@@ -32,13 +34,21 @@ export function UseDataProvider(): GetDataType | null {
 const GetData = (
     {
         path,
+        method,
+        body,
+        bodyType,
         loadOnInit = true
-    }: GetDataProps & { path: string }): GetDataType => {
+    }: GetDataProps & {
+        path: string
+        method?: Method,
+        body?: FormData | string | { [key: string]: any },
+        bodyType?: RequestBodyType,
+    }): GetDataType => {
 
     const enabled = useRef(loadOnInit);
     const {navigate, internalToExternalPath} = UseActions();
 
-    const [results, setResults] = useState<ListType | ModifyType | null>();
+    const [results, setResults] = useState<{data: ListType | ModifyType, response: Response} | undefined>();
 
     const loading = useRef<AbortController | null>(null);
     const [refresh, setRefresh] = useState(1);
@@ -52,8 +62,10 @@ const GetData = (
         loading.current = new AbortController();
 
         CrudRequester()
-            .get({
+            .fetch({
                 url: path,
+                method: method || Method.GET,
+                body: body,
                 signal: loading.current?.signal,
             })
             .then(({data, response}) => {
@@ -63,22 +75,7 @@ const GetData = (
                     return;
                 }
 
-                switch (response.status) {
-                    case 201:
-                    case 200: {
-
-                        setResults(data);
-                        break;
-                    }
-                    default: {
-                        if (data instanceof Object) {
-                            const exception = (data as ExceptionType);
-                            throw new HttpException(exception.status, exception.detail, exception.trace);
-                        }
-
-                        throw new HttpException(response.status, response.statusText);
-                    }
-                }
+                setResults({data, response});
             })
             .finally(() => {
             });
@@ -86,11 +83,11 @@ const GetData = (
         return () => {
             enabled.current = loadOnInit;
         }
-    }, [refresh, path])
+    }, [refresh, path, body, bodyType, method])
 
     useEffect(() => {
         update();
-    }, [refresh, path]);
+    }, [refresh, path, body, bodyType, method]);
 
     useEffect(() => {
         return () => {
@@ -106,7 +103,8 @@ const GetData = (
 
     return {
         url: path,
-        results,
+        status: results?.response.status || 0,
+        results: results?.data,
         refresh: () => {
             setRefresh(refresh + 1);
         },
@@ -119,9 +117,9 @@ const GetDataByAction = ({
          loadOnInit = true
      }: GetDataByActionProps): GetDataType | null => {
         const {generateActionLink} = UseActions();
-
         const path = generateActionLink(action);
-        return GetData({path, loadOnInit});
+
+        return GetData({path, method: action.method, body: action.body, bodyType: action.bodyType, loadOnInit});
     }
 
 const DataProvider = ({suspense, children}: {
@@ -132,6 +130,7 @@ const DataProvider = ({suspense, children}: {
     const {generateActionLink} = UseActions();
     const parentDataProvider = UseDataProvider();
     const url = generateActionLink(action);
+
     if(parentDataProvider?.url === url) {
         return children;
     }
@@ -139,7 +138,6 @@ const DataProvider = ({suspense, children}: {
     const data = GetDataByAction({
         action
     });
-
 
     suspense ??= <>Data Loading</>;
 
