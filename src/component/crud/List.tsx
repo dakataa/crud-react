@@ -1,5 +1,5 @@
-import React, {ReactElement, useEffect, useRef} from "react";
-import {convertFormDataToObject, Method} from "@dakataa/requester";
+import React, {ReactElement, useRef} from "react";
+import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 import GridView from "@src/component/crud/GridView.tsx";
 import Paginator from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
@@ -73,7 +73,8 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
                     if (result.isConfirmed) {
                         CrudRequester().post({
                             url: generateActionLink(action),
-                            body: data
+                            body: data,
+                            bodyType: RequestBodyType.FormData
                         }).catch((e: any) => {
                             reject();
                         }).finally(() => {
@@ -128,8 +129,6 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
                 return;
             }
         }
-
-        console.log('onClickAction', onClickAction.action.name, embedded);
 
         if (embedded) {
             openModal({
