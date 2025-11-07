@@ -49,15 +49,15 @@ const Input = ({
     let type = view.type;
     let value = view.data;
 
-    if(type === FormViewTypeEnum.Datetime) {
+    if (type === FormViewTypeEnum.Datetime) {
         const date = value?.date ? new Date(value?.date) : null
         type = 'datetime-local'
-        value =  date?.toISOString();
+        value = date ? date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getMilliseconds() : null;
     }
 
-    if(type === FormViewTypeEnum.Date) {
+    if (type === FormViewTypeEnum.Date) {
         const date = value?.date ? new Date(value?.date) : null
-        value =  date?.toISOString().split('T').shift();
+        value = date ? date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() : null;
     }
 
     return <>
