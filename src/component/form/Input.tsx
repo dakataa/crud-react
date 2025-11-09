@@ -50,14 +50,23 @@ const Input = ({
     let value = view.data;
 
     if (type === FormViewTypeEnum.Datetime) {
-        const date = value?.date ? new Date(value?.date) : null
+        const localDate = value?.date ? new Date(value.date) : null;
+        if(localDate) {
+            const dateZoneOffset = localDate.getTimezoneOffset() * 60000
+            const utcDate = new Date(localDate.getTime() - dateZoneOffset);
+            value = utcDate.toISOString().split('T').join(' ');
+        }
+
         type = 'datetime-local'
-        value = date ? date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getMilliseconds() : null;
     }
 
     if (type === FormViewTypeEnum.Date) {
-        const date = value?.date ? new Date(value?.date) : null
-        value = date ? date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() : null;
+        const localDate = value?.date ? new Date(value.date) : null;
+        if(localDate) {
+            const dateZoneOffset = localDate.getTimezoneOffset() * 60000
+            const utcDate = new Date(localDate.getTime() - dateZoneOffset);
+            value = utcDate.toISOString().split('T').shift();
+        }
     }
 
     return <>
