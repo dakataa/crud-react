@@ -3,7 +3,6 @@ import {ListType} from "@src/type/ListType.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
-import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";

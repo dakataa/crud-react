@@ -1,9 +1,10 @@
-import '@src/assets/style/alert.scss';
 import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import Button from "@src/component/Button.tsx";
 import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
 import {Extend} from "@src/component/templating/Template.tsx";
+
+import '@src/assets/style/alert.scss';
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]
@@ -149,7 +150,6 @@ export function AlertProvider({children}: PropsWithChildren) {
 
     return (
         <AlertContext.Provider value={{open}}>
-            {children}
             {alert && (
                 <Modal
                     key={updates.current}
@@ -183,6 +183,7 @@ export function AlertProvider({children}: PropsWithChildren) {
                     </Extend>
                 </Modal>
             )}
+            {children}
         </AlertContext.Provider>
     );
 }

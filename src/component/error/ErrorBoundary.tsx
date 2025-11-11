@@ -54,7 +54,7 @@ class ErrorBoundaryHandler extends React.Component<ErrorBoundaryProps & { defaul
             return;
         }
 
-        if(e.type === 'unhandledrejection' && e.reason === undefined) {
+        if(e.type === 'unhandledrejection' && (e.reason === undefined || typeof e.reason === 'string')) {
             return;
         }
 

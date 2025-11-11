@@ -4,7 +4,7 @@ import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
 import {Config, Templates} from "@src/context/ConfigContext.tsx";
-import {ActionProvider, WithActionProviderContext} from "@src/context/ActionContext.tsx";
+import {ActionProvider} from "@src/context/ActionContext.tsx";
 
 let requester: Requester;
 const globalConfig: { templates?: Templates } = {};

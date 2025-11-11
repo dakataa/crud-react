@@ -6,9 +6,14 @@
     --animation-timeout-progress: 1s;
     --modal-alert-vertical-gutter: 1.5rem;
     --modal-alert-icon-size: 92px;
+    --bs-modal-zindex: 1150;
 
     transition: var(--animation-transition);
     transform: var(--animation-transform);
+
+    +.modal-backdrop {
+      --bs-backdrop-zindex: 1100;
+    }
 
     &.fade {
         animation: animation-open-fade;

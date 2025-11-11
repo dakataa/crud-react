@@ -37,7 +37,7 @@ export function ModalProvider(props: PropsWithChildren) {
 
     const [path, dispatch] = useReducer((state: ModalActionType[], newModal: ModalActionType | null) => {
         const newState = [...state];
-        if(newModal) {
+        if (newModal) {
             newState.push(newModal);
         } else {
             newState.pop();
@@ -80,18 +80,15 @@ export function ModalProvider(props: PropsWithChildren) {
                         }
                     })
                 }}>
-                    <AlertProvider>
-                        <CurrentActionProvider action={currentModal.action}>
-                                <ViewLoader
-                                    key={updates.current}
-                                    view={currentModal.action.action.name || 'list'}
-                                    props={{
-                                        modal: true,
-                                        props: modalProps
-                                    }}
-                                />
-                        </CurrentActionProvider>
-                    </AlertProvider>
+                    <CurrentActionProvider action={currentModal.action}>
+                        <ViewLoader
+                            view={currentModal.action.action.name || 'list'}
+                            props={{
+                                modal: true,
+                                props: modalProps
+                            }}
+                        />
+                    </CurrentActionProvider>
                 </ErrorBoundary>
             )}
         </ModalContext.Provider>
