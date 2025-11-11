@@ -24,7 +24,7 @@ export type FormViewType = {
     errors?: FormViewErrorType[];
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
-    choice_attr?: {[key: string]: {[key: string]: string}} | Function
+    choice_attr?: { [key: string]: { [key: string]: string } } | Function
     preferred_choices?: { [key: string]: any };
     attr?: { [key: string]: string } | Function;
     data?: any;
@@ -53,20 +53,21 @@ export enum FormViewTypeEnum {
     Datetime = 'datetime',
     Date = 'date',
     Time = 'time',
+    Birthday = 'birthday',
 }
 
 export type FormViewErrorType = {
     message: string;
     origin?: string | null;
-    messageParameters?: {[key: string]: string};
+    messageParameters?: { [key: string]: string };
     messageTemplate?: string;
 }
 
 export type ChoiceType = {
     value: string | number | null | Function;
     label: string | ((v: ChoiceType) => string);
-    attr?: {[key: string]: {[key: string]: string}} | Function;
-    data?: object
+    attr?: { [key: string]: { [key: string]: string } } | Function;
+    data?: { [key: string]: any }
 }
 
 export type ChoiceGroupType = {

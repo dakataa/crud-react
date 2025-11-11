@@ -49,24 +49,15 @@ const Input = ({
     let type = view.type;
     let value = view.data;
 
-    if (type === FormViewTypeEnum.Datetime) {
+    if ([FormViewTypeEnum.Date, FormViewTypeEnum.Birthday, FormViewTypeEnum.Datetime].includes(type as FormViewTypeEnum)) {
         const localDate = value?.date ? new Date(value.date) : null;
-        if(localDate) {
-            const dateZoneOffset = localDate.getTimezoneOffset() * 60000
-            const utcDate = new Date(localDate.getTime() - dateZoneOffset);
-            value = utcDate.toISOString().split('T').join(' ');
-        }
-
-        type = 'datetime-local'
-    }
-
-    if (type === FormViewTypeEnum.Date) {
-        const localDate = value?.date ? new Date(value.date) : null;
-        if(localDate) {
+        if (localDate) {
             const dateZoneOffset = localDate.getTimezoneOffset() * 60000
             const utcDate = new Date(localDate.getTime() - dateZoneOffset);
             value = utcDate.toISOString().split('T').shift();
         }
+
+        type = type === FormViewTypeEnum.Datetime ? 'datetime-local' : 'date';
     }
 
     return <>
