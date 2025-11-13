@@ -1,9 +1,9 @@
-import React, {ReactNode, useRef} from "react";
+import React, {ComponentType, ReactNode} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
-import Form, {ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
+import Form from "@src/component/crud/form/Form.tsx";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
-import Modal, {ModalRefType} from "@src/component/Modal.tsx";
+import Modal from "@src/component/Modal.tsx";
 import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
@@ -12,6 +12,7 @@ import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {AsTemplate, Block, Extend} from "@src/component/templating/Template.tsx";
 import Button from "@src/component/Button.tsx";
 import {default as T} from "@src/component/Translation.tsx";
+import {UseModal} from "@src/context/ModalContext.tsx";
 
 const DefaultModifyTemplate = AsTemplate(({children}: {
     children?: ReactNode;
@@ -45,7 +46,7 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
 }, {name: 'modify'});
 
 const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: {
-    template?: ReactNode;
+    template?: ComponentType;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
@@ -53,8 +54,7 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: 
 }) => {
 
     const {open: openAlert} = UseAlert();
-    const modifyFormRef = useRef<ModifyFormRefType>(undefined);
-    const modalRef = useRef<ModalRefType>(undefined);
+    const {closeModal} = UseModal();
     const dataProvider = UseDataProvider();
     const ComponentTemplate = modal ? Modal : (template || DefaultModifyTemplate);
 
@@ -63,7 +63,7 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: 
     }
 
     return (
-        <ComponentTemplate ref={modalRef} {...props} open={true}>
+        <ComponentTemplate>
             <Extend name={"title"}>
                 {dataProvider?.results?.title || 'Title'}
             </Extend>
@@ -75,9 +75,9 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: 
             <Extend name={"content"}>
                 <DynamicView view={"content"} prefix={"modify"}>
                     <Form
-                        ref={modifyFormRef}
                         onSuccess={(data: ModifyType) => new Promise((resolve, reject) => {
-                            modalRef.current?.close();
+                            closeModal();
+
                             const event = new CustomEvent('success', {detail: data})
                             onSuccess && onSuccess(event, data);
 

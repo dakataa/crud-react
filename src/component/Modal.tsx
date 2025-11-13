@@ -27,16 +27,20 @@ export enum Animation {
 
 const Modal = AsTemplate(forwardRef(({
                                          children,
-                                         open = true,
-                                         animation = Animation.fade,
-                                         backdrop = true,
-                                         keyboard = true,
-                                         size,
-                                         onClose,
-                                         className,
+                                         ...props
                                      }: ModalType, ref) => {
+
+
+    const {closeModal, modal} = UseModal();
+    const {open = true,
+        animation = Animation.fade,
+        backdrop = true,
+        keyboard = true,
+        size,
+        onClose,
+        className} = {...props, ...modal?.props || {}};
+
     const [isOpen, setIsOpen] = useState<boolean>(open);
-    const {closeModal} = UseModal();
 
     useImperativeHandle(ref, () => ({
         toggle: () => setIsOpen(!isOpen),
@@ -97,7 +101,6 @@ const Modal = AsTemplate(forwardRef(({
 
     const endClosing = () => {
         setIsOpen(false);
-        onClose && onClose();
 
         closeModal?.();
     }
@@ -130,8 +133,13 @@ const Modal = AsTemplate(forwardRef(({
                 closeAndResolve();
             }
         })
-
     }
+
+    useEffect(() => {
+        return () => {
+            onClose && onClose();
+        }
+    }, []);
 
     return isOpen && createPortal((
         <>

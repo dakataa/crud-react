@@ -3,7 +3,7 @@ import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
-import {AlertProvider, Icon, UseAlert} from "@src/context/AlertContext.tsx";
+import {Icon, UseAlert} from "@src/context/AlertContext.tsx";
 import {CurrentActionProvider} from "@src/component/crud/CrudLoader.tsx";
 
 export type ModalActionType = {
@@ -23,7 +23,7 @@ export function UseModal() {
     const {modal, setModal} = React.useContext<ModalContextType>(ModalContext);
 
     return {
-        modal,
+        modal: modal,
         openModal: (modal: ModalActionType) => {
             setModal && setModal(modal)
         },
