@@ -28,7 +28,6 @@ import {OnClickAction} from "@src/type/OnClickAction.tsx";
 
 
 const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: {
-    action?: OnClickAction,
     embedded?: boolean
     title?: string | ReactElement | false,
     className?: string,
@@ -99,7 +98,6 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
         }
 
         if (onClickAction.query !== undefined) {
-            onClickAction.query = objectRemoveEmpty(onClickAction.query as object);
             if (!Object.keys(onClickAction.query as object).length) {
                 onClickAction.query = undefined;
             }
@@ -162,17 +160,19 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
                             )}
                         </Block>
                         <div className={"d-flex align-items-center"}>
-                            {!!actions.length && (
-                                <div className="btn-group btn-group-sm me-2">
-                                    {actions.map((item, index) => (
-                                        <Action
-                                            key={index}
-                                            action={{...action, action: item}}
-                                            className="btn btn-outline-secondary"
-                                        />
-                                    ))}
-                                </div>
-                            )}
+                            <Block name={"actions"}>
+                                {!!actions.length && (
+                                    <div className="btn-group btn-group-sm me-2">
+                                        {actions.map((item, index) => (
+                                            <Action
+                                                key={index}
+                                                action={{...action, action: item}}
+                                                className="btn btn-outline-secondary"
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </Block>
                             {results?.form?.filter?.view && (
                                 <div className={"btn-group btn-group-sm"}>
                                     <Dropdown className={"btn-group btn-group-sm"}>

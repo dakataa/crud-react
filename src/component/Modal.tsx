@@ -32,13 +32,15 @@ const Modal = AsTemplate(forwardRef(({
 
 
     const {closeModal, modal} = UseModal();
-    const {open = true,
+    const {
+        open = true,
         animation = Animation.fade,
         backdrop = true,
         keyboard = true,
         size,
         onClose,
-        className} = {...props, ...modal?.props || {}};
+        className
+    } = {...props, ...modal?.props || {}};
 
     const [isOpen, setIsOpen] = useState<boolean>(open);
 

@@ -45,12 +45,11 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
     )
 }, {name: 'modify'});
 
-const Modify = WithDataProvider(({template, children, onSuccess, modal, props}: {
+const Modify = WithDataProvider(({template, children, onSuccess, modal}: {
     template?: ComponentType;
     children?: ReactNode;
     onSuccess?: (event: CustomEvent, data: ModifyType) => void;
     modal?: boolean;
-    props?: any;
 }) => {
 
     const {open: openAlert} = UseAlert();

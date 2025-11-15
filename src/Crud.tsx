@@ -5,6 +5,7 @@ import Error from "@src/layout/default/Error.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
 import {Config, Templates} from "@src/context/ConfigContext.tsx";
 import {ActionProvider} from "@src/context/ActionContext.tsx";
+import {CurrentActionCollectionProvider} from "@src/component/crud/CrudLoader.tsx";
 
 let requester: Requester;
 const globalConfig: { templates?: Templates } = {};
@@ -34,11 +35,13 @@ const Crud = (
 
     return (
         <ActionProvider>
-            <ErrorBoundary fallback={errorFallback ?? <Error/>}>
-                <CrudProvider config={{...(config || {}), templates}}>
-                    {children}
-                </CrudProvider>
-            </ErrorBoundary>
+            <CurrentActionCollectionProvider>
+                <ErrorBoundary fallback={errorFallback ?? <Error/>}>
+                    <CrudProvider config={{...(config || {}), templates}}>
+                        {children}
+                    </CrudProvider>
+                </ErrorBoundary>
+            </CurrentActionCollectionProvider>
         </ActionProvider>
     );
 };
