@@ -78,7 +78,6 @@ export function CurrentActionProvider({action, name, ...props}: {
     name?: string
 } & PropsWithChildren) {
     const {getAction} = UseActions();
-
     const {set, unset} = UseCurrentActionCollection();
 
     name ??= [action.action.entity, action.action.name, action.action.namespace].join('-');
@@ -91,7 +90,6 @@ export function CurrentActionProvider({action, name, ...props}: {
         ...action,
         action: routeAction
     };
-
 
     const [update, setUpdate] = useState(1);
     const [currentAction, setCurrentAction] = useState(action);

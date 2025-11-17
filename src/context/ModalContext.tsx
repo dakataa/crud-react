@@ -59,6 +59,12 @@ export function ModalProvider(props: PropsWithChildren) {
         ...currentModal?.props || {}
     }
 
+    const key = currentModal ? [
+        currentModal.action.action.entity,
+        currentModal.action.action.namespace,
+        currentModal.action.action.name
+    ].filter(v => v).join('-') : Date.now();
+
     return (
         <ModalContext.Provider value={{
             modal: currentModal,
@@ -80,7 +86,7 @@ export function ModalProvider(props: PropsWithChildren) {
                         }
                     })
                 }}>
-                    <CurrentActionProvider action={currentModal.action}>
+                    <CurrentActionProvider key={key} action={currentModal.action}>
                         <ViewLoader
                             view={currentModal.action.action.name || 'list'}
                             props={{

@@ -35,7 +35,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
     const {action, setAction} = UseCurrentAction();
     const {generateActionLink, location, navigate} = UseActions()
     const filterFormRef = useRef<FormRef | null>(null);
-    const {openModal} = UseModal()
+    const {openModal} = UseModal();
     const {open: openAlert} = UseAlert();
 
     const entity = action.action.entity;

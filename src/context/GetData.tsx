@@ -89,15 +89,16 @@ const GetData = (
     }, [refresh, path, body, bodyType, method])
 
     useEffect(() => {
-        update();
-    }, [refresh, path, body, bodyType, method]);
-
-    useEffect(() => {
         return () => {
             cancel();
             enabled.current = loadOnInit;
         }
     }, []);
+
+    useEffect(() => {
+        update();
+    }, [refresh, path, body, bodyType, method]);
+
 
     const cancel = () => {
         loading.current?.abort('canceled');
@@ -109,7 +110,7 @@ const GetData = (
         status: results?.response.status || 0,
         results: results?.data,
         refresh: () => {
-            setRefresh(refresh + 1);
+            setRefresh(Date.now());
         },
         cancel
     }
