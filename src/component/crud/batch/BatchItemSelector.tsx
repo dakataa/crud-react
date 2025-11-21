@@ -5,7 +5,12 @@ import {UseListItem} from "@src/context/ListItemContext.tsx";
 const BatchItemSelector = ({className}: {className?: string}) => {
 
     const {index} = UseListItem();
-    const {actions, toggle, isSelected} = UseBatchActions();
+    const batchActions = UseBatchActions();
+    if(!batchActions) {
+        return <></>;
+    }
+
+    const {actions, toggle, isSelected} = batchActions;
 
     return Object.keys(actions || {}).length > 0 && (
         <>

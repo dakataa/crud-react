@@ -2,6 +2,7 @@ import React, {PropsWithChildren} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ActionVisibility} from "@src/type/ActionType.tsx";
+import {UseDataProvider} from "@src/context/GetData.tsx";
 
 type ListContextType = {
     data?: ListType;
@@ -37,6 +38,9 @@ export function UseList() {
 }
 
 export function ListProvider({data, onClick, ...props}: ListContextType & PropsWithChildren) {
+    const {results} = UseDataProvider() || {};
+    data ??= results;
+
     return (
         <ListItemContext.Provider value={{data, onClick}}>
             {props.children}

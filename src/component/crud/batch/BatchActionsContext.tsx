@@ -16,12 +16,7 @@ export type BatchContextType = {
 const BatchActionsContext = React.createContext<BatchContextType|undefined>(undefined);
 
 export function UseBatchActions() {
-    const context = React.useContext<BatchContextType|undefined>(BatchActionsContext);
-    if (context === undefined) {
-        throw new Error("UseBatchActions must be within BatchActionsProvider")
-    }
-
-    return context;
+    return React.useContext<BatchContextType | undefined>(BatchActionsContext);
 }
 
 export function BatchActionsProvider({onClick, ...props}: {
