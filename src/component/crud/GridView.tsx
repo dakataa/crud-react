@@ -1,6 +1,5 @@
 import {ColumnType} from "@src/type/ColumnType";
 import React, {forwardRef, ReactElement} from "react";
-import {ActionType} from "@src/type/ActionType";
 import Link from "@src/component/Link.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import ItemValue from "@src/component/crud/ItemValue.tsx";

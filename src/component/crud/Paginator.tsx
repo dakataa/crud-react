@@ -1,24 +1,40 @@
-import {ListMetaType} from "@src/type/ListMetaType";
-import {RouteType} from "@src/type/RouteType";
 import Link from "@src/component/Link.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
+import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseActions} from "@src/context/ActionContext.tsx";
 
-const PageItem = ({route, page, active = false, title, children}: {
-    route?: RouteType,
+const PageItem = ({page, active = false, title, children}: {
     page: number | string,
     active?: boolean,
     title?: string,
     children?: any
 }) => {
-    const url = new URL(document.location.href);
-    url.searchParams.set('page', page.toString());
+    const {generateActionLink} = UseActions();
+    const {onClick} = UseList();
+    const {action} = UseCurrentAction();
+    const pageAction = {
+        ...action,
+        query: {
+            ...action.query || {},
+            page: page.toString()
+        }
+    };
+
+    const url = generateActionLink(pageAction);
 
     return (
         <li className={`page-item ${active ? 'active' : ''}`}>
             <Link
                 to={url.toString()}
+                {...(onClick && {
+                    onClick: (e) => {
+                        onClick(pageAction, e);
+                    }
+                })}
+
                 className="page-link"
-                title={title}>
+                title={title}
+            >
                 {children || page}
             </Link>
         </li>
