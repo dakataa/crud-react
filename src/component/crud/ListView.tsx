@@ -8,10 +8,11 @@ import {ListItemProvider} from "@src/context/ListItemContext.tsx";
 
 
 type ListViewType = GridViewType & {
-    item?: ReactElement
+    itemView?: ReactElement,
+    emptyView?: ReactElement | null
 };
 
-const ListView = forwardRef(({item, routeParams, namespace}: ListViewType, ref) => {
+const ListView = ({itemView, emptyView, namespace}: ListViewType) => {
     const {items, primaryColumn, data} = UseList();
 
     return !!data && (
@@ -19,16 +20,18 @@ const ListView = forwardRef(({item, routeParams, namespace}: ListViewType, ref) 
             <ListItemProvider key={index} index={index}>
                 <DynamicView
                     key={data?.entity?.data.items[index][primaryColumn?.field ?? '']}
-                    namespace={data?.entity.name || 'unknown'} data={row} prefix={"list"}
-                    view={"listItem"}>
-                    {item ? item : <ListItem namespace={namespace}/>}
+                    namespace={namespace}
+                    prefix={"list"}
+                    view={"listItem"}
+                >
+                    {itemView ? itemView : <ListItem namespace={namespace}/>}
 
                 </DynamicView>
             </ListItemProvider>
         )) : (
-            <T>No results found.</T>
+            emptyView === undefined ? <T>No results found.</T> : emptyView
         )
     );
-});
+}
 
 export default ListView;

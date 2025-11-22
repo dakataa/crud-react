@@ -14,6 +14,7 @@ export type GetDataType = {
     url: string;
     status: number;
     results: any;
+    response?: Response;
     refresh: () => void;
     cancel: () => void;
 }
@@ -109,6 +110,7 @@ const GetData = (
         url: path,
         status: results?.response.status || 0,
         results: results?.data,
+        response: results?.response,
         refresh: () => {
             setRefresh(Date.now());
         },
