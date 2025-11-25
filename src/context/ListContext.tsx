@@ -4,7 +4,7 @@ import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ActionVisibility} from "@src/type/ActionType.tsx";
 import {UseDataProvider} from "@src/context/GetData.tsx";
 
-type ListContextType = {
+export type ListContextType = {
     data?: ListType;
     onClick?: (props: OnClickAction, event: React.MouseEvent) => void;
 }

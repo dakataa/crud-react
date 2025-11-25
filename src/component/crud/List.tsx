@@ -27,10 +27,11 @@ import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 
 
-const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: {
+const List = WithDataProvider(AsTemplate(({embedded = false, title, className, onAction}: {
     embedded?: boolean
     title?: string | ReactElement | false,
     className?: string,
+    onAction?: (action: OnClickAction, event?: React.MouseEvent) => boolean | null | void
 }) => {
     const {action, setAction} = UseCurrentAction();
     const {generateActionLink, location, navigate} = UseActions()
@@ -89,6 +90,10 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
     }
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
+        if(onAction?.(onClickAction, event)) {
+            return;
+        }
+
         event?.preventDefault();
 
         onClickAction.parameters = {...(onClickAction.parameters || {}), ...(action.parameters || {})}
@@ -224,7 +229,6 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className}: 
                     <BatchActionSelector/>
                     <Block name={"content"}>
                         <DynamicView key={"list"} prefix={"list"} view={"content"} data={results}>
-
                             <GridView
                                 routeParams={action.parameters}
                             />

@@ -1,7 +1,7 @@
 import React, {PropsWithChildren} from "react";
 import {UseList} from "@src/context/ListContext.tsx";
 
-type ListItemContextType = {
+export type ListItemContextType = {
     index: number;
 }
 
