@@ -31,6 +31,65 @@ const SelectGroupOption = ({view, group}: { view: FormViewType, group: ChoiceGro
     )
 }
 
+const ChoiceOption = (
+    {
+        view,
+        choice,
+        choiceValueTransform,
+        choiceLabelTransform,
+    }: {
+        view: FormViewType,
+        choice: ChoiceType,
+    } & ChoiceProps) => {
+    const elementName = view.full_name;
+    const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
+    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
+    const elementId = nameToId(elementName || '', choiceValue);
+
+    const attributes = {
+        id: elementId,
+        ...(view?.choice_attr && (view?.choice_attr instanceof Function ? view?.choice_attr(choice) : view?.choice_attr))
+    }
+
+    return (
+        <div className={"form-check"}>
+            <input
+                defaultValue={choiceValue}
+                type={view?.multiple ? 'checkbox' : 'radio'}
+                defaultChecked={view?.data?.includes(choiceValue)}
+                name={elementName + (view?.multiple ? '[]' : '')}
+                id={elementId}
+                className={"form-check-input"}
+                {...attributes}
+                // onChange={(e) => {
+                //     return validate({
+                //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
+                //         targetValue: e.target.value,
+                //         checked: e.target.checked
+                //     })
+                // }}
+            />
+            <label
+                htmlFor={attributes.id}
+                className={"form-check-label"}
+            >
+                {choiceLabel}
+            </label>
+        </div>
+    )
+}
+
+const ChoiceGroupOption = ({view, group, ...props}: { view: FormViewType, group: ChoiceGroupType } & ChoiceProps) => {
+    return (
+        <div className={"form-group"}>
+            <label className={"form-label"}>{group.label}</label>
+            {Object.values(group.choices).map((c, index) => (
+                <ChoiceOption key={index} view={view} choice={c} {...props}/>
+            ))}
+        </div>
+    )
+}
+
 const Choice = ({
                     view,
                     constraints,
@@ -38,7 +97,6 @@ const Choice = ({
                     onChange,
                     choiceValueTransform,
                     choiceLabelTransform,
-                    ...props
                 }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
@@ -67,42 +125,21 @@ const Choice = ({
     if (view?.expanded) {
         return (
             <div className={[...(isInvalid ? ['is-invalid'] : [])].join(' ')}>
-                {Object.values(view.choices || []).map((choice: ChoiceType, choiceIndex: number) => {
-                        const elementId = nameToId(elementName || '', choiceIndex);
-                        const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
-                        const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
-                        const attributes = {
-                            id: elementId,
-                            ...(view?.choice_attr && (view?.choice_attr instanceof Function ? view?.choice_attr(choice) : view?.choice_attr))
-                        }
-
-                        return (
-                            <div key={key + choiceIndex} className={"form-check"}>
-                                <input
-                                    defaultValue={choiceValue}
-                                    type={view?.multiple ? 'checkbox' : 'radio'}
-                                    defaultChecked={view?.data?.includes(choiceValue)}
-                                    name={elementName + (view?.multiple ? '[]' : '')}
-                                    id={elementId}
-                                    className={"form-check-input"}
-                                    {...attributes}
-                                    onChange={(e) => {
-                                        return validate({
-                                            value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
-                                            targetValue: e.target.value,
-                                            checked: e.target.checked
-                                        })
-                                    }}
-                                />
-                                <label
-                                    htmlFor={attributes.id}
-                                    className={"form-check-label"}
-                                >
-                                    {choiceLabel}
-                                </label>
-                            </div>
-                        )
-                    }
+                {Object.values(view.choices || []).map((choice: ChoiceType & ChoiceGroupType, index: number) => (
+                        <Fragment key={index}>
+                            {choice.choices !== undefined ?
+                                <ChoiceGroupOption
+                                    view={view}
+                                    group={choice as ChoiceGroupType}
+                                    choiceLabelTransform={choiceLabelTransform}
+                                    choiceValueTransform={choiceValueTransform}/> :
+                                <ChoiceOption
+                                    view={view}
+                                    choice={choice as ChoiceType}
+                                    choiceLabelTransform={choiceLabelTransform}
+                                    choiceValueTransform={choiceValueTransform}/>}
+                        </Fragment>
+                    )
                 )}
             </div>
         );
