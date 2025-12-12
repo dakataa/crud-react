@@ -24,7 +24,6 @@ export type FormViewType = {
     errors?: FormViewErrorType[];
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
-    choice_attr?: { [key: string]: { [key: string]: string } } | Function
     preferred_choices?: { [key: string]: any };
     attr?: { [key: string]: string } | Function;
     data?: any;

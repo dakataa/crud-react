@@ -67,7 +67,9 @@ export * from "src/component/form/FormGroup.tsx"
 export * from "src/component/form/FormFieldError.tsx"
 export * from "src/component/form/FormLabel.tsx"
 export * from "src/component/form/FormHelp.tsx"
-export * from "src/component/form/Choice.tsx"
+export {
+    default as Choice, ChoiceOption, ChoiceGroupOption, SelectOption, SelectGroupOption
+} from "src/component/form/Choice.tsx"
 export {
     default as Collection, CollectionItem, CollectionList, UseCollection, UseCollectionItem
 } from "src/component/form/Collection.tsx"
@@ -75,7 +77,7 @@ export type {CollectionContextType, CollectionItemContextType} from "src/compone
 
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";
-export type * from "@src/type/FormViewType.tsx";
+export type {FormViewType, FormViewErrorType, ChoiceType, ChoiceGroupType, ChoiceUnionType} from "@src/type/FormViewType.tsx";
 export {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 export {default as BaseLayout} from "@src/layout/default/Base.tsx";

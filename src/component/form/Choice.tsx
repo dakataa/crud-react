@@ -14,7 +14,7 @@ const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }
     return (
         <option
             value={choice.value || choice.label}
-            {...(view.choice_attr && (view.choice_attr instanceof Function ? view.choice_attr(choice) : view.choice_attr))}
+            {...(choice.attr && (choice.attr instanceof Function ? choice.attr(choice) : choice.attr))}
         >
             {choice.label}
         </option>
@@ -46,9 +46,9 @@ const ChoiceOption = (
     const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
     const elementId = nameToId(elementName || '', choiceValue);
 
-    const attributes = {
+    const choiceAttributes = {
         id: elementId,
-        ...(view?.choice_attr && (view?.choice_attr instanceof Function ? view?.choice_attr(choice) : view?.choice_attr))
+        ...(choice?.attr && (choice?.attr instanceof Function ? choice?.attr(choice) : choice?.attr))
     }
 
     return (
@@ -60,9 +60,9 @@ const ChoiceOption = (
                 name={elementName + (view?.multiple ? '[]' : '')}
                 id={elementId}
                 className={"form-check-input"}
-                {...attributes}
+                {...choiceAttributes}
                 // onChange={(e) => {
-                //     return validate({
+                //     return validate({`
                 //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
                 //         targetValue: e.target.value,
                 //         checked: e.target.checked
@@ -70,7 +70,7 @@ const ChoiceOption = (
                 // }}
             />
             <label
-                htmlFor={attributes.id}
+                htmlFor={choiceAttributes.id}
                 className={"form-check-label"}
             >
                 {choiceLabel}
@@ -125,6 +125,14 @@ const Choice = ({
     if (view?.expanded) {
         return (
             <div className={[...(isInvalid ? ['is-invalid'] : [])].join(' ')}>
+                {typeof view.placeholder === 'string' && (
+                    <>
+                        <ChoiceOption
+                            view={view}
+                            choice={{label: view.placeholder, value: null}}
+                        />
+                    </>
+                )}
                 {Object.values(view.choices || []).map((choice: ChoiceType & ChoiceGroupType, index: number) => (
                         <Fragment key={index}>
                             {choice.choices !== undefined ?
@@ -170,4 +178,4 @@ const Choice = ({
     }
 }
 
-export default Choice;
+export {Choice as default, ChoiceOption, ChoiceGroupOption, SelectOption, SelectGroupOption};

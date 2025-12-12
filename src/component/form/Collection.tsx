@@ -6,6 +6,7 @@ import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {FormViewProvider, UseFormView, UseParentFormView} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 import {nameToId} from "@src/component/form/Form.tsx";
+import FormGroup from "@src/component/form/FormGroup.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -183,7 +184,7 @@ const CollectionItem = ({view, index, isPrototype}: { view: FormViewType, index:
                     view={[...view.block_prefixes || [], parentView.name + ".item"]}
                 >
                     <div className={"mb-3"}>
-                        <FormFieldViewLoader/>
+                        <FormGroup view={view}/>
                         {isPrototype && (
                             <Link
                                 to={"#"}
