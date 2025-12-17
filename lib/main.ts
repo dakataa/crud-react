@@ -7,6 +7,7 @@ export {
     default as CrudLoader, CurrentActionProvider, UseCurrentAction, UseCurrentActionCollection
 } from "@src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "@src/component/crud/Modify.tsx";
+export type {ModifyType} from "@src/type/ModifyType.tsx";
 export {default as List} from "@src/component/crud/List.tsx";
 export {default as GridView} from "@src/component/crud/GridView.tsx";
 export {default as ListView} from "@src/component/crud/ListView.tsx";
@@ -38,12 +39,11 @@ export {default as TemplateParentBlock} from "@src/component/templating/Template
 // Router
 export {Router, Route, Outlet} from "@src/component/router/Route.tsx";
 
-
 export {default as Modal} from "@src/component/Modal.tsx";
 export type {ModalType} from "@src/component/Modal.tsx";
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
 export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.tsx";
-export {UseAlert, AlertProvider} from "@src/context/AlertContext.tsx";
+export {UseAlert, AlertProvider, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
 export * from "@src/context/ActionContext.tsx";
 export type {AlertConfigType, Animation, Result} from "@src/context/AlertContext.tsx";
 export type {OnClickAction} from "@src/type/OnClickAction.tsx";

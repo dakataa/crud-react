@@ -77,7 +77,7 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal}: {
                         onSuccess={(data: ModifyType) => new Promise((resolve, reject) => {
                             closeModal();
 
-                            const event = new CustomEvent('success', {detail: data})
+                            const event = new CustomEvent('success', {detail: data, cancelable: true})
                             onSuccess && onSuccess(event, data);
 
                             if (event.defaultPrevented) {
