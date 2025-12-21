@@ -43,7 +43,7 @@ export {default as Modal} from "@src/component/Modal.tsx";
 export type {ModalType} from "@src/component/Modal.tsx";
 export {ModalProvider, UseModal} from "@src/context/ModalContext.tsx";
 export type {ModalActionType, ModalContextType} from "@src/context/ModalContext.tsx";
-export {UseAlert, AlertProvider, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
+export {UseAlert, AlertProvider, WithAlertProvider, Icon as AlertIcon} from "@src/context/AlertContext.tsx";
 export * from "@src/context/ActionContext.tsx";
 export type {AlertConfigType, Animation, Result} from "@src/context/AlertContext.tsx";
 export type {OnClickAction} from "@src/type/OnClickAction.tsx";

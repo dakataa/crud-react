@@ -140,7 +140,7 @@ export function UseActions() {
             }
 
             return value ?? '';
-        });
+        }).replace(new RegExp('\/$', 'g'), '');
 
         const url = new URL(path, location.origin);
         const querySearch = convertObjectToURLSearchParams(query || {});

@@ -1,10 +1,11 @@
-import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, useEffect, useRef, useState} from "react";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
 import Button from "@src/component/Button.tsx";
 import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
 import {Extend} from "@src/component/templating/Template.tsx";
 
 import '@src/assets/style/alert.scss';
+import {DataProvider} from "@src/context/GetData.tsx";
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]
@@ -122,6 +123,10 @@ export function AlertProvider({children}: PropsWithChildren) {
                     label: 'Confirm',
                 }
             }
+        } else {
+            setTimeout(() => {
+                modalRef.current?.close();
+            }, alertConfig.timeout || 1000);
         }
 
         if (modalRef.current?.isOpen()) {
@@ -186,4 +191,15 @@ export function AlertProvider({children}: PropsWithChildren) {
             {children}
         </AlertContext.Provider>
     );
+}
+
+export function WithAlertProvider<P extends object>(Component: ComponentType<P>): FC<P> {
+
+    return (props: P) => {
+        return (
+            <AlertProvider>
+                <Component {...props}/>
+            </AlertProvider>
+        )
+    };
 }
