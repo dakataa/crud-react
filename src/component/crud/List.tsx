@@ -31,7 +31,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
     embedded?: boolean
     title?: string | ReactElement | false,
     className?: string,
-    onAction?: (action: OnClickAction, event?: React.MouseEvent) => boolean | null | void
+    onAction?: (action: OnClickAction, event?: React.MouseEvent) => boolean | null | void,
 }) => {
     const {action, setAction} = UseCurrentAction();
     const {generateActionLink, location, navigate} = UseActions()

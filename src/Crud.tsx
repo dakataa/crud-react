@@ -3,11 +3,11 @@ import Requester, {Config as RequesterConfig} from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
 import CrudProvider from "@src/context/CrudProvider.tsx";
-import {Config, Templates} from "@src/context/ConfigContext.tsx";
+import {Config, Environment, Templates} from "@src/context/ConfigContext.tsx";
 import {ActionProvider} from "@src/context/ActionContext.tsx";
 import {CurrentActionCollectionProvider} from "@src/component/crud/CrudLoader.tsx";
 
-let requester: Requester;
+let requester: Requester | null = null;
 const globalConfig: { templates?: Templates } = {};
 
 export const CRUD_NAMESPACE = 'dakataa_crud';
@@ -15,6 +15,9 @@ export const CRUD_NAMESPACE = 'dakataa_crud';
 const CrudConfiguration = ({connection, templates}: { connection: RequesterConfig, templates?: Templates }) => {
     Requester.namespace[CRUD_NAMESPACE] = connection;
     globalConfig.templates = templates;
+
+    // Reset
+    requester = null;
 }
 
 const CrudRequester = (): Requester => {
@@ -37,7 +40,7 @@ const Crud = (
         <ActionProvider>
             <CurrentActionCollectionProvider>
                 <ErrorBoundary fallback={errorFallback ?? <Error/>}>
-                    <CrudProvider config={{...(config || {}), templates}}>
+                    <CrudProvider config={{...(config || {env: Environment.DEV}), templates}}>
                         {children}
                     </CrudProvider>
                 </ErrorBoundary>

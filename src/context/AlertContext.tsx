@@ -84,6 +84,11 @@ export function AlertProvider({children}: PropsWithChildren) {
 
     const animationFiles = import.meta.glob('@src/assets/images/alert/*');
 
+    const reset = () => {
+        setAnimationData(null);
+        setAlert(undefined);
+    }
+
     const open = (config?: AlertConfigOptionalType): void => {
         let alertConfig = {
             title: 'Are you confirm?',
@@ -125,7 +130,7 @@ export function AlertProvider({children}: PropsWithChildren) {
             }
         } else {
             setTimeout(() => {
-                modalRef.current?.close();
+                modalRef.current?.close().finally(reset);
             }, alertConfig.timeout || 1000);
         }
 
@@ -147,10 +152,7 @@ export function AlertProvider({children}: PropsWithChildren) {
         };
 
         alert?.onResult && alert.onResult(result);
-        modalRef.current?.close().then(() => {
-            setAnimationData(null);
-            setAlert(undefined);
-        });
+        modalRef.current?.close().then(reset);
     };
 
     return (

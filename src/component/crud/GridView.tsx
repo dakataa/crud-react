@@ -1,5 +1,5 @@
 import {ColumnType} from "@src/type/ColumnType";
-import React, {forwardRef, ReactElement} from "react";
+import React, {forwardRef, HTMLAttributes, ReactElement, TableHTMLAttributes} from "react";
 import Link from "@src/component/Link.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import ItemValue from "@src/component/crud/ItemValue.tsx";
@@ -9,6 +9,7 @@ import {ListItemProvider} from "@src/context/ListItemContext.tsx";
 import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseConfig} from "@src/context/ConfigContext.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string
@@ -26,17 +27,30 @@ export type GridViewType = {
             }
         }
     },
+    tableOptions?: TableHTMLAttributes<HTMLTableElement>,
     routeParams?: { [key: string]: any },
     namespace?: string
 };
 
-const GridView = forwardRef(({routeParams, namespace}: GridViewType, ref) => {
+const GridView = forwardRef(({routeParams, namespace, tableOptions, ...HTMLAttributes}: GridViewType & HTMLAttributes<HTMLDivElement>, ref) => {
     const {columns, primaryColumn, objectActions, columnsTotal, items, data, onClick} = UseList();
     const {action: currentAction} = UseCurrentAction();
+    const {options} = UseConfig();
+    const GridViewOptions = {
+        className: "table-responsive",
+        ...HTMLAttributes,
+        ...(options?.GridView || {}),
+    };
+
+    tableOptions = {
+        className: "table table-striped table-hover",
+        ...(options?.HTMLTableElement || {}),
+        ...(tableOptions || {})
+    };
 
     return (
-        <div className={"table-responsive"}>
-            <table className="table table-striped table-hover table-bordered">
+        <div {...GridViewOptions}>
+            <table {...tableOptions}>
                 <thead>
                 <tr>
                     {columns.map((column, index) => (
