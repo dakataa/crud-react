@@ -20,6 +20,7 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
         case FormViewTypeEnum.Input:
         case FormViewTypeEnum.Money:
         case FormViewTypeEnum.Text:
+        case FormViewTypeEnum.Tel:
         case FormViewTypeEnum.Checkbox:
         case FormViewTypeEnum.Radio:
         case FormViewTypeEnum.Integer:

@@ -1,19 +1,25 @@
-import {FormViewType} from "@src/type/FormViewType";
 import React from "react";
+import {UseFormView} from "@src/component/crud/form/Form.tsx";
 
-export const FormHelp = ({
-                              view,
-                              className
-                          }: {
-    view: FormViewType
-    className?: string
-}): React.JSX.Element => {
+export const FormHelp = (
+    {
+        name
+    }: {
+        name?: string
+    }): React.JSX.Element => {
+
+    const {form} = UseFormView();
+    const view = name ? form.children?.[name] : form;
+
+    if (!view) {
+        throw new Error('Missing Form View for FormField' + (name ? ': ' + name : ''));
+    }
 
     return (
         <>
             {view.help && (
                 <div
-                    className={'form-help'}
+                    className={"form-text"}
                     {...(view.help_attr && (view.help_attr instanceof Function ? view.help_attr() : view.help_attr))}
                 >
                     {view.help}

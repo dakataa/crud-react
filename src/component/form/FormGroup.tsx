@@ -34,7 +34,7 @@ export const FormGroup = ({
                     <FormField size={size}/>
                     {isCheckbox && (<FormLabel view={view}/>)}
                     <FormError className={"invalid-feedback"}/>
-                    <FormHelp view={view}/>
+                    <FormHelp/>
                 </div>
             )}
         </>

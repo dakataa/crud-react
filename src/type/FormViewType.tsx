@@ -39,6 +39,7 @@ export enum FormViewTypeEnum {
     Hidden = 'hidden',
     Number = 'number',
     Text = 'text',
+    Tel = 'tel',
     Checkbox = 'checkbox',
     Radio = 'radio',
     Integer = 'integer',

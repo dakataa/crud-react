@@ -31,7 +31,6 @@ const FormGroup = (
         name?: string,
         optional?: boolean;
     }) => {
-    const id = useId();
     const {form} = UseFormView();
     const view = name ? form?.children?.[name] : form;
 

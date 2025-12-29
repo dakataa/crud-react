@@ -78,8 +78,8 @@ const Input = ({
                 ...(errorMessages.length ? ['is-invalid'] : [])
             ].filter(v => v).join(' ')}
             defaultChecked={view?.checked}
+            placeholder={settings?.placeholder || view?.placeholder ||  undefined}
             {...attr}
-            placeholder={settings?.placeholder || view?.placeholder || undefined}
             {...(attr.inputmode === "decimal" && {step: "any"})}
         />
     </>
