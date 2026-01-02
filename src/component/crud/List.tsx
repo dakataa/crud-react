@@ -180,8 +180,8 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                             </Block>
                             {results?.form?.filter?.view && (
                                 <div className={"btn-group btn-group-sm"}>
-                                    <Dropdown className={"btn-group btn-group-sm"}>
-                                        <DropdownButton className={"btn-outline-dark"}>
+                                    <Dropdown>
+                                        <DropdownButton className={"btn btn-sm dropdown-toggle btn-outline-dark"}>
                                             <T>Filter</T>
                                         </DropdownButton>
                                         <DropdownContent>

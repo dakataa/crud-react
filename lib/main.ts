@@ -1,6 +1,7 @@
 export {default as Crud, CrudConfiguration, CrudRequester} from "@src/Crud.tsx";
 export {Environment, ConfigProvider} from "@src/context/ConfigContext.tsx";
-export type {Config, ConfigLink, UseConfig} from "@src/context/ConfigContext.tsx";
+export type {Config, ConfigLink} from "@src/context/ConfigContext.tsx";
+export {UseConfig} from "@src/context/ConfigContext.tsx";
 
 export {default as CrudProvider} from "@src/context/CrudProvider.tsx";
 export {

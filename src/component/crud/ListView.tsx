@@ -1,4 +1,4 @@
-import React, {forwardRef, ReactElement} from "react";
+import React, {ReactElement} from "react";
 import {GridViewType} from "@src/component/crud/GridView.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";

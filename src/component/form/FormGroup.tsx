@@ -16,7 +16,6 @@ export const FormGroup = ({
     size?: 'lg' | 'sm'
     type?: string
 }) => {
-    const id = useId();
     const isCheckbox = [FormViewTypeEnum.Checkbox, FormViewTypeEnum.Radio].includes(view.type as FormViewTypeEnum);
 
     view.type = type || view.type;

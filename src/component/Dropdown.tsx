@@ -35,7 +35,7 @@ const Dropdown = ({ className, children, icon}: PropsWithChildren<{
 
     return (
         <div className={[...(className || '').split(' '), 'dropdown'].filter((v, i, self) => self.indexOf(v) === i).join(' ')}>
-            <Button ref={ref} data-bs-toggle={"dropdown"} {...buttonProps} className={[...(buttonProps.className || '').split(' '), 'btn', 'dropdown-toggle'].filter((v, i, self) => self.indexOf(v) === i).join(' ')}>
+            <Button ref={ref} data-bs-toggle={"dropdown"} {...buttonProps} className={[...(buttonProps.className || '').split(' ')].filter((v, i, self) => self.indexOf(v) === i).join(' ')}>
                 {buttonProps.children ? buttonProps.children : buttonElements}
             </Button>
             {contentElement || (
