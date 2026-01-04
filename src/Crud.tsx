@@ -1,48 +1,57 @@
-import React, {Suspense} from 'react';
-import Requester from '@dakataa/requester';
+import React, {PropsWithChildren, ReactElement} from 'react';
+import Requester, {Config as RequesterConfig} from '@dakataa/requester';
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import Error from "@src/layout/default/Error.tsx";
-import CrudLoader from "@src/CrudLoader.tsx";
-import CrudContext from "@src/CrudContext.tsx";
-import Exception from "@src/component/error/Exception.tsx";
+import CrudProvider from "@src/context/CrudProvider.tsx";
+import {Config, Environment, Templates} from "@src/context/ConfigContext.tsx";
+import {ActionProvider} from "@src/context/ActionContext.tsx";
+import {CurrentActionCollectionProvider} from "@src/component/crud/CrudLoader.tsx";
 
-let requester: Requester;
+let requester: Requester | null = null;
+const globalConfig: { templates?: Templates } = {};
+
 export const CRUD_NAMESPACE = 'dakataa_crud';
 
-const CrudConfiguration = (apiBasePath: string) => {
-    Requester.namespace[CRUD_NAMESPACE] = {
-        baseURL: apiBasePath,
-        headers: {
-            Accept: 'application/json'
-        }
-    };
+const CrudConfiguration = ({connection, templates}: { connection: RequesterConfig, templates?: Templates }) => {
+    Requester.namespace[CRUD_NAMESPACE] = connection;
+    globalConfig.templates = templates;
+
+    // Reset
+    requester = null;
 }
 
 const CrudRequester = (): Requester => {
-    if(!requester) {
-        requester = new Requester({}, CRUD_NAMESPACE);
+    if (!requester) {
+        requester = Requester.instance({namespace: CRUD_NAMESPACE});
     }
+
     return requester;
 }
 
-const Crud = () => {
+const Crud = (
+    {children, config, errorFallback}: {
+        errorFallback?: ReactElement,
+        config?: Config
+    } & PropsWithChildren) => {
 
-    if (!Requester.namespace[CRUD_NAMESPACE])
-        throw new Exception(500, 'Invalid Configuration.');
+    const templates = Object.assign(globalConfig.templates ?? {}, config?.templates ?? {});
 
     return (
-        <CrudContext>
-            <ErrorBoundary fallback={<Error/>}>
-                <Suspense fallback={<>Loading</>}>
-                    <CrudLoader/>
-                </Suspense>
-            </ErrorBoundary>
-        </CrudContext>
+        <ActionProvider>
+            <CurrentActionCollectionProvider>
+                <ErrorBoundary fallback={errorFallback ?? <Error/>}>
+                    <CrudProvider config={{...(config || {env: Environment.DEV}), templates}}>
+                        {children}
+                    </CrudProvider>
+                </ErrorBoundary>
+            </CurrentActionCollectionProvider>
+        </ActionProvider>
     );
-}
+};
 
 export {
-    Crud as default,
     CrudConfiguration,
     CrudRequester
 };
+
+export default Crud;

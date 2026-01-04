@@ -1,8 +1,8 @@
 export type FormViewType = {
-    id: string;
-    name: string;
-    full_name: string
-    label: string | undefined;
+    id?: string;
+    name?: string;
+    full_name?: string
+    label?: string | undefined;
     label_attr?: { [key: string]: string } | Function;
     label_html?: boolean;
     placeholder?: string | undefined;
@@ -18,20 +18,61 @@ export type FormViewType = {
     multiple?: boolean;
     checked?: boolean;
     priority?: number;
-    type: 'form' | string;
+    type: FormViewTypeEnum | string;
+    block_prefixes?: [FormViewTypeEnum | string];
     valid?: boolean;
-    errors?: string[];
+    errors?: FormViewErrorType[];
     children?: { [key: string]: FormViewType };
-    choices?: ChoiceType[];
-    choice_attr?: {[key: string]: {[key: string]: string}} | Function
+    choices?: ChoiceUnionType;
     preferred_choices?: { [key: string]: any };
     attr?: { [key: string]: string } | Function;
     data?: any;
     rendered?: boolean;
+    prototype?: FormViewType;
+    prototype_name?: string;
+}
+
+export enum FormViewTypeEnum {
+    Form = 'form',
+    Input = 'input',
+    Money = 'money',
+    Hidden = 'hidden',
+    Number = 'number',
+    Text = 'text',
+    Tel = 'tel',
+    Checkbox = 'checkbox',
+    Radio = 'radio',
+    Integer = 'integer',
+    Password = 'password',
+    Email = 'email',
+    Choice = 'choice',
+    Enum = 'enum',
+    Entity = 'entity',
+    Collection = 'collection',
+    Repeated = 'repeated',
+    Datetime = 'datetime',
+    Date = 'date',
+    Time = 'time',
+    Birthday = 'birthday',
+}
+
+export type FormViewErrorType = {
+    message: string;
+    origin?: string | null;
+    messageParameters?: { [key: string]: string };
+    messageTemplate?: string;
 }
 
 export type ChoiceType = {
     value: string | number | null | Function;
-    label: string | (() => string);
-    attr?: {[key: string]: {[key: string]: string}} | Function;
+    label: string | ((v: ChoiceType) => string);
+    attr?: { [key: string]: { [key: string]: string } } | Function;
+    data?: { [key: string]: any }
 }
+
+export type ChoiceGroupType = {
+    label: string;
+    choices: ChoiceType[];
+}
+
+export type ChoiceUnionType = ChoiceType[] | ChoiceGroupType[];

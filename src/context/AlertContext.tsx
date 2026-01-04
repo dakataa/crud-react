@@ -1,9 +1,11 @@
-import '@src/assets/style/alert.scss';
-import React, {PropsWithChildren, useContext, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, useEffect, useRef, useState} from "react";
 import Modal, {ModalRefType} from "@src/component/Modal.tsx";
-import TemplateExtend from "@src/component/TemplateExtend.tsx";
 import Button from "@src/component/Button.tsx";
-import {default as LottieAnimation} from "@src/component/Animation.tsx";
+import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
+import {Extend} from "@src/component/templating/Template.tsx";
+
+import '@src/assets/style/alert.scss';
+import {DataProvider} from "@src/context/GetData.tsx";
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]
@@ -69,7 +71,7 @@ export function UseAlert() {
     return context;
 }
 
-export function AlertProvider(props: PropsWithChildren) {
+export function AlertProvider({children}: PropsWithChildren) {
     const [alert, setAlert] = useState<AlertConfigType>();
 
     const updates = useRef(0);
@@ -82,10 +84,15 @@ export function AlertProvider(props: PropsWithChildren) {
 
     const animationFiles = import.meta.glob('@src/assets/images/alert/*');
 
+    const reset = () => {
+        setAnimationData(null);
+        setAlert(undefined);
+    }
+
     const open = (config?: AlertConfigOptionalType): void => {
         let alertConfig = {
             title: 'Are you confirm?',
-            icon: Icon.success,
+            icon: Icon.info,
             animation: Animation.scale,
             size: Size.default,
             allowClose: false,
@@ -104,7 +111,7 @@ export function AlertProvider(props: PropsWithChildren) {
         if (Object.hasOwn(iconMap, alertConfig.icon)) {
             const iconPath = iconMap[alertConfig.icon as Icon];
             const iconFilePath = Object.keys(animationFiles).filter(k => k.endsWith(iconPath)).pop()
-            if(iconFilePath) {
+            if (iconFilePath) {
                 animationFiles[iconFilePath]().then((module: any) => {
                     setAnimationData(module.default)
                 });
@@ -121,6 +128,10 @@ export function AlertProvider(props: PropsWithChildren) {
                     label: 'Confirm',
                 }
             }
+        } else {
+            setTimeout(() => {
+                modalRef.current?.close().finally(reset);
+            }, alertConfig.timeout || 1000);
         }
 
         if (modalRef.current?.isOpen()) {
@@ -141,23 +152,26 @@ export function AlertProvider(props: PropsWithChildren) {
         };
 
         alert?.onResult && alert.onResult(result);
-        modalRef.current?.close().then(() => {
-            setAnimationData(null);
-            setAlert(undefined);
-        });
+        modalRef.current?.close().then(reset);
     };
 
     return (
         <AlertContext.Provider value={{open}}>
-            {props.children}
             {alert && (
-                <Modal size={alert.size as any} className={"modal-alert"} animation={alert.animation} open={true} ref={modalRef}>
-                    <TemplateExtend name={"header"}/>
-                    <TemplateExtend name={"footer"}/>
-                    <TemplateExtend name={"content"}>
+                <Modal
+                    key={updates.current}
+                    size={alert.size as any}
+                    className={"modal-alert"}
+                    animation={alert.animation}
+                    open={true}
+                    ref={modalRef}
+                >
+                    <Extend name={"header"}/>
+                    <Extend name={"footer"}/>
+                    <Extend name={"content"}>
                         <div className={"d-flex flex-column align-items-center"}>
                             {animationData !== null && (
-                                <LottieAnimation className={"modal-alert-icon"} animationData={animationData} />
+                                <LottieAnimation className={"modal-alert-icon"} animationData={animationData}/>
                             )}
                             <h3 className={"modal-alert-title"}>{alert.title}</h3>
                             {!!alert.text?.length && (
@@ -173,9 +187,21 @@ export function AlertProvider(props: PropsWithChildren) {
                                 </div>
                             )}
                         </div>
-                    </TemplateExtend>
+                    </Extend>
                 </Modal>
             )}
+            {children}
         </AlertContext.Provider>
     );
+}
+
+export function WithAlertProvider<P extends object>(Component: ComponentType<P>): FC<P> {
+
+    return (props: P) => {
+        return (
+            <AlertProvider>
+                <Component {...props}/>
+            </AlertProvider>
+        )
+    };
 }

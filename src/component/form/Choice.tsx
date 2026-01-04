@@ -1,13 +1,94 @@
-import React, {createRef, useEffect, useRef} from "react";
-import {nameToId, useForm} from "./Form";
+import React, {Fragment, useEffect} from "react";
+import {nameToId, UseForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
-import {ChoiceType, FormViewType} from "@src/type/FormViewType";
+import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
 
 export type ChoiceProps = {
     view: FormViewType,
     choiceValueTransform?: Function,
     choiceLabelTransform?: Function
+    prototype?: string
 } & FormFieldProps;
+
+const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }) => {
+    return (
+        <option
+            value={choice.value || choice.label}
+            {...(choice.attr && (choice.attr instanceof Function ? choice.attr(choice) : choice.attr))}
+        >
+            {choice.label}
+        </option>
+    )
+}
+
+const SelectGroupOption = ({view, group}: { view: FormViewType, group: ChoiceGroupType }) => {
+    return (
+        <optgroup label={group.label}>
+            {Object.values(group.choices).map((c, index) => (
+                <SelectOption key={index} view={view} choice={c}/>
+            ))}
+        </optgroup>
+    )
+}
+
+const ChoiceOption = (
+    {
+        view,
+        choice,
+        choiceValueTransform,
+        choiceLabelTransform,
+    }: {
+        view: FormViewType,
+        choice: ChoiceType,
+    } & ChoiceProps) => {
+    const elementName = view.full_name;
+    const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
+    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
+    const elementId = nameToId(elementName || '', choiceValue);
+
+    const choiceAttributes = {
+        id: elementId,
+        ...(choice?.attr && (choice?.attr instanceof Function ? choice?.attr(choice) : choice?.attr))
+    }
+
+    return (
+        <div className={"form-check"}>
+            <input
+                defaultValue={choiceValue}
+                type={view?.multiple ? 'checkbox' : 'radio'}
+                defaultChecked={view?.data?.includes(choiceValue)}
+                name={elementName + (view?.multiple ? '[]' : '')}
+                id={elementId}
+                className={"form-check-input"}
+                {...choiceAttributes}
+                // onChange={(e) => {
+                //     return validate({`
+                //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
+                //         targetValue: e.target.value,
+                //         checked: e.target.checked
+                //     })
+                // }}
+            />
+            <label
+                htmlFor={choiceAttributes.id}
+                className={"form-check-label"}
+            >
+                {choiceLabel}
+            </label>
+        </div>
+    )
+}
+
+const ChoiceGroupOption = ({view, group, ...props}: { view: FormViewType, group: ChoiceGroupType } & ChoiceProps) => {
+    return (
+        <div className={"form-group"}>
+            <label className={"form-label"}>{group.label}</label>
+            {Object.values(group.choices).map((c, index) => (
+                <ChoiceOption key={index} view={view} choice={c} {...props}/>
+            ))}
+        </div>
+    )
+}
 
 const Choice = ({
                     view,
@@ -16,14 +97,13 @@ const Choice = ({
                     onChange,
                     choiceValueTransform,
                     choiceLabelTransform,
-                    ...props
                 }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
 
-    const [[formState, dispatch], formRef] = useForm();
-    const fieldRef = useRef<HTMLSelectElement | HTMLInputElement | null>(null);
-    const errorMessages = formState?.errors[view.full_name] || [];
+    const elementName = view.full_name;
+    const [[formState, dispatch], formRef] = UseForm();
+    const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
 
@@ -43,77 +123,59 @@ const Choice = ({
     }
 
     if (view?.expanded) {
-        return <>
-            {Object.values(view.choices || []).map((choice: ChoiceType, choiceIndex: number) => {
-                    const elementId = nameToId(view.full_name, choiceIndex);
-                    const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
-                    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
-                    const attributes = {
-                        id: elementId,
-                        ...(view?.choice_attr && (view?.choice_attr instanceof Function ? view?.choice_attr(choice) : view?.choice_attr))
-                    }
-                    return <div
-                        key={choiceIndex}
-                        className={"form-check"}
-                    >
-                        <input
-                            key={key}
-                            ref={fieldRef}
-                            defaultValue={choiceValue}
-                            type={view?.multiple ? 'checkbox' : 'radio'}
-                            defaultChecked={view?.data?.includes(choiceValue)}
-                            name={view?.full_name + '[]'}
-                            id={elementId}
-                            className={"form-check-input"}
-                            {...attributes}
-                            onChange={(e) => {
-                                return validate({
-                                    value: (view?.multiple ? formRef?.current?.getFormData().getAll(view?.full_name) : formRef?.current?.getFormData().get(view?.full_name)) || e.target.value,
-                                    targetValue: e.target.value,
-                                    checked: e.target.checked
-                                })
-                            }}
+        return (
+            <div className={[...(isInvalid ? ['is-invalid'] : [])].join(' ')}>
+                {typeof view.placeholder === 'string' && (
+                    <>
+                        <ChoiceOption
+                            view={view}
+                            choice={{label: view.placeholder, value: null}}
                         />
-                        <label
-                            htmlFor={attributes.id}
-                            className={"form-check-label"}
-                        >
-                            {choiceLabel}
-                        </label>
-                    </div>
-                }
-            )}
-        </>
+                    </>
+                )}
+                {Object.values(view.choices || []).map((choice: ChoiceType & ChoiceGroupType, index: number) => (
+                        <Fragment key={index}>
+                            {choice.choices !== undefined ?
+                                <ChoiceGroupOption
+                                    view={view}
+                                    group={choice as ChoiceGroupType}
+                                    choiceLabelTransform={choiceLabelTransform}
+                                    choiceValueTransform={choiceValueTransform}/> :
+                                <ChoiceOption
+                                    view={view}
+                                    choice={choice as ChoiceType}
+                                    choiceLabelTransform={choiceLabelTransform}
+                                    choiceValueTransform={choiceValueTransform}/>}
+                        </Fragment>
+                    )
+                )}
+            </div>
+        );
     } else {
         return (
-            <>
-                <select
-                    ref={fieldRef}
-                    key={key}
-                    name={view.full_name}
-                    multiple={view.multiple}
-                    aria-invalid={isInvalid}
-                    onChange={(e) => validate({
-                        value: (view.multiple ? formRef?.current?.getFormData().getAll(view.full_name) : formRef?.current?.getFormData().get(view.full_name)) || e.target.value
-                    })}
-                    className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
-                    {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
-                    defaultValue={view.data}
-                >
-                    {view.placeholder && <option value={''}>{view.placeholder}</option>}
-                    {Object.values(view.choices || []).map((choice: any, index: number) =>
-                        <option
-                            key={index}
-                            value={choice.value || choice.label}
-                            {...(view.choice_attr && (view.choice_attr instanceof Function ? view.choice_attr(choice) : view.choice_attr))}
-                        >
-                            {choice.label}
-                        </option>
-                    )}
-                </select>
-            </>
+            <select
+                key={key}
+                name={elementName}
+                multiple={view.multiple}
+                aria-invalid={isInvalid}
+                onChange={(e) => validate({
+                    value: (view.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value
+                })}
+                className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
+                {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
+                defaultValue={view.data}
+            >
+                {view.placeholder && <option value={""}>{view.placeholder}</option>}
+                {Object.values(view.choices || []).map((choice: any, index: number) => (
+                    <Fragment key={index}>
+                        {choice.choices !== undefined ?
+                            <SelectGroupOption view={view} group={choice as ChoiceGroupType}/> :
+                            <SelectOption view={view} choice={choice as ChoiceType}/>}
+                    </Fragment>
+                ))}
+            </select>
         )
     }
 }
 
-export default Choice;
+export {Choice as default, ChoiceOption, ChoiceGroupOption, SelectOption, SelectGroupOption};

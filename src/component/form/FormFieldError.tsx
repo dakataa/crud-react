@@ -1,16 +1,22 @@
-import {FormError, useForm} from "@src/component/form/Form";
+import {UseForm} from "@src/component/form/Form";
 import React from "react";
+import {FormViewErrorType} from "@src/type/FormViewType.tsx";
 
-export const FormFieldError = ({name, className}: { name: string, className?: string }) => {
-    const [[form]] = useForm();
-    const errorMessages = form?.errors[name] || [];
+export const FormFieldError = ({name, className}: { name: string | string[], className?: string }) => {
+    const [[form]] = UseForm() || {};
 
-    if (!errorMessages.length)
-        return <></>;
+    name = name instanceof Array ? name : [name];
+
+    const errorMessages = [].concat(...name.map((name) => form?.errors[name] || []));
+    if (!errorMessages.length) {
+        return null;
+    }
 
     return (
         <div className={className}>
-            {errorMessages.map((error: FormError, i: number) => <span key={i}>{error.message}</span>)}
+            <ul className={"mb-0"}>
+                {errorMessages.map((error: FormViewErrorType, i: number) => <li key={i}>{error.message}</li>)}
+            </ul>
         </div>
     )
 }

@@ -4,7 +4,7 @@ export const maskEmail = (email: string) => {
 }
 
 export const capitalize = (value: string): string => {
-    return value.toLowerCase().replace(new RegExp('^.{1,1}'), (v) => v.toUpperCase());
+    return value.replace(new RegExp('^.{1,1}'), (v) => v.toUpperCase());
 }
 
 export const titlize = (value: string): string => {

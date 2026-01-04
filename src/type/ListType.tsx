@@ -12,7 +12,8 @@ export type ListType = {
         data: {
             items: [{ [key: string]: any }],
             meta: ListMetaType
-        }
+        },
+        acl: { [key: string]: [number|string] }
     },
     form: { [key: string]: FormType, filter: FormType, batch: FormType },
     sort: { [key: string]: 'ASC' | 'DESC' | null },

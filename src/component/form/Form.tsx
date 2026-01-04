@@ -1,16 +1,12 @@
 import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useReducer, useRef} from "react";
 import {Constraint} from "@src/component/form/constraint/Contraint";
+import {FormViewErrorType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
-export type FormError = {
-    message: string;
-    messageParameters?: { [key: string]: string };
-    messageTemplate?: string;
-}
+type FormContextType = [FormState, FormRef, HTMLFormElement | null];
+const FormContext: any = React.createContext<FormContextType | undefined>(undefined);
 
-const FormContext: any = React.createContext<any>(null);
-
-export function useForm(): any {
-    const context = React.useContext(FormContext);
+export function UseForm(): any {
+    const context = React.useContext<FormContextType | undefined>(FormContext);
     if (!context) {
         throw new Error("useForm must be used in Form");
     }
@@ -26,34 +22,38 @@ type FormStatePayload = {
 type FormState = {
     response?: any;
     constraints?: any;
-    errors?: { [key: string]: FormError[] };
+    errors?: { [key: string]: FormViewErrorType[] };
+    success?: boolean;
 }
 
 type FormProps = {
     children?: any,
-    onComplete?: Function,
+    onComplete?: () => void,
     onError?: Function,
-    onSubmit?: Function,
-    onBeforeSubmit?: Function,
-    onReset?: Function,
+    onSubmit?: (data: FormData) => void,
+    onBeforeSubmit?: (data: FormData) => void,
+    onReset?: () => void,
     action?: string,
     method?: 'GET' | 'POST',
     className?: string,
     data?: FormData,
+    name?: string,
     id?: string
 }
 
 export type FormRef = {
     getFormData: () => FormData,
     setFormData: (data: FormData) => void,
+    setValue: (name: string, value: string | string[] | null) => void,
+    setValues: (data: { [key: string]: string }) => void,
     setErrors: Function,
+    success: () => void,
     reset: Function,
     submit: Function
 };
 
 export const nameToId = (name: string, index: number | null = null) => (
-    name
-        .replace(/[\[\]]/gi, '_')
+    name?.replace(/[\[\]]/gi, '_')
         .replace(/_+/gi, '_')
         .replace(/([a-zA-Z])(?=[A-Z])/g, '$1_')
     + (index ?? '')
@@ -76,43 +76,84 @@ export const Form = forwardRef(({
         errors: {}
     };
 
+    const setValue = (name: string, value: string | string[] | null) => {
+        const element = formElementRef.current?.elements.namedItem(name);
+        if (!element) {
+            console.warn('Cannot Set Value on missing Form Element with name: ' + name);
+            return;
+        }
+
+        if (!(element instanceof HTMLInputElement)) {
+            throw new Error('Cannot Set Value on missing Form Element with name: ' + name);
+        }
+
+        switch (element.type) {
+            case FormViewTypeEnum.Checkbox:
+            case FormViewTypeEnum.Radio: {
+                if (value !== null && !(value instanceof Array)) {
+                    value = [value];
+                }
+
+                if (value?.includes(element.value)) {
+                    element.checked = true;
+                }
+
+                break;
+            }
+            default:
+                if (value instanceof Array) {
+                    throw new Error('Invalid Value');
+                }
+
+                element.value = value || '';
+        }
+    };
+
     const handler: FormRef = {
         getFormData: () => new FormData(formElementRef.current || undefined),
         setFormData: (data: FormData) => {
             [...formElementRef.current?.elements || []].forEach((inputEl: any) => {
-                    const value: any = data.get(inputEl.name);
+                const value: any = data.get(inputEl.name);
 
-                    switch (inputEl.tagName.toLowerCase()) {
-                        case 'select': {
-                            if(inputEl.multiple) {
-                                [...(inputEl as HTMLSelectElement).options].forEach((element: HTMLOptionElement) => {
-                                    element.selected = data.getAll(inputEl.name).includes(element.value);
-                                })
-                            } else {
-                                inputEl.value = value;
-                            }
-                            break;
+                switch (inputEl.tagName.toLowerCase()) {
+                    case 'select': {
+                        if (inputEl.multiple) {
+                            [...(inputEl as HTMLSelectElement).options].forEach((element: HTMLOptionElement) => {
+                                element.selected = data.getAll(inputEl.name).includes(element.value);
+                            })
+                        } else {
+                            inputEl.value = value;
                         }
-                        default: {
-                            switch (inputEl.type) {
-                                case 'checkbox':
-                                    inputEl.checked = !!value;
-                                    break;
-                                default:
-                                    inputEl.value = value;
-                                    break;
-                            }
+                        break;
+                    }
+                    default: {
+                        switch (inputEl.type) {
+                            case 'checkbox':
+                                inputEl.checked = !!value;
+                                break;
+                            default:
+                                inputEl.value = value;
+                                break;
                         }
                     }
+                }
 
             });
         },
-        setErrors: (errors: { [key: string]: FormError[] }) => {
+        setValue,
+        setValues: (data: { [key: string]: string }) => {
+            Object.keys(data).map(k => setValue(k, data[k]));
+        },
+        setErrors: (errors: { [key: string]: FormViewErrorType[] }) => {
             const [, dispatch] = context;
             dispatch({action: 'errors', payload: errors});
         },
         reset: () => {
             formElementRef.current?.reset();
+        },
+        success: () => {
+            const [, dispatch] = context;
+            dispatch({action: 'success', payload: true});
         },
         submit: () => formElementRef.current?.requestSubmit()
     };
@@ -190,6 +231,12 @@ export const Form = forwardRef(({
                 return {
                     ...state,
                     errors: errors
+                }
+            }
+            case 'success': {
+                return {
+                    ...state,
+                    success: payload
                 }
             }
         }

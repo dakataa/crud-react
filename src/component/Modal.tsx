@@ -1,6 +1,7 @@
-import TemplateBlock from "@src/component/TemplateBlock.tsx";
 import React, {forwardRef, KeyboardEvent, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {createPortal} from "react-dom";
+import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
+import {UseModal} from "@src/context/ModalContext.tsx";
 
 export type ModalType = {
     children?: ReactNode,
@@ -24,16 +25,23 @@ export enum Animation {
     fade = 'fade'
 }
 
-const Modal = forwardRef(({
-                              children,
-                              open = false,
-                              animation = Animation.fade,
-                              backdrop = true,
-                              keyboard = true,
-                              size,
-                              onClose,
-                              className,
-                          }: ModalType, ref) => {
+const Modal = AsTemplate(forwardRef(({
+                                         children,
+                                         ...props
+                                     }: ModalType, ref) => {
+
+
+    const {closeModal, modal} = UseModal();
+    const {
+        open = true,
+        animation = Animation.fade,
+        backdrop = true,
+        keyboard = true,
+        size,
+        onClose,
+        className
+    } = {...props, ...modal?.props || {}};
+
     const [isOpen, setIsOpen] = useState<boolean>(open);
 
     useImperativeHandle(ref, () => ({
@@ -95,7 +103,8 @@ const Modal = forwardRef(({
 
     const endClosing = () => {
         setIsOpen(false);
-        onClose && onClose();
+
+        closeModal?.();
     }
     const startClosing = (): Promise<void> => {
         return new Promise((resolve: Function, reject: Function) => {
@@ -116,7 +125,6 @@ const Modal = forwardRef(({
                 }, animation ? 50 : 0);
 
                 modalRef.current?.addEventListener('animationstart', () => {
-                    console.log('timeout');
                     clearTimeout(closeTimeout);
                     modalRef.current?.removeEventListener('animationend', closeAndResolve);
                     modalRef.current?.addEventListener('animationend', closeAndResolve);
@@ -127,8 +135,13 @@ const Modal = forwardRef(({
                 closeAndResolve();
             }
         })
-
     }
+
+    useEffect(() => {
+        return () => {
+            onClose && onClose();
+        }
+    }, []);
 
     return isOpen && createPortal((
         <>
@@ -136,30 +149,33 @@ const Modal = forwardRef(({
                  className={["modal", (size && "modal-" + size), animation && animation, className].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
-                        <TemplateBlock name={"header"} content={children} data={null}>
+                        <Block name={"header"}>
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">
-                                    <TemplateBlock name={"title"} content={children} data={null}>
+                                    <Block name={"title"}>
                                         Title
-                                    </TemplateBlock>
+                                    </Block>
                                 </h5>
+                                <Block name={"navigation"}>
+                                    <nav>{children}</nav>
+                                </Block>
                                 <button onClick={startClosing} type="button" className="btn-close" aria-label="Close"/>
                             </div>
-                        </TemplateBlock>
+                        </Block>
                         <div className="modal-body">
-                            <TemplateBlock name={"content"} content={children} data={null}>
+                            <Block name={"content"}>
                                 {children}
-                            </TemplateBlock>
+                            </Block>
                         </div>
-                        <TemplateBlock name={"footer"} content={children} data={null}>
+                        <Block name={"footer"}>
                             <div className="modal-footer">
-                                <TemplateBlock name={"actions"} content={children} data={null}>
+                                <Block name={"actions"}>
                                     <button onClick={startClosing} type="button" className="btn btn-secondary">
                                         Close
                                     </button>
-                                </TemplateBlock>
+                                </Block>
                             </div>
-                        </TemplateBlock>
+                        </Block>
                     </div>
                 </div>
             </div>
@@ -169,6 +185,6 @@ const Modal = forwardRef(({
             )}
         </>
     ), document.body);
-});
+}), {name: 'modal'});
 
 export default Modal;

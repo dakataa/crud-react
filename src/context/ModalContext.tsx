@@ -1,8 +1,10 @@
-import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
-import ViewLoader from "@src/component/ViewLoader.tsx";
-import {OnClickAction} from "@src/component/crud/GridTableView.tsx";
+import React, {PropsWithChildren, useEffect, useReducer, useRef} from "react";
+import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
+import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
-import CrudContext from "@src/CrudContext.tsx";
+import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
+import {Icon, UseAlert} from "@src/context/AlertContext.tsx";
+import {CurrentActionProvider} from "@src/component/crud/CrudLoader.tsx";
 
 export type ModalActionType = {
     action: OnClickAction;
@@ -10,46 +12,90 @@ export type ModalActionType = {
 }
 
 export type ModalContextType = {
-    setModal?: (modal: ModalActionType) => void;
+    modal?: ModalActionType | null,
+    setModal?: (modal: ModalActionType | null) => void;
+    closeModal?: () => void;
 }
 
 const ModalContext = React.createContext<ModalContextType>({});
 
 export function UseModal() {
-    const {setModal} = React.useContext<ModalContextType>(ModalContext);
+    const {modal, setModal} = React.useContext<ModalContextType>(ModalContext);
 
     return {
+        modal: modal,
         openModal: (modal: ModalActionType) => {
             setModal && setModal(modal)
+        },
+        closeModal: () => {
+            setModal?.(null)
         }
     };
 }
 
 export function ModalProvider(props: PropsWithChildren) {
-    const [modal, setModal] = useState<ModalActionType | undefined>();
+
+    const [path, dispatch] = useReducer((state: ModalActionType[], newModal: ModalActionType | null) => {
+        const newState = [...state];
+        if (newModal) {
+            newState.push(newModal);
+        } else {
+            newState.pop();
+        }
+
+        return newState;
+    }, [])
+
+    const currentModal = path[path.length - 1] ?? null;
+
+    const {open: openAlert} = UseAlert();
 
     const updates = useRef(0);
     useEffect(() => {
         updates.current += 1;
-    }, [modal]);
+    }, [currentModal]);
+
+    const modalProps = {
+        ...currentModal?.props || {}
+    }
+
+    const key = currentModal ? [
+        currentModal.action.action.entity,
+        currentModal.action.action.namespace,
+        currentModal.action.action.name
+    ].filter(v => v).join('-') : Date.now();
 
     return (
-        <ModalContext.Provider value={{setModal}}>
+        <ModalContext.Provider value={{
+            modal: currentModal,
+            setModal: (newModal: ModalActionType | null): void => {
+                dispatch(newModal);
+            }
+        }}>
             {props.children}
-            {modal && (
-                <CrudContext>
-                    <ViewLoader
-                        key={updates.current}
-                        view={modal.action.action.name || 'list'}
-                        namespace={modal.action.action.namespace || ''}
-                        props={{
-                            action: modal.action.action,
-                            routeParams: modal.action.parameters,
-                            modal: true,
-                            props: modal.props
-                        }}
-                    />
-                </CrudContext>
+            {currentModal && (
+                <ErrorBoundary preventDefault={true} fallback={(error) => {
+                    dispatch(null);
+                    openAlert({
+                        title: error?.detail ?? 'Unknown Error',
+                        icon: Icon.denied,
+                        actions: {
+                            close: {
+                                label: 'OK'
+                            }
+                        }
+                    })
+                }}>
+                    <CurrentActionProvider key={key} action={currentModal.action}>
+                        <ViewLoader
+                            view={currentModal.action.action.name || 'list'}
+                            props={{
+                                modal: true,
+                                props: modalProps
+                            }}
+                        />
+                    </CurrentActionProvider>
+                </ErrorBoundary>
             )}
         </ModalContext.Provider>
     );

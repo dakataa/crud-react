@@ -27,7 +27,7 @@ export const objectRemoveEmpty = (obj: object, nested: boolean = true): object =
 
             return [key, value];
         })
-        .filter(([, value]) => !(value instanceof Object ? Object.keys(value).length : value))
+        .filter(([, value]) => (value instanceof Object ? !Object.keys(value).length : ['', null, undefined].includes(value)))
         .forEach(([key]) => {
             delete obj[key as keyof object];
         });

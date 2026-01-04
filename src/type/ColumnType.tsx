@@ -4,6 +4,7 @@ export type ColumnType = {
     options: string[];
     searchable: boolean | null;
     sortable: boolean;
+    visible: boolean;
     identifier: boolean;
     value?: CallableFunction;
     group?: string | false | null;
