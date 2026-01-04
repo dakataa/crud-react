@@ -134,14 +134,14 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {link} = UseConfig();
+    const {getOnClickActionByPath, actions} = UseActions();
+    const [action, setAction] = useState<OnClickAction | undefined | null>(undefined);
+
     path ??= link?.path ?? (location.pathname + location.search);
 
     if (link?.prefix) {
         path = path.replace(new RegExp('^/' + link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
     }
-
-    const {getOnClickActionByPath, actions} = UseActions();
-    const [action, setAction] = useState<OnClickAction | undefined | null>(undefined);
 
     useEffect(() => {
         setAction(getOnClickActionByPath(path));

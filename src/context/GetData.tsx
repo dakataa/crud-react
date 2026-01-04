@@ -46,12 +46,13 @@ const GetData = (
     }): GetDataType => {
 
     const enabled = useRef(loadOnInit);
-    const {navigate, internalToExternalPath} = UseActions();
-
+    const {navigate, externalToInternalPath, internalToExternalPath} = UseActions();
     const [results, setResults] = useState<{data: ListType | ModifyType, response: Response} | undefined>();
 
     const loading = useRef<AbortController | null>(null);
     const [refresh, setRefresh] = useState(1);
+    path = externalToInternalPath(path);
+
 
     const update = useCallback(() => {
         if (!enabled.current) {
