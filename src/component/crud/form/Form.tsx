@@ -29,7 +29,7 @@ export type ModifyFormRefType = {
     getFormRef: () => FormRef | null
 };
 
-type FormViewContextType = {
+export type FormViewContextType = {
     form: FormViewType,
     setValue?: (name: string, value: string) => void,
     setValues?: (data: { [key: string]: string }) => void,

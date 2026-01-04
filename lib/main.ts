@@ -19,6 +19,7 @@ export {UseListItem} from "@src/context/ListItemContext.tsx"
 
 // CRUD Form
 export {default as CrudForm, UseFormView, FormViewProvider} from "src/component/crud/form/Form.tsx"
+export type {FormViewContextType, ModifyFormRefType} from "@src/component/crud/form/Form.tsx";
 export {default as FormFieldViewLoader} from "@src/component/crud/form/FormFieldViewLoader.tsx";
 export {default as FormGroup} from "@src/component/crud/form/FormGroup.tsx";
 export {default as FormField} from "@src/component/crud/form/FormField.tsx";
@@ -67,7 +68,7 @@ export * from "@src/component/form/Form.tsx";
 export * from "src/component/form/FormGroup.tsx"
 export * from "src/component/form/FormFieldError.tsx"
 export * from "src/component/form/FormLabel.tsx"
-export * from "src/component/form/FormHelp.tsx"
+export {default as FormHelp} from "src/component/form/FormHelp.tsx"
 export {
     default as Choice, ChoiceOption, ChoiceGroupOption, SelectOption, SelectGroupOption
 } from "src/component/form/Choice.tsx"
