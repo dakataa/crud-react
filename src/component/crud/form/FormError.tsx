@@ -1,5 +1,5 @@
 import {UseFormView} from "@src/component/crud/form/Form.tsx";
-import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
+import FormFieldError from "@src/component/form/FormFieldError.tsx";
 import React, {useEffect} from "react";
 
 const FormError = ({name, className}: { name?: string | (string | null)[], className?: string }) => {

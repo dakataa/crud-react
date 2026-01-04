@@ -4,10 +4,10 @@ import {nameToId} from "@src/component/form/Form.tsx";
 import React from "react";
 import {UseFormSettings} from "@src/component/form/FormSetting.tsx";
 
-export const FormLabel = ({
-                              view,
-                              className
-                          }: {
+const FormLabel = ({
+                       view,
+                       className
+                   }: {
     view: FormViewType
     className?: string
 }): React.JSX.Element => {

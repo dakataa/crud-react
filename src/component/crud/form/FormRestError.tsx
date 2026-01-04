@@ -1,5 +1,5 @@
 import {UseFormView} from "@src/component/crud/form/Form.tsx";
-import {FormFieldError} from "@src/component/form/FormFieldError.tsx";
+import FormFieldError from "@src/component/form/FormFieldError.tsx";
 import React from "react";
 import {UseForm} from "@src/component/form/Form.tsx";
 
