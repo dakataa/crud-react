@@ -46,13 +46,17 @@ const ChoiceOption = (
     const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
     const elementId = nameToId(elementName || '', choiceValue);
 
+    const labelAttr = {
+        ...(view.label_attr instanceof Function ? view.label_attr() : view.label_attr) || {},
+    };
+
     const choiceAttributes = {
         id: elementId,
-        ...(choice?.attr && (choice?.attr instanceof Function ? choice?.attr(choice) : choice?.attr))
+        ...(view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) || {},
     }
 
     return (
-        <div className={"form-check"}>
+        <>ч
             <input
                 defaultValue={choiceValue}
                 type={view?.multiple ? 'checkbox' : 'radio'}
@@ -72,10 +76,11 @@ const ChoiceOption = (
             <label
                 htmlFor={choiceAttributes.id}
                 className={"form-check-label"}
+                {...labelAttr}
             >
                 {choiceLabel}
             </label>
-        </div>
+        </>
     )
 }
 
@@ -90,14 +95,15 @@ const ChoiceGroupOption = ({view, group, ...props}: { view: FormViewType, group:
     )
 }
 
-const Choice = ({
-                    view,
-                    constraints,
-                    className,
-                    onChange,
-                    choiceValueTransform,
-                    choiceLabelTransform,
-                }: ChoiceProps):
+const Choice = (
+    {
+        view,
+        constraints,
+        className,
+        onChange,
+        choiceValueTransform,
+        choiceLabelTransform,
+    }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
 
@@ -105,7 +111,15 @@ const Choice = ({
     const [[formState, dispatch], formRef] = UseForm();
     const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;
+    const attr = {
+        ...(view.attr instanceof Function ? view.attr() : view.attr) || {}
+    };
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
+    const classes = [
+        ...((attr.class || '').split(' ') || []),
+        ...((className || '').split(' ') || []),
+        ...(isInvalid ? ['is-invalid'] : [])
+    ];
 
     useEffect(() => {
         dispatch({
@@ -124,7 +138,7 @@ const Choice = ({
 
     if (view?.expanded) {
         return (
-            <div className={[...(isInvalid ? ['is-invalid'] : [])].join(' ')}>
+            <>
                 {typeof view.placeholder === 'string' && (
                     <>
                         <ChoiceOption
@@ -141,15 +155,17 @@ const Choice = ({
                                     group={choice as ChoiceGroupType}
                                     choiceLabelTransform={choiceLabelTransform}
                                     choiceValueTransform={choiceValueTransform}/> :
-                                <ChoiceOption
-                                    view={view}
-                                    choice={choice as ChoiceType}
-                                    choiceLabelTransform={choiceLabelTransform}
-                                    choiceValueTransform={choiceValueTransform}/>}
+                                <div className={"form-check"} {...attr}>
+                                    <ChoiceOption
+                                        view={view}
+                                        choice={choice as ChoiceType}
+                                        choiceLabelTransform={choiceLabelTransform}
+                                        choiceValueTransform={choiceValueTransform}/>
+                                </div>}
                         </Fragment>
                     )
                 )}
-            </div>
+            </>
         );
     } else {
         return (
@@ -161,7 +177,7 @@ const Choice = ({
                 onChange={(e) => validate({
                     value: (view.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value
                 })}
-                className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
+                className={[...classes, 'form-select'].join(' ')}
                 {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 defaultValue={view.data}
             >

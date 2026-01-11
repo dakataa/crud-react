@@ -10,6 +10,8 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
     switch (view.type) {
         case FormViewTypeEnum.Entity:
         case FormViewTypeEnum.Choice:
+        case FormViewTypeEnum.Currency:
+        case FormViewTypeEnum.Language:
         case FormViewTypeEnum.Enum: {
             return <Choice view={view}/>
         }

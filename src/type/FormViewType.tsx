@@ -25,6 +25,7 @@ export type FormViewType = {
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
     preferred_choices?: { [key: string]: any };
+    choice_attr?: { [key: string]: string } | Function;
     attr?: { [key: string]: string } | Function;
     data?: any;
     rendered?: boolean;
@@ -53,6 +54,8 @@ export enum FormViewTypeEnum {
     Datetime = 'datetime',
     Date = 'date',
     Time = 'time',
+    Currency = 'currency',
+    Language = 'language',
     Birthday = 'birthday',
 }
 
