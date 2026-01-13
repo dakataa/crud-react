@@ -7,6 +7,7 @@ export {default as CrudProvider} from "@src/context/CrudProvider.tsx";
 export {
     default as CrudLoader, CurrentActionProvider, UseCurrentAction, UseCurrentActionCollection
 } from "@src/component/crud/CrudLoader.tsx";
+export type {CurrentActionProviderRef} from "@src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "@src/component/crud/Modify.tsx";
 export type {ModifyType} from "@src/type/ModifyType.tsx";
 export {default as List} from "@src/component/crud/List.tsx";
@@ -81,7 +82,9 @@ export type {CollectionContextType, CollectionItemContextType} from "src/compone
 
 export {default as Input} from "@src/component/form/Input.tsx";
 export type {InputProps, FormFieldProps} from "@src/component/form/Input.tsx";
-export type {FormViewType, FormViewErrorType, ChoiceType, ChoiceGroupType, ChoiceUnionType} from "@src/type/FormViewType.tsx";
+export type {
+    FormViewType, FormViewErrorType, ChoiceType, ChoiceGroupType, ChoiceUnionType
+} from "@src/type/FormViewType.tsx";
 export {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
 export {default as BaseLayout} from "@src/layout/default/Base.tsx";

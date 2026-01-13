@@ -1,5 +1,5 @@
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import React, {PropsWithChildren, ReactElement, useEffect, useReducer, useState} from "react";
+import React, {PropsWithChildren, ReactElement, useEffect, useImperativeHandle, useReducer, useState} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import Requester from "@dakataa/requester";
@@ -73,9 +73,14 @@ export function UseCurrentAction(): CurrentActionContextType {
     return context;
 }
 
-export function CurrentActionProvider({action, name, ...props}: {
+export type CurrentActionProviderRef = {
+    refresh: () => void
+};
+
+export function CurrentActionProvider({action, name, ref, ...props}: {
     action: OnClickAction,
-    name?: string
+    name?: string,
+    ref?: React.Ref<CurrentActionProviderRef>
 } & PropsWithChildren) {
     const {getAction} = UseActions();
     const {set, unset} = UseCurrentActionCollection();
@@ -91,14 +96,22 @@ export function CurrentActionProvider({action, name, ...props}: {
         action: routeAction
     };
 
+    const refresh = () => {
+        setUpdate(Date.now());
+    }
+
+    useImperativeHandle(ref, () => {
+        return {
+            refresh
+        }
+    }, []);
+
     const [update, setUpdate] = useState(1);
     const [currentAction, setCurrentAction] = useState(action);
     const context = {
         action: currentAction,
         setAction: setCurrentAction,
-        refresh: () => {
-            setUpdate(Date.now());
-        }
+        refresh
     };
 
     useEffect(() => {

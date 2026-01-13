@@ -2,6 +2,7 @@ import React, {Fragment, useEffect} from "react";
 import {nameToId, UseForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
+import Translation from "@src/component/Translation.tsx";
 
 export type ChoiceProps = {
     view: FormViewType,
@@ -78,7 +79,7 @@ const ChoiceOption = (
                 className={"form-check-label"}
                 {...labelAttr}
             >
-                {choiceLabel}
+                <Translation>{choiceLabel}</Translation>
             </label>
         </>
     )
