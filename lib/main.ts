@@ -28,7 +28,7 @@ export {default as FormRest} from "@src/component/crud/form/FormRest.tsx";
 export {default as FormError} from "@src/component/crud/form/FormError.tsx";
 export {default as FormRestError} from "@src/component/crud/form/FormRestError.tsx";
 
-export {default as DynamicView} from "@src/component/crud/DynamicView.tsx";
+export {default as DynamicView, UseDynamicView} from "@src/component/crud/DynamicView.tsx";
 export {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
 
 // Templates

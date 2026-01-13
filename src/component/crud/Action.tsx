@@ -3,6 +3,7 @@ import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import Translation from "@src/component/Translation.tsx";
 
 const Action = ({children, action, className}: {
     action: OnClickAction;
@@ -19,7 +20,7 @@ const Action = ({children, action, className}: {
         className={className}
         to={generateActionLink(action)}
     >
-        {children ?? action.action.title ?? action.action.name}
+        {children ?? <Translation>{action.action.title ?? action.action.name}</Translation>}
     </Link>
 }
 

@@ -56,12 +56,12 @@ const ChoiceOption = (
     }
 
     return (
-        <>ч
+        <>
             <input
                 defaultValue={choiceValue}
                 type={view?.multiple ? 'checkbox' : 'radio'}
                 defaultChecked={view?.data?.includes(choiceValue)}
-                name={elementName + (view?.multiple ? '[]' : '')}
+                name={(elementName || '') + (view?.multiple ? '[]' : '')}
                 id={elementId}
                 className={"form-check-input"}
                 {...choiceAttributes}
