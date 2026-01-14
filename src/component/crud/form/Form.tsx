@@ -63,6 +63,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const renderedErrors = useRef<string[]>([]);
     const [, formRef] = UseForm();
+    const formGroup = UseFormGroup();
 
     const setValue = (name: string | null, value: string | string[]) => {
         const childView = name ? name.split('.').reduce((result: FormViewType | null, v: string) => {
@@ -102,8 +103,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
             if (allowDuplicates) {
                 return true;
             }
-
-            const formGroup = UseFormGroup();
             // console.log('can', e.full_name, parentFormViewContext?.form.full_name, id, can);
             return formGroup?.view.full_name === e.full_name || parentFormViewContext?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
         },
@@ -143,18 +142,18 @@ const FormRenderer = ({children}: PropsWithChildren) => {
     const uniqueId = useId();
     const [id, setId] = useState<string|null>(null)
     const {form: view, unsetRendered, setRendered, canRender} = UseFormView();
-
     const randomId = function(length = 6) {
         return Math.random().toString(36).substring(2, length+2);
     };
 
+
     useEffect(() => {
-        const newId = uniqueId;
-        setRendered?.(view, newId);
-        setId(newId);
+        setRendered?.(view, uniqueId);
+        setId(uniqueId);
 
         return () => {
-            // unsetRendered?.(view, newId);
+            unsetRendered?.(view, uniqueId);
+            setId(null);
         }
     }, []);
 

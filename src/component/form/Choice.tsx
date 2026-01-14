@@ -12,12 +12,13 @@ export type ChoiceProps = {
 } & FormFieldProps;
 
 const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }) => {
+    const choiceLabel = choice.label instanceof Function ? choice.label(choice) : choice.label
     return (
         <option
-            value={choice.value || choice.label}
+            value={choice.value || choiceLabel}
             {...(choice.attr && (choice.attr instanceof Function ? choice.attr(choice) : choice.attr))}
         >
-            {choice.label}
+            <Translation>{choiceLabel}</Translation>
         </option>
     )
 }
