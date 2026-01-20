@@ -15,7 +15,7 @@ export type ConfigLink = {
 export type Templates = { [path:string]: () => Promise<any> };
 
 export type Config = {
-    env: Environment | string,
+    env?: Environment | string,
     link?: ConfigLink,
     templates?: { [path:string]: () => Promise<any> },
     locale?: string,
@@ -37,8 +37,13 @@ export function UseConfig(): Config {
 }
 
 export function ConfigProvider({config, ...props}: { config: Config } & PropsWithChildren) {
+    const parentConfig = UseConfig();
+
     return (
-        <ConfigContext.Provider value={config}>
+        <ConfigContext.Provider value={{
+            ...parentConfig || {},
+            ...config,
+        }}>
             {props.children}
         </ConfigContext.Provider>
     );

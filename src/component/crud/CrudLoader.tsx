@@ -88,6 +88,7 @@ export function CurrentActionProvider({action, name, ref, ...props}: {
     name ??= [action.action.entity, action.action.name, action.action.namespace].join('-');
     const routeAction = getAction(action.action.entity, action.action.name, action.action.namespace);
     if (!routeAction) {
+        console.log('Invalid Action', action);
         throw new Error('Invalid Current Action');
     }
 
