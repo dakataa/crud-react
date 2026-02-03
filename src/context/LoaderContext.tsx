@@ -18,6 +18,7 @@ export function UseDataLoaderIndicator(url?: string) {
         throw new Error("UseLoaderIndicator must be within DataLoaderIndicatorProvider")
     }
 
+
     const {requests} = context;
     const {matchPath, getActionByPath, generateActionLink} = UseActions();
     let link = null;
@@ -25,9 +26,9 @@ export function UseDataLoaderIndicator(url?: string) {
         const action = getActionByPath(url?.toString() ?? '');
 
         if(action) {
-            const routeParameters = convertURLSearchParamsToObject(new URL(url, location.origin).searchParams)
+            const queryParameters = convertURLSearchParamsToObject(new URL(url, location.origin).searchParams)
             const {params: parameters} = matchPath(action.route?.path || '', url) ?? {params: undefined};
-            link = generateActionLink({action, parameters: {...parameters, ...routeParameters}});
+            link = generateActionLink({action, parameters: parameters, query: queryParameters});
         }
     }
 
