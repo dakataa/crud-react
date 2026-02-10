@@ -18,7 +18,6 @@ export function UseDataLoaderIndicator(url?: string) {
         throw new Error("UseLoaderIndicator must be within DataLoaderIndicatorProvider")
     }
 
-
     const {requests} = context;
     const {matchPath, getActionByPath, generateActionLink} = UseActions();
     let link = null;

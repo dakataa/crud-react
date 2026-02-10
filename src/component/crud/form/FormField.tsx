@@ -6,7 +6,7 @@ import Collection from "@src/component/form/Collection.tsx";
 import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
 import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
 
-const FormFieldSelector = ({view}: { view: FormViewType }) => {
+const FormFieldSelector = ({view, ref}: { view: FormViewType, ref?: React.RefObject<HTMLInputElement | HTMLSelectElement> }) => {
     switch (view.type) {
         case FormViewTypeEnum.Entity:
         case FormViewTypeEnum.Choice:
@@ -33,7 +33,7 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
         case FormViewTypeEnum.Birthday:
         case FormViewTypeEnum.Time:
         case FormViewTypeEnum.Email: {
-            return <Input view={view}/>
+            return <Input view={view} ref={ref as React.RefObject<HTMLInputElement>}/>
         }
         case FormViewTypeEnum.Repeated:
         case FormViewTypeEnum.Form: {
@@ -47,10 +47,11 @@ const FormFieldSelector = ({view}: { view: FormViewType }) => {
     }
 }
 
-const FormField = ({name, options}: {
+const FormField = ({name, options, ref}: {
     name?: string;
     options?: FormViewType;
-    size?: 'lg' | 'sm'
+    size?: 'lg' | 'sm',
+    ref?: React.RefObject<HTMLInputElement | HTMLSelectElement>
 }) => {
     const {form} = UseFormView();
     const view = name ? form.children?.[name] : form;
@@ -64,14 +65,14 @@ const FormField = ({name, options}: {
     if (name !== undefined) {
         return (
             <FormViewProvider view={compiledView}>
-                <FormFieldSelector view={compiledView}/>
+                <FormFieldSelector view={compiledView} ref={ref}/>
             </FormViewProvider>
         );
     }
 
     return (
         <>
-            <FormFieldSelector view={compiledView}/>
+            <FormFieldSelector view={compiledView} ref={ref}/>
         </>
     )
 }

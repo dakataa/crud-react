@@ -69,7 +69,9 @@ export type FormViewErrorType = {
 export type ChoiceType = {
     value: string | number | null | Function;
     label: string | ((v: ChoiceType) => string);
-    attr?: { [key: string]: { [key: string]: string } } | Function;
+    attr?: {
+        [key: string]: { [key: string]: string }
+    } & { disabled?: boolean, readonly?: boolean } | Function;
     data?: { [key: string]: any }
 }
 

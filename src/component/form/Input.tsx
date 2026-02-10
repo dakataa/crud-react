@@ -9,6 +9,7 @@ export type FormFieldProps = {
     className?: string;
     constraints?: Constraint[];
     onChange?: Function;
+    ref?: React.RefObject<HTMLInputElement>;
 }
 
 export type InputProps = {} & FormFieldProps;
@@ -17,12 +18,12 @@ const Input = ({
                    view,
                    constraints,
                    onChange,
+                   ref
                }: InputProps):
     React.JSX.Element => {
 
     const elementFullName = view.full_name;
     const [[formState, dispatch]] = UseForm();
-    const fieldRef = useRef<HTMLInputElement | null>(null);
     const errorMessages = formState?.errors[elementFullName || ''] || [];
 
     useEffect(() => {
@@ -62,15 +63,24 @@ const Input = ({
 
     return <>
         <input
-            ref={fieldRef}
+            ref={ref}
             id={view.id}
             key={key}
             name={elementFullName}
             type={type}
             defaultValue={value}
             aria-invalid={!errorMessages.length}
-            onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => validate({value: (e.target as HTMLInputElement).value})}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => validate({value: e.target.value})}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+                if(attr.onChange instanceof Function) {
+                    attr.onChange(e);
+                }
+
+                if(e.defaultPrevented){
+                    return;
+                }
+
+                validate({value: e.target.value});
+            }}
             className={settings?.className || [
                 defaultFieldClassName,
                 settings?.size ? 'form-control-' + settings.size : null,

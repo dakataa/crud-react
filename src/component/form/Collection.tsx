@@ -115,20 +115,21 @@ const CollectionList = () => {
     const {form: view} = UseFormView();
     const isPrototype = !!view.prototype;
 
-    const updatePrototype = (view: FormViewType) => {
+    const updatePrototype = (view: FormViewType, index: number) => {
         if (view.prototype_name) {
             const elementFullName = view.full_name?.replace('__name__', view.prototype_name || '') || '';
             const elementId = (view.id || nameToId(elementFullName)).replace('__name__', view.prototype_name || '');
-
+            const elementLabel = (view.label?.replace('__name__label__', index.toString())) || ''
             view.full_name = elementFullName;
             view.id = elementId;
+            view.label = (view.label?.replace('__name__label__', elementLabel));
 
-            Object.keys(view.children || {}).map((childKey) => {
+            Object.keys(view.children || {}).map((childKey, index) => {
                 const childView = view.children?.[childKey];
                 if (childView !== undefined) {
                     if (!childView.prototype_name) {
                         childView.prototype_name = view.prototype_name;
-                        updatePrototype(childView as FormViewType);
+                        updatePrototype(childView as FormViewType, index);
                     }
                 }
             }, {})
@@ -148,7 +149,7 @@ const CollectionList = () => {
                     itemFormView.prototype_name = name;
                 }
 
-                updatePrototype(itemFormView);
+                updatePrototype(itemFormView, index);
 
                 return <CollectionItem index={index} view={itemFormView} isPrototype={isPrototype}/>
             })}
