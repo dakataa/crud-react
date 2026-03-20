@@ -15,13 +15,17 @@ const DropdownContent = ({children, ...props}: { children: any }) => {
     </div>
 }
 
-const Dropdown = ({ className, children, icon}: PropsWithChildren<{
+const Dropdown = ({ className, children, autoClose, icon}: PropsWithChildren<{
     className?: string,
     icon?: any
+    autoClose?: 'outside' | 'inside' | boolean
 }>) => {
     const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {
-        const dropdown = new BootstrapDropdown(ref.current);
+        const dropdown = new BootstrapDropdown(ref.current, {
+            autoClose: autoClose
+        });
+
         return () => {
             dropdown.dispose();
         };

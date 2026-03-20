@@ -11,7 +11,7 @@ import React, {
 } from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewErrorType, FormViewType} from "@src/type/FormViewType.tsx";
-import {Method, RequestBodyType} from "@dakataa/requester";
+import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/context/GetData.tsx";
 import {default as T} from "@src/component/Translation.tsx";
@@ -192,6 +192,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
+    const preloaderTimeout = useRef<number | null>(null);
+    const [formData, setFormData] = useState<FormData|null>(null);
 
     useImperativeHandle(ref, () => ({
         getFormRef: (): FormRef | null => formRef.current
@@ -213,6 +215,16 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
     const onSubmit = (formData: FormData) => {
         startLoading?.(formView?.full_name || 'form');
+        preloaderTimeout.current = setTimeout(() => stopLoading?.(formView?.full_name || 'form'), 250);
+        setFormData(formData);
+    }
+
+    useEffect(() => {
+        if(!formData) {
+            return;
+        }
+
+        preloaderTimeout.current && clearTimeout(preloaderTimeout.current);
 
         setAction({
             ...action,
@@ -220,7 +232,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
             body: formData,
             bodyType: RequestBodyType.FormData
         })
-    }
+    }, [formData ? JSON.stringify(convertFormDataToObject(formData)) : null]);
 
     useEffect(() => {
         if (onLoad) {
@@ -275,7 +287,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                 id={formView.id || 'form'}
                 name={formView.name || 'form'}
                 action={actionURL}
-                method={"POST"} onSubmit={onSubmit}
+                method={"POST"}
+                onSubmit={onSubmit}
             >
                 <FormViewProvider view={formView}>
                     <Block name={"content"}>

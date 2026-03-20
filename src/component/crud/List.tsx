@@ -160,7 +160,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                                 React.isValidElement(title) ? (
                                     title
                                 ) : (
-                                    <h2>{title ?? results?.title}</h2>
+                                    <h2><T>{title ?? results?.title}</T></h2>
                                 )
                             )}
                         </Block>
@@ -180,7 +180,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                             </Block>
                             {results?.form?.filter?.view && (
                                 <div className={"btn-group btn-group-sm"}>
-                                    <Dropdown>
+                                    <Dropdown autoClose={"outside"}>
                                         <DropdownButton className={"btn btn-sm dropdown-toggle btn-outline-dark"}>
                                             <T>Filter</T>
                                         </DropdownButton>
