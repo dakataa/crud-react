@@ -23,7 +23,7 @@ const Dropdown = ({ className, children, autoClose, icon}: PropsWithChildren<{
     const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {
         const dropdown = new BootstrapDropdown(ref.current, {
-            autoClose: autoClose
+            autoClose: autoClose == undefined ? true : autoClose,
         });
 
         return () => {
