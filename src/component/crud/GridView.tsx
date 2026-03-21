@@ -5,7 +5,7 @@ import {default as T} from "@src/component/Translation.tsx";
 import ItemValue from "@src/component/crud/ItemValue.tsx";
 import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
 import ItemLabel from "@src/component/crud/ItemLabel.tsx";
-import {ListItemProvider} from "@src/context/ListItemContext.tsx";
+import {ListItemProvider, UseListItem} from "@src/context/ListItemContext.tsx";
 import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
@@ -17,7 +17,7 @@ type GridViewHeaderColumnAttributes = {
 
 export type GridViewType = {
     options?: {
-        columns: ColumnType[]
+        columns: { [key: string]: ((data?: any) => ColumnType) | ColumnType }
     },
     headerOptions?: {
         columns: {
@@ -32,47 +32,56 @@ export type GridViewType = {
     namespace?: string
 };
 
-const GridView = forwardRef(({routeParams, namespace, tableOptions, ...HTMLAttributes}: GridViewType & HTMLAttributes<HTMLDivElement>, ref) => {
+const GridView = ({
+                      routeParams,
+                      namespace,
+                      options,
+                      tableOptions,
+                      ...HTMLAttributes
+                  }: GridViewType & HTMLAttributes<HTMLDivElement>) => {
     const {columns, primaryColumn, objectActions, columnsTotal, items, data, onClick} = UseList();
     const {action: currentAction} = UseCurrentAction();
-    const {options} = UseConfig();
+    const {options: configOptions} = UseConfig();
     const GridViewOptions = {
         className: "table-responsive",
         ...HTMLAttributes,
-        ...(options?.GridView || {}),
+        ...(configOptions?.GridView || {})
     };
 
     tableOptions = {
         className: "table table-striped table-hover",
-        ...(options?.HTMLTableElement || {}),
+        ...(configOptions?.HTMLTableElement || {}),
         ...(tableOptions || {})
     };
+
 
     return (
         <div {...GridViewOptions}>
             <table {...tableOptions}>
                 <thead>
                 <tr>
-                    {columns.map((column, index) => (
-                        <th key={index}>
-                            <ItemLabel column={column} namespace={namespace}/>
-                            {column.sortable && data?.sort?.[column.field] !== undefined && (
-                                <Link
-                                    onClick={(event) => onClick && onClick({
-                                        ...currentAction,
-                                        query: {
-                                            ...currentAction.query,
-                                            sort: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
-                                        }
-                                    }, event)}
-                                    className={"btn btn-sm"}
-                                    to={"#"}
-                                >
-                                    {data.sort[column.field] ? (data.sort[column.field] === 'ASC' ? '\u21D1' : '\u21D3') : '\u21C5'}
-                                </Link>
-                            )}
-                        </th>
-                    ))}
+                    {columns.map((column, index) => {
+                        return (
+                            <th {...column?.view?.header?.attr || {}} key={index}>
+                                <ItemLabel column={column} namespace={namespace}/>
+                                {column.sortable && data?.sort?.[column.field] !== undefined && (
+                                    <Link
+                                        onClick={(event) => onClick && onClick({
+                                            ...currentAction,
+                                            query: {
+                                                ...currentAction.query,
+                                                sort: {[column.field]: data?.sort[column.field] ? (data?.sort[column.field] === 'ASC' ? 'DESC' : '') : 'ASC'}
+                                            }
+                                        }, event)}
+                                        className={"btn btn-sm"}
+                                        to={"#"}
+                                    >
+                                        {data.sort[column.field] ? (data.sort[column.field] === 'ASC' ? '\u21D1' : '\u21D3') : '\u21C5'}
+                                    </Link>
+                                )}
+                            </th>
+                        )
+                    })}
                     {primaryColumn && objectActions.length > 0 && (
                         <th className="text-end">
                             <T>Actions</T>
@@ -84,16 +93,25 @@ const GridView = forwardRef(({routeParams, namespace, tableOptions, ...HTMLAttri
                 {items.length ? (items.map((row, index) => (
                     <ListItemProvider key={index} index={index}>
                         <tr>
-                            {columns?.map((column, columnIndex) => (
-                                    <td key={columnIndex}>
-                                        {columnIndex === 0 &&
-                                            (
-                                                <BatchItemSelector className={"me-2"}/>
-                                            )
-                                        }
-                                        <ItemValue column={column} namespace={namespace}/>
-                                    </td>
-                                )
+                            {columns?.map((column, columnIndex) => {
+                                    const columnOptions = options?.columns?.[column.field];
+
+                                    column = {
+                                        ...column,
+                                        ...(columnOptions instanceof Function ? columnOptions(data?.entity?.data.items[index]) : options?.columns?.[column.field])
+                                    };
+
+                                    return (
+                                        <td {...column?.view?.content?.attr || {}} key={columnIndex}>
+                                            {columnIndex === 0 &&
+                                                (
+                                                    <BatchItemSelector className={"me-2"}/>
+                                                )
+                                            }
+                                            <ItemValue column={column} namespace={namespace}/>
+                                        </td>
+                                    )
+                                }
                             )}
                             {primaryColumn && objectActions.length > 0 && (
                                 <td className={"text-end text-nowrap"}>
@@ -113,6 +131,6 @@ const GridView = forwardRef(({routeParams, namespace, tableOptions, ...HTMLAttri
             </table>
         </div>
     );
-});
+}
 
 export default GridView;
