@@ -57,6 +57,8 @@ const ChoiceOption = (
         ...(view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) || {},
     }
 
+    const checked = view.checked instanceof Function ? view.checked(choiceValue) : view.checked;
+
     return (
         <>
             <input
@@ -67,6 +69,7 @@ const ChoiceOption = (
                 id={elementId}
                 className={"form-check-input"}
                 {...choiceAttributes}
+                checked={checked}
                 // onChange={(e) => {
                 //     return validate({`
                 //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,

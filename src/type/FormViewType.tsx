@@ -16,7 +16,7 @@ export type FormViewType = {
     submitted?: boolean;
     expanded?: boolean;
     multiple?: boolean;
-    checked?: boolean;
+    checked?: boolean | ((choice: string) => boolean);
     priority?: number;
     type: FormViewTypeEnum | string;
     block_prefixes?: [FormViewTypeEnum | string];

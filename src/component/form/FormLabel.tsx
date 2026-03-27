@@ -13,7 +13,7 @@ const FormLabel = ({
     className?: string
 }): React.JSX.Element => {
     const settings = UseFormSettings();
-    const label = settings?.label || view.label || titlize(view.name || '');
+    const label = settings?.label || view.label || titlize(view.name || '') || '';
     const isCheckbox = ['checkbox', 'radio'].includes(view.type || 'input');
 
     return (

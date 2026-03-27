@@ -26,7 +26,7 @@ export const FormGroup = ({
                 <FormField/>
             ) : (
                 <div
-                    className={[...(className?.split(' ') || []), 'mb-3', (isCheckbox && 'form-check')].filter(v => v).join(' ')}
+                    className={[...(className?.split(' ') || [(isCheckbox ? 'form-check' : 'mb-3')])].filter(v => v).join(' ')}
                     {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 >
                     {!isCheckbox && (<FormLabel view={view}/>)}
