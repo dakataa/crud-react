@@ -186,7 +186,11 @@ const Choice = (
                 {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 defaultValue={view.data}
             >
-                {view.placeholder && <option value={""}>{view.placeholder}</option>}
+                {view.placeholder && (
+                    <option value={""}>
+                        <Translation>{view.placeholder}</Translation>
+                    </option>
+                )}
                 {Object.values(view.choices || []).map((choice: any, index: number) => (
                     <Fragment key={index}>
                         {choice.choices !== undefined ?

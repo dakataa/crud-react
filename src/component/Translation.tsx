@@ -6,6 +6,10 @@ const Translation = ({children, domain, properties, ...props}: {
     domain?: string;
     properties?: { [key: string]: string | number | null }
 }) => {
+    // In some cases children is not a string and application crashes
+    if(typeof children !== "string") {
+        return null;
+    }
 
     properties ??= {};
     Object.keys(properties).forEach((k) => {
