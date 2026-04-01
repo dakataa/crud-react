@@ -1,6 +1,6 @@
 {
 	"name": "@dakataa/crud-react",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Dakataa CRUD React",
 	"private": false,
 	"type": "module",
