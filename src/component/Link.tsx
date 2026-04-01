@@ -6,7 +6,7 @@ import {UseDataLoaderIndicator} from "@src/context/LoaderContext.tsx";
 export default ({to, children, onClick, ...props}: {
     to?: string,
 } & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & ButtonContentProps) => {
-    const {navigate, getActionByPath, generateLink} = UseActions();
+    const {navigate} = UseActions();
     const anchorRef = useRef<HTMLAnchorElement>(null);
     const [clicked, setClicked] = useState(false);
     const {isLoading} = UseDataLoaderIndicator(to?.toString());

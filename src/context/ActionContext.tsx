@@ -1,4 +1,4 @@
-import React, {ComponentType, FC, PropsWithChildren, ReactNode, use, useEffect, useRef, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
@@ -71,29 +71,41 @@ export function UseActions() {
         return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');
     }
 
-    const generateRoutePath = (path: string, parameters?: { [key: string]: any }, query?: { [key: string]: any }): string => {
+    const generateRoutePath = (path: string, parameters?: { [key: string]: any }, query?: {
+        [key: string]: any
+    }): string => {
         return generatePath(crudToReactPathPattern(path), parameters, query);
     }
 
-    const generateRoute = (route?: RouteType, parameters?: { [key: string]: any }, query?: { [key: string]: any }): string => {
+    const generateRoute = (route?: RouteType, parameters?: { [key: string]: any }, query?: {
+        [key: string]: any
+    }): string => {
         return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}, query) : '#';
     }
 
     const generateActionLink = (onClickAction: OnClickAction): string => {
         const action = getAction(onClickAction.action.entity, onClickAction.action.name, onClickAction.action.namespace);
 
-        return generateRoute(action?.route, onClickAction.parameters, onClickAction.query)
+        return generateRoute(action?.route, onClickAction.parameters, onClickAction.query);
     }
 
-    const generateLink = (route?: RouteType, parameters?: { [key: string]: string }, query?: { [key: string]: string }): string => {
-        const path = generateRoute(route, parameters, query);
-
-        return internalToExternalPath(path);
+    const generateLink = (route?: RouteType, parameters?: { [key: string]: string }, query?: {
+        [key: string]: string
+    }): string => {
+        return generateRoute(route, parameters, query);
     }
 
     const internalToExternalPath = (path: string) => {
         if (config.link?.prefix) {
             path = '/' + config.link.prefix.replaceAll(new RegExp('^\/|\/$', 'g'), '') + path;
+        }
+
+        return path;
+    }
+
+    const externalToInternalPath = (path: string) => {
+        if (config.link?.prefix) {
+            path = path.replace(new RegExp('^/' + config.link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
         }
 
         return path;
@@ -113,26 +125,28 @@ export function UseActions() {
 
     const matchPath = (pattern: string, path: string) => {
         const url = new URL(path, location.origin);
+        const pathname = externalToInternalPath(url.pathname);
         const regexp = '^' + pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?').replace('*', '.*') + '$';
-
-        const hasMatch = new RegExp(regexp, 'giu').test(url.pathname);
+        const hasMatch = new RegExp(regexp, 'giu').test(pathname);
         if (!hasMatch) {
             return null;
         }
 
-        const match = url.pathname.matchAll(new RegExp(regexp, 'giu'));
+        const match = pathname.matchAll(new RegExp(regexp, 'giu'));
         const params = match?.next().value?.groups;
         const queryParams = convertURLSearchParamsToObject(url.searchParams);
 
         return {
-            pathname: url.pathname,
+            pathname: pathname,
             params: params,
             query: queryParams,
             pattern: pattern
         };
     }
 
-    const generatePath = (pattern: string, parameters?: { [key: string]: string }, query?: { [key: string]: string }): string => {
+    const generatePath = (pattern: string, parameters?: { [key: string]: string }, query?: {
+        [key: string]: string
+    }): string => {
         const path = pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
             const value = parameters?.[p1];
             if (value !== undefined) {
@@ -148,7 +162,7 @@ export function UseActions() {
             url.searchParams.set(key, value);
         });
 
-        return url.pathname + url.search
+        return internalToExternalPath(url.pathname + url.search);
     }
 
     return {
@@ -164,7 +178,9 @@ export function UseActions() {
         crudToReactPathPattern,
         generateActionLink,
         generateLink,
-        internalToExternalPath
+        generatePath,
+        internalToExternalPath,
+        externalToInternalPath
     };
 }
 

@@ -1,4 +1,4 @@
-import React, {useId} from "react";
+import React from "react";
 import FormLabel from "@src/component/form/FormLabel.tsx";
 import FormHelp from "@src/component/form/FormHelp.tsx";
 import FormField from "@src/component/crud/form/FormField.tsx";
@@ -26,7 +26,7 @@ export const FormGroup = ({
                 <FormField/>
             ) : (
                 <div
-                    className={[...(className?.split(' ') || []), 'mb-3', (isCheckbox && 'form-check')].filter(v => v).join(' ')}
+                    className={[...(className?.split(' ') || [(isCheckbox ? 'form-check' : 'mb-3')])].filter(v => v).join(' ')}
                     {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 >
                     {!isCheckbox && (<FormLabel view={view}/>)}

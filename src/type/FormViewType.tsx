@@ -16,7 +16,7 @@ export type FormViewType = {
     submitted?: boolean;
     expanded?: boolean;
     multiple?: boolean;
-    checked?: boolean;
+    checked?: boolean | ((choice: string) => boolean);
     priority?: number;
     type: FormViewTypeEnum | string;
     block_prefixes?: [FormViewTypeEnum | string];
@@ -25,6 +25,7 @@ export type FormViewType = {
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
     preferred_choices?: { [key: string]: any };
+    choice_attr?: { [key: string]: string } | Function;
     attr?: { [key: string]: string } | Function;
     data?: any;
     rendered?: boolean;
@@ -53,6 +54,8 @@ export enum FormViewTypeEnum {
     Datetime = 'datetime',
     Date = 'date',
     Time = 'time',
+    Currency = 'currency',
+    Language = 'language',
     Birthday = 'birthday',
 }
 
@@ -66,7 +69,9 @@ export type FormViewErrorType = {
 export type ChoiceType = {
     value: string | number | null | Function;
     label: string | ((v: ChoiceType) => string);
-    attr?: { [key: string]: { [key: string]: string } } | Function;
+    attr?: {
+        [key: string]: { [key: string]: string }
+    } & { disabled?: boolean, readonly?: boolean } | Function;
     data?: { [key: string]: any }
 }
 

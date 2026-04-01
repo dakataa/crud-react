@@ -1,10 +1,15 @@
 import React from "react";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-const Translation = ({children, domain, properties}: {
+const Translation = ({children, domain, properties, ...props}: {
     children?: string;
     domain?: string;
     properties?: { [key: string]: string | number | null }
 }) => {
+    // In some cases children is not a string and application crashes
+    if(typeof children !== "string") {
+        return null;
+    }
 
     properties ??= {};
     Object.keys(properties).forEach((k) => {
@@ -13,7 +18,14 @@ const Translation = ({children, domain, properties}: {
 
     children = children?.replaceAll(new RegExp(':\w+', 'g'), '');
 
-    return <>{children}</>
+    return (
+        <DynamicView
+            view={"Translation"}
+            props={{...props, domain, properties}}
+        >
+            {children}
+        </DynamicView>
+    )
 }
 
 export default Translation;

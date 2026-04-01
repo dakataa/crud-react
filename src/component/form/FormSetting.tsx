@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from "react";
 
-type FormSettingContextType = {
+export type FormSettingContextType = {
     size?: 'lg' | 'sm';
     extraClassName?: string;
     className?: string;

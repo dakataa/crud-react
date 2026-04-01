@@ -2,7 +2,7 @@ import {UseForm} from "@src/component/form/Form";
 import React from "react";
 import {FormViewErrorType} from "@src/type/FormViewType.tsx";
 
-export const FormFieldError = ({name, className}: { name: string | string[], className?: string }) => {
+const FormFieldError = ({name, className}: { name: string | string[], className?: string }) => {
     const [[form]] = UseForm() || {};
 
     name = name instanceof Array ? name : [name];
@@ -20,3 +20,5 @@ export const FormFieldError = ({name, className}: { name: string | string[], cla
         </div>
     )
 }
+
+export default FormFieldError

@@ -1,5 +1,6 @@
 import React, {Children, PropsWithChildren, ReactNode, useEffect, useRef, useState} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
+import Element = React.JSX.Element;
 
 type RouteItemType = {
     path?: string;
@@ -28,7 +29,7 @@ const Outlet = () => {
 const Router = ({children}: PropsWithChildren) => {
     const buildRoutes = (element: ReactNode, parent?: RouteItemType): RouteItemType[] => {
         return Children.toArray(element).reduce((result: RouteItemType[], item: ReactNode): RouteItemType[] => {
-            const props = item.props as PropsWithChildren & RouteItemType;
+            const props = (item as Element).props as PropsWithChildren & RouteItemType;
             const fixPath = (path?: string) => {
                 return path?.replace(/\/$/, '');
             }

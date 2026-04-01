@@ -1,5 +1,5 @@
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import React, {PropsWithChildren, ReactElement, useEffect, useReducer, useState} from "react";
+import React, {PropsWithChildren, ReactElement, useEffect, useImperativeHandle, useReducer, useState} from "react";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import Requester from "@dakataa/requester";
@@ -73,9 +73,14 @@ export function UseCurrentAction(): CurrentActionContextType {
     return context;
 }
 
-export function CurrentActionProvider({action, name, ...props}: {
+export type CurrentActionProviderRef = {
+    refresh: () => void
+};
+
+export function CurrentActionProvider({action, name, ref, ...props}: {
     action: OnClickAction,
-    name?: string
+    name?: string,
+    ref?: React.Ref<CurrentActionProviderRef>
 } & PropsWithChildren) {
     const {getAction} = UseActions();
     const {set, unset} = UseCurrentActionCollection();
@@ -83,6 +88,7 @@ export function CurrentActionProvider({action, name, ...props}: {
     name ??= [action.action.entity, action.action.name, action.action.namespace].join('-');
     const routeAction = getAction(action.action.entity, action.action.name, action.action.namespace);
     if (!routeAction) {
+        console.log('Invalid Action', action);
         throw new Error('Invalid Current Action');
     }
 
@@ -91,14 +97,22 @@ export function CurrentActionProvider({action, name, ...props}: {
         action: routeAction
     };
 
+    const refresh = () => {
+        setUpdate(Date.now());
+    }
+
+    useImperativeHandle(ref, () => {
+        return {
+            refresh
+        }
+    }, []);
+
     const [update, setUpdate] = useState(1);
     const [currentAction, setCurrentAction] = useState(action);
     const context = {
         action: currentAction,
         setAction: setCurrentAction,
-        refresh: () => {
-            setUpdate(Date.now());
-        }
+        refresh
     };
 
     useEffect(() => {
@@ -134,14 +148,14 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {link} = UseConfig();
+    const {getOnClickActionByPath, actions} = UseActions();
+    const [action, setAction] = useState<OnClickAction | undefined | null>(undefined);
+
     path ??= link?.path ?? (location.pathname + location.search);
 
     if (link?.prefix) {
         path = path.replace(new RegExp('^/' + link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
     }
-
-    const {getOnClickActionByPath, actions} = UseActions();
-    const [action, setAction] = useState<OnClickAction | undefined | null>(undefined);
 
     useEffect(() => {
         setAction(getOnClickActionByPath(path));

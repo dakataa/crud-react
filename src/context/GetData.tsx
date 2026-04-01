@@ -6,7 +6,7 @@ import HttpException from "@src/component/error/HttpException.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
-import {Method, RequestBodyType, Response} from "@dakataa/requester";
+import {convertFormDataToObject, Method, RequestBodyType, Response} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -46,12 +46,13 @@ const GetData = (
     }): GetDataType => {
 
     const enabled = useRef(loadOnInit);
-    const {navigate, internalToExternalPath} = UseActions();
-
+    const {navigate, externalToInternalPath, internalToExternalPath} = UseActions();
     const [results, setResults] = useState<{data: ListType | ModifyType, response: Response} | undefined>();
 
     const loading = useRef<AbortController | null>(null);
     const [refresh, setRefresh] = useState(1);
+    const bodyData = JSON.stringify(body instanceof FormData ? convertFormDataToObject(body) : body)
+    path = externalToInternalPath(path);
 
     const update = useCallback(() => {
         if (!enabled.current) {
@@ -87,9 +88,10 @@ const GetData = (
         return () => {
             enabled.current = loadOnInit;
         }
-    }, [refresh, path, body, bodyType, method])
+    }, [refresh, path, bodyData, bodyType, method])
 
     useEffect(() => {
+
         return () => {
             cancel();
             enabled.current = loadOnInit;
@@ -98,7 +100,7 @@ const GetData = (
 
     useEffect(() => {
         update();
-    }, [refresh, path, body, bodyType, method]);
+    }, [refresh, path, bodyData, bodyType, method]);
 
 
     const cancel = () => {

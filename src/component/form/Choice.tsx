@@ -2,6 +2,7 @@ import React, {Fragment, useEffect} from "react";
 import {nameToId, UseForm} from "./Form";
 import {FormFieldProps} from "@src/component/form/Input";
 import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
+import Translation from "@src/component/Translation.tsx";
 
 export type ChoiceProps = {
     view: FormViewType,
@@ -11,12 +12,13 @@ export type ChoiceProps = {
 } & FormFieldProps;
 
 const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }) => {
+    const choiceLabel = choice.label instanceof Function ? choice.label(choice) : choice.label
     return (
         <option
-            value={choice.value || choice.label}
+            value={choice.value || choiceLabel}
             {...(choice.attr && (choice.attr instanceof Function ? choice.attr(choice) : choice.attr))}
         >
-            {choice.label}
+            <Translation>{choiceLabel}</Translation>
         </option>
     )
 }
@@ -46,21 +48,28 @@ const ChoiceOption = (
     const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
     const elementId = nameToId(elementName || '', choiceValue);
 
+    const labelAttr = {
+        ...(view.label_attr instanceof Function ? view.label_attr() : view.label_attr) || {},
+    };
+
     const choiceAttributes = {
         id: elementId,
-        ...(choice?.attr && (choice?.attr instanceof Function ? choice?.attr(choice) : choice?.attr))
+        ...(view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) || {},
     }
 
+    const checked = view.checked instanceof Function ? view.checked(choiceValue) : view.checked;
+
     return (
-        <div className={"form-check"}>
+        <>
             <input
                 defaultValue={choiceValue}
                 type={view?.multiple ? 'checkbox' : 'radio'}
                 defaultChecked={view?.data?.includes(choiceValue)}
-                name={elementName + (view?.multiple ? '[]' : '')}
+                name={(elementName || '') + (view?.multiple ? '[]' : '')}
                 id={elementId}
                 className={"form-check-input"}
                 {...choiceAttributes}
+                checked={checked}
                 // onChange={(e) => {
                 //     return validate({`
                 //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
@@ -72,10 +81,11 @@ const ChoiceOption = (
             <label
                 htmlFor={choiceAttributes.id}
                 className={"form-check-label"}
+                {...labelAttr}
             >
-                {choiceLabel}
+                <Translation>{choiceLabel}</Translation>
             </label>
-        </div>
+        </>
     )
 }
 
@@ -90,14 +100,15 @@ const ChoiceGroupOption = ({view, group, ...props}: { view: FormViewType, group:
     )
 }
 
-const Choice = ({
-                    view,
-                    constraints,
-                    className,
-                    onChange,
-                    choiceValueTransform,
-                    choiceLabelTransform,
-                }: ChoiceProps):
+const Choice = (
+    {
+        view,
+        constraints,
+        className,
+        onChange,
+        choiceValueTransform,
+        choiceLabelTransform,
+    }: ChoiceProps):
     React.JSX.Element => {
     constraints = constraints || [];
 
@@ -105,7 +116,15 @@ const Choice = ({
     const [[formState, dispatch], formRef] = UseForm();
     const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;
+    const attr = {
+        ...(view.attr instanceof Function ? view.attr() : view.attr) || {}
+    };
     const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
+    const classes = [
+        ...((attr.class || '').split(' ') || []),
+        ...((className || '').split(' ') || []),
+        ...(isInvalid ? ['is-invalid'] : [])
+    ];
 
     useEffect(() => {
         dispatch({
@@ -124,7 +143,7 @@ const Choice = ({
 
     if (view?.expanded) {
         return (
-            <div className={[...(isInvalid ? ['is-invalid'] : [])].join(' ')}>
+            <>
                 {typeof view.placeholder === 'string' && (
                     <>
                         <ChoiceOption
@@ -141,15 +160,17 @@ const Choice = ({
                                     group={choice as ChoiceGroupType}
                                     choiceLabelTransform={choiceLabelTransform}
                                     choiceValueTransform={choiceValueTransform}/> :
-                                <ChoiceOption
-                                    view={view}
-                                    choice={choice as ChoiceType}
-                                    choiceLabelTransform={choiceLabelTransform}
-                                    choiceValueTransform={choiceValueTransform}/>}
+                                <div className={"form-check"} {...attr}>
+                                    <ChoiceOption
+                                        view={view}
+                                        choice={choice as ChoiceType}
+                                        choiceLabelTransform={choiceLabelTransform}
+                                        choiceValueTransform={choiceValueTransform}/>
+                                </div>}
                         </Fragment>
                     )
                 )}
-            </div>
+            </>
         );
     } else {
         return (
@@ -161,11 +182,15 @@ const Choice = ({
                 onChange={(e) => validate({
                     value: (view.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value
                 })}
-                className={[...((className || '').split(' ') || []), 'form-control', ...(isInvalid ? ['is-invalid'] : [])].join(' ')}
+                className={[...classes, 'form-select'].join(' ')}
                 {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
                 defaultValue={view.data}
             >
-                {view.placeholder && <option value={""}>{view.placeholder}</option>}
+                {view.placeholder && (
+                    <option value={""}>
+                        <Translation>{view.placeholder}</Translation>
+                    </option>
+                )}
                 {Object.values(view.choices || []).map((choice: any, index: number) => (
                     <Fragment key={index}>
                         {choice.choices !== undefined ?

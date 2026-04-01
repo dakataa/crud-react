@@ -1,6 +1,7 @@
 import {ColumnType} from "@src/type/ColumnType.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import React from "react";
+import Translation from "@src/component/Translation.tsx";
 
 const ItemLabel = ({column, namespace}: {
     column: ColumnType;
@@ -9,7 +10,9 @@ const ItemLabel = ({column, namespace}: {
 
     return (
         <>
-            <DynamicView namespace={namespace} data={column} prefix={"list"} view={column.field + '.label'}>{column.label}</DynamicView>
+            <DynamicView namespace={namespace} data={column} prefix={"list"} view={column.field + '.label'}>
+                <Translation>{column.label}</Translation>
+            </DynamicView>
         </>
     )
 }

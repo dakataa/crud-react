@@ -11,7 +11,7 @@ import React, {
 } from "react";
 import {ModifyType} from "@src/type/ModifyType.tsx";
 import {FormViewErrorType, FormViewType} from "@src/type/FormViewType.tsx";
-import {Method, RequestBodyType} from "@dakataa/requester";
+import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 import Button from "@src/component/Button.tsx";
 import {UseDataProvider} from "@src/context/GetData.tsx";
 import {default as T} from "@src/component/Translation.tsx";
@@ -63,6 +63,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
     const renderedErrors = useRef<string[]>([]);
     const [, formRef] = UseForm();
+    const formGroup = UseFormGroup();
 
     const setValue = (name: string | null, value: string | string[]) => {
         const childView = name ? name.split('.').reduce((result: FormViewType | null, v: string) => {
@@ -102,8 +103,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
             if (allowDuplicates) {
                 return true;
             }
-
-            const formGroup = UseFormGroup();
             // console.log('can', e.full_name, parentFormViewContext?.form.full_name, id, can);
             return formGroup?.view.full_name === e.full_name || parentFormViewContext?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
         },
@@ -143,18 +142,18 @@ const FormRenderer = ({children}: PropsWithChildren) => {
     const uniqueId = useId();
     const [id, setId] = useState<string|null>(null)
     const {form: view, unsetRendered, setRendered, canRender} = UseFormView();
-
     const randomId = function(length = 6) {
         return Math.random().toString(36).substring(2, length+2);
     };
 
+
     useEffect(() => {
-        const newId = uniqueId;
-        setRendered?.(view, newId);
-        setId(newId);
+        setRendered?.(view, uniqueId);
+        setId(uniqueId);
 
         return () => {
-            // unsetRendered?.(view, newId);
+            unsetRendered?.(view, uniqueId);
+            setId(null);
         }
     }, []);
 
@@ -193,6 +192,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
+    const preloaderTimeout = useRef<number | null>(null);
+    const [formData, setFormData] = useState<FormData|null>(null);
 
     useImperativeHandle(ref, () => ({
         getFormRef: (): FormRef | null => formRef.current
@@ -214,6 +215,16 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
     const onSubmit = (formData: FormData) => {
         startLoading?.(formView?.full_name || 'form');
+        preloaderTimeout.current = setTimeout(() => stopLoading?.(formView?.full_name || 'form'), 250);
+        setFormData(formData);
+    }
+
+    useEffect(() => {
+        if(!formData) {
+            return;
+        }
+
+        preloaderTimeout.current && clearTimeout(preloaderTimeout.current);
 
         setAction({
             ...action,
@@ -221,7 +232,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
             body: formData,
             bodyType: RequestBodyType.FormData
         })
-    }
+    }, [formData ? JSON.stringify(convertFormDataToObject(formData)) : null]);
 
     useEffect(() => {
         if (onLoad) {
@@ -276,7 +287,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                 id={formView.id || 'form'}
                 name={formView.name || 'form'}
                 action={actionURL}
-                method={"POST"} onSubmit={onSubmit}
+                method={"POST"}
+                onSubmit={onSubmit}
             >
                 <FormViewProvider view={formView}>
                     <Block name={"content"}>

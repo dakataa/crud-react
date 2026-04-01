@@ -11,7 +11,7 @@ import Link from "@src/component/Link.tsx";
 import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
 import {AsTemplate, Block, Extend} from "@src/component/templating/Template.tsx";
 import Button from "@src/component/Button.tsx";
-import {default as T} from "@src/component/Translation.tsx";
+import Translation, {default as T} from "@src/component/Translation.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 
 const DefaultModifyTemplate = AsTemplate(({children}: {
@@ -57,14 +57,14 @@ const Modify = WithDataProvider(({template, children, onSuccess, modal}: {
     const dataProvider = UseDataProvider();
     const ComponentTemplate = modal ? Modal : (template || DefaultModifyTemplate);
 
-    if(!dataProvider) {
+    if (!dataProvider) {
         return;
     }
 
     return (
         <ComponentTemplate>
             <Extend name={"title"}>
-                {dataProvider?.results?.title || 'Title'}
+                <Translation>{dataProvider?.results?.title || 'Title'}</Translation>
             </Extend>
 
             <Extend name={"navigation"}>

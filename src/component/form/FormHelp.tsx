@@ -1,7 +1,7 @@
 import React from "react";
 import {UseFormView} from "@src/component/crud/form/Form.tsx";
 
-export const FormHelp = (
+const FormHelp = (
     {
         name
     }: {

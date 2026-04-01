@@ -59,16 +59,24 @@ export function ModalProvider(props: PropsWithChildren) {
         ...currentModal?.props || {}
     }
 
-    const key = currentModal ? [
-        currentModal.action.action.entity,
-        currentModal.action.action.namespace,
-        currentModal.action.action.name
-    ].filter(v => v).join('-') : Date.now();
+    const getModalKey = (modal: ModalActionType | null): string => {
+        return modal ? [
+            modal.action.action.entity,
+            modal.action.action.namespace,
+            modal.action.action.name
+        ].filter(v => v).join('-') : Date.now().toString()
+    }
+
+    const currentModalKey = getModalKey(currentModal);
 
     return (
         <ModalContext.Provider value={{
             modal: currentModal,
             setModal: (newModal: ModalActionType | null): void => {
+                if(currentModalKey === getModalKey(newModal)) {
+                    return;
+                }
+
                 dispatch(newModal);
             }
         }}>
@@ -86,7 +94,7 @@ export function ModalProvider(props: PropsWithChildren) {
                         }
                     })
                 }}>
-                    <CurrentActionProvider key={key} action={currentModal.action}>
+                    <CurrentActionProvider key={currentModalKey} action={currentModal.action}>
                         <ViewLoader
                             view={currentModal.action.action.name || 'list'}
                             props={{

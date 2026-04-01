@@ -154,13 +154,13 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
         <ListProvider data={results} onClick={handleAction}>
             <section className={className || "list"}>
                 <Block name={"header"}>
-                    <header className="content-header d-md-flex mb-3 justify-content-between align-items-center">
+                    <header className="content-header d-flex flex-column flex-md-row gap-3 mb-3 justify-content-between align-items-md-center">
                         <Block name={"title"}>
                             {title !== false && (
                                 React.isValidElement(title) ? (
                                     title
                                 ) : (
-                                    <h2>{title ?? results?.title}</h2>
+                                    <h2><T>{title ?? results?.title}</T></h2>
                                 )
                             )}
                         </Block>
@@ -180,7 +180,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                             </Block>
                             {results?.form?.filter?.view && (
                                 <div className={"btn-group btn-group-sm"}>
-                                    <Dropdown>
+                                    <Dropdown autoClose={"outside"}>
                                         <DropdownButton className={"btn btn-sm dropdown-toggle btn-outline-dark"}>
                                             <T>Filter</T>
                                         </DropdownButton>
