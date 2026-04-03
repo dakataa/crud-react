@@ -9,27 +9,13 @@ import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-export default defineConfig(() => {
-    return {
+export default defineConfig({
         build: {
             lib: {
                 name: "crud",
                 formats: ["es"],
                 entry: resolve(__dirname, 'lib/main.ts'),
             }
-        },
-        rollupOptions: {
-            external: ['react', 'react-dom', 'react-router', 'react/jsx-runtime'],
-            input: Object.fromEntries(
-                globSync(['lib/main.ts']).map((file) => {
-                    const entryName = relative(
-                        'src',
-                        file.slice(0, file.length - extname(file).length)
-                    )
-                    const entryUrl = fileURLToPath(new URL(file, import.meta.url))
-                    return [entryName, entryUrl]
-                })
-            )
         },
         plugins: [
             react(),
@@ -47,10 +33,6 @@ export default defineConfig(() => {
                     replacement: join(process.cwd(), 'node_modules/$1'),
                 },
                 {
-                    find: /^@crud\/(.+)/,
-                    replacement: join(process.cwd(), '/crud/$1'),
-                },
-                {
                     find: /^@src\/(.+)/,
                     replacement: join(process.cwd(), '/src/$1'),
                 }
@@ -59,5 +41,4 @@ export default defineConfig(() => {
         optimizeDeps: {
             exclude: ['@dakataa/requester']
         }
-    };
 });
