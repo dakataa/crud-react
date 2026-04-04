@@ -73,7 +73,7 @@ const Paginator = () => {
                             </>
                         )}
                         {(link || []).map((p, i) => (
-                            <PageItem key={i} page={p} active={p === page}/>
+                            <PageItem key={p} page={p} active={p === page}/>
                         ))}
                         {[...meta.links].reverse()[0] !== totalPages && (
                             <>
@@ -85,7 +85,7 @@ const Paginator = () => {
                             </>
                         )}
                         {page < totalPages && (
-                            <PageItem page={meta.totalPages} title="Go to Last Page">
+                            <PageItem key={"last"} page={meta.totalPages} title="Go to Last Page">
                                 {'\u00bb'}
                             </PageItem>
                         )}
