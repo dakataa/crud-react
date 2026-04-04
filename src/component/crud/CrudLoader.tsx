@@ -9,6 +9,7 @@ import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 import {DataProvider} from "@src/context/GetData.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ModalActionType} from "@src/context/ModalContext.tsx";
 
 type CurrentActionContextType = {
     action: OnClickAction,
@@ -150,6 +151,11 @@ const CrudLoader = ({path, preloader}: {
     const {link} = UseConfig();
     const {getOnClickActionByPath, actions} = UseActions();
     const [action, setAction] = useState<OnClickAction | undefined | null>(undefined);
+    const currentKey = action ? [
+        action.action.entity,
+        action.action.namespace,
+        action.action.name
+    ].filter(v => v).join('-') : Date.now().toString();
 
     path ??= link?.path ?? (location.pathname + location.search);
 
@@ -178,7 +184,7 @@ const CrudLoader = ({path, preloader}: {
     }
 
     return (
-        <CurrentActionProvider action={action}>
+        <CurrentActionProvider key={currentKey} action={action}>
             <DataProvider>
                 <ViewLoader view={action.action.name}/>
             </DataProvider>

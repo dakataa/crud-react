@@ -61,6 +61,10 @@ const Input = ({
         type = type === FormViewTypeEnum.Datetime ? 'datetime-local' : 'date';
     }
 
+    if(view.required) {
+        attr.required = 'required';
+    }
+
     return <>
         <input
             ref={ref}

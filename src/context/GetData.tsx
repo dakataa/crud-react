@@ -91,7 +91,6 @@ const GetData = (
     }, [refresh, path, bodyData, bodyType, method])
 
     useEffect(() => {
-
         return () => {
             cancel();
             enabled.current = loadOnInit;
