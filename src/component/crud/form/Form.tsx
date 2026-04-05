@@ -216,6 +216,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const onSubmit = (formData: FormData) => {
         startLoading?.(formView?.full_name || 'form');
         preloaderTimeout.current = setTimeout(() => stopLoading?.(formView?.full_name || 'form'), 250);
+        formData.append('_ts', Date.now().toString());
         setFormData(formData);
     }
 
