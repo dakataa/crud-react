@@ -185,7 +185,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     children?: ReactNode;
 }, ref) => {
     const {navigate, generateLink, generateActionLink} = UseActions();
-    const {action, setAction} = UseCurrentAction();
+    const {action, setAction, refresh} = UseCurrentAction();
 
     const actionURL = generateActionLink(action);
     const [data, setData] = useState<ModifyType | null>(null)
@@ -257,7 +257,13 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
         formRef.current?.setErrors(errors);
 
 
-        if (!formData || !formView.submitted || dataProvider?.status !== 200 || Object.entries(errors).length) {
+        if (!formView.submitted || dataProvider?.status !== 200 || Object.entries(errors).length) {
+            return;
+        }
+
+        // If try to re-draw the submitted form without form data.
+        if(!formData) {
+            refresh();
             return;
         }
 
