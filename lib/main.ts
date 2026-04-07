@@ -102,3 +102,6 @@ export {default as Money} from "src/component/Money.tsx";
 export {default as Dropdown, DropdownContent, DropdownButton} from "src/component/Dropdown"
 
 export {maskEmail, capitalize, titlize} from "src/helper/StingUtils.tsx"
+
+// Lottie
+export {default as LottieAnimation} from "src/component/LottieAnimation.tsx";

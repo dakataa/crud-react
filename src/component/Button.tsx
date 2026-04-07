@@ -65,7 +65,7 @@ export default (
     }, [preload]);
 
     return (
-        <button form={form} type={"submit"} disabled={disabled} {...props} ref={buttonRef}>
+        <button form={form} type={type} disabled={disabled} {...props} ref={buttonRef}>
             <BaseButtonContent preload={preload} {...props}>{children}</BaseButtonContent>
         </button>
     );
