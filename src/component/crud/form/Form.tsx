@@ -189,7 +189,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
     const actionURL = generateActionLink(action);
     const [data, setData] = useState<ModifyType | null>(null)
-    const formRef = useRef<FormRef | null>(null);
+    const formRef = useRef<FormRef | undefined>(undefined);
     const dataProvider = UseDataProvider();
 
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
@@ -197,7 +197,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const [formData, setFormData] = useState<FormData|null>(null);
 
     useImperativeHandle(ref, () => ({
-        getFormRef: (): FormRef | null => formRef.current
+        getFormRef: (): FormRef | undefined => formRef.current
     }));
 
     const getFormErrors = (view: FormViewType): { [key: string]: FormViewErrorType[] } => {
@@ -276,7 +276,12 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
         }
 
         if (onSuccess) {
-            onSuccess(data).then(() => doAfter());
+            const onSuccessReturn = onSuccess(data);
+            if(onSuccessReturn instanceof Promise) {
+                onSuccessReturn.then(() => doAfter());
+            } else {
+                doAfter();
+            }
         } else {
             doAfter();
         }

@@ -1,4 +1,4 @@
-import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useReducer, useRef} from "react";
+import React, {ForwardedRef, forwardRef, RefObject, useEffect, useImperativeHandle, useReducer, useRef} from "react";
 import {Constraint} from "@src/component/form/constraint/Contraint";
 import {FormViewErrorType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
@@ -38,7 +38,8 @@ type FormProps = {
     className?: string,
     data?: FormData,
     name?: string,
-    id?: string
+    id?: string,
+    ref?: RefObject<FormRef | undefined>
 }
 
 export type FormRef = {
@@ -59,7 +60,7 @@ export const nameToId = (name: string, index: number | null = null) => (
     + (index ?? '')
 ).toLowerCase();
 
-export const Form = forwardRef(({
+export const Form = ({
                                     id,
                                     children,
                                     data,
@@ -67,9 +68,11 @@ export const Form = forwardRef(({
                                     onBeforeSubmit,
                                     onSubmit: onSubmitCallback,
                                     onReset: onResetCallback,
+                                    ref,
                                     ...props
-                                }: FormProps, ref: ForwardedRef<FormRef>) => {
+                                }: FormProps) => {
     const formElementRef = useRef<HTMLFormElement | null>(null);
+
     const initialState: FormState = {
         response: null,
         constraints: {},
@@ -277,4 +280,4 @@ export const Form = forwardRef(({
             <form id={id} ref={formElementRef} onSubmit={onSubmit} {...props}>{children}</form>
         </FormContext.Provider>
     )
-});
+}
