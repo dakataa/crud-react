@@ -191,6 +191,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
+
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
     const preloaderTimeout = useRef<number | null>(null);
     const [formData, setFormData] = useState<FormData|null>(null);
@@ -217,6 +218,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
         startLoading?.(formView?.full_name || 'form');
         preloaderTimeout.current = setTimeout(() => stopLoading?.(formView?.full_name || 'form'), 250);
         formData.append('_ts', Date.now().toString());
+
         setFormData(formData);
     }
 
@@ -255,7 +257,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
         formRef.current?.setErrors(errors);
 
 
-        if (!formView.submitted || dataProvider?.status !== 200 || Object.entries(errors).length) {
+        if (!formData || !formView.submitted || dataProvider?.status !== 200 || Object.entries(errors).length) {
             return;
         }
 
