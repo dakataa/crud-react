@@ -70,10 +70,13 @@ const GetData = (
                 signal: loading.current?.signal,
             })
             .then(({data, response}) => {
-                if (response.redirected && !['cors'].includes(response.type)) {
-                    const newURL = internalToExternalPath(new URL(response.url).pathname);
-                    navigate(newURL);
-                    return;
+                // if (response.redirected && !['cors'].includes(response.type)) {
+                if (response.redirected) {
+                    if(response.status === 200) {
+                        const newURL = internalToExternalPath(new URL(response.url).pathname);
+                        navigate(newURL);
+                        return;
+                    }
                 }
 
                 setResults({data, response});
