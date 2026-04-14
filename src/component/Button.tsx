@@ -2,6 +2,16 @@ import React, {PropsWithChildren, RefObject, useEffect, useRef, useState} from "
 import BaseButtonContent, {ButtonContentProps} from "./BaseButtonContent.tsx";
 import {UsePreloader, UsePreloaderProvider} from "@src/component/Preloader.tsx";
 
+export type ButtonPropsType =
+    {
+        loader?: string,
+        autoDisableOnInvalid?: boolean,
+        ref?: RefObject<HTMLButtonElement>
+    }
+    & ButtonContentProps
+    & PropsWithChildren
+    & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+
 export default (
     {
         children,
@@ -11,11 +21,7 @@ export default (
         autoDisableOnInvalid,
         ref,
         ...props
-    }: {
-        loader?: string,
-        autoDisableOnInvalid?: boolean,
-        ref?: RefObject<HTMLButtonElement>
-    } & ButtonContentProps & PropsWithChildren & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => {
+    }: ButtonPropsType) => {
 
     const {isLoading} = UsePreloaderProvider() || {};
     const loader = UsePreloader() || form || 'form';
@@ -39,7 +45,7 @@ export default (
 
             const boundingClientRect = buttonRef.current.getBoundingClientRect();
             const isVisible = !(boundingClientRect.width === 0 && boundingClientRect.height === 0);
-            if(!isVisible) {
+            if (!isVisible) {
                 return;
             }
 
