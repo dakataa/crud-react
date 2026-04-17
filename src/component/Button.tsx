@@ -43,12 +43,6 @@ export default (
                 return;
             }
 
-            const boundingClientRect = buttonRef.current.getBoundingClientRect();
-            const isVisible = !(boundingClientRect.width === 0 && boundingClientRect.height === 0);
-            if (!isVisible) {
-                return;
-            }
-
             setDisabled(!formEl?.checkValidity() || false);
         }
 
