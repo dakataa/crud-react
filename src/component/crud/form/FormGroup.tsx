@@ -26,15 +26,19 @@ export function FormGroupProvider({id, view, children}: FormGroupContextType & P
 const FormGroup = (
     {
         name,
+        options,
         optional // Stop throwing error when Form View is missing.
     }: {
         name?: string,
+        options?: FormViewType,
         optional?: boolean;
     }) => {
     const {form} = UseFormView();
     const view = name ? form?.children?.[name] : form;
 
-    if (!view) {
+    const compiledView = {...view, ...options || {}} as FormViewType;
+
+    if (!compiledView) {
         if(optional) {
             return  null;
         }
@@ -43,7 +47,7 @@ const FormGroup = (
     }
 
     return (
-        <FormViewProvider view={view}>
+        <FormViewProvider view={compiledView}>
             <FormGroupViewLoader/>
         </FormViewProvider>
     );
