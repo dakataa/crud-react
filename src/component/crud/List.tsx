@@ -5,7 +5,7 @@ import Paginator from "@src/component/crud/Paginator.tsx";
 import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
 import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
 import Button from "@src/component/Button.tsx";
-import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
+import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
 import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
@@ -201,7 +201,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                                                     {
                                                         results?.form?.filter && (
                                                             <FormViewProvider view={results.form.filter.view}>
-                                                                <FormFieldViewLoader/>
+                                                                <FormGroupViewLoader/>
                                                             </FormViewProvider>
                                                         )
                                                     }

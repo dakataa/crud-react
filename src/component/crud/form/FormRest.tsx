@@ -1,7 +1,7 @@
-import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
+import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
 
 const FormRest = () => {
-    return <FormFieldViewLoader />
+    return <FormGroupViewLoader />
 }
 
 

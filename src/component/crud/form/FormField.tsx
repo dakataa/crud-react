@@ -4,9 +4,13 @@ import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 import Input from "@src/component/form/Input.tsx";
 import Collection from "@src/component/form/Collection.tsx";
 import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
-import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
+import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
+import DynamicView from "@src/component/crud/DynamicView.tsx";
 
-const FormFieldSelector = ({view, ref}: { view: FormViewType, ref?: React.RefObject<HTMLInputElement | HTMLSelectElement> }) => {
+const FormFieldSelector = ({view, ref}: {
+    view: FormViewType,
+    ref?: React.RefObject<HTMLInputElement | HTMLSelectElement>
+}) => {
     switch (view.type) {
         case FormViewTypeEnum.Entity:
         case FormViewTypeEnum.Choice:
@@ -38,7 +42,7 @@ const FormFieldSelector = ({view, ref}: { view: FormViewType, ref?: React.RefObj
         case FormViewTypeEnum.Repeated:
         case FormViewTypeEnum.Form: {
             return (
-                <FormFieldViewLoader/>
+                <FormGroupViewLoader/>
             );
         }
         default: {
@@ -55,24 +59,24 @@ const FormField = ({name, options, ref}: {
 }) => {
     const {form} = UseFormView();
     const view = name ? form.children?.[name] : form;
-
     if (!view) {
         throw new Error('Missing Form View for FormField' + (name ? ': ' + name : ''));
     }
 
     const compiledView = {...view, ...options || {}};
-
-    if (name !== undefined) {
-        return (
-            <FormViewProvider view={compiledView}>
-                <FormFieldSelector view={compiledView} ref={ref}/>
-            </FormViewProvider>
-        );
-    }
+    const blockPrefixes = [(compiledView.name || 'form') + 'Field', ...compiledView.block_prefixes || []];
 
     return (
         <>
-            <FormFieldSelector view={compiledView} ref={ref}/>
+            <FormViewProvider view={compiledView}>
+            <DynamicView
+                view={blockPrefixes}
+                prefix={"modify/form"}
+                data={view}
+            >
+                <FormFieldSelector view={compiledView} ref={ref}/>
+            </DynamicView>
+            </FormViewProvider>
         </>
     )
 }

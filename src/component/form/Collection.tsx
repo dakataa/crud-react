@@ -4,7 +4,7 @@ import Link from "@src/component/Link.tsx";
 import T from "@src/component/Translation.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import {FormViewProvider, UseFormView, UseParentFormView} from "@src/component/crud/form/Form.tsx";
-import FormFieldViewLoader from "@src/component/crud/form/FormFieldViewLoader.tsx";
+import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
 import {nameToId} from "@src/component/form/Form.tsx";
 import FormGroup from "@src/component/form/FormGroup.tsx";
 

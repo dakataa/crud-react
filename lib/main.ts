@@ -21,7 +21,7 @@ export {UseListItem} from "src/context/ListItemContext.tsx"
 // CRUD Form
 export {default as CrudForm, UseFormView, FormViewProvider} from "src/component/crud/form/Form.tsx"
 export type {FormViewContextType, ModifyFormRefType} from "src/component/crud/form/Form.tsx";
-export {default as FormFieldViewLoader} from "src/component/crud/form/FormFieldViewLoader.tsx";
+export {default as FormFieldViewLoader} from "@src/component/crud/form/FormGroupViewLoader.tsx";
 export {default as FormGroup} from "src/component/crud/form/FormGroup.tsx";
 export {default as FormField} from "src/component/crud/form/FormField.tsx";
 export {default as FormLabel} from "src/component/crud/form/FormLabel.tsx";
