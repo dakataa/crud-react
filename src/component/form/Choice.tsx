@@ -45,7 +45,7 @@ const ChoiceOption = (
     } & ChoiceProps) => {
     const elementName = view.full_name;
     const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
-    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label || choiceValue;
+    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label;
     const elementId = nameToId(elementName || '', choiceValue);
 
     const labelAttr = {
@@ -78,13 +78,15 @@ const ChoiceOption = (
                 //     })
                 // }}
             />
-            <label
-                htmlFor={choiceAttributes.id}
-                className={"form-check-label"}
-                {...labelAttr}
-            >
-                <Translation>{choiceLabel}</Translation>
-            </label>
+            {choiceLabel?.length > 0 && (
+                <label
+                    htmlFor={choiceAttributes.id}
+                    className={"form-check-label"}
+                    {...labelAttr}
+                >
+                    <Translation>{choiceLabel}</Translation>
+                </label>
+            )}
         </>
     )
 }

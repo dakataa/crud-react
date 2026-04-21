@@ -37,7 +37,6 @@ export default (
 
         const formEl = buttonRef.current?.closest('form');
         const fieldsetEl = buttonRef.current?.closest('fieldset, form');
-
         const onChange = () => {
             if (!buttonRef.current) {
                 return;
@@ -46,12 +45,37 @@ export default (
             setDisabled(!formEl?.checkValidity() || false);
         }
 
+        const observerSelector = "input, select, textarea";
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                [...mutation.addedNodes, ...mutation.removedNodes, mutation.target].forEach((node: Node) => {
+                    if(!(node instanceof Element)) {
+                        return;
+                    }
+
+                    if (node.matches(observerSelector) || node.querySelector(observerSelector)) {
+                        onChange();
+                    }
+                });
+            });
+        });
+
         fieldsetEl?.addEventListener('input', onChange)
 
-        setTimeout(onChange, 50);
+        if(formEl) {
+            observer.observe(formEl, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ["hidden", "style", "class"]
+            });
+        }
+
+        setTimeout(onChange, 150);
 
         return () => {
-            fieldsetEl?.removeEventListener('input', onChange)
+            observer.disconnect();
+            fieldsetEl?.removeEventListener('input', onChange);
         }
     }, []);
 
