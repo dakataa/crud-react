@@ -59,17 +59,20 @@ const ChoiceOption = (
 
     const checked = view.checked instanceof Function ? view.checked(choiceValue) : view.checked;
 
+    const data = view?.data;
+    const defaultChecked = data instanceof Array ? data.includes(choiceValue) : data == choiceValue;
+
     return (
         <>
             <input
                 defaultValue={choiceValue}
                 type={view?.multiple ? 'checkbox' : 'radio'}
-                defaultChecked={view?.data?.includes(choiceValue)}
+                defaultChecked={checked || defaultChecked}
                 name={(elementName || '') + (view?.multiple ? '[]' : '')}
                 id={elementId}
                 className={"form-check-input"}
-                {...choiceAttributes}
                 checked={checked}
+                {...choiceAttributes}
                 // onChange={(e) => {
                 //     return validate({`
                 //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,

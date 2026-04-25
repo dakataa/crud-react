@@ -1,4 +1,4 @@
-import React, {ForwardedRef, forwardRef, RefObject, useEffect, useImperativeHandle, useReducer, useRef} from "react";
+import React, {RefObject, useEffect, useImperativeHandle, useReducer, useRef} from "react";
 import {Constraint} from "@src/component/form/constraint/Contraint";
 import {FormViewErrorType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
 
@@ -86,30 +86,36 @@ export const Form = ({
             return;
         }
 
-        if (!(element instanceof HTMLInputElement)) {
+        let elements = [];
+
+        if(element instanceof RadioNodeList) {
+            elements = [...element];
+        } else if(element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
+            elements = [element];
+        } else {
             throw new Error('Cannot Set Value on missing Form Element with name: ' + name);
         }
 
-        switch (element.type) {
-            case FormViewTypeEnum.Checkbox:
-            case FormViewTypeEnum.Radio: {
-                if (value !== null && !(value instanceof Array)) {
-                    value = [value];
-                }
+        elements.forEach(element => {
+            switch (element.type) {
+                case FormViewTypeEnum.Checkbox:
+                case FormViewTypeEnum.Radio: {
+                    if (value !== null && !(value instanceof Array)) {
+                        value = [value];
+                    }
 
-                if (value?.includes(element.value)) {
-                    element.checked = true;
-                }
+                    element.checked = value?.includes(element.value) ?? false;
 
-                break;
+                    break;
+                }
+                default:
+                    if (value instanceof Array) {
+                        throw new Error('Invalid Value');
+                    }
+
+                    element.value = value || '';
             }
-            default:
-                if (value instanceof Array) {
-                    throw new Error('Invalid Value');
-                }
-
-                element.value = value || '';
-        }
+        });
     };
 
     const handler: FormRef = {
