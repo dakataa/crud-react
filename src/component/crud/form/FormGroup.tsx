@@ -38,7 +38,7 @@ const FormGroup = (
 
     const compiledView = {...view, ...options || {}} as FormViewType;
 
-    if (!compiledView) {
+    if (!compiledView?.type) {
         if(optional) {
             return  null;
         }

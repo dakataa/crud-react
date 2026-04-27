@@ -39,7 +39,7 @@ type FormProps = {
     data?: FormData,
     name?: string,
     id?: string,
-    ref?: RefObject<FormRef | undefined>
+    ref?: RefObject<FormRef | undefined | null>
 }
 
 export type FormRef = {

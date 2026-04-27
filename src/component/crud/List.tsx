@@ -90,7 +90,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
     }
 
     const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
-        if(onAction?.(onClickAction, event)) {
+        if (onAction?.(onClickAction, event)) {
             return;
         }
 
@@ -154,7 +154,8 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
         <ListProvider data={results} onClick={handleAction}>
             <section className={className || "list"}>
                 <Block name={"header"}>
-                    <header className="content-header d-flex flex-column flex-md-row gap-3 mb-3 justify-content-between align-items-md-center">
+                    <header
+                        className="content-header d-flex flex-column flex-md-row gap-3 mb-3 justify-content-between align-items-md-center">
                         <Block name={"title"}>
                             {title !== false && (
                                 React.isValidElement(title) ? (
@@ -179,52 +180,60 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                                 )}
                             </Block>
                             {results?.form?.filter?.view && (
-                                <div className={"btn-group btn-group-sm"}>
-                                    <Dropdown autoClose={"outside"}>
-                                        <DropdownButton className={"btn btn-sm dropdown-toggle btn-outline-dark"}>
-                                            <T>Filter</T>
-                                        </DropdownButton>
-                                        <DropdownContent>
-                                            <div className="filter">
-                                                <Form
-                                                    id={"filter_" + nameToId(entity)}
-                                                    ref={filterFormRef}
-                                                    onSubmit={(formData: FormData) => handleAction({
-                                                        ...action,
-                                                        query: objectRemoveEmpty(convertFormDataToObject(formData))
-                                                    })}
-                                                    onReset={() => handleAction({
-                                                        ...action,
-                                                        query: undefined
-                                                    })}
-                                                >
-                                                    {
-                                                        results?.form?.filter && (
-                                                            <FormViewProvider view={results.form.filter.view}>
-                                                                <FormGroupViewLoader/>
-                                                            </FormViewProvider>
-                                                        )
-                                                    }
-                                                    <button className={"btn btn-primary me-2"} type={"submit"}>
-                                                        <T>Submit</T>
-                                                    </button>
-                                                </Form>
-                                            </div>
-                                        </DropdownContent>
-                                    </Dropdown>
-                                    {location.searchParams.has('filter') && (
-                                        <Button onClick={() => {
-                                            filterFormRef.current?.reset();
-                                        }} className="btn btn-outline-dark">x</Button>
-                                    )}
-                                </div>
+                                <Block name={"filter"}>
+                                    <div className={"btn-group btn-group-sm"}>
+                                        <Dropdown autoClose={"outside"}>
+                                            <DropdownButton className={"btn btn-sm dropdown-toggle btn-outline-dark"}>
+                                                <T>Filter</T>
+                                            </DropdownButton>
+                                            <DropdownContent>
+                                                <div className="filter">
+                                                    <Form
+                                                        id={"filter_" + nameToId(entity)}
+                                                        ref={filterFormRef}
+                                                        onSubmit={(formData: FormData) => handleAction({
+                                                            ...action,
+                                                            query: objectRemoveEmpty(convertFormDataToObject(formData))
+                                                        })}
+                                                        onReset={() => handleAction({
+                                                            ...action,
+                                                            query: undefined
+                                                        })}
+                                                    >
+                                                        {
+                                                            results?.form?.filter && (
+                                                                <FormViewProvider view={results.form.filter.view}>
+                                                                    <FormGroupViewLoader/>
+                                                                </FormViewProvider>
+                                                            )
+                                                        }
+                                                        <div className={"d-flex gap-2"}>
+                                                            <button className={"btn btn-primary"} type={"submit"}>
+                                                                <T>Apply Filters</T>
+                                                            </button>
+                                                            <button className={"btn"} type={"reset"}>
+                                                                <T>Clear</T>
+                                                            </button>
+                                                        </div>
+                                                    </Form>
+                                                </div>
+                                            </DropdownContent>
+                                        </Dropdown>
+                                        {location.searchParams.has('filter') && (
+                                            <Button onClick={() => {
+                                                filterFormRef.current?.reset();
+                                            }} className="btn btn-outline-dark">x</Button>
+                                        )}
+                                    </div>
+                                </Block>
                             )}
                         </div>
                     </header>
                 </Block>
                 <BatchActionsProvider onClick={handleBatchAction}>
                     {results?.form?.filter?.view && (
-                        <FiltersView formView={results.form.filter.view} onClick={(key) => filterData({excludeFilterParameters: [key]})}/>
+                        <FiltersView formView={results.form.filter.view}
+                                     onClick={(key) => filterData({excludeFilterParameters: [key]})}/>
                     )}
                     <BatchActionSelector/>
                     <Block name={"content"}>
