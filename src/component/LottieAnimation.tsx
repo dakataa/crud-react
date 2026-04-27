@@ -25,20 +25,36 @@ const LottieAnimation = ({
             return;
         }
 
+        const autoPlay = options?.autoplay !== undefined ? options?.autoplay : true;
         const animation = LottiePlayer.loadAnimation({
             renderer: 'svg',
             loop: false,
-            autoplay: true,
             rendererSettings: {
                 preserveAspectRatio: 'xMidYMid meet'
             },
             animationData: animationData,
             path: path,
             container: elementRef.current,
-            ...(options || {})
+            ...(options || {}),
+            autoplay: false
         });
 
+        let visibilityObserver = null;
+        if(autoPlay) {
+            visibilityObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animation.play();
+                    }
+                });
+            });
+
+            visibilityObserver.observe(elementRef.current);
+        }
+
         return () => {
+            visibilityObserver?.disconnect();
+
             animation.destroy();
         }
     }, []);
