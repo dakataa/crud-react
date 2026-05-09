@@ -69,13 +69,13 @@ const FormField = ({name, options, ref}: {
     return (
         <>
             <FormViewProvider view={compiledView}>
-            <DynamicView
-                view={blockPrefixes}
-                prefix={"modify/form"}
-                data={view}
-            >
-                <FormFieldSelector view={compiledView} ref={ref}/>
-            </DynamicView>
+                <DynamicView
+                    view={blockPrefixes}
+                    prefix={"modify/form"}
+                    data={view}
+                >
+                    <FormFieldSelector view={compiledView} ref={ref}/>
+                </DynamicView>
             </FormViewProvider>
         </>
     )
