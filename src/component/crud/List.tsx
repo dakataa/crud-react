@@ -246,7 +246,9 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
                             {/*    routeParams={action.parameters}/>*/}
 
                         </DynamicView>
-                        <Paginator/>
+                        <DynamicView key={"list"} prefix={"list"} view={"paginator"}>
+                            <Paginator/>
+                        </DynamicView>
                     </Block>
                 </BatchActionsProvider>
             </section>

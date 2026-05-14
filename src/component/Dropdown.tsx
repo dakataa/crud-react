@@ -24,6 +24,10 @@ const Dropdown = ({ className, children, autoClose, icon}: PropsWithChildren<{
     useEffect(() => {
         const dropdown = new BootstrapDropdown(ref.current, {
             autoClose: autoClose == undefined ? true : autoClose,
+            boundary: document.body,
+            popperConfig: {
+                strategy: 'fixed'
+            }
         });
 
         return () => {
