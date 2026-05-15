@@ -1,4 +1,4 @@
-import React, {PropsWithChildren} from "react";
+import React, {PropsWithChildren, SyntheticEvent} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ActionVisibility} from "@src/type/ActionType.tsx";
@@ -6,7 +6,7 @@ import {UseDataProvider} from "@src/context/GetData.tsx";
 
 export type ListContextType = {
     data?: ListType;
-    onClick?: (props: OnClickAction, event: React.MouseEvent) => void;
+    onClick?: (props: OnClickAction, event: SyntheticEvent) => void;
 }
 
 const ListItemContext = React.createContext<ListContextType | undefined>(undefined);
