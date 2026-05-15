@@ -62,7 +62,9 @@ const Paginator = () => {
         maxResultChoices.push(maxResults)
     }
 
-    return hasResults && (
+    const displayPaginator = totalResults > Math.min(...maxResultChoices);
+
+    return displayPaginator && (
         <div className="d-flex flex-row flex-wrap flex-md-row justify-content-center align-items-center gap-3 py-2">
             <small>
                 <Translation translationKey={"PaginationResults"} properties={{count: totalResults}}>
@@ -119,9 +121,10 @@ const Paginator = () => {
                         }
                     }, e);
                 }} className="form-select form-select-sm w-auto">
-                    {maxResultChoices.map((choiceMaxResults) => (
-                        <option value={choiceMaxResults} selected={choiceMaxResults === maxResults}>{choiceMaxResults} /
-                            стр.</option>
+                    {maxResultChoices.map((choiceMaxResults, index) => (
+                        <option key={index} value={choiceMaxResults} defaultChecked={choiceMaxResults === maxResults}>
+                            {choiceMaxResults} / стр.
+                        </option>
                     ))}
                 </select>
             )}

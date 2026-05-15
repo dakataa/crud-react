@@ -9,8 +9,11 @@ export type TranslationProps = {
 };
 
 const Translation = ({children, translationKey, domain, properties, ...props}: TranslationProps & PropsWithChildren) => {
-
     properties ??= {};
+
+    if(typeof children === "boolean") {
+        return;
+    }
 
     return (
         <DynamicView

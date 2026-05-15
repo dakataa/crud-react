@@ -193,7 +193,7 @@ const Choice = (
             >
                 {view.placeholder && (
                     <option value={""}>
-                        <Translation>{view.placeholder}</Translation>
+                        <Translation>{view.placeholder || ''}</Translation>
                     </option>
                 )}
                 {Object.values(view.choices || []).map((choice: any, index: number) => (
