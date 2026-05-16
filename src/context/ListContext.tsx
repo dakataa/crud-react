@@ -6,7 +6,7 @@ import {UseDataProvider} from "@src/context/GetData.tsx";
 
 export type ListContextType = {
     data?: ListType;
-    onClick?: (props: OnClickAction, event: SyntheticEvent) => void;
+    onClick?: (props: OnClickAction, event?: SyntheticEvent) => void;
 }
 
 const ListItemContext = React.createContext<ListContextType | undefined>(undefined);

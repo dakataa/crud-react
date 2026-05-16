@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef} from "react";
+import React, {ReactElement, SyntheticEvent, useRef} from "react";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 import GridView from "@src/component/crud/GridView.tsx";
 import Paginator from "@src/component/crud/Paginator.tsx";
@@ -31,7 +31,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
     embedded?: boolean
     title?: string | ReactElement | false,
     className?: string,
-    onAction?: (action: OnClickAction, event?: React.MouseEvent) => boolean | null | void,
+    onAction?: (action: OnClickAction, event?: SyntheticEvent) => boolean | null | void,
 }) => {
     const {action, setAction} = UseCurrentAction();
     const {generateActionLink, location, navigate} = UseActions()
@@ -89,7 +89,7 @@ const List = WithDataProvider(AsTemplate(({embedded = false, title, className, o
         });
     }
 
-    const handleAction = (onClickAction: OnClickAction, event?: React.MouseEvent) => {
+    const handleAction = (onClickAction: OnClickAction, event?: SyntheticEvent) => {
         if (onAction?.(onClickAction, event)) {
             return;
         }
