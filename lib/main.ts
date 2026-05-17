@@ -10,7 +10,7 @@ export {
 export type {CurrentActionProviderRef} from "src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "src/component/crud/Modify.tsx";
 export type {ModifyType} from "src/type/ModifyType.tsx";
-export {default as List} from "src/component/crud/List.tsx";
+export {default as List, ListInner, WithListProvider} from "src/component/crud/List.tsx";
 export {default as GridView} from "src/component/crud/GridView.tsx";
 export {default as ListView} from "src/component/crud/ListView.tsx";
 export {default as ListItem} from "src/component/crud/ListItem.tsx";
@@ -95,7 +95,7 @@ export {UseDataProvider, DataProvider, GetData, GetDataByAction, WithDataProvide
 export type {GetDataType, GetDataProps, GetDataByActionProps} from "src/context/GetData.tsx";
 export type {ListType} from "src/type/ListType.tsx"
 export type {ViewType} from "src/type/ViewType.tsx"
-export type {ListContextType} from "src/context/ListContext.tsx"
+export type {ListContextPropsType} from "src/context/ListContext.tsx"
 export type {ListItemContextType} from "src/context/ListItemContext.tsx"
 
 export {default as Money} from "src/component/Money.tsx";

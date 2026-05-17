@@ -9,8 +9,8 @@ const DropdownButton = ({children, disabled, className}: PropsWithChildren<{clas
     </>
 };
 
-const DropdownContent = ({children, ...props}: { children: any }) => {
-    return <div className={"dropdown-menu"}>
+const DropdownContent = ({children, position,  ...props}: { children: any, position?: 'end' | 'start' }) => {
+    return <div className={"dropdown-menu dropdown-menu-"+(position || 'left')}>
         {children}
     </div>
 }
