@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, SyntheticEvent} from "react";
+import React, {PropsWithChildren, SyntheticEvent, useRef} from "react";
 import {ListType} from "@src/type/ListType.tsx";
 import {OnClickAction} from "@src/type/OnClickAction.tsx";
 import {ActionType, ActionVisibility} from "@src/type/ActionType.tsx";
@@ -11,6 +11,7 @@ import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {Method, RequestBodyType} from "@dakataa/requester";
 import {ColumnType} from "@src/type/ColumnType.tsx";
+import {ChoiceType, FormViewType} from "@src/type/FormViewType.tsx";
 
 export type ListContextPropsType = {
     embedded?: boolean;
@@ -36,7 +37,6 @@ export function UseList() {
     const {generateActionLink, location, navigate} = UseActions()
     const {openModal} = UseModal();
     const {open: openAlert} = UseAlert();
-
     const {embedded, onClick: onAction} = context;
     const primaryColumn = data?.entity?.primaryColumn;
     const columns = (data?.entity?.columns || []).filter((c: ColumnType) => c.visible).filter((c: ColumnType) => c.group !== false);
@@ -50,10 +50,9 @@ export function UseList() {
     }
 
     const getActionOnClickAction = (actionName: string): OnClickAction | undefined => {
-
         const listAction = getAction(actionName);
 
-        if(!listAction) {
+        if (!listAction) {
             return undefined;
         }
 
@@ -170,6 +169,34 @@ export function UseList() {
         });
     }
 
+    const getValue = (view: FormViewType) => {
+        if (view.choices !== undefined) {
+            const choices = view.choices?.reduce<ChoiceType[]>((result, c) => ([...result, ...(c.choices || [c])]), []).reduce<{
+                [key: string]: string
+            }>((result, choice) => {
+                const choiceValue = choice.value instanceof Function ? choice.value(choice) : choice.value;
+                const choiceLabel = choice.label instanceof Function ? choice.label(choice) : choice.label
+                return ({...result, [choiceValue]: choiceLabel})
+            }, {});
+
+            return (view.choices ? Object.values(view.data instanceof Object ? view.data : [view.data]).map((k: any) => choices[k] ?? k).join(', ') : view.data);
+        } else if (view.checked !== undefined) {
+            return view.checked ? 'Yes' : 'No';
+        }
+
+        return view.data;
+    }
+
+    const appliedFilters = Object.values<FormViewType>(data.form?.filter?.view?.children || [])
+        .filter(item => item.data !== null)
+        .map((item) => {
+            return {
+                label: item.label,
+                value: getValue(item),
+                formView: item
+            };
+        });
+
 
     return {
         data,
@@ -185,7 +212,8 @@ export function UseList() {
         getActions,
         getAction,
         getActionOnClickAction,
-        handleBatchAction
+        handleBatchAction,
+        appliedFilters
     }
 }
 

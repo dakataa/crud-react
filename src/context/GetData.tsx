@@ -60,6 +60,8 @@ const GetData = (
             return;
         }
 
+        cancel();
+
         loading.current = new AbortController();
 
         CrudRequester()

@@ -152,13 +152,13 @@ const ListInner = AsTemplate(({title, className}: {
                     </div>
                 </header>
             </Block>
+            <Block name={"filters"}>
+                <FiltersView
+                    formView={results.form.filter.view}
+                    onClick={(key) => filterData({excludeFilterParameters: [key]})}
+                />
+            </Block>
             <BatchActionsProvider onClick={handleBatchAction}>
-                {results?.form?.filter?.view && (
-                    <FiltersView
-                        formView={results.form.filter.view}
-                        onClick={(key) => filterData({excludeFilterParameters: [key]})}
-                    />
-                )}
                 <BatchActionSelector/>
                 <Block name={"content"}>
                     <DynamicView key={"list"} prefix={"list"} view={"content"}>
