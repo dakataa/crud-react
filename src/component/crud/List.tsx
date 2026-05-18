@@ -1,4 +1,4 @@
-import React, {ComponentType, FC, ReactElement, SyntheticEvent, useRef} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactElement, SyntheticEvent, useRef} from "react";
 import {convertFormDataToObject} from "@dakataa/requester";
 import GridView from "@src/component/crud/GridView.tsx";
 import Paginator from "@src/component/crud/Paginator.tsx";
@@ -30,10 +30,12 @@ type ListPropsType = {
     onAction?: (action: OnClickAction, event?: SyntheticEvent) => boolean | null | void,
 };
 
-const List = WithDataProvider(({embedded = false, title, className, onAction}: ListPropsType) => {
+const List = WithDataProvider(({children, embedded = false, title, className, onAction}: ListPropsType & PropsWithChildren) => {
     return (
         <ListProvider embedded={embedded} onClick={onAction}>
-            <ListInner title={title} className={className}/>
+            <ListInner title={title} className={className}>
+                {children}
+            </ListInner>
         </ListProvider>
     )
 });
@@ -52,7 +54,7 @@ function WithListProvider<P extends object>(Component: ComponentType<P>, options
 const ListInner = AsTemplate(({title, className}: {
     title?: string | ReactElement | false,
     className?: string
-}) => {
+} & PropsWithChildren) => {
     const {
         data: results,
         handleAction,

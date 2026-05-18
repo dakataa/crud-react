@@ -38,6 +38,7 @@ export function UseList() {
     const {openModal} = UseModal();
     const {open: openAlert} = UseAlert();
     const {embedded, onClick: onAction} = context;
+
     const primaryColumn = data?.entity?.primaryColumn;
     const columns = (data?.entity?.columns || []).filter((c: ColumnType) => c.visible).filter((c: ColumnType) => c.group !== false);
     const actions = Object.values(data?.action || []) as ActionType[];
@@ -206,7 +207,7 @@ export function UseList() {
         columnsTotal,
         primaryColumn,
         items,
-        onClick: onAction,
+        onClick: handleAction,
         handleAction,
         filterData,
         getActions,
