@@ -1,9 +1,9 @@
-import React, {PropsWithChildren, SyntheticEvent, useRef} from "react";
+import React, {PropsWithChildren, SyntheticEvent} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ActionRequestType} from "../type/ActionRequestType.tsx";
 import {ActionType, ActionVisibility} from "@src/type/ActionType.tsx";
 import {GetDataType, UseDataProvider} from "@src/context/GetData.tsx";
-import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseModal} from "@src/context/ModalContext.tsx";
 import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
@@ -15,7 +15,7 @@ import {ChoiceType, FormViewType} from "@src/type/FormViewType.tsx";
 
 export type ListContextPropsType = {
     embedded?: boolean;
-    onClick?: (props: OnClickAction, event?: SyntheticEvent) => void;
+    onClick?: (props: ActionRequestType, event?: SyntheticEvent) => void;
 }
 
 const ListItemContext = React.createContext<ListContextPropsType | undefined>(undefined);
@@ -33,8 +33,8 @@ export function UseList() {
 
     const {results: data, refresh} = dataProvider;
 
-    const {action, setAction} = UseCurrentAction();
-    const {generateActionLink, location, navigate} = UseActions()
+    const {actionRequest: currentActionRequest, setActionRequest} = UseCurrentActionRequest();
+    const {generateActionLink, navigate} = UseActions()
     const {openModal} = UseModal();
     const {open: openAlert} = UseAlert();
     const {embedded, onClick: onAction} = context;
@@ -43,14 +43,14 @@ export function UseList() {
     const columns = (data?.entity?.columns || []).filter((c: ColumnType) => c.visible).filter((c: ColumnType) => c.group !== false);
     const actions = Object.values(data?.action || []) as ActionType[];
     const getActions = (visibility: ActionVisibility) => {
-        return (Object.values(data?.action ?? []) as ActionType[]).filter(a => a.visibility === visibility && a.name !== action.action.name);
+        return (Object.values(data?.action ?? []) as ActionType[]).filter(a => a.visibility === visibility && a.name !== currentActionRequest.action.name);
     }
 
     const getAction = (actionName: string): ActionType | undefined => {
         return (Object.values(data?.action ?? []) as ActionType[]).filter(a => a.name === actionName).shift();
     }
 
-    const getActionOnClickAction = (actionName: string): OnClickAction | undefined => {
+    const getActionRequest = (actionName: string): ActionRequestType | undefined => {
         const listAction = getAction(actionName);
 
         if (!listAction) {
@@ -58,7 +58,7 @@ export function UseList() {
         }
 
         return {
-            ...action,
+            ...currentActionRequest,
             action: listAction
         }
     }
@@ -68,44 +68,44 @@ export function UseList() {
     const items = data?.entity?.data.items ?? [];
 
     const filterData = ({newAction, excludeFilterParameters}: {
-        newAction?: OnClickAction,
+        newAction?: ActionRequestType,
         excludeFilterParameters?: [string]
     }): void => {
-        const filterAction = {...(newAction ?? action)};
+        const filterAction = {...(newAction ?? currentActionRequest)};
         excludeFilterParameters?.forEach((key) => {
             delete filterAction.query?.filter?.[key];
         })
 
         if (embedded) {
-            setAction(filterAction);
+            setActionRequest(filterAction);
         } else {
             const url = generateActionLink(filterAction);
             navigate(url);
         }
     }
 
-    const handleAction = (onClickAction: OnClickAction, event?: SyntheticEvent) => {
-        if (onAction?.(onClickAction, event)) {
+    const handleAction = (actionRequest: ActionRequestType, event?: SyntheticEvent) => {
+        if (onAction?.(actionRequest, event)) {
             return;
         }
 
         event?.preventDefault();
 
-        onClickAction.parameters = {...(onClickAction.parameters || {}), ...(action.parameters || {})}
-        onClickAction.parameters = objectRemoveEmpty(onClickAction.parameters as object);
-        if (!Object.keys(onClickAction.parameters as object).length) {
-            onClickAction.parameters = undefined;
+        actionRequest.parameters = {...(actionRequest.parameters || {}), ...(currentActionRequest.parameters || {})}
+        actionRequest.parameters = objectRemoveEmpty(actionRequest.parameters as object);
+        if (!Object.keys(actionRequest.parameters as object).length) {
+            actionRequest.parameters = undefined;
         }
 
-        if (onClickAction.query !== undefined) {
-            if (!Object.keys(onClickAction.query as object).length) {
-                onClickAction.query = undefined;
+        if (actionRequest.query !== undefined) {
+            if (!Object.keys(actionRequest.query as object).length) {
+                actionRequest.query = undefined;
             }
         }
 
-        switch (onClickAction.action.name) {
+        switch (actionRequest.action.name) {
             case 'list': {
-                return filterData({newAction: onClickAction});
+                return filterData({newAction: actionRequest});
             }
             case 'delete': {
                 openAlert({
@@ -114,7 +114,7 @@ export function UseList() {
                     onResult: (result: Result) => {
                         if (result.isConfirmed) {
                             CrudRequester().fetch({
-                                url: generateActionLink(onClickAction),
+                                url: generateActionLink(actionRequest),
                                 method: Method.DELETE
                             }).catch((e: any) => {
                                 console.log('error', e);
@@ -130,7 +130,7 @@ export function UseList() {
 
         if (embedded) {
             openModal({
-                action: onClickAction,
+                action: actionRequest,
                 props: {
                     size: 'lg',
                     onClose: () => {
@@ -142,7 +142,7 @@ export function UseList() {
             return;
         }
 
-        filterData({newAction: onClickAction});
+        filterData({newAction: actionRequest});
     }
 
     const handleBatchAction = (method: string, ids: any, data: FormData): Promise<void> => {
@@ -153,7 +153,7 @@ export function UseList() {
                 onResult: (result: Result) => {
                     if (result.isConfirmed) {
                         CrudRequester().post({
-                            url: generateActionLink(action),
+                            url: generateActionLink(currentActionRequest),
                             body: data,
                             bodyType: RequestBodyType.FormData
                         }).catch((e: any) => {
@@ -212,7 +212,7 @@ export function UseList() {
         filterData,
         getActions,
         getAction,
-        getActionOnClickAction,
+        getActionRequest,
         handleBatchAction,
         appliedFilters
     }

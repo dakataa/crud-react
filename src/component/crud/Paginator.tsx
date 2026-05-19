@@ -1,6 +1,6 @@
 import Link from "@src/component/Link.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
-import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import React, {ChangeEvent} from "react";
 import Translation from "@src/component/Translation.tsx";
@@ -13,11 +13,11 @@ const PageItem = ({page, active = false, title, children}: {
 }) => {
     const {generateActionLink} = UseActions();
     const {onClick} = UseList();
-    const {action} = UseCurrentAction();
+    const {actionRequest} = UseCurrentActionRequest();
     const pageAction = {
-        ...action,
+        ...actionRequest,
         query: {
-            ...action.query || {},
+            ...actionRequest.query || {},
             page: page.toString()
         }
     };
@@ -45,7 +45,7 @@ const PageItem = ({page, active = false, title, children}: {
 
 const Paginator = () => {
     const {data, onClick} = UseList();
-    const {action} = UseCurrentAction();
+    const {actionRequest} = UseCurrentActionRequest();
 
     const meta = data?.entity?.data.meta;
     const firstPage = 1;
@@ -90,7 +90,7 @@ const Paginator = () => {
                                     )}
                                 </>
                             )}
-                            {(links || []).map((p, i) => (
+                            {(links || []).map((p: number) => (
                                 <PageItem key={p} page={p} active={p === page}/>
                             ))}
                             {[...(links || [])].reverse()[0] !== totalPages && (
@@ -114,9 +114,9 @@ const Paginator = () => {
             {totalResults > Math.min(...maxResultChoices) && (
                 <select onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     onClick?.({
-                        ...action,
+                        ...actionRequest,
                         query: {
-                            ...action.query || {},
+                            ...actionRequest.query || {},
                             limit: e.currentTarget.value
                         }
                     }, e);

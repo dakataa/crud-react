@@ -2,10 +2,10 @@ import React, {ReactNode} from "react";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 import Action from "@src/component/crud/Action.tsx";
 import IsListItemActionGranted from "@src/component/crud/IsListItemActionGranted.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ActionRequestType} from "../../type/ActionRequestType.tsx";
 
 const ItemAction = ({action, ...props}: {
-    action: OnClickAction;
+    action: ActionRequestType;
     className?: string;
     children?: ReactNode;
 }) => {

@@ -367,8 +367,8 @@ Example:
 
 - `getAction(entity, name, namespace?)`
 - `getActionByPath(path)`
-- `getOnClickActionByPath(path)`
-- `generateActionLink(onClickAction)`
+- `getActionRequestByPath(path)`
+- `generateActionLink(actionRequest)`
 - `generateRoute(route, parameters?, query?)`
 - `generatePath(pattern, parameters?, query?)`
 - `navigate(to, replace?)`
@@ -443,7 +443,7 @@ Useful helpers:
 
 Access loaded actions, route matching, link generation and programmatic navigation.
 
-### `UseCurrentAction()`
+### `UseCurrentActionRequest()`
 
 Get the current resolved CRUD action and update it from inside a view.
 
@@ -463,11 +463,11 @@ const { results, status, refresh, cancel } = GetData({
 
 ### `GetDataByAction(...)`
 
-Fetch data using an `OnClickAction`.
+Fetch data using an `ActionRequest`.
 
 ```tsx
 const data = GetDataByAction({
-  action: {
+  actionRequest: {
     action: {
       entity: 'Article',
       name: 'list',

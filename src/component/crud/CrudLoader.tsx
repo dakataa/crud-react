@@ -8,27 +8,26 @@ import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 import {DataProvider} from "@src/context/GetData.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
-import {ModalActionType} from "@src/context/ModalContext.tsx";
+import {ActionRequestType} from "../../type/ActionRequestType.tsx";
 
-type CurrentActionContextType = {
-    action: OnClickAction,
-    setAction: (action: OnClickAction) => void;
+type CurrentActionRequestContextType = {
+    actionRequest: ActionRequestType,
+    setActionRequest: (actionRequest: ActionRequestType) => void;
     refresh: () => void;
 }
 
-type CurrentActionCollectionContextType = {
-    set: (key: string, context: CurrentActionContextType) => void,
-    get: (key: string) => CurrentActionContextType | null,
+type CurrentActionRequestCollectionContextType = {
+    set: (key: string, context: CurrentActionRequestContextType) => void,
+    get: (key: string) => CurrentActionRequestContextType | null,
     unset: (key: string) => void,
 }
 
-const CurrentActionCollectionContext = React.createContext<CurrentActionCollectionContextType | undefined>(undefined);
+const CurrentActionCollectionContext = React.createContext<CurrentActionRequestCollectionContextType | undefined>(undefined);
 
 export function CurrentActionCollectionProvider({children}: PropsWithChildren) {
-    const [actions, dispatch] = useReducer((state: { [key: string]: CurrentActionContextType }, {key, context}: {
+    const [actions, dispatch] = useReducer((state: { [key: string]: CurrentActionRequestContextType }, {key, context}: {
         key: string,
-        context?: CurrentActionContextType
+        context?: CurrentActionRequestContextType
     }) => {
         state = {...state};
         if (context) {
@@ -42,8 +41,8 @@ export function CurrentActionCollectionProvider({children}: PropsWithChildren) {
 
     return (
         <CurrentActionCollectionContext.Provider value={{
-            set: (key: string, context: CurrentActionContextType) => dispatch({key, context}),
-            get: (key: string): CurrentActionContextType | null => actions[key] || null,
+            set: (key: string, context: CurrentActionRequestContextType) => dispatch({key, context}),
+            get: (key: string): CurrentActionRequestContextType | null => actions[key] || null,
             unset: (key) => {
                 dispatch({key});
             },
@@ -53,8 +52,8 @@ export function CurrentActionCollectionProvider({children}: PropsWithChildren) {
     )
 }
 
-export function UseCurrentActionCollection(): CurrentActionCollectionContextType {
-    const context = React.useContext<CurrentActionCollectionContextType | undefined>(CurrentActionCollectionContext);
+export function UseCurrentActionCollection(): CurrentActionRequestCollectionContextType {
+    const context = React.useContext<CurrentActionRequestCollectionContextType | undefined>(CurrentActionCollectionContext);
     if (!context) {
         throw new Error('UseCurrentActionCollection must be used in CurrentActionCollectionProvider');
     }
@@ -63,39 +62,39 @@ export function UseCurrentActionCollection(): CurrentActionCollectionContextType
 }
 
 
-const CurrentActionContext = React.createContext<CurrentActionContextType | undefined>(undefined);
+const CurrentActionContext = React.createContext<CurrentActionRequestContextType | undefined>(undefined);
 
-export function UseCurrentAction(): CurrentActionContextType {
-    const context = React.useContext<CurrentActionContextType | undefined>(CurrentActionContext);
+export function UseCurrentActionRequest(): CurrentActionRequestContextType {
+    const context = React.useContext<CurrentActionRequestContextType | undefined>(CurrentActionContext);
     if (!context) {
-        throw new Error('UseCurrentAction must be used in CurrentActionProvider');
+        throw new Error('UseCurrentActionRequest must be used in CurrentActionRequestProvider');
     }
 
     return context;
 }
 
-export type CurrentActionProviderRef = {
+export type CurrentActionRequestProviderRef = {
     refresh: () => void
 };
 
-export function CurrentActionProvider({action, name, ref, ...props}: {
-    action: OnClickAction,
+export function CurrentActionRequestProvider({actionRequest, name, ref, ...props}: {
+    actionRequest: ActionRequestType,
     name?: string,
-    ref?: React.Ref<CurrentActionProviderRef>
+    ref?: React.Ref<CurrentActionRequestProviderRef>
 } & PropsWithChildren) {
     const {getAction} = UseActions();
     const {set, unset} = UseCurrentActionCollection();
 
-    name ??= [action.action.entity, action.action.name, action.action.namespace].join('-');
-    const routeAction = getAction(action.action.entity, action.action.name, action.action.namespace);
-    if (!routeAction) {
-        console.log('Invalid Action', action);
-        throw new Error('Invalid Current Action');
+    name ??= [actionRequest.action.entity, actionRequest.action.name, actionRequest.action.namespace].join('-');
+    const action = getAction(actionRequest.action.entity, actionRequest.action.name, actionRequest.action.namespace);
+    if (!action) {
+        console.log('Invalid Action Request', actionRequest);
+        throw new Error('Invalid Current Action Request');
     }
 
-    action = {
-        ...action,
-        action: routeAction
+    actionRequest = {
+        ...actionRequest,
+        action: action
     };
 
     const refresh = () => {
@@ -109,20 +108,20 @@ export function CurrentActionProvider({action, name, ref, ...props}: {
     }, []);
 
     const [update, setUpdate] = useState(1);
-    const [currentAction, setCurrentAction] = useState(action);
+    const [currentActionRequest, setCurrentActionRequest] = useState(actionRequest);
     const context = {
-        action: currentAction,
-        setAction: setCurrentAction,
+        actionRequest: currentActionRequest,
+        setActionRequest: setCurrentActionRequest,
         refresh
     };
 
     useEffect(() => {
-        setCurrentAction({...action, query: { ...action.query, _ts: update}});
+        setCurrentActionRequest({...actionRequest, query: { ...actionRequest.query, _ts: update}});
     }, [update]);
 
     useEffect(() => {
-        setCurrentAction(action);
-    }, [JSON.stringify(action)])
+        setCurrentActionRequest(actionRequest);
+    }, [JSON.stringify(actionRequest)])
 
     useEffect(() => {
         set(name, context);
@@ -133,7 +132,7 @@ export function CurrentActionProvider({action, name, ref, ...props}: {
 
     return (
         <CurrentActionContext.Provider value={context}>
-            <NamespaceProvider namespace={currentAction.action.namespace || ''}>
+            <NamespaceProvider namespace={currentActionRequest.action.namespace || ''}>
                 {props.children}
             </NamespaceProvider>
         </CurrentActionContext.Provider>
@@ -149,12 +148,12 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {link} = UseConfig();
-    const {getOnClickActionByPath, actions} = UseActions();
-    const [action, setAction] = useState<OnClickAction | undefined | null>(undefined);
-    const currentKey = action ? [
-        action.action.entity,
-        action.action.namespace,
-        action.action.name
+    const {getActionRequestByPath, actions} = UseActions();
+    const [actionRequest, setActionRequest] = useState<ActionRequestType | undefined | null>(undefined);
+    const currentKey = actionRequest ? [
+        actionRequest.action.entity,
+        actionRequest.action.namespace,
+        actionRequest.action.name
     ].filter(v => v).join('-') : Date.now().toString();
 
     path ??= link?.path ?? (location.pathname + location.search);
@@ -164,31 +163,31 @@ const CrudLoader = ({path, preloader}: {
     }
 
     useEffect(() => {
-        setAction(getOnClickActionByPath(path));
+        setActionRequest(getActionRequestByPath(path));
     }, [path, JSON.stringify(actions)]);
 
     useEffect(() => {
-        if (action !== null) {
+        if (actionRequest !== null) {
             return;
         }
 
         throw new HttpException(404, 'Not Found');
-    }, [action]);
+    }, [actionRequest]);
 
-    if (action === undefined) {
+    if (actionRequest === undefined) {
         return preloader ?? <>Loading</>
     }
 
-    if (action === null) {
+    if (actionRequest === null) {
         return null;
     }
 
     return (
-        <CurrentActionProvider key={currentKey} action={action}>
+        <CurrentActionRequestProvider key={currentKey} actionRequest={actionRequest}>
             <DataProvider>
-                <ViewLoader view={action.action.name}/>
+                <ViewLoader view={actionRequest.action.name}/>
             </DataProvider>
-        </CurrentActionProvider>
+        </CurrentActionRequestProvider>
     );
 }
 

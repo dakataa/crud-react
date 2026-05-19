@@ -4,8 +4,8 @@ import {ModifyType} from "@src/type/ModifyType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
-import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
+import {ActionRequestType} from "../type/ActionRequestType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType, Response} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
@@ -23,8 +23,8 @@ export type GetDataProps = {
     loadOnInit?: boolean;
 }
 
-export type GetDataByActionProps = GetDataProps & {
-    action: OnClickAction;
+export type GetDataByActionRequestProps = GetDataProps & {
+    actionRequest: ActionRequestType;
 }
 
 export function UseDataProvider(): GetDataType | null {
@@ -125,30 +125,30 @@ const GetData = (
 }
 
 const GetDataByAction = ({
-         action,
+         actionRequest,
          loadOnInit = true
-     }: GetDataByActionProps): GetDataType | null => {
+     }: GetDataByActionRequestProps): GetDataType | null => {
         const {generateActionLink} = UseActions();
-        const path = generateActionLink(action);
+        const path = generateActionLink(actionRequest);
 
-        return GetData({path, method: action.method, body: action.body, bodyType: action.bodyType, loadOnInit});
+        return GetData({path, method: actionRequest.method, body: actionRequest.body, bodyType: actionRequest.bodyType, loadOnInit});
     }
 
 const DataProvider = ({suspense, children}: {
     children: ReactNode,
     suspense?: ReactNode
 }) => {
-    const {action} = UseCurrentAction();
+    const {actionRequest} = UseCurrentActionRequest();
     const {generateActionLink} = UseActions();
     const parentDataProvider = UseDataProvider();
-    const url = generateActionLink(action);
+    const url = generateActionLink(actionRequest);
 
     if(parentDataProvider?.url === url) {
         return children;
     }
 
     const data = GetDataByAction({
-        action
+        actionRequest
     });
 
     suspense ??= <>Data Loading</>;

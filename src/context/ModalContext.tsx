@@ -1,13 +1,13 @@
 import React, {PropsWithChildren, useEffect, useReducer, useRef} from "react";
 import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ActionRequestType} from "../type/ActionRequestType.tsx";
 import {ModalType} from "@src/component/Modal.tsx";
 import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
 import {Icon, UseAlert} from "@src/context/AlertContext.tsx";
-import {CurrentActionProvider} from "@src/component/crud/CrudLoader.tsx";
+import {CurrentActionRequestProvider} from "@src/component/crud/CrudLoader.tsx";
 
 export type ModalActionType = {
-    action: OnClickAction;
+    action: ActionRequestType;
     props?: ModalType
 }
 
@@ -94,7 +94,7 @@ export function ModalProvider(props: PropsWithChildren) {
                         }
                     })
                 }}>
-                    <CurrentActionProvider key={currentModalKey} action={currentModal.action}>
+                    <CurrentActionRequestProvider key={currentModalKey} actionRequest={currentModal.action}>
                         <ViewLoader
                             view={currentModal.action.action.name || 'list'}
                             props={{
@@ -102,7 +102,7 @@ export function ModalProvider(props: PropsWithChildren) {
                                 props: modalProps
                             }}
                         />
-                    </CurrentActionProvider>
+                    </CurrentActionRequestProvider>
                 </ErrorBoundary>
             )}
         </ModalContext.Provider>

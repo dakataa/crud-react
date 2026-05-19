@@ -1,7 +1,7 @@
 import {ActionType} from "@src/type/ActionType.tsx";
 import {Method, RequestBodyType} from "@dakataa/requester";
 
-export type OnClickAction = {
+export type ActionRequestType = {
     method?: Method,
     action: ActionType,
     parameters?: { [key: string]: any },

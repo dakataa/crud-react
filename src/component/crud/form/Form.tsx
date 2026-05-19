@@ -17,7 +17,7 @@ import {UseDataProvider} from "@src/context/GetData.tsx";
 import {default as T} from "@src/component/Translation.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
-import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import FormRest from "@src/component/crud/form/FormRest.tsx";
 import FormRestError from "@src/component/crud/form/FormRestError.tsx";
@@ -185,9 +185,9 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     children?: ReactNode;
 }, ref) => {
     const {navigate, generateLink, generateActionLink} = UseActions();
-    const {action, setAction, refresh} = UseCurrentAction();
+    const {actionRequest, setActionRequest, refresh} = UseCurrentActionRequest();
 
-    const actionURL = generateActionLink(action);
+    const actionURL = generateActionLink(actionRequest);
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | undefined>(undefined);
     const dataProvider = UseDataProvider();
@@ -229,8 +229,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
         preloaderTimeout.current && clearTimeout(preloaderTimeout.current);
 
-        setAction({
-            ...action,
+        setActionRequest({
+            ...actionRequest,
             method: Method.POST,
             body: formData,
             bodyType: RequestBodyType.FormData
@@ -271,7 +271,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
         const doAfter = () => {
             if (data.redirect && !embedded) {
-                navigate(generateLink(data.redirect.route, {...(action.parameters || {}), ...data.redirect.parameters}), true);
+                navigate(generateLink(data.redirect.route, {...(actionRequest.parameters || {}), ...data.redirect.parameters}), true);
             }
         }
 

@@ -1,6 +1,6 @@
 import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ActionRequestType} from "../type/ActionRequestType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {RouteType} from "@src/type/RouteType.tsx";
@@ -52,7 +52,7 @@ export function UseActions() {
         return actions.find((a) => a.route?.path && matchPath(a.route.path, path)) ?? null;
     };
 
-    const getOnClickActionByPath = (path: string): OnClickAction | null | undefined => {
+    const getActionRequestByPath = (path: string): ActionRequestType | null | undefined => {
         const action = getActionByPath(path);
         if (!action) {
             return action;
@@ -83,10 +83,10 @@ export function UseActions() {
         return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}, query) : '#';
     }
 
-    const generateActionLink = (onClickAction: OnClickAction): string => {
-        const action = getAction(onClickAction.action.entity, onClickAction.action.name, onClickAction.action.namespace);
+    const generateActionLink = (actionRequest: ActionRequestType): string => {
+        const action = getAction(actionRequest.action.entity, actionRequest.action.name, actionRequest.action.namespace);
 
-        return generateRoute(action?.route, onClickAction.parameters, onClickAction.query);
+        return generateRoute(action?.route, actionRequest.parameters, actionRequest.query);
     }
 
     const generateLink = (route?: RouteType, parameters?: { [key: string]: string }, query?: {
@@ -168,7 +168,7 @@ export function UseActions() {
     return {
         getAction,
         getActionByPath,
-        getOnClickActionByPath,
+        getActionRequestByPath,
         navigate,
         actions,
         location,

@@ -2,11 +2,11 @@ import React, {ReactNode} from "react";
 import Link from "@src/component/Link.tsx";
 import {UseActions} from "@src/context/ActionContext.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import Translation from "@src/component/Translation.tsx";
 
 const Action = ({children, action, className}: {
-    action: OnClickAction;
+    action: ActionRequestType;
     className?: string;
     children?: ReactNode;
 }) => {

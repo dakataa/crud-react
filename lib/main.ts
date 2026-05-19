@@ -5,9 +5,9 @@ export {UseConfig} from "src/context/ConfigContext.tsx";
 
 export {default as CrudProvider} from "src/context/CrudProvider.tsx";
 export {
-    default as CrudLoader, CurrentActionProvider, UseCurrentAction, UseCurrentActionCollection
+    default as CrudLoader, CurrentActionRequestProvider, UseCurrentActionRequest, UseCurrentActionCollection
 } from "src/component/crud/CrudLoader.tsx";
-export type {CurrentActionProviderRef} from "src/component/crud/CrudLoader.tsx";
+export type {CurrentActionRequestProviderRef} from "src/component/crud/CrudLoader.tsx";
 export {default as Modify} from "src/component/crud/Modify.tsx";
 export type {ModifyType} from "src/type/ModifyType.tsx";
 export {default as List, ListInner, WithListProvider} from "src/component/crud/List.tsx";
@@ -49,7 +49,7 @@ export type {ModalActionType, ModalContextType} from "src/context/ModalContext.t
 export {UseAlert, AlertProvider, WithAlertProvider, Icon as AlertIcon} from "src/context/AlertContext.tsx";
 export {UseActions, ActionProvider, WithActionProviderContext} from "src/context/ActionContext.tsx";
 export type {AlertConfigType, Animation, Result} from "src/context/AlertContext.tsx";
-export type {OnClickAction} from "src/type/OnClickAction.tsx";
+export type {ActionRequestType} from "../src/type/ActionRequestType.tsx";
 export type {ActionType} from "src/type/ActionType.tsx";
 export type {RouteType} from "src/type/RouteType.tsx";
 
@@ -92,7 +92,7 @@ export {FormViewTypeEnum} from "src/type/FormViewType.tsx";
 export {default as BaseLayout} from "src/layout/default/Base.tsx";
 export {default as MainLayout} from "src/layout/default/Main.tsx";
 export {UseDataProvider, DataProvider, GetData, GetDataByAction, WithDataProvider} from "src/context/GetData.tsx";
-export type {GetDataType, GetDataProps, GetDataByActionProps} from "src/context/GetData.tsx";
+export type {GetDataType, GetDataProps, GetDataByActionRequestProps} from "src/context/GetData.tsx";
 export type {ListType} from "src/type/ListType.tsx"
 export type {ViewType} from "src/type/ViewType.tsx"
 export type {ListContextPropsType} from "src/context/ListContext.tsx"

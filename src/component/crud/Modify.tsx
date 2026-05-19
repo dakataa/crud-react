@@ -8,7 +8,7 @@ import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
 import {ExceptionType} from "@src/type/ExceptionType.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
 import Link from "@src/component/Link.tsx";
-import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {AsTemplate, Block, Extend} from "@src/component/templating/Template.tsx";
 import Button from "@src/component/Button.tsx";
 import Translation, {default as T} from "@src/component/Translation.tsx";
@@ -18,7 +18,7 @@ const DefaultModifyTemplate = AsTemplate(({children}: {
     children?: ReactNode;
     results?: ModifyType;
 }) => {
-    const {action: currentAction} = UseCurrentAction();
+    const {actionRequest: currentAction} = UseCurrentActionRequest();
     const {getAction, generateLink} = UseActions();
     const listAction = getAction(currentAction.action.entity, 'list', currentAction.action.namespace);
 

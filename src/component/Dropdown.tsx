@@ -15,10 +15,11 @@ const DropdownContent = ({children, position,  ...props}: { children: any, posit
     </div>
 }
 
-const Dropdown = ({ className, children, autoClose, icon}: PropsWithChildren<{
+const Dropdown = ({ className, children, autoClose, strategy = 'absolute', icon}: PropsWithChildren<{
     className?: string,
     icon?: any
-    autoClose?: 'outside' | 'inside' | boolean
+    autoClose?: 'outside' | 'inside' | boolean,
+    strategy?: 'absolute' | 'fixed'
 }>) => {
     const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {
@@ -26,7 +27,7 @@ const Dropdown = ({ className, children, autoClose, icon}: PropsWithChildren<{
             autoClose: autoClose == undefined ? true : autoClose,
             boundary: document.body,
             popperConfig: {
-                strategy: 'fixed'
+                strategy: strategy
             }
         });
 

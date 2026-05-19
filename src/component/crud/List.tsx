@@ -17,17 +17,17 @@ import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.t
 import {ListProvider, UseList} from "@src/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 import Action from "@src/component/crud/Action.tsx";
-import {UseCurrentAction} from "@src/component/crud/CrudLoader.tsx";
+import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
-import {OnClickAction} from "@src/type/OnClickAction.tsx";
+import {ActionRequestType} from "../../type/ActionRequestType.tsx";
 import {WithDataProvider} from "@src/context/GetData.tsx";
 
 type ListPropsType = {
     embedded?: boolean
     title?: string | ReactElement | false,
     className?: string,
-    onAction?: (action: OnClickAction, event?: SyntheticEvent) => boolean | null | void,
+    onAction?: (action: ActionRequestType, event?: SyntheticEvent) => boolean | null | void,
 };
 
 const List = WithDataProvider(({children, embedded = false, title, className, onAction}: ListPropsType & PropsWithChildren) => {
@@ -60,17 +60,16 @@ const ListInner = AsTemplate(({title, className}: {
         handleAction,
         filterData,
         getActions,
-        handleBatchAction,
-        getActionOnClickAction
+        handleBatchAction
     } = UseList();
 
-    const {action, setAction} = UseCurrentAction();
+    const {actionRequest, setActionRequest} = UseCurrentActionRequest();
     const {location} = UseActions()
     const filterFormRef = useRef<FormRef | null>(null);
     const listActions = getActions(ActionVisibility.List);
 
 
-    const entity = action.action.entity;
+    const entity = actionRequest.action.entity;
     if (!entity) {
         throw new Error('Invalid Entity');
     }
@@ -96,7 +95,7 @@ const ListInner = AsTemplate(({title, className}: {
                                     {listActions.map((item, index) => (
                                         <Action
                                             key={index}
-                                            action={{...action, action: item}}
+                                            action={{...actionRequest, action: item}}
                                             className="btn btn-outline-secondary"
                                         />
                                     ))}
@@ -110,17 +109,17 @@ const ListInner = AsTemplate(({title, className}: {
                                         <DropdownButton className={"btn dropdown-toggle btn-outline-dark"}>
                                             <T>Filter</T>
                                         </DropdownButton>
-                                        <DropdownContent>
+                                        <DropdownContent position={"end"}>
                                             <div className="filter">
                                                 <Form
                                                     id={"filter_" + nameToId(entity)}
                                                     ref={filterFormRef}
                                                     onSubmit={(formData: FormData) => handleAction({
-                                                        ...action,
+                                                        ...actionRequest,
                                                         query: objectRemoveEmpty(convertFormDataToObject(formData))
                                                     })}
                                                     onReset={() => handleAction({
-                                                        ...action,
+                                                        ...actionRequest,
                                                         query: undefined
                                                     })}
                                                 >
@@ -165,7 +164,7 @@ const ListInner = AsTemplate(({title, className}: {
                 <Block name={"content"}>
                     <DynamicView key={"list"} prefix={"list"} view={"content"}>
                         <GridView
-                            routeParams={action.parameters}
+                            routeParams={actionRequest.parameters}
                         />
                         {/*<ListView*/}
                         {/*    // item={<CustomUserItem/>}*/}
