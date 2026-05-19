@@ -75,9 +75,7 @@
 		"sass": "^1.81.0",
 		"source-map-explorer": "^2.5.3",
 		"typescript": "^5.7.2",
-		"vite": "7.2.4",
-		"vite-plugin-dts": "^4.5.4",
-		"vite-plugin-externalize-deps": "^0.10.0",
-		"vite-tsconfig-paths": "^5.1.4"
+		"vite": "^8.0.13",
+		"vite-plugin-dts": "^4.5.4"
 	}
 }

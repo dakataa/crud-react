@@ -1,13 +1,12 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
-import {dirname, extname, join, relative, resolve} from "path";
+import {dirname, join, resolve} from "path";
 import dts from 'vite-plugin-dts'
 import {fileURLToPath} from 'node:url'
-import {globSync} from "node:fs";
-import tsconfigPaths from "vite-tsconfig-paths";
-import { externalizeDeps } from 'vite-plugin-externalize-deps'
+import pkg from "./package.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const peerDeps = Object.keys(pkg.peerDependencies ?? {});
 
 export default defineConfig({
         build: {
@@ -15,18 +14,21 @@ export default defineConfig({
                 name: "crud",
                 formats: ["es"],
                 entry: resolve(__dirname, 'lib/main.ts'),
+            },
+            rolldownOptions: {
+                external: (id) =>
+                    peerDeps.some(dep => id === dep || id.startsWith(`${dep}/`)),
             }
         },
         plugins: [
             react(),
             dts({
                 tsconfigPath: 'tsconfig.build.json',
-            }),
-            tsconfigPaths(),
-            externalizeDeps()
+            })
         ],
         envPrefix: 'CRUD_',
         resolve: {
+            tsconfigPaths: true,
             alias: [
                 {
                     find: /~(.+)/,
@@ -37,8 +39,5 @@ export default defineConfig({
                     replacement: join(process.cwd(), '/src/$1'),
                 }
             ]
-        },
-        optimizeDeps: {
-            exclude: ['@dakataa/requester']
         }
 });
