@@ -16,7 +16,7 @@ import {BatchActionsProvider} from "@src/component/crud/batch/BatchActionsContex
 import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.tsx";
 import {ListProvider, UseList} from "@src/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
-import Action from "@src/component/crud/Action.tsx";
+import ActionLink from "./ActionLink.tsx";
 import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
@@ -93,7 +93,7 @@ const ListInner = AsTemplate(({title, className}: {
                             {listActions.length > 0 && (
                                 <div className="btn-group">
                                     {listActions.map((item, index) => (
-                                        <Action
+                                        <ActionLink
                                             key={index}
                                             action={{...actionRequest, action: item}}
                                             className="btn btn-outline-secondary"

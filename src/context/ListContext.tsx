@@ -20,10 +20,14 @@ export type ListContextPropsType = {
 
 const ListItemContext = React.createContext<ListContextPropsType | undefined>(undefined);
 
-export function UseList() {
+export function UseList(safe: boolean = true) {
     const context = React.useContext<ListContextPropsType | undefined>(ListItemContext);
     if (context === undefined) {
-        throw new Error("UseList must be within ListProvider")
+        if (safe) {
+            throw new Error("UseList must be within ListProvider")
+        }
+
+        return {};
     }
 
     const dataProvider = UseDataProvider() as GetDataType & { response: ListType };
@@ -50,16 +54,25 @@ export function UseList() {
         return (Object.values(data?.action ?? []) as ActionType[]).filter(a => a.name === actionName).shift();
     }
 
-    const getActionRequest = (actionName: string): ActionRequestType | undefined => {
-        const listAction = getAction(actionName);
+    const getActionRequests = (visibility: ActionVisibility) => {
+        return getActions(visibility).map(action => (
+            {
+                ...currentActionRequest,
+                action
+            }
+        ));
+    }
 
-        if (!listAction) {
+    const getActionRequest = (actionName: string): ActionRequestType | undefined => {
+        const action = getAction(actionName);
+
+        if (!action) {
             return undefined;
         }
 
         return {
             ...currentActionRequest,
-            action: listAction
+            action
         }
     }
 
@@ -67,14 +80,19 @@ export function UseList() {
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
     const items = data?.entity?.data.items ?? [];
 
-    const filterData = ({newAction, excludeFilterParameters}: {
+    const filterData = ({newAction, excludeFilterParameters, clear}: {
         newAction?: ActionRequestType,
-        excludeFilterParameters?: [string]
+        excludeFilterParameters?: [string],
+        clear?: boolean
     }): void => {
-        const filterAction = {...(newAction ?? currentActionRequest)};
+        const filterAction = {...(newAction || currentActionRequest)};
         excludeFilterParameters?.forEach((key) => {
             delete filterAction.query?.filter?.[key];
         })
+
+        if(clear) {
+            delete filterAction.query?.filter;
+        }
 
         if (embedded) {
             setActionRequest(filterAction);
@@ -116,7 +134,7 @@ export function UseList() {
                             CrudRequester().fetch({
                                 url: generateActionLink(actionRequest),
                                 method: Method.DELETE
-                            }).catch((e: any) => {
+                            }).catch((e) => {
                                 console.log('error', e);
                             }).finally(() => {
                                 refresh?.();
@@ -212,6 +230,7 @@ export function UseList() {
         filterData,
         getActions,
         getAction,
+        getActionRequests,
         getActionRequest,
         handleBatchAction,
         appliedFilters

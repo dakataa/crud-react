@@ -37,7 +37,7 @@ export enum Size {
     extraLarge = 'xl'
 }
 
-export type Action = {
+export type AlertAction = {
     label: string;
     classList?: string[];
 };
@@ -48,7 +48,7 @@ export type AlertConfigType = {
     icon: Icon | string;
     animation: Animation | string;
     size: Size | string;
-    actions?: { [key: string]: Action } | null;
+    actions?: { [key: string]: AlertAction } | null;
     allowClose?: boolean;
     timeout?: number;
     timeoutProgress?: boolean;

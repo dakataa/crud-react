@@ -7,5 +7,6 @@ export type ActionRequestType = {
     parameters?: { [key: string]: any },
     query?: { [key: string]: any },
     body?: FormData | string | { [key: string]: any },
-    bodyType?: RequestBodyType
+    bodyType?: RequestBodyType,
+    hash?: string,
 };

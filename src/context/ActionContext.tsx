@@ -73,20 +73,20 @@ export function UseActions() {
 
     const generateRoutePath = (path: string, parameters?: { [key: string]: any }, query?: {
         [key: string]: any
-    }): string => {
-        return generatePath(crudToReactPathPattern(path), parameters, query);
+    }, hash?: string): string => {
+        return generatePath(crudToReactPathPattern(path), parameters, query, hash);
     }
 
     const generateRoute = (route?: RouteType, parameters?: { [key: string]: any }, query?: {
         [key: string]: any
-    }): string => {
-        return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}, query) : '#';
+    }, hash?: string): string => {
+        return route ? generateRoutePath(route.path, {...route.defaults || {}, ...parameters}, query, hash) : '#';
     }
 
     const generateActionLink = (actionRequest: ActionRequestType): string => {
         const action = getAction(actionRequest.action.entity, actionRequest.action.name, actionRequest.action.namespace);
 
-        return generateRoute(action?.route, actionRequest.parameters, actionRequest.query);
+        return generateRoute(action?.route, actionRequest.parameters, actionRequest.query, actionRequest.hash);
     }
 
     const generateLink = (route?: RouteType, parameters?: { [key: string]: string }, query?: {
@@ -146,7 +146,7 @@ export function UseActions() {
 
     const generatePath = (pattern: string, parameters?: { [key: string]: string }, query?: {
         [key: string]: string
-    }): string => {
+    }, hash?: string): string => {
         const path = pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
             const value = parameters?.[p1];
             if (value !== undefined) {
@@ -162,7 +162,11 @@ export function UseActions() {
             url.searchParams.set(key, value);
         });
 
-        return internalToExternalPath(url.pathname + url.search);
+        if(hash) {
+            url.hash = hash;
+        }
+
+        return internalToExternalPath(url.pathname + url.search + url.hash);
     }
 
     return {
