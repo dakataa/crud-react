@@ -66,7 +66,7 @@ const ListInner = AsTemplate(({title, className}: {
     const {actionRequest, setActionRequest} = UseCurrentActionRequest();
     const {location} = UseActions()
     const filterFormRef = useRef<FormRef | null>(null);
-    const listActions = getActions(ActionVisibility.List);
+    const listActions = getActions?.(ActionVisibility.List);
 
 
     const entity = actionRequest.action.entity;
@@ -90,7 +90,7 @@ const ListInner = AsTemplate(({title, className}: {
                     </Block>
                     <div className={"d-flex align-items-center flex-wrap gap-2"}>
                         <Block name={"actions"}>
-                            {listActions.length > 0 && (
+                            {listActions && listActions.length > 0 && (
                                 <div className="btn-group">
                                     {listActions.map((item, index) => (
                                         <ActionLink
@@ -114,11 +114,11 @@ const ListInner = AsTemplate(({title, className}: {
                                                 <Form
                                                     id={"filter_" + nameToId(entity)}
                                                     ref={filterFormRef}
-                                                    onSubmit={(formData: FormData) => handleAction({
+                                                    onSubmit={(formData: FormData) => handleAction?.({
                                                         ...actionRequest,
                                                         query: objectRemoveEmpty(convertFormDataToObject(formData))
                                                     })}
-                                                    onReset={() => handleAction({
+                                                    onReset={() => handleAction?.({
                                                         ...actionRequest,
                                                         query: undefined
                                                     })}
@@ -156,7 +156,7 @@ const ListInner = AsTemplate(({title, className}: {
             <Block name={"filters"}>
                 <FiltersView
                     formView={results.form.filter.view}
-                    onClick={(key) => filterData({excludeFilterParameters: [key]})}
+                    onClick={(key) => filterData?.({excludeFilterParameters: [key]})}
                 />
             </Block>
             <BatchActionsProvider onClick={handleBatchAction}>

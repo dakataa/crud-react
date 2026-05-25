@@ -20,6 +20,8 @@ export type ListContextPropsType = {
 
 const ListItemContext = React.createContext<ListContextPropsType | undefined>(undefined);
 
+type ListItemRow = Record<string, string | number | null>;
+
 export function UseList(safe: boolean = true) {
     const context = React.useContext<ListContextPropsType | undefined>(ListItemContext);
     if (context === undefined) {
@@ -78,7 +80,8 @@ export function UseList(safe: boolean = true) {
 
     const objectActions = actions.filter((a: ActionType) => a.visibility === ActionVisibility.Object);
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
-    const items = data?.entity?.data.items ?? [];
+
+    const items: ListItemRow[] = data?.entity?.data.items ?? [];
 
     const filterData = ({newAction, excludeFilterParameters, clear}: {
         newAction?: ActionRequestType,
@@ -90,7 +93,7 @@ export function UseList(safe: boolean = true) {
             delete filterAction.query?.filter?.[key];
         })
 
-        if(clear) {
+        if (clear) {
             delete filterAction.query?.filter;
         }
 
@@ -174,7 +177,7 @@ export function UseList(safe: boolean = true) {
                             url: generateActionLink(currentActionRequest),
                             body: data,
                             bodyType: RequestBodyType.FormData
-                        }).catch((e: any) => {
+                        }).catch(() => {
                             reject();
                         }).finally(() => {
                             refresh?.();

@@ -13,7 +13,7 @@ const ItemActions = ({namespace, routeParams}: {
 
     return data && (
         <DynamicView namespace={namespace} data={data} prefix={"list"} view={"object.actions"}>
-            {objectActions.map((action, index) => (
+            {objectActions?.map((action, index) => (
                 <ItemAction
                     key={index}
                     action={{action, parameters: routeParams}}

@@ -82,7 +82,7 @@ const GridView = ({
                             </th>
                         )
                     })}
-                    {primaryColumn && objectActions.length > 0 && (
+                    {primaryColumn && objectActions && objectActions.length > 0 && (
                         <th className="text-end">
                             <T>Actions</T>
                         </th>
@@ -90,7 +90,7 @@ const GridView = ({
                 </tr>
                 </thead>
                 <tbody>
-                {items.length ? (items.map((row, index: number) => (
+                {items?.length ? (items.map((row, index: number) => (
                     <ListItemProvider key={index} index={index}>
                         <tr>
                             {columns?.map((column: ColumnType, columnIndex: number) => {
@@ -113,7 +113,7 @@ const GridView = ({
                                     )
                                 }
                             )}
-                            {primaryColumn && objectActions.length > 0 && (
+                            {primaryColumn && objectActions && objectActions.length > 0 && (
                                 <td className={"text-end text-nowrap"}>
                                     <ItemActions routeParams={routeParams} namespace={namespace}/>
                                 </td>

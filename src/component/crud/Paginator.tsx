@@ -5,11 +5,12 @@ import {UseActions} from "@src/context/ActionContext.tsx";
 import React, {ChangeEvent} from "react";
 import Translation from "@src/component/Translation.tsx";
 
-const PageItem = ({page, active = false, title, children}: {
+const PageItem = ({page, active = false, title, children, className}: {
     page: number | string,
     active?: boolean,
     title?: string,
     children?: any
+    className?: string
 }) => {
     const {generateActionLink} = UseActions();
     const {onClick} = UseList();
@@ -25,7 +26,7 @@ const PageItem = ({page, active = false, title, children}: {
     const url = generateActionLink(pageAction);
 
     return (
-        <li className={`page-item ${active ? 'active' : ''}`}>
+        <li className={`page-item ${active ? 'active' : ''} ${className || ''}`}>
             <Link
                 to={url.toString()}
                 {...(onClick && {
@@ -76,7 +77,7 @@ const Paginator = () => {
 					<nav aria-label="Page navigation">
 						<ul className="pagination mb-0">
                             {page > firstPage && (
-                                <PageItem page={page - 1} title="Previous">
+                                <PageItem page={page - 1} title="Previous" className={"page-previous"}>
                                     ‹
                                 </PageItem>
                             )}
@@ -85,7 +86,7 @@ const Paginator = () => {
                                     <PageItem key={1} page={1} active={firstPage === page}/>
                                     {page > 3 && (
                                         <div className={"page-item"}>
-                                            <span className="page-link">...</span>
+                                            <span className="page-link page-more">...</span>
                                         </div>
                                     )}
                                 </>
@@ -95,15 +96,18 @@ const Paginator = () => {
                             ))}
                             {[...(links || [])].reverse()[0] !== totalPages && (
                                 <>
-                                    <div className={"page-item"}>
+                                    <div className={"page-item page-more"}>
                                         <span className="page-link">...</span>
                                     </div>
-                                    <PageItem key={totalPages} page={totalPages}
-                                              active={totalPages === page}/>
+                                    <PageItem
+                                        key={totalPages}
+                                        page={totalPages}
+                                        active={totalPages === page}
+                                    />
                                 </>
                             )}
                             {page < totalPages && (
-                                <PageItem key={"last"} page={page + 1} title="Go to Next Page">
+                                <PageItem key={"last"} page={page + 1} title="Go to Next Page" className={"page-next"}>
                                     ›
                                 </PageItem>
                             )}
