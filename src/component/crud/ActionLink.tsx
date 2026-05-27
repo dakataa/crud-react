@@ -20,7 +20,7 @@ const ActionLink = ({children, action, className, onClick}: {
                 if(onClick) {
                     onClick(event);
 
-                    if(event.isDefaultPrevented()) {
+                    if(event?.defaultPrevented) {
                         return;
                     }
                 }

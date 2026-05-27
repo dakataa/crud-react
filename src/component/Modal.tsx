@@ -105,6 +105,8 @@ const Modal = AsTemplate(forwardRef(({
         setIsOpen(false);
 
         closeModal?.();
+
+        onClose && onClose();
     }
     const startClosing = (): Promise<void> => {
         return new Promise((resolve: Function, reject: Function) => {
@@ -139,7 +141,7 @@ const Modal = AsTemplate(forwardRef(({
 
     useEffect(() => {
         return () => {
-            onClose && onClose();
+
         }
     }, []);
 
