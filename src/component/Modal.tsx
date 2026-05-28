@@ -41,8 +41,10 @@ const Modal = AsTemplate(forwardRef(({
         onClose,
         className
     } = {...props, ...modal?.props || {}};
-
+    const modalRef = useRef<HTMLDivElement | null>(null);
+    const modalBackdropRef = useRef<HTMLDivElement | null>(null);
     const [isOpen, setIsOpen] = useState<boolean>(open);
+    let isShown = false;
 
     useImperativeHandle(ref, () => ({
         toggle: () => setIsOpen(!isOpen),
@@ -73,40 +75,49 @@ const Modal = AsTemplate(forwardRef(({
             return;
         }
 
+        const modalElement = modalRef.current as HTMLDivElement;
+        if(!modalElement) {
+            return;
+        }
+
         const onAnimationStart = () => {
-            modalRef.current?.addEventListener('animationend', onAnimationEnd);
+            modalElement.addEventListener('animationend', onAnimationEnd);
         };
 
         const onAnimationEnd = () => {
-            modalRef.current?.classList.remove(animation);
-            modalRef.current?.removeEventListener('animationstart', onAnimationStart)
-            modalRef.current?.removeEventListener('animationend', onAnimationEnd);
+            modalElement.classList.remove(animation);
+            modalElement.removeEventListener('animationstart', onAnimationStart)
+            modalElement.removeEventListener('animationend', onAnimationEnd);
         };
 
         setTimeout(() => {
-            modalRef.current?.classList.add(...['d-block', 'show']);
+            modalElement.classList.add(...['d-block', 'show']);
             modalBackdropRef?.current?.classList.add('show');
+            isShown = true;
         }, animation ? 100 : 0);
 
         document.addEventListener('keydown', closeOnKeyboard);
-        modalRef.current?.addEventListener('animationstart', onAnimationStart);
+        modalElement.addEventListener('animationstart', onAnimationStart);
 
         return () => {
             document.removeEventListener('keydown', closeOnKeyboard)
-            modalRef.current?.removeEventListener('animationstart', onAnimationStart)
-            modalRef.current?.removeEventListener('animationend', onAnimationEnd)
+            modalElement.removeEventListener('animationstart', onAnimationStart)
+            modalElement.removeEventListener('animationend', onAnimationEnd);
         }
     }, [isOpen]);
 
-    const modalRef = useRef<HTMLDivElement | null>(null);
-    const modalBackdropRef = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        return () => {
+            if(isShown) {
+                onClose && onClose();
+            }
+        }
+    }, []);
 
     const endClosing = () => {
         setIsOpen(false);
 
         closeModal?.();
-
-        onClose && onClose();
     }
     const startClosing = (): Promise<void> => {
         return new Promise((resolve: Function, reject: Function) => {
@@ -121,6 +132,8 @@ const Modal = AsTemplate(forwardRef(({
             };
 
 
+            modalRef.current?.classList.add('close');
+
             if (animation) {
                 const closeTimeout = setTimeout(() => {
                     closeAndResolve();
@@ -132,20 +145,14 @@ const Modal = AsTemplate(forwardRef(({
                     modalRef.current?.addEventListener('animationend', closeAndResolve);
                 });
 
-                modalRef.current?.classList.add(...[animation, 'close']);
+                modalRef.current?.classList.add(...[animation]);
             } else {
                 closeAndResolve();
             }
         })
     }
 
-    useEffect(() => {
-        return () => {
-
-        }
-    }, []);
-
-    return isOpen && createPortal((
+    return createPortal((
         <>
             <div ref={modalRef}
                  className={["modal", (size && "modal-" + size), animation && animation, className].filter(v => v).join(' ')}>
