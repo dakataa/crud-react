@@ -294,6 +294,8 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
         return;
     }
 
+    const blockPrefixes = [(formView.name || 'form') + 'Field', ...formView.block_prefixes || []];
+
     return (
         <Preloader loader={formView.full_name}>
             <BaseForm
@@ -308,7 +310,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
                     <Block name={"content"}>
                         <DynamicView
                             key={formView.id || 'form'}
-                            view={formView.name || 'form'}
+                            view={blockPrefixes}
                             prefix={"modify/form"}
                             data={formView}
                         >
