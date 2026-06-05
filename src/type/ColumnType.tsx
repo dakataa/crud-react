@@ -15,5 +15,6 @@ export type ColumnType = {
         content?: {
             attr?: {[key: string]: string}
         }
-    }
+    },
+    useFlatKey?: boolean
 }
