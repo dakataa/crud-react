@@ -19,7 +19,8 @@ const BaseButtonContent = (
     }: ButtonContentProps & PropsWithChildren) => {
     return (
         <>
-            {preload ? preloader || <>*</> : icon}
+            {preload && preloader}
+            {icon}
             {children}
             {rightIcon}
         </>

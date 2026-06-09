@@ -12,7 +12,7 @@ export default ({to, children, onClick, ...props}: {
     const {isLoading} = UseDataLoaderIndicator(to?.toString());
 
     const onClickEvent = (event: Event) => {
-        if(isLoading) {
+        if (isLoading) {
             event.preventDefault();
             event.stopPropagation();
             return;
@@ -37,11 +37,11 @@ export default ({to, children, onClick, ...props}: {
     };
 
     useEffect(() => {
-        if(!clicked) {
+        if (!clicked) {
             return;
         }
 
-        if(!isLoading) {
+        if (!isLoading) {
             setClicked(false);
         }
     }, [isLoading]);
@@ -57,7 +57,7 @@ export default ({to, children, onClick, ...props}: {
     const preload = clicked && isLoading;
 
     return (
-        <a ref={anchorRef} href={to} {...props}>
+        <a ref={anchorRef} href={to} {...props} {...(preload && {"data-preload": true})}>
             <BaseButtonContent preload={preload} {...props}>{children}</BaseButtonContent>
         </a>
     );

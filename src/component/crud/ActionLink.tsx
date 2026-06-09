@@ -5,7 +5,7 @@ import {UseList} from "@src/context/ListContext.tsx";
 import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import Translation from "@src/component/Translation.tsx";
 
-const ActionLink = ({children, action, className, onClick}: {
+const ActionLink = ({children, action, className, onClick, ...props}: {
     action: ActionRequestType;
     className?: string;
     children?: ReactNode;
@@ -17,10 +17,10 @@ const ActionLink = ({children, action, className, onClick}: {
     return (
         <Link
             onClick={(event) => {
-                if(onClick) {
+                if (onClick) {
                     onClick(event);
 
-                    if(event?.defaultPrevented) {
+                    if (event?.defaultPrevented) {
                         return;
                     }
                 }
@@ -29,6 +29,7 @@ const ActionLink = ({children, action, className, onClick}: {
             }}
             className={className}
             to={generateActionLink(action)}
+            {...props}
         >
             {children ?? <Translation>{action.action.title ?? action.action.name}</Translation>}
         </Link>
