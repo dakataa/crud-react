@@ -68,7 +68,6 @@ const ListInner = AsTemplate(({title, className}: {
     const filterFormRef = useRef<FormRef | null>(null);
     const listActions = getActions?.(ActionVisibility.List);
 
-
     const entity = actionRequest.action.entity;
     if (!entity) {
         throw new Error('Invalid Entity');

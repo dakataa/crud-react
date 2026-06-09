@@ -4,6 +4,7 @@ import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
 import ItemLabel from "@src/component/crud/ItemLabel.tsx";
 import ItemActions from "@src/component/crud/ItemActions.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
+import {ColumnType} from "@src/type/ColumnType.tsx";
 
 const ListItem = ({namespace}: {
     namespace?: string,
@@ -17,7 +18,7 @@ const ListItem = ({namespace}: {
                 <div className={"d-flex flex-row gap-3 align-items-start"}>
                     <BatchItemSelector/>
                     <div className={"d-flex flex-column flex-wrap gap-2"}>
-                        {columns.map((column, index) => (
+                        {columns.map((column: ColumnType, index: number) => (
                             <div className={"d-flex align-items-start"} key={index}>
                                 <span className={"text-secondary me-1"}>
                                     <ItemLabel column={column} namespace={namespace}/>:
