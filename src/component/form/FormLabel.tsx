@@ -1,5 +1,5 @@
 import {FormViewType} from "@src/type/FormViewType";
-import {titlize} from "@src/helper/StingUtils";
+import {titlize} from "@src/helper/StringUtils";
 import {nameToId} from "@src/component/form/Form.tsx";
 import React from "react";
 import {UseFormSettings} from "@src/component/form/FormSetting.tsx";

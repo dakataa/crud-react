@@ -1,5 +1,5 @@
 import React, {memo, ReactElement, ReactNode, useEffect, useRef, useState} from "react";
-import {capitalize} from "@src/helper/StingUtils.tsx";
+import {capitalize} from "@src/helper/StringUtils.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import Empty from "@src/component/Empty.tsx";
 import {UseNamespace} from "@src/context/NamespaceContext.tsx";

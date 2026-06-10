@@ -6,7 +6,7 @@ import HttpException from "@src/component/error/HttpException.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {ActionRequestType} from "../type/ActionRequestType.tsx";
-import {convertFormDataToObject, Method, RequestBodyType, Response} from "@dakataa/requester";
+import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -89,7 +89,6 @@ const GetData = (
             })
             .finally(() => {
             });
-
         return () => {
             enabled.current = loadOnInit;
         }
