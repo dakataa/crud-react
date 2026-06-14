@@ -8,7 +8,7 @@ import {CRUD_NAMESPACE} from "@src/Crud.tsx";
 import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
 import {DataProvider} from "@src/context/GetData.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
-import {ActionRequestType} from "../../type/ActionRequestType.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 
 type CurrentActionRequestContextType = {
     actionRequest: ActionRequestType,

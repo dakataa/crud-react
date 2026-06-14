@@ -1,6 +1,6 @@
-import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useState} from "react";
+import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState} from "react";
 import {ActionType} from "@src/type/ActionType.tsx";
-import {ActionRequestType} from "../type/ActionRequestType.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseConfig} from "@src/context/ConfigContext.tsx";
 import {RouteType} from "@src/type/RouteType.tsx";
@@ -23,6 +23,14 @@ window.history.replaceState = new Proxy(window.history.replaceState, {
 
 const STORAGE_KEY = 'actions';
 
+// Pre-compiled RegExp constants
+const RE_CRUD_PARAMS = /{(.*?)}/gi;
+const RE_LEADING_TRAILING_SLASH = /^\/|\/$'/g;
+const RE_LEADING_SLASH = /^\//;
+const RE_PATH_PARAMS = /\/[{:](\w+)}?/g;
+const RE_REPLACE_PARAMS = /[{:](\w+)}?/g;
+const RE_TRAILING_SLASH = /\/$/g;
+
 type RouterContextType = {
     location: URL;
     setLocation: (location: URL) => void;
@@ -31,14 +39,14 @@ type RouterContextType = {
 
 const ActionContext = React.createContext<RouterContextType | undefined>(undefined);
 
-export function UseActions() {
+export function UseActions(safe: boolean = true) {
     const context = React.useContext<RouterContextType | undefined>(ActionContext);
-    if (!context) {
+    if (!context && safe) {
         throw new Error('UseActions  must be used in ActionProvider');
     }
 
     const config = UseConfig();
-    const {actions, location} = context;
+    const {actions, location} = context || {location: new URL(document.location.href), actions: null};
 
     const getAction = (entity: string, name: string, namespace?: string): ActionType | undefined => {
         return actions?.filter(a => a.entity === entity && a.name === name && (namespace === undefined || a.namespace === namespace)).shift();
@@ -68,7 +76,7 @@ export function UseActions() {
     }
 
     const crudToReactPathPattern = (path: string) => {
-        return path.replaceAll(new RegExp('{(.*?)}', 'gi'), ':$1');
+        return path.replaceAll(RE_CRUD_PARAMS, ':$1');
     }
 
     const generateRoutePath = (path: string, parameters?: { [key: string]: any }, query?: {
@@ -97,7 +105,7 @@ export function UseActions() {
 
     const internalToExternalPath = (path: string) => {
         if (config.link?.prefix) {
-            path = '/' + config.link.prefix.replaceAll(new RegExp('^\/|\/$', 'g'), '') + path;
+            path = '/' + config.link.prefix.replaceAll(RE_LEADING_TRAILING_SLASH, '') + path;
         }
 
         return path;
@@ -105,7 +113,7 @@ export function UseActions() {
 
     const externalToInternalPath = (path: string) => {
         if (config.link?.prefix) {
-            path = path.replace(new RegExp('^/' + config.link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
+            path = path.replace(new RegExp('^/' + config.link.prefix.replace(RE_LEADING_SLASH, '') + '(/)?'), '/');
         }
 
         return path;
@@ -126,7 +134,7 @@ export function UseActions() {
     const matchPath = (pattern: string, path: string) => {
         const url = new URL(path, location.origin);
         const pathname = externalToInternalPath(url.pathname);
-        const regexp = '^' + pattern.replace(new RegExp('\/[{:](\\w+)}?', 'g'), '[\/]?(?<$1>[^/]+)?').replace('*', '.*') + '$';
+        const regexp = '^' + pattern.replace(RE_PATH_PARAMS, '[\/]?(?<$1>[^/]+)?').replace('*', '.*') + '$';
         const hasMatch = new RegExp(regexp, 'giu').test(pathname);
         if (!hasMatch) {
             return null;
@@ -147,14 +155,14 @@ export function UseActions() {
     const generatePath = (pattern: string, parameters?: { [key: string]: string }, query?: {
         [key: string]: string
     }, hash?: string): string => {
-        const path = pattern.replaceAll(new RegExp('[{:](\\w+)}?', 'g'), (match, p1) => {
+        const path = pattern.replaceAll(RE_REPLACE_PARAMS, (match, p1) => {
             const value = parameters?.[p1];
             if (value !== undefined) {
                 delete parameters?.[p1];
             }
 
             return value ?? '';
-        }).replace(new RegExp('\/$', 'g'), '');
+        }).replace(RE_TRAILING_SLASH, '');
 
         const url = new URL(path, location.origin);
         const querySearch = convertObjectToURLSearchParams(query || {});
@@ -162,7 +170,7 @@ export function UseActions() {
             url.searchParams.set(key, value);
         });
 
-        if(hash) {
+        if (hash) {
             url.hash = hash;
         }
 
@@ -234,12 +242,14 @@ export function ActionProvider(props: PropsWithChildren) {
         });
     }, []);
 
+    const value = useMemo(() => ({
+        actions,
+        location,
+        setLocation,
+    }), [actions, location]);
+
     return (
-        <ActionContext.Provider value={{
-            actions,
-            location,
-            setLocation,
-        }}>
+        <ActionContext.Provider value={value}>
             {props.children}
         </ActionContext.Provider>
     );

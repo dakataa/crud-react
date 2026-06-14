@@ -20,7 +20,7 @@ import ActionLink from "./ActionLink.tsx";
 import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
 import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
-import {ActionRequestType} from "../../type/ActionRequestType.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import {WithDataProvider} from "@src/context/GetData.tsx";
 
 type ListPropsType = {

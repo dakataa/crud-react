@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, SyntheticEvent} from "react";
 import {ListType} from "@src/type/ListType.tsx";
-import {ActionRequestType} from "../type/ActionRequestType.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import {ActionType, ActionVisibility} from "@src/type/ActionType.tsx";
 import {GetDataType, UseDataProvider} from "@src/context/GetData.tsx";
 import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";

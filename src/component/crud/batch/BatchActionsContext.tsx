@@ -3,7 +3,7 @@ import {ChoiceType} from "@src/type/FormViewType.tsx";
 import {UseList} from "@src/context/ListContext.tsx";
 
 export type BatchContextType = {
-    actions: {[action: string]: string}  | undefined;
+    actions: { [action: string]: string } | undefined;
     toggle: (row: number, add: boolean) => void;
     toggleAll: (selectAll: boolean) => void;
     isSelected: (row: number) => boolean;
@@ -13,7 +13,7 @@ export type BatchContextType = {
     clear: () => void;
 }
 
-const BatchActionsContext = React.createContext<BatchContextType|undefined>(undefined);
+const BatchActionsContext = React.createContext<BatchContextType | undefined>(undefined);
 
 export function UseBatchActions() {
     return React.useContext<BatchContextType | undefined>(BatchActionsContext);
@@ -25,12 +25,14 @@ export function BatchActionsProvider({onClick, ...props}: {
 
     const {data, items, primaryColumn} = UseList();
     const selectedIds = useRef<number[]>([]);
-    const currentIds: number[] = items.map(row => (row[primaryColumn?.field || ''] || 0));
+    const currentIds: number[] = items?.map(row => (row[primaryColumn?.field || ''] || 0) as number) || [];
     const isSelectedAll = !!currentIds.length && currentIds.reduce<boolean>((result: boolean, id) => result && selectedIds.current.includes(id), true);
-    const actions = data?.form?.batch?.view?.children?.method?.choices?.reduce((result, choice: ChoiceType) => {
+    const actions = data?.form?.batch?.view?.children?.method?.choices?.reduce((result: {
+        [key: string]: string
+    }, choice: ChoiceType) => {
         const label = choice.label instanceof Function ? choice.label(choice) : choice.label;
         const method = choice.value instanceof Function ? choice.value() : choice.value?.toString();
-        return {...result, [method]: label };
+        return {...result, [method]: label};
     }, {});
 
     const hasBatchActions = !!Object.keys(actions || {}).length && primaryColumn;
@@ -101,7 +103,7 @@ export function BatchActionsProvider({onClick, ...props}: {
                 executeAction,
                 selected: selectedIds.current,
                 clear
-        }}>
+            }}>
             {props.children}
         </BatchActionsContext.Provider>
     );

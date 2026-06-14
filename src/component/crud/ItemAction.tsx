@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {UseListItem} from "@src/context/ListItemContext.tsx";
 import ActionLink from "./ActionLink.tsx";
 import IsListItemActionGranted from "@src/component/crud/IsListItemActionGranted.tsx";
-import {ActionRequestType} from "../../type/ActionRequestType.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import Translation from "@src/component/Translation.tsx";
 import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
 

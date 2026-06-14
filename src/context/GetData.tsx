@@ -5,7 +5,7 @@ import {UseActions} from "@src/context/ActionContext.tsx";
 import HttpException from "@src/component/error/HttpException.tsx";
 import {CrudRequester} from "@src/Crud.tsx";
 import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {ActionRequestType} from "../type/ActionRequestType.tsx";
+import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
@@ -46,7 +46,7 @@ const GetData = (
     }): GetDataType => {
 
     const enabled = useRef(loadOnInit);
-    const {navigate, externalToInternalPath, internalToExternalPath} = UseActions();
+    const {navigate, externalToInternalPath, internalToExternalPath} = UseActions(false);
     const [results, setResults] = useState<{data: ListType | ModifyType, response: Response} | undefined>();
 
     const loading = useRef<AbortController | null>(null);
