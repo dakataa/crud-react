@@ -5,7 +5,6 @@ import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
 import {Extend} from "@src/component/templating/Template.tsx";
 
 import '@src/assets/style/alert.scss';
-import {DataProvider} from "@src/context/GetData.tsx";
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]
@@ -71,18 +70,20 @@ export function UseAlert() {
     return context;
 }
 
+type AnimationData = Record<string, unknown>
+
 export function AlertProvider({children}: PropsWithChildren) {
     const [alert, setAlert] = useState<AlertConfigType>();
 
     const updates = useRef(0);
     const modalRef = useRef<ModalRefType>(undefined);
-    const [animationData, setAnimationData] = useState(null);
+    const [animationData, setAnimationData] = useState<AnimationData | null>(null);
 
     useEffect(() => {
         updates.current += 1;
     }, [alert]);
 
-    const animationFiles = import.meta.glob('@src/assets/images/alert/*');
+    const animationFiles = import.meta.glob<{ default: AnimationData }>('@src/assets/images/alert/*');
 
     const reset = () => {
         setAnimationData(null);
@@ -90,7 +91,7 @@ export function AlertProvider({children}: PropsWithChildren) {
     }
 
     const open = (config?: AlertConfigOptionalType): void => {
-        let alertConfig = {
+        const alertConfig = {
             title: 'Are you confirm?',
             icon: Icon.info,
             animation: Animation.scale,
@@ -112,7 +113,7 @@ export function AlertProvider({children}: PropsWithChildren) {
             const iconPath = iconMap[alertConfig.icon as Icon];
             const iconFilePath = Object.keys(animationFiles).filter(k => k.endsWith(iconPath)).pop()
             if (iconFilePath) {
-                animationFiles[iconFilePath]().then((module: any) => {
+                animationFiles[iconFilePath]?.().then((module) => {
                     setAnimationData(module.default)
                 });
             }
@@ -151,7 +152,7 @@ export function AlertProvider({children}: PropsWithChildren) {
             isDenied: action === 'deny',
         };
 
-        alert?.onResult && alert.onResult(result);
+        alert?.onResult?.(result);
         modalRef.current?.close().then(reset);
     };
 
@@ -160,7 +161,7 @@ export function AlertProvider({children}: PropsWithChildren) {
             {alert && (
                 <Modal
                     key={updates.current}
-                    size={alert.size as any}
+                    size={alert.size as Size}
                     className={"modal-alert"}
                     animation={alert.animation}
                     open={true}

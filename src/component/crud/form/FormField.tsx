@@ -6,6 +6,7 @@ import Collection from "@src/component/form/Collection.tsx";
 import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
 import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
 import DynamicView from "@src/component/crud/DynamicView.tsx";
+import Textarea from "@src/component/form/Textarea.tsx";
 
 const FormFieldSelector = ({view, ref}: {
     view: FormViewType,
@@ -21,6 +22,9 @@ const FormFieldSelector = ({view, ref}: {
         }
         case FormViewTypeEnum.Collection: {
             return <Collection view={view}/>
+        }
+        case FormViewTypeEnum.Textarea: {
+            return <Textarea view={view}/>
         }
         case FormViewTypeEnum.Hidden:
         case FormViewTypeEnum.Input:

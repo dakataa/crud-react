@@ -16,7 +16,7 @@ const ListView = ({itemView, emptyView, namespace}: ListViewType) => {
     const {items, primaryColumn, data} = UseList();
 
     return !!data && (
-        items.length ? items.map((row, index: number) => (
+        items?.length ? items.map((row, index: number) => (
             <ListItemProvider key={index} index={index}>
                 <DynamicView
                     key={data?.entity?.data.items[index][primaryColumn?.field ?? '']}
