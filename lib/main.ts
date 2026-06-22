@@ -91,7 +91,7 @@ export {FormViewTypeEnum} from "src/type/FormViewType.tsx";
 
 export {default as BaseLayout} from "src/layout/default/Base.tsx";
 export {default as MainLayout} from "src/layout/default/Main.tsx";
-export {UseDataProvider, DataProvider, GetData, GetDataByAction, WithDataProvider} from "src/context/GetData.tsx";
+export {UseDataProvider, DataProvider, DataContextProvider, GetData, GetDataByAction, WithDataProvider} from "src/context/GetData.tsx";
 export type {GetDataType, GetDataProps, GetDataByActionRequestProps} from "src/context/GetData.tsx";
 export type {ListType} from "src/type/ListType.tsx"
 export type {ViewType} from "src/type/ViewType.tsx"

@@ -47,7 +47,7 @@ const GetData = (
 
     const enabled = useRef(loadOnInit);
     const {navigate, externalToInternalPath, internalToExternalPath} = UseActions(false);
-    const [results, setResults] = useState<{data: ListType | ModifyType, response: Response} | undefined>();
+    const [results, setResults] = useState<{ data: ListType | ModifyType, response: Response } | undefined>();
 
     const loading = useRef<AbortController | null>(null);
     const [refresh, setRefresh] = useState(1);
@@ -74,7 +74,7 @@ const GetData = (
             .then(({data, response}) => {
                 // if (response.redirected && !['cors'].includes(response.type)) {
                 if (response.redirected) {
-                    if(response.status === 200) {
+                    if (response.status === 200) {
                         const newURL = internalToExternalPath(new URL(response.url).pathname);
                         navigate(newURL);
                         return;
@@ -83,7 +83,7 @@ const GetData = (
 
                 setResults({data, response});
 
-                if([401, 403, 404, 500].includes(response.status)) {
+                if ([401, 403, 404, 500].includes(response.status)) {
                     throw new HttpException(response.status, response.statusText || 'Error', data);
                 }
             })
@@ -124,14 +124,20 @@ const GetData = (
 }
 
 const GetDataByAction = ({
-         actionRequest,
-         loadOnInit = true
-     }: GetDataByActionRequestProps): GetDataType | null => {
-        const {generateActionLink} = UseActions();
-        const path = generateActionLink(actionRequest);
+                             actionRequest,
+                             loadOnInit = true
+                         }: GetDataByActionRequestProps): GetDataType | null => {
+    const {generateActionLink} = UseActions();
+    const path = generateActionLink(actionRequest);
 
-        return GetData({path, method: actionRequest.method, body: actionRequest.body, bodyType: actionRequest.bodyType, loadOnInit});
-    }
+    return GetData({
+        path,
+        method: actionRequest.method,
+        body: actionRequest.body,
+        bodyType: actionRequest.bodyType,
+        loadOnInit
+    });
+}
 
 const DataProvider = ({suspense, children}: {
     children: ReactNode,
@@ -142,7 +148,7 @@ const DataProvider = ({suspense, children}: {
     const parentDataProvider = UseDataProvider();
     const url = generateActionLink(actionRequest);
 
-    if(parentDataProvider?.url === url) {
+    if (parentDataProvider?.url === url) {
         return children;
     }
 
@@ -153,8 +159,16 @@ const DataProvider = ({suspense, children}: {
     suspense ??= <>Data Loading</>;
 
     return (
-        <GetDataContext.Provider value={data}>
+        <DataContextProvider data={data}>
             {suspense && !data?.results ? suspense : children}
+        </DataContextProvider>
+    );
+}
+
+const DataContextProvider = ({data, children}: { data: GetDataType | null, children: ReactNode }) => {
+    return (
+        <GetDataContext.Provider value={data}>
+            {children}
         </GetDataContext.Provider>
     );
 }
@@ -170,4 +184,4 @@ function WithDataProvider<P extends object>(Component: ComponentType<P>): FC<P> 
     };
 }
 
-export {DataProvider, WithDataProvider, GetData, GetDataByAction};
+export {DataProvider, DataContextProvider, WithDataProvider, GetData, GetDataByAction};
