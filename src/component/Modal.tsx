@@ -44,6 +44,7 @@ const Modal = AsTemplate(forwardRef(({
     const modalRef = useRef<HTMLDivElement | null>(null);
     const modalBackdropRef = useRef<HTMLDivElement | null>(null);
     const [isOpen, setIsOpen] = useState<boolean>(open);
+    const [backdropVisible, setBackdropVisible] = useState<boolean>(false);
     let isShown = false;
 
     useImperativeHandle(ref, () => ({
@@ -74,6 +75,8 @@ const Modal = AsTemplate(forwardRef(({
         if (!isOpen) {
             return;
         }
+
+        setBackdropVisible(true);
 
         const modalElement = modalRef.current as HTMLDivElement;
         if(!modalElement) {
@@ -120,6 +123,8 @@ const Modal = AsTemplate(forwardRef(({
         closeModal?.();
     }
     const startClosing = (): Promise<void> => {
+        setBackdropVisible(false);
+
         return new Promise((resolve: Function, reject: Function) => {
             if (!isOpen) {
                 return resolve();
@@ -150,6 +155,10 @@ const Modal = AsTemplate(forwardRef(({
                 closeAndResolve();
             }
         })
+    }
+
+    if(!isOpen) {
+        return;
     }
 
     return createPortal((
@@ -190,7 +199,7 @@ const Modal = AsTemplate(forwardRef(({
             </div>
             {backdrop && (
                 <div ref={modalBackdropRef}
-                     className={["modal-backdrop", "fade", ...(animation && ['show'])].filter(v => v).join(' ')}></div>
+                     className={["modal-backdrop", "fade", ...(backdropVisible ? ['show'] : [])].filter(v => v).join(' ')}></div>
             )}
         </>
     ), document.body);

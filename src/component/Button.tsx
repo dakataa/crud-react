@@ -84,7 +84,7 @@ export default (
             return;
         }
 
-        buttonRef.current.disabled = preload || disabled;
+        buttonRef.current.disabled = props.disabled || preload || disabled;
 
     }, [preload]);
 
