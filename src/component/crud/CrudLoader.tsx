@@ -171,7 +171,7 @@ const CrudLoader = ({path, preloader}: {
             return;
         }
 
-        throw new HttpException(404, 'Not Found');
+        throw new HttpException(404);
     }, [actionRequest]);
 
     if (actionRequest === undefined) {

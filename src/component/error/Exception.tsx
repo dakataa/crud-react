@@ -1,16 +1,21 @@
 import {ExceptionTraceType} from "@src/component/error/HttpException.tsx";
 
 class Exception {
-    code: number;
+
 
     detail: string;
 
+    code: number;
+
     trace?: ExceptionTraceType[];
 
-    constructor(code: number = 0, detail: string, trace?: ExceptionTraceType[]) {
+    name?: string;
+
+    constructor(code: number = 0, detail: string, trace?: ExceptionTraceType[], name?: string) {
         this.code = code;
         this.detail = detail;
         this.trace = trace;
+        this.name = name;
     }
 }
 

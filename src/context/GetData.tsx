@@ -72,9 +72,11 @@ const GetData = (
                 signal: loading.current?.signal,
             })
             .then(({data, response}) => {
+                const primaryStatus = Math.floor(response.status / 100) * 100;
+
                 // if (response.redirected && !['cors'].includes(response.type)) {
                 if (response.redirected) {
-                    if (response.status === 200) {
+                    if (primaryStatus === 200) {
                         const newURL = internalToExternalPath(new URL(response.url).pathname);
                         navigate(newURL);
                         return;
@@ -83,8 +85,8 @@ const GetData = (
 
                 setResults({data, response});
 
-                if ([401, 403, 404, 500].includes(response.status)) {
-                    throw new HttpException(response.status, response.statusText || 'Error', data);
+                if ([400, 500].includes(primaryStatus)) {
+                    throw new HttpException(response.status, response.statusText, data);
                 }
             })
             .finally(() => {

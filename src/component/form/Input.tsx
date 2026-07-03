@@ -8,7 +8,7 @@ export type FormFieldProps = {
     view: FormViewType;
     className?: string;
     constraints?: Constraint[];
-    onChange?: Function;
+    onChange?: (value?: string | number | object) => void;
     ref?: React.RefObject<HTMLInputElement>;
 }
 
@@ -36,9 +36,9 @@ const Input = ({
         });
     }, [])
 
-    const validate = (value: any) => {
+    const validate = (value: string | number | object) => {
         dispatch({action: 'validate', payload: elementFullName});
-        onChange && onChange(value);
+        onChange?.(value);
     }
 
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
@@ -61,7 +61,7 @@ const Input = ({
         type = type === FormViewTypeEnum.Datetime ? 'datetime-local' : 'date';
     }
 
-    if(view.required) {
+    if (view.required) {
         attr.required = 'required';
     }
 
@@ -75,11 +75,11 @@ const Input = ({
             defaultValue={value}
             aria-invalid={!errorMessages.length}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
-                if(attr.onChange instanceof Function) {
+                if (attr.onChange instanceof Function) {
                     attr.onChange(e);
                 }
 
-                if(e.defaultPrevented){
+                if (e.defaultPrevented) {
                     return;
                 }
 
@@ -92,7 +92,7 @@ const Input = ({
                 ...(errorMessages.length ? ['is-invalid'] : [])
             ].filter(v => v).join(' ')}
             defaultChecked={view?.checked}
-            placeholder={settings?.placeholder || view?.placeholder ||  undefined}
+            placeholder={settings?.placeholder || view?.placeholder || undefined}
             {...attr}
             {...(attr.inputmode === "decimal" && {step: "any"})}
         />
