@@ -85,7 +85,8 @@ const GetData = (
 
                 setResults({data, response});
 
-                if ([400, 500].includes(primaryStatus)) {
+                const isForm = data instanceof Object && data.hasOwnProperty('form');
+                if ([400, 500].includes(primaryStatus) && isForm === false) {
                     throw new HttpException(response.status, response.statusText, data);
                 }
             })

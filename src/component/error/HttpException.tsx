@@ -136,7 +136,7 @@ class HttpException extends Exception {
 
     constructor(status: number, detail?: string, trace?: ExceptionTraceType[], name?: string) {
 
-        super(0, (detail || httpErrorStatuses[status].description || 'Unknown error'),  trace, (name || httpErrorStatuses[status].name || undefined));
+        super(0, (detail || httpErrorStatuses[status].description || 'Unknown error'),  trace, (name || httpErrorStatuses[status]?.name || undefined));
         this.status = status;
     }
 }
