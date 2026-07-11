@@ -59,6 +59,8 @@ export {default as ErrorBoundary} from "src/component/error/ErrorBoundary.tsx";
 export {default as Link} from "src/component/Link.tsx";
 export {default as Button} from "src/component/Button.tsx"
 export type {ButtonPropsType} from "src/component/Button.tsx"
+export type {ButtonContentProps} from "src/component/BaseButtonContent.tsx"
+
 export {default as Translation} from "src/component/Translation.tsx";
 export type {TranslationProps} from "src/component/Translation.tsx";
 export {default as ActionLink} from "src/component/crud/ActionLink.tsx";

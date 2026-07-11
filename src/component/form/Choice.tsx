@@ -189,7 +189,7 @@ const Choice = (
                 })}
                 className={[...classes, 'form-select'].join(' ')}
                 {...(view.attr && (view.attr instanceof Function ? view.attr() : view.attr))}
-                defaultValue={view.data}
+                defaultValue={view.value || view.data}
             >
                 {view.placeholder && (
                     <option value={""}>

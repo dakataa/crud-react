@@ -154,7 +154,7 @@ const ListInner = AsTemplate(({title, className}: {
             </Block>
             <Block name={"filters"}>
                 <FiltersView
-                    formView={results.form.filter.view}
+                    formView={results.form?.filter?.view}
                     onClick={(key) => filterData?.({excludeFilterParameters: [key]})}
                 />
             </Block>
