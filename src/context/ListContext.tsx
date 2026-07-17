@@ -193,7 +193,7 @@ export function UseList(safe: boolean = true) {
 
     const getValue = (view: FormViewType) => {
         if (view.choices !== undefined) {
-            const choices = view.choices?.reduce<ChoiceType[]>((result, c) => ([...result, ...(c.choices || [c])]), []).reduce<{
+            const choices = view.choices?.reduce<ChoiceType[]>((result, c) => ([...result, ...('choices' in c ? c.choices : [c])]), []).reduce<{
                 [key: string]: string
             }>((result, choice) => {
                 const choiceValue = choice.value instanceof Function ? choice.value(choice) : choice.value;

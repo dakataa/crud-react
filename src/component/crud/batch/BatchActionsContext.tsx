@@ -20,7 +20,7 @@ export function UseBatchActions() {
 }
 
 export function BatchActionsProvider({onClick, ...props}: {
-    onClick: (method: string, ids: any, data: FormData) => Promise<void>;
+    onClick?: (method: string, ids: any, data: FormData) => Promise<void>;
 } & PropsWithChildren) {
 
     const {data, items, primaryColumn} = UseList();
@@ -85,7 +85,7 @@ export function BatchActionsProvider({onClick, ...props}: {
             })
             formData.append(batchFormView?.children?.method.full_name || 'method', method)
 
-            onClick(method, selectedIds.current, formData).then(() => {
+            onClick?.(method, selectedIds.current, formData).then(() => {
                 clear();
                 resolve();
             }).catch(reject);
