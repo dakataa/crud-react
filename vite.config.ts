@@ -13,7 +13,7 @@ export default defineConfig({
             lib: {
                 name: "crud",
                 formats: ["es"],
-                entry: resolve(__dirname, 'lib/main.ts'),
+                entry: resolve(__dirname, 'src/main.ts'),
             },
             rolldownOptions: {
                 external: (id) =>

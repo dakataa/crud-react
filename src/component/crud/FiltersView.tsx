@@ -6,9 +6,9 @@ import {UseList} from "@src/context/ListContext.tsx";
 const FiltersView = ({onClick}: {formView: FormViewType, onClick: (key: string) => void }) => {
     const {appliedFilters} = UseList();
 
-    return !!appliedFilters.length && (
+    return !!appliedFilters?.length && (
         <div className={"filters d-flex mb-sm overflow-auto"}>
-            {appliedFilters.map((item, index) => (
+            {appliedFilters?.map((item, index) => (
                 <div key={index} className="filters-item d-flex text-nowrap flex-column me-2 mb-2">
                     <small className="mb-2">
                         <T>{item.label}</T>
