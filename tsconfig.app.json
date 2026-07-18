@@ -34,7 +34,7 @@
 		/* Paths */
 		"baseUrl": ".",
 		"paths": {
-			"@src/*": [
+			"@crud-react/*": [
 				"./src/*"
 			]
 		},

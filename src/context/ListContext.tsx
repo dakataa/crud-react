@@ -1,17 +1,17 @@
 import React, {PropsWithChildren, SyntheticEvent} from "react";
-import {ListType} from "@src/type/ListType.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
-import {ActionType, ActionVisibility} from "@src/type/ActionType.tsx";
-import {GetDataType, UseDataProvider} from "@src/context/GetData.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import {UseModal} from "@src/context/ModalContext.tsx";
-import {Icon, Result, UseAlert} from "@src/context/AlertContext.tsx";
-import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
-import {CrudRequester} from "@src/Crud.tsx";
+import {ListType} from "@crud-react/type/ListType.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import {ActionType, ActionVisibility} from "@crud-react/type/ActionType.tsx";
+import {GetDataType, UseDataProvider} from "@crud-react/context/GetData.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import {UseModal} from "@crud-react/context/ModalContext.tsx";
+import {Icon, Result, UseAlert} from "@crud-react/context/AlertContext.tsx";
+import {objectRemoveEmpty} from "@crud-react/helper/ObjectUtils.tsx";
+import {CrudRequester} from "@crud-react/Crud.tsx";
 import {Method, RequestBodyType} from "@dakataa/requester";
-import {ColumnType} from "@src/type/ColumnType.tsx";
-import {ChoiceType, FormViewType} from "@src/type/FormViewType.tsx";
+import {ColumnType} from "@crud-react/type/ColumnType.tsx";
+import {ChoiceType, FormViewType} from "@crud-react/type/FormViewType.tsx";
 
 export type ListContextPropsType = {
     embedded?: boolean;

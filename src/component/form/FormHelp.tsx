@@ -1,5 +1,5 @@
 import React from "react";
-import {UseFormView} from "@src/component/crud/form/Form.tsx";
+import {UseFormView} from "@crud-react/component/crud/form/Form.tsx";
 
 const FormHelp = (
     {

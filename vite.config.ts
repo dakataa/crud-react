@@ -35,7 +35,7 @@ export default defineConfig({
                     replacement: join(process.cwd(), 'node_modules/$1'),
                 },
                 {
-                    find: /^@src\/(.+)/,
+                    find: /^@crud-react\/(.+)/,
                     replacement: join(process.cwd(), '/src/$1'),
                 }
             ]

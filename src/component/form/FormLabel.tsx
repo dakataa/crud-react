@@ -1,9 +1,9 @@
-import {FormViewType} from "@src/type/FormViewType";
-import {titlize} from "@src/helper/StringUtils";
-import {nameToId} from "@src/component/form/Form.tsx";
+import {FormViewType} from "@crud-react/type/FormViewType";
+import {titlize} from "@crud-react/helper/StringUtils";
+import {nameToId} from "@crud-react/component/form/Form.tsx";
 import React from "react";
-import {UseFormSettings} from "@src/component/form/FormSetting.tsx";
-import Translation from "@src/component/Translation.tsx";
+import {UseFormSettings} from "@crud-react/component/form/FormSetting.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const FormLabel = ({
                        view,

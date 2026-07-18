@@ -1,9 +1,9 @@
 import React from "react";
-import FormLabel from "@src/component/form/FormLabel.tsx";
-import FormHelp from "@src/component/form/FormHelp.tsx";
-import FormField from "@src/component/crud/form/FormField.tsx";
-import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
-import FormError from "@src/component/crud/form/FormError.tsx";
+import FormLabel from "@crud-react/component/form/FormLabel.tsx";
+import FormHelp from "@crud-react/component/form/FormHelp.tsx";
+import FormField from "@crud-react/component/crud/form/FormField.tsx";
+import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType.tsx";
+import FormError from "@crud-react/component/crud/form/FormError.tsx";
 
 export const FormGroup = ({
                               view,

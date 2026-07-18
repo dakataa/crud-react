@@ -1,8 +1,8 @@
-import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
-import Link from "@src/component/Link.tsx";
+import Dropdown, {DropdownButton, DropdownContent} from "@crud-react/component/Dropdown.tsx";
+import Link from "@crud-react/component/Link.tsx";
 import React from "react";
-import {UseBatchActions} from "@src/component/crud/batch/BatchActionsContext.tsx";
-import {default as T} from "@src/component/Translation.tsx";
+import {UseBatchActions} from "@crud-react/component/crud/batch/BatchActionsContext.tsx";
+import {default as T} from "@crud-react/component/Translation.tsx";
 
 const BatchActionSelector = () => {
 

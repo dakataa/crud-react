@@ -1,14 +1,14 @@
-import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
+import {ViewLoader} from "@crud-react/component/crud/ViewLoader.tsx";
 import React, {PropsWithChildren, ReactElement, useEffect, useImperativeHandle, useReducer, useState} from "react";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import HttpException from "@src/component/error/HttpException.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import HttpException from "@crud-react/component/error/HttpException.tsx";
 import Requester from "@dakataa/requester";
-import Exception from "@src/component/error/Exception.tsx";
-import {CRUD_NAMESPACE} from "@src/Crud.tsx";
-import {NamespaceProvider} from "@src/context/NamespaceContext.tsx";
-import {DataProvider} from "@src/context/GetData.tsx";
-import {UseConfig} from "@src/context/ConfigContext.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
+import Exception from "@crud-react/component/error/Exception.tsx";
+import {CRUD_NAMESPACE} from "@crud-react/Crud.tsx";
+import {NamespaceProvider} from "@crud-react/context/NamespaceContext.tsx";
+import {DataProvider} from "@crud-react/context/GetData.tsx";
+import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
 
 type CurrentActionRequestContextType = {
     actionRequest: ActionRequestType,

@@ -1,9 +1,9 @@
 import React, {memo, useEffect, useRef, useState} from "react";
-import Navigation, {NavigationItem, NavigationItemContextType} from "@src/component/crud/Navigation.tsx";
-import Base from "@src/layout/default/Base.tsx";
-import {CrudRequester} from "@src/Crud.tsx";
-import Link from "@src/component/Link.tsx";
-import Dropdown from "@src/component/Dropdown.tsx";
+import Navigation, {NavigationItem, NavigationItemContextType} from "@crud-react/component/crud/Navigation.tsx";
+import Base from "@crud-react/layout/default/Base.tsx";
+import {CrudRequester} from "@crud-react/Crud.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import Dropdown from "@crud-react/component/Dropdown.tsx";
 
 const Main = ({children, ...props}: {
     children?: any

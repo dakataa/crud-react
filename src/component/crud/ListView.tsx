@@ -1,10 +1,10 @@
 import React, {ReactElement} from "react";
-import {GridViewType} from "@src/component/crud/GridView.tsx";
-import {default as T} from "@src/component/Translation.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import ListItem from "@src/component/crud/ListItem.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
-import {ListItemProvider} from "@src/context/ListItemContext.tsx";
+import {GridViewType} from "@crud-react/component/crud/GridView.tsx";
+import {default as T} from "@crud-react/component/Translation.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import ListItem from "@crud-react/component/crud/ListItem.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
+import {ListItemProvider} from "@crud-react/context/ListItemContext.tsx";
 
 
 type ListViewType = GridViewType & {

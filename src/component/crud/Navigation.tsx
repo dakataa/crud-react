@@ -1,7 +1,7 @@
 import React, {createRef, ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from "react";
-import {RouteType} from "@src/type/RouteType.tsx";
-import Link from "@src/component/Link.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
+import {RouteType} from "@crud-react/type/RouteType.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
 
 export type NavigationItem = {
     title: string;

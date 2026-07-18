@@ -1,8 +1,8 @@
-import {ColumnType} from "@src/type/ColumnType.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
+import {ColumnType} from "@crud-react/type/ColumnType.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 import React from "react";
-import {UseListItem} from "@src/context/ListItemContext.tsx";
-import Translation from "@src/component/Translation.tsx";
+import {UseListItem} from "@crud-react/context/ListItemContext.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const ItemValue = ({column, namespace}: {
     column: ColumnType;

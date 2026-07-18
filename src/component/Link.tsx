@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import BaseButtonContent, {ButtonContentProps} from "./BaseButtonContent.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import {UseDataLoaderIndicator} from "@src/context/LoaderContext.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import {UseDataLoaderIndicator} from "@crud-react/context/LoaderContext.tsx";
 
 export default ({to, children, onClick, ...props}: {
     to?: string,

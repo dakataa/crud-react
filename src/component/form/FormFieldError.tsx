@@ -1,7 +1,7 @@
-import {UseForm} from "@src/component/form/Form";
+import {UseForm} from "@crud-react/component/form/Form";
 import React from "react";
-import {FormViewErrorType} from "@src/type/FormViewType.tsx";
-import Translation from "@src/component/Translation.tsx";
+import {FormViewErrorType} from "@crud-react/type/FormViewType.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const FormFieldError = ({name, className}: { name: string | string[], className?: string }) => {
     const [[form]] = UseForm() || {};

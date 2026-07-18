@@ -1,12 +1,12 @@
-import Choice from "@src/component/form/Choice.tsx";
+import Choice from "@crud-react/component/form/Choice.tsx";
 import React from "react";
-import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
-import Input from "@src/component/form/Input.tsx";
-import Collection from "@src/component/form/Collection.tsx";
-import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
-import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import Textarea from "@src/component/form/Textarea.tsx";
+import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType.tsx";
+import Input from "@crud-react/component/form/Input.tsx";
+import Collection from "@crud-react/component/form/Collection.tsx";
+import {FormViewProvider, UseFormView} from "@crud-react/component/crud/form/Form.tsx";
+import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import Textarea from "@crud-react/component/form/Textarea.tsx";
 
 const FormFieldSelector = ({view, ref}: {
     view: FormViewType,

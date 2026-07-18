@@ -1,27 +1,27 @@
 import React, {ComponentType, FC, PropsWithChildren, ReactElement, SyntheticEvent, useRef} from "react";
 import {convertFormDataToObject} from "@dakataa/requester";
-import GridView from "@src/component/crud/GridView.tsx";
-import Paginator from "@src/component/crud/Paginator.tsx";
-import {Form, FormRef, nameToId} from "@src/component/form/Form.tsx";
-import Dropdown, {DropdownButton, DropdownContent} from "@src/component/Dropdown.tsx";
-import Button from "@src/component/Button.tsx";
-import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
-import {objectRemoveEmpty} from "@src/helper/ObjectUtils.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {ActionVisibility} from "@src/type/ActionType.tsx";
-import {default as T} from "@src/component/Translation.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import FiltersView from "@src/component/crud/FiltersView.tsx";
-import {BatchActionsProvider} from "@src/component/crud/batch/BatchActionsContext.tsx";
-import BatchActionSelector from "@src/component/crud/batch/BatchActionSelector.tsx";
-import {ListProvider, UseList} from "@src/context/ListContext.tsx";
+import GridView from "@crud-react/component/crud/GridView.tsx";
+import Paginator from "@crud-react/component/crud/Paginator.tsx";
+import {Form, FormRef, nameToId} from "@crud-react/component/form/Form.tsx";
+import Dropdown, {DropdownButton, DropdownContent} from "@crud-react/component/Dropdown.tsx";
+import Button from "@crud-react/component/Button.tsx";
+import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
+import {objectRemoveEmpty} from "@crud-react/helper/ObjectUtils.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import {ActionVisibility} from "@crud-react/type/ActionType.tsx";
+import {default as T} from "@crud-react/component/Translation.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import FiltersView from "@crud-react/component/crud/FiltersView.tsx";
+import {BatchActionsProvider} from "@crud-react/component/crud/batch/BatchActionsContext.tsx";
+import BatchActionSelector from "@crud-react/component/crud/batch/BatchActionSelector.tsx";
+import {ListProvider, UseList} from "@crud-react/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
 import ActionLink from "./ActionLink.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {FormViewProvider} from "@src/component/crud/form/Form.tsx";
-import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
-import {WithDataProvider} from "@src/context/GetData.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import {FormViewProvider} from "@crud-react/component/crud/form/Form.tsx";
+import {AsTemplate, Block} from "@crud-react/component/templating/Template.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import {WithDataProvider} from "@crud-react/context/GetData.tsx";
 
 type ListPropsType = {
     embedded?: boolean

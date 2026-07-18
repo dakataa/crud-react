@@ -1,8 +1,8 @@
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
 import {UseForm} from "./Form";
 import {Constraint} from "./constraint/Contraint";
-import {FormViewType, FormViewTypeEnum} from "@src/type/FormViewType";
-import {UseFormSettings} from "@src/component/form/FormSetting.tsx";
+import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType";
+import {UseFormSettings} from "@crud-react/component/form/FormSetting.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;

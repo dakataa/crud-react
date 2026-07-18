@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useRef, useState} from "react";
-import {ChoiceType} from "@src/type/FormViewType.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
+import {ChoiceType} from "@crud-react/type/FormViewType.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
 
 export type BatchContextType = {
     actions: { [action: string]: string } | undefined;

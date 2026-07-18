@@ -1,4 +1,4 @@
-import {ExceptionTraceType} from "@src/component/error/HttpException.tsx";
+import {ExceptionTraceType} from "@crud-react/component/error/HttpException.tsx";
 
 class Exception {
 

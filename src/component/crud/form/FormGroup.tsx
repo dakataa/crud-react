@@ -1,8 +1,8 @@
-import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
-import {default as BaseFormGroup} from "@src/component/form/FormGroup.tsx";
+import {FormViewProvider, UseFormView} from "@crud-react/component/crud/form/Form.tsx";
+import {default as BaseFormGroup} from "@crud-react/component/form/FormGroup.tsx";
 import React, {PropsWithChildren, useId} from "react";
-import {FormViewType} from "@src/type/FormViewType.tsx";
-import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
+import {FormViewType} from "@crud-react/type/FormViewType.tsx";
+import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
 
 type FormGroupContextType = {
     id: string;

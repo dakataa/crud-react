@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import Base from "@src/layout/default/Base.tsx";
+import Base from "@crud-react/layout/default/Base.tsx";
 
 const Error = memo(({error}: {
     error?: any

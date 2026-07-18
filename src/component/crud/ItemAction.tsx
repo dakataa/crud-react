@@ -1,10 +1,10 @@
 import React, {ReactNode} from "react";
-import {UseListItem} from "@src/context/ListItemContext.tsx";
+import {UseListItem} from "@crud-react/context/ListItemContext.tsx";
 import ActionLink from "./ActionLink.tsx";
-import IsListItemActionGranted from "@src/component/crud/IsListItemActionGranted.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
-import Translation from "@src/component/Translation.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
+import IsListItemActionGranted from "@crud-react/component/crud/IsListItemActionGranted.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
 
 const ItemAction = ({action, icon, className, ...props}: {
     action: ActionRequestType;

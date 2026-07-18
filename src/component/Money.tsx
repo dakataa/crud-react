@@ -1,4 +1,4 @@
-import {UseConfig} from "@src/context/ConfigContext.tsx";
+import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
 
 const Money = ({currency, locale, children, precision = 2}: {
     currency?: string,

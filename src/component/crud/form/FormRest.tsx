@@ -1,4 +1,4 @@
-import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
+import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
 
 const FormRest = () => {
     return <FormGroupViewLoader />

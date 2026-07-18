@@ -1,4 +1,4 @@
-import {ColumnType} from "@src/type/ColumnType";
+import {ColumnType} from "@crud-react/type/ColumnType";
 
 export type ViewType = {
     title: string | null;

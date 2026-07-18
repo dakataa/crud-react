@@ -1,4 +1,4 @@
-import {FormViewType} from "@src/type/FormViewType";
+import {FormViewType} from "@crud-react/type/FormViewType";
 
 export type FormType = {
     view: FormViewType;

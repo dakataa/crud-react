@@ -1,8 +1,8 @@
-import DynamicView from "@src/component/crud/DynamicView.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 import React from "react";
-import {UseListItem} from "@src/context/ListItemContext.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
-import ItemAction from "@src/component/crud/ItemAction.tsx";
+import {UseListItem} from "@crud-react/context/ListItemContext.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
+import ItemAction from "@crud-react/component/crud/ItemAction.tsx";
 
 const ItemActions = ({namespace, routeParams}: {
     namespace?: string;

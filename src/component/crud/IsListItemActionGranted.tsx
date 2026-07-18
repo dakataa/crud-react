@@ -1,8 +1,8 @@
 import {PropsWithChildren} from "react";
-import {UseDataProvider} from "@src/context/GetData.tsx";
-import {UseListItem} from "@src/context/ListItemContext.tsx";
-import {ViewType} from "@src/type/ViewType.tsx";
-import {ListType} from "@src/type/ListType.tsx";
+import {UseDataProvider} from "@crud-react/context/GetData.tsx";
+import {UseListItem} from "@crud-react/context/ListItemContext.tsx";
+import {ViewType} from "@crud-react/type/ViewType.tsx";
+import {ListType} from "@crud-react/type/ListType.tsx";
 
 const IsListItemActionGranted = ({permission, children, id: itemId}: {
     permission?: string | null,

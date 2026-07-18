@@ -1,6 +1,6 @@
 import React, {RefObject, useEffect, useImperativeHandle, useReducer, useRef} from "react";
-import {Constraint} from "@src/component/form/constraint/Contraint";
-import {FormViewErrorType, FormViewTypeEnum} from "@src/type/FormViewType.tsx";
+import {Constraint} from "@crud-react/component/form/constraint/Contraint";
+import {FormViewErrorType, FormViewTypeEnum} from "@crud-react/type/FormViewType.tsx";
 
 type FormContextType = [FormState, FormRef, HTMLFormElement | null];
 const FormContext: any = React.createContext<FormContextType | undefined>(undefined);

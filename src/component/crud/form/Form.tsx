@@ -1,4 +1,4 @@
-import {Form as BaseForm, FormRef, UseForm} from "@src/component/form/Form.tsx";
+import {Form as BaseForm, FormRef, UseForm} from "@crud-react/component/form/Form.tsx";
 import React, {
     forwardRef,
     PropsWithChildren,
@@ -9,21 +9,21 @@ import React, {
     useRef,
     useState
 } from "react";
-import {ModifyType} from "@src/type/ModifyType.tsx";
-import {FormViewErrorType, FormViewType} from "@src/type/FormViewType.tsx";
+import {ModifyType} from "@crud-react/type/ModifyType.tsx";
+import {FormViewErrorType, FormViewType} from "@crud-react/type/FormViewType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
-import Button from "@src/component/Button.tsx";
-import {UseDataProvider} from "@src/context/GetData.tsx";
-import {default as T} from "@src/component/Translation.tsx";
-import {ExceptionType} from "@src/type/ExceptionType.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import FormRest from "@src/component/crud/form/FormRest.tsx";
-import FormRestError from "@src/component/crud/form/FormRestError.tsx";
-import {UseFormGroup} from "@src/component/crud/form/FormGroup.tsx";
-import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
-import {Preloader, UsePreloaderProvider} from "@src/component/Preloader.tsx";
+import Button from "@crud-react/component/Button.tsx";
+import {UseDataProvider} from "@crud-react/context/GetData.tsx";
+import {default as T} from "@crud-react/component/Translation.tsx";
+import {ExceptionType} from "@crud-react/type/ExceptionType.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import FormRest from "@crud-react/component/crud/form/FormRest.tsx";
+import FormRestError from "@crud-react/component/crud/form/FormRestError.tsx";
+import {UseFormGroup} from "@crud-react/component/crud/form/FormGroup.tsx";
+import {AsTemplate, Block} from "@crud-react/component/templating/Template.tsx";
+import {Preloader, UsePreloaderProvider} from "@crud-react/component/Preloader.tsx";
 
 export type ModifyFormRefType = {
     getFormRef: () => FormRef | null

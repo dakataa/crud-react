@@ -1,7 +1,7 @@
-import {ColumnType} from "@src/type/ColumnType";
-import {ActionType} from "@src/type/ActionType";
-import {ListMetaType} from "@src/type/ListMetaType";
-import {FormType} from "@src/type/FormType";
+import {ColumnType} from "@crud-react/type/ColumnType";
+import {ActionType} from "@crud-react/type/ActionType";
+import {ListMetaType} from "@crud-react/type/ListMetaType";
+import {FormType} from "@crud-react/type/FormType";
 
 export type ListType = {
     title: string | null;

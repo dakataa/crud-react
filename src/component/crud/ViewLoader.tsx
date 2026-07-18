@@ -1,8 +1,8 @@
-import Modify from "@src/component/crud/Modify.tsx";
-import List from "@src/component/crud/List.tsx";
+import Modify from "@crud-react/component/crud/Modify.tsx";
+import List from "@crud-react/component/crud/List.tsx";
 import React from "react";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {UseNamespace} from "@src/context/NamespaceContext.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import {UseNamespace} from "@crud-react/context/NamespaceContext.tsx";
 
 const ViewNotFound = ({view}: { view: string }) => {
     return (

@@ -1,15 +1,15 @@
-import {ColumnType} from "@src/type/ColumnType";
+import {ColumnType} from "@crud-react/type/ColumnType";
 import React, {HTMLAttributes, ReactElement, TableHTMLAttributes} from "react";
-import Link from "@src/component/Link.tsx";
-import {default as T} from "@src/component/Translation.tsx";
-import ItemValue from "@src/component/crud/ItemValue.tsx";
-import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
-import ItemLabel from "@src/component/crud/ItemLabel.tsx";
-import {ListItemProvider} from "@src/context/ListItemContext.tsx";
-import ItemActions from "@src/component/crud/ItemActions.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {UseConfig} from "@src/context/ConfigContext.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import {default as T} from "@crud-react/component/Translation.tsx";
+import ItemValue from "@crud-react/component/crud/ItemValue.tsx";
+import BatchItemSelector from "@crud-react/component/crud/batch/BatchItemSelector.tsx";
+import ItemLabel from "@crud-react/component/crud/ItemLabel.tsx";
+import {ListItemProvider} from "@crud-react/context/ListItemContext.tsx";
+import ItemActions from "@crud-react/component/crud/ItemActions.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
 
 type GridViewHeaderColumnAttributes = {
     className?: string

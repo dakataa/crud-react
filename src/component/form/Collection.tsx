@@ -1,12 +1,12 @@
 import React, {useEffect, useReducer} from "react";
-import {FormViewType} from "@src/type/FormViewType";
-import Link from "@src/component/Link.tsx";
-import T from "@src/component/Translation.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {FormViewProvider, UseFormView, UseParentFormView} from "@src/component/crud/form/Form.tsx";
-import FormGroupViewLoader from "@src/component/crud/form/FormGroupViewLoader.tsx";
-import {nameToId} from "@src/component/form/Form.tsx";
-import FormGroup from "@src/component/form/FormGroup.tsx";
+import {FormViewType} from "@crud-react/type/FormViewType";
+import Link from "@crud-react/component/Link.tsx";
+import T from "@crud-react/component/Translation.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import {FormViewProvider, UseFormView, UseParentFormView} from "@crud-react/component/crud/form/Form.tsx";
+import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
+import {nameToId} from "@crud-react/component/form/Form.tsx";
+import FormGroup from "@crud-react/component/form/FormGroup.tsx";
 
 export type FormFieldProps = {
     view: FormViewType;

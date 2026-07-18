@@ -1,4 +1,4 @@
-import Exception from "@src/component/error/Exception.tsx";
+import Exception from "@crud-react/component/error/Exception.tsx";
 
 export type ExceptionTraceType = {
     type: string;

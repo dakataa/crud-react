@@ -1,18 +1,18 @@
 import React, {ComponentType, ReactNode} from "react";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import Form from "@src/component/crud/form/Form.tsx";
-import {ModifyType} from "@src/type/ModifyType.tsx";
-import {UseDataProvider, WithDataProvider} from "@src/context/GetData.tsx";
-import Modal from "@src/component/Modal.tsx";
-import {Icon as AlertIcon, UseAlert} from "@src/context/AlertContext.tsx";
-import {ExceptionType} from "@src/type/ExceptionType.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import Link from "@src/component/Link.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {AsTemplate, Block, Extend} from "@src/component/templating/Template.tsx";
-import Button from "@src/component/Button.tsx";
-import Translation, {default as T} from "@src/component/Translation.tsx";
-import {UseModal} from "@src/context/ModalContext.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import Form from "@crud-react/component/crud/form/Form.tsx";
+import {ModifyType} from "@crud-react/type/ModifyType.tsx";
+import {UseDataProvider, WithDataProvider} from "@crud-react/context/GetData.tsx";
+import Modal from "@crud-react/component/Modal.tsx";
+import {Icon as AlertIcon, UseAlert} from "@crud-react/context/AlertContext.tsx";
+import {ExceptionType} from "@crud-react/type/ExceptionType.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import {AsTemplate, Block, Extend} from "@crud-react/component/templating/Template.tsx";
+import Button from "@crud-react/component/Button.tsx";
+import Translation, {default as T} from "@crud-react/component/Translation.tsx";
+import {UseModal} from "@crud-react/context/ModalContext.tsx";
 
 const DefaultModifyTemplate = AsTemplate(({children}: {
     children?: ReactNode;

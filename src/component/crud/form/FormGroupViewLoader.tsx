@@ -1,9 +1,9 @@
-import {FormViewTypeEnum} from "@src/type/FormViewType.tsx";
+import {FormViewTypeEnum} from "@crud-react/type/FormViewType.tsx";
 import React, {Fragment, memo, useId} from "react";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
-import {FormViewProvider, UseFormView} from "@src/component/crud/form/Form.tsx";
-import {FormGroupProvider} from "@src/component/crud/form/FormGroup.tsx";
-import {default as BaseFormGroup} from "@src/component/form/FormGroup.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import {FormViewProvider, UseFormView} from "@crud-react/component/crud/form/Form.tsx";
+import {FormGroupProvider} from "@crud-react/component/crud/form/FormGroup.tsx";
+import {default as BaseFormGroup} from "@crud-react/component/form/FormGroup.tsx";
 
 const FormGroupViewLoader = () => {
     const id = useId();

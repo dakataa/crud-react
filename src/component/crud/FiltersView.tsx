@@ -1,7 +1,7 @@
-import {ChoiceType, FormViewType} from "@src/type/FormViewType.tsx";
+import {ChoiceType, FormViewType} from "@crud-react/type/FormViewType.tsx";
 import React from "react";
-import T from "@src/component/Translation.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
+import T from "@crud-react/component/Translation.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
 
 const FiltersView = ({onClick}: {formView: FormViewType, onClick: (key: string) => void }) => {
     const {appliedFilters} = UseList();

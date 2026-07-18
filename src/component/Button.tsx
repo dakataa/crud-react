@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, RefObject, useEffect, useRef, useState} from "react";
 import BaseButtonContent, {ButtonContentProps} from "./BaseButtonContent.tsx";
-import {UsePreloader, UsePreloaderProvider} from "@src/component/Preloader.tsx";
+import {UsePreloader, UsePreloaderProvider} from "@crud-react/component/Preloader.tsx";
 
 export type ButtonPropsType =
     {

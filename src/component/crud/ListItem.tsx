@@ -1,10 +1,10 @@
-import ItemValue from "@src/component/crud/ItemValue.tsx";
+import ItemValue from "@crud-react/component/crud/ItemValue.tsx";
 import React from "react";
-import BatchItemSelector from "@src/component/crud/batch/BatchItemSelector.tsx";
-import ItemLabel from "@src/component/crud/ItemLabel.tsx";
-import ItemActions from "@src/component/crud/ItemActions.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
-import {ColumnType} from "@src/type/ColumnType.tsx";
+import BatchItemSelector from "@crud-react/component/crud/batch/BatchItemSelector.tsx";
+import ItemLabel from "@crud-react/component/crud/ItemLabel.tsx";
+import ItemActions from "@crud-react/component/crud/ItemActions.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
+import {ColumnType} from "@crud-react/type/ColumnType.tsx";
 
 const ListItem = ({namespace}: {
     namespace?: string,

@@ -1,6 +1,6 @@
 import React from "react";
-import {UseBatchActions} from "@src/component/crud/batch/BatchActionsContext.tsx";
-import {UseListItem} from "@src/context/ListItemContext.tsx";
+import {UseBatchActions} from "@crud-react/component/crud/batch/BatchActionsContext.tsx";
+import {UseListItem} from "@crud-react/context/ListItemContext.tsx";
 
 const BatchItemSelector = ({className}: {className?: string}) => {
 

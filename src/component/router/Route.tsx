@@ -1,5 +1,5 @@
 import React, {Children, PropsWithChildren, ReactNode, useEffect, useRef, useState} from "react";
-import {UseActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
 import Element = React.JSX.Element;
 
 type RouteItemType = {

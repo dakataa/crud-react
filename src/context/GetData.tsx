@@ -1,11 +1,11 @@
 import React, {ComponentType, FC, ReactNode, useCallback, useEffect, useRef, useState} from "react";
-import {ListType} from "@src/type/ListType.tsx";
-import {ModifyType} from "@src/type/ModifyType.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import HttpException from "@src/component/error/HttpException.tsx";
-import {CrudRequester} from "@src/Crud.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
+import {ListType} from "@crud-react/type/ListType.tsx";
+import {ModifyType} from "@crud-react/type/ModifyType.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import HttpException from "@crud-react/component/error/HttpException.tsx";
+import {CrudRequester} from "@crud-react/Crud.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);

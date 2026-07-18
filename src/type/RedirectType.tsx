@@ -1,4 +1,4 @@
-import {RouteType} from "@src/type/RouteType";
+import {RouteType} from "@crud-react/type/RouteType";
 
 export type RedirectType = {
     route: RouteType;

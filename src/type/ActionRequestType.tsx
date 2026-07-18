@@ -1,4 +1,4 @@
-import {ActionType} from "@src/type/ActionType.tsx";
+import {ActionType} from "@crud-react/type/ActionType.tsx";
 import {Method, RequestBodyType} from "@dakataa/requester";
 
 export type ActionRequestType = {

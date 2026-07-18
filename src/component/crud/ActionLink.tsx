@@ -1,9 +1,9 @@
 import React, {ReactNode, SyntheticEvent} from "react";
-import Link from "@src/component/Link.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
-import Translation from "@src/component/Translation.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const ActionLink = ({children, action, className, onClick, ...props}: {
     action: ActionRequestType;

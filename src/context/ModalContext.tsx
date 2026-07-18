@@ -1,10 +1,10 @@
 import React, {PropsWithChildren, useEffect, useReducer, useRef} from "react";
-import {ViewLoader} from "@src/component/crud/ViewLoader.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
-import {ModalType} from "@src/component/Modal.tsx";
-import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
-import {Icon, UseAlert} from "@src/context/AlertContext.tsx";
-import {CurrentActionRequestProvider} from "@src/component/crud/CrudLoader.tsx";
+import {ViewLoader} from "@crud-react/component/crud/ViewLoader.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import {ModalType} from "@crud-react/component/Modal.tsx";
+import ErrorBoundary from "@crud-react/component/error/ErrorBoundary.tsx";
+import {Icon, UseAlert} from "@crud-react/context/AlertContext.tsx";
+import {CurrentActionRequestProvider} from "@crud-react/component/crud/CrudLoader.tsx";
 
 export type ModalActionType = {
     action: ActionRequestType;

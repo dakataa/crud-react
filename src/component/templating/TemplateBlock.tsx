@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import TemplateExtend from "@src/component/templating/TemplateExtend.tsx";
+import TemplateExtend from "@crud-react/component/templating/TemplateExtend.tsx";
 
 const TemplateBlock = memo(({name, content, children, data}: {
     name: string,

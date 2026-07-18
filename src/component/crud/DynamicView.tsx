@@ -1,8 +1,8 @@
 import React, {memo, ReactElement, ReactNode, useEffect, useRef, useState} from "react";
-import {capitalize} from "@src/helper/StringUtils.tsx";
-import {UseConfig} from "@src/context/ConfigContext.tsx";
-import Empty from "@src/component/Empty.tsx";
-import {UseNamespace} from "@src/context/NamespaceContext.tsx";
+import {capitalize} from "@crud-react/helper/StringUtils.tsx";
+import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
+import Empty from "@crud-react/component/Empty.tsx";
+import {UseNamespace} from "@crud-react/context/NamespaceContext.tsx";
 
 type DynamicViewContextType = {
     parent?: ReactElement | ReactNode;

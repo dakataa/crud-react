@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import {UseList} from "@src/context/ListContext.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
 
 export type ListItemContextType = {
     index: number;

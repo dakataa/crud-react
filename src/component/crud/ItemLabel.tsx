@@ -1,7 +1,7 @@
-import {ColumnType} from "@src/type/ColumnType.tsx";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
+import {ColumnType} from "@crud-react/type/ColumnType.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 import React from "react";
-import Translation from "@src/component/Translation.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const ItemLabel = ({column, namespace}: {
     column: ColumnType;

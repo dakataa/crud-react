@@ -1,10 +1,10 @@
 import React, {ComponentType, FC, PropsWithChildren, useEffect, useRef, useState} from "react";
-import Modal, {ModalRefType} from "@src/component/Modal.tsx";
-import Button from "@src/component/Button.tsx";
-import {default as LottieAnimation} from "@src/component/LottieAnimation.tsx";
-import {Extend} from "@src/component/templating/Template.tsx";
+import Modal, {ModalRefType} from "@crud-react/component/Modal.tsx";
+import Button from "@crud-react/component/Button.tsx";
+import {default as LottieAnimation} from "@crud-react/component/LottieAnimation.tsx";
+import {Extend} from "@crud-react/component/templating/Template.tsx";
 
-import '@src/assets/style/alert.scss';
+import '@crud-react/assets/style/alert.scss';
 
 type AlertConfigOptionalType = {
     [K in keyof AlertConfigType]?: AlertConfigType[K]
@@ -83,7 +83,7 @@ export function AlertProvider({children}: PropsWithChildren) {
         updates.current += 1;
     }, [alert]);
 
-    const animationFiles = import.meta.glob<{ default: AnimationData }>('@src/assets/images/alert/*');
+    const animationFiles = import.meta.glob<{ default: AnimationData }>('@crud-react/assets/images/alert/*');
 
     const reset = () => {
         setAnimationData(null);

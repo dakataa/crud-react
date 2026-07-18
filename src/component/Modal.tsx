@@ -1,7 +1,7 @@
 import React, {forwardRef, KeyboardEvent, ReactNode, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {createPortal} from "react-dom";
-import {AsTemplate, Block} from "@src/component/templating/Template.tsx";
-import {UseModal} from "@src/context/ModalContext.tsx";
+import {AsTemplate, Block} from "@crud-react/component/templating/Template.tsx";
+import {UseModal} from "@crud-react/context/ModalContext.tsx";
 
 export type ModalType = {
     children?: ReactNode,

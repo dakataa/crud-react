@@ -1,11 +1,11 @@
 import React, {PropsWithChildren, ReactElement} from 'react';
 import Requester, {Config as RequesterConfig} from '@dakataa/requester';
-import ErrorBoundary from "@src/component/error/ErrorBoundary.tsx";
-import Error from "@src/layout/default/Error.tsx";
-import CrudProvider from "@src/context/CrudProvider.tsx";
-import {Config, Environment, Templates} from "@src/context/ConfigContext.tsx";
-import {ActionProvider} from "@src/context/ActionContext.tsx";
-import {CurrentActionCollectionProvider} from "@src/component/crud/CrudLoader.tsx";
+import ErrorBoundary from "@crud-react/component/error/ErrorBoundary.tsx";
+import Error from "@crud-react/layout/default/Error.tsx";
+import CrudProvider from "@crud-react/context/CrudProvider.tsx";
+import {Config, Environment, Templates} from "@crud-react/context/ConfigContext.tsx";
+import {ActionProvider} from "@crud-react/context/ActionContext.tsx";
+import {CurrentActionCollectionProvider} from "@crud-react/component/crud/CrudLoader.tsx";
 
 let requester: Requester | null = null;
 const globalConfig: { templates?: Templates } = {};

@@ -1,8 +1,8 @@
 import React, {Fragment, useEffect} from "react";
 import {nameToId, UseForm} from "./Form";
-import {FormFieldProps} from "@src/component/form/Input";
-import {ChoiceGroupType, ChoiceType, FormViewType} from "@src/type/FormViewType";
-import Translation from "@src/component/Translation.tsx";
+import {FormFieldProps} from "@crud-react/component/form/Input";
+import {ChoiceGroupType, ChoiceType, FormViewType} from "@crud-react/type/FormViewType";
+import Translation from "@crud-react/component/Translation.tsx";
 
 export type ChoiceProps = {
     view: FormViewType,

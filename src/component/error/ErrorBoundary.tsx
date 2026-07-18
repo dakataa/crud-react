@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {PropsWithChildren, useState} from 'react';
-import Exception from "@src/component/error/Exception.tsx";
-import HttpException from "@src/component/error/HttpException.tsx";
+import Exception from "@crud-react/component/error/Exception.tsx";
+import HttpException from "@crud-react/component/error/HttpException.tsx";
 
 type ErrorBoundaryProps = {
     fallback?: React.ReactElement | ((error: Exception | null) => void);

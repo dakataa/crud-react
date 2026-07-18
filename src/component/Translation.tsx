@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import DynamicView from "@src/component/crud/DynamicView.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 
 
 export type TranslationProps = {

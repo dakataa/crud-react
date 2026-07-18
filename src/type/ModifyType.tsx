@@ -1,5 +1,5 @@
-import {FormType} from "@src/type/FormType";
-import {RedirectType} from "@src/type/RedirectType";
+import {FormType} from "@crud-react/type/FormType";
+import {RedirectType} from "@crud-react/type/RedirectType";
 
 export type ModifyType = {
     title: string | null;

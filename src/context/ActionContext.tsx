@@ -1,9 +1,9 @@
 import React, {ComponentType, FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState} from "react";
-import {ActionType} from "@src/type/ActionType.tsx";
-import {ActionRequestType} from "@src/type/ActionRequestType.tsx";
-import {CrudRequester} from "@src/Crud.tsx";
-import {UseConfig} from "@src/context/ConfigContext.tsx";
-import {RouteType} from "@src/type/RouteType.tsx";
+import {ActionType} from "@crud-react/type/ActionType.tsx";
+import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import {CrudRequester} from "@crud-react/Crud.tsx";
+import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
+import {RouteType} from "@crud-react/type/RouteType.tsx";
 import {convertObjectToURLSearchParams, convertURLSearchParamsToObject} from "@dakataa/requester";
 
 window.history.pushState = new Proxy(window.history.pushState, {

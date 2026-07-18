@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useEffect, useReducer} from "react";
 import Requester, {convertURLSearchParamsToObject, InterceptEvent, Response} from "@dakataa/requester";
-import {UseActions} from "@src/context/ActionContext.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
 
 type DataLoaderIndicatorItemType = {url: string, requestId: number};
 

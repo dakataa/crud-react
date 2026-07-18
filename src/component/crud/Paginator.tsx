@@ -1,9 +1,9 @@
-import Link from "@src/component/Link.tsx";
-import {UseList} from "@src/context/ListContext.tsx";
-import {UseCurrentActionRequest} from "@src/component/crud/CrudLoader.tsx";
-import {UseActions} from "@src/context/ActionContext.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import {UseList} from "@crud-react/context/ListContext.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import {UseActions} from "@crud-react/context/ActionContext.tsx";
 import React, {ChangeEvent} from "react";
-import Translation from "@src/component/Translation.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const PageItem = ({page, active = false, title, children, className}: {
     page: number | string,

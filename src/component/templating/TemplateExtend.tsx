@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import TemplateParentBlock from "@src/component/templating/TemplateParentBlock.tsx";
+import TemplateParentBlock from "@crud-react/component/templating/TemplateParentBlock.tsx";
 
 type TemplateExtendType = {
     name: string;
