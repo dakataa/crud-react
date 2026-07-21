@@ -94,12 +94,13 @@ CrudConfiguration({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Crud
-      config={{
-        templates,
-        currency: 'BGN',
-        locale: 'bg',
-        env: import.meta.env.CRUD_ENV,
-      }}
+        config={{
+            templates,
+            currency: 'BGN',
+            locale: 'bg',
+            timezone: 'UTC',
+            env: import.meta.env.CRUD_ENV,
+        }}
     >
       <Router>
         <Route element={<MainLayout><Outlet /></MainLayout>}>
