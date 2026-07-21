@@ -56,7 +56,7 @@ const LottieAnimation = ({
 
             animation.destroy();
         }
-    }, []);
+    }, [animationData]);
 
     return (
         <div className={className} ref={elementRef} style={{width: width, height: height}}>
