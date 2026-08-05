@@ -1,5 +1,3 @@
-import {ListItemProvider} from "@crud-react/context/ListItemContext.tsx";
-
 export {default as Crud, CrudConfiguration, CrudRequester} from "./Crud.tsx";
 export {Environment, ConfigProvider} from "./context/ConfigContext.tsx";
 export type {Config, ConfigLink} from "./context/ConfigContext.tsx";
