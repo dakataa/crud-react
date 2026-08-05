@@ -12,7 +12,7 @@ const IsListItemActionGranted = ({permission, children, id: itemId}: {
     const {results: data}: { results?: ViewType | ListType} = UseDataProvider() || {};
     const {id} = itemId ? {id: itemId} : UseListItem();
 
-    if (permission && !Object.values(data?.entity.acl[permission] || []).map(a => a.toString()).includes(id.toString())) {
+    if (permission && !Object.values(data?.entity.acl[permission] || []).map(a => a.toString()).includes(id?.toString() || '')) {
         return;
     }
 

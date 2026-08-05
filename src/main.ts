@@ -1,3 +1,5 @@
+import {ListItemProvider} from "@crud-react/context/ListItemContext.tsx";
+
 export {default as Crud, CrudConfiguration, CrudRequester} from "./Crud.tsx";
 export {Environment, ConfigProvider} from "./context/ConfigContext.tsx";
 export type {Config, ConfigLink} from "./context/ConfigContext.tsx";
@@ -11,12 +13,13 @@ export type {CurrentActionRequestProviderRef} from "./component/crud/CrudLoader.
 export {default as Modify} from "./component/crud/Modify.tsx";
 export type {ModifyType} from "./type/ModifyType.tsx";
 export {default as List, ListInner, WithListProvider} from "./component/crud/List.tsx";
+
 export {default as GridView} from "./component/crud/GridView.tsx";
 export {default as ListView} from "./component/crud/ListView.tsx";
 export {default as ListItem} from "./component/crud/ListItem.tsx";
 export {default as Paginator} from "./component/crud/Paginator.tsx"
 export {UseList, ListProvider} from "./context/ListContext.tsx"
-export {UseListItem} from "./context/ListItemContext.tsx"
+export {UseListItem, ListItemProvider} from "./context/ListItemContext.tsx"
 
 // CRUD Form
 export {default as CrudForm, UseFormView, FormViewProvider} from "./component/crud/form/Form.tsx"

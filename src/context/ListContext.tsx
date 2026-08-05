@@ -209,7 +209,7 @@ export function UseList(safe: boolean = true) {
         return view.data;
     }
 
-    const appliedFilters = Object.values<FormViewType>(data.form?.filter?.view?.children || [])
+    const appliedFilters = Object.values<FormViewType>(data?.form?.filter?.view?.children || [])
         .filter(item => item.data !== null)
         .map((item) => {
             return {
@@ -241,7 +241,6 @@ export function UseList(safe: boolean = true) {
 }
 
 export function ListProvider({embedded, onClick, children}: ListContextPropsType & PropsWithChildren) {
-
     return (
         <ListItemContext.Provider value={{embedded, onClick}}>
             {children}

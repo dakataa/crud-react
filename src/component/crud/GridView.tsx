@@ -91,7 +91,12 @@ const GridView = ({
                 </thead>
                 <tbody>
                 {items?.length ? (items.map((row, index: number) => (
-                    <ListItemProvider key={index} index={index}>
+                    <ListItemProvider
+                        key={index}
+                        index={index}
+                        id={row[primaryColumn?.field || ''] ?? undefined}
+                        data={row}
+                    >
                         <tr>
                             {columns?.map((column: ColumnType, columnIndex: number) => {
                                     const columnOptions = options?.columns?.[column.field];
