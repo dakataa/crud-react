@@ -24,6 +24,7 @@ export {default as CrudForm, UseFormView, FormViewProvider} from "./component/cr
 export type {FormViewContextType, ModifyFormRefType} from "./component/crud/form/Form.tsx";
 export {default as FormFieldViewLoader} from "./component/crud/form/FormGroupViewLoader.tsx";
 export {default as FormGroup} from "./component/crud/form/FormGroup.tsx";
+export type {FormGroupProps} from "./component/crud/form/FormGroup.tsx";
 export {default as FormField} from "./component/crud/form/FormField.tsx";
 export {default as FormLabel} from "./component/crud/form/FormLabel.tsx";
 export {default as FormRest} from "./component/crud/form/FormRest.tsx";
