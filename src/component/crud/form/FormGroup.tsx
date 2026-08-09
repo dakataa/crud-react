@@ -30,7 +30,7 @@ const FormGroup = (
         optional // Stop throwing error when Form View is missing.
     }: {
         name?: string,
-        options?: FormViewType,
+        options?: Omit<FormViewType, "type">,
         optional?: boolean;
     }) => {
     const {form} = UseFormView();
