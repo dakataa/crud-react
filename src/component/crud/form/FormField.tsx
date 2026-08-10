@@ -58,7 +58,7 @@ const FormFieldSelector = ({view, ref}: {
 
 const FormField = ({name, options, ref}: {
     name?: string;
-    options?: Omit<FormViewType, "type">;
+    options?: Partial<FormViewType>;
     size?: 'lg' | 'sm',
     ref?: React.RefObject<HTMLInputElement | HTMLSelectElement>
 }) => {
