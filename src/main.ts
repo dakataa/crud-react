@@ -74,7 +74,16 @@ export {default as IsListItemActionGranted} from "./component/crud/IsListItemAct
 export {FormSetting, UseFormSettings} from "./component/form/FormSetting.tsx";
 export type {FormSettingContextType} from "./component/form/FormSetting.tsx";
 export {UseForm, Form, nameToId} from "./component/form/Form.tsx";
-export type {FormRef} from "./component/form/Form.tsx";
+export type {
+    FormAction,
+    FormConstraints,
+    FormContextType,
+    FormErrors,
+    FormProps,
+    FormRef,
+    FormState,
+    FormValue
+} from "./component/form/Form.tsx";
 export {default as BaseFormGroup} from "./component/form/FormGroup.tsx"
 export {default as BaseFormFieldError} from "./component/form/FormFieldError.tsx"
 export {default as BaseFormLabel} from "./component/form/FormLabel.tsx"

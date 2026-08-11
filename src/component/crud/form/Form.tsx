@@ -70,7 +70,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
             return result?.children?.[v] || null;
         }, view) : view;
 
-        if (!childView) {
+        if (!childView?.full_name) {
             return;
         }
 
@@ -189,7 +189,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
 
     const actionURL = generateActionLink(actionRequest);
     const [data, setData] = useState<ModifyType | null>(null)
-    const formRef = useRef<FormRef | undefined>(undefined);
+    const formRef = useRef<FormRef | null>(null);
     const dataProvider = UseDataProvider();
 
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
@@ -197,7 +197,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const [formData, setFormData] = useState<FormData|null>(null);
 
     useImperativeHandle(ref, () => ({
-        getFormRef: (): FormRef | undefined => formRef.current
+        getFormRef: (): FormRef | null => formRef.current
     }));
 
     const getFormErrors = (view: FormViewType): { [key: string]: FormViewErrorType[] } => {

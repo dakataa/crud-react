@@ -1,187 +1,194 @@
-import React, {RefObject, useEffect, useImperativeHandle, useReducer, useRef} from "react";
+import React, {
+    Dispatch,
+    ReactNode,
+    Ref,
+    RefObject,
+    useEffect,
+    useImperativeHandle,
+    useReducer,
+    useRef
+} from "react";
 import {Constraint} from "@crud-react/component/form/constraint/Contraint";
 import {FormViewErrorType, FormViewTypeEnum} from "@crud-react/type/FormViewType.tsx";
 
-type FormContextType = [FormState, FormRef, HTMLFormElement | null];
-const FormContext: any = React.createContext<FormContextType | undefined>(undefined);
+export type FormValue = string | string[] | null;
+export type FormErrors = Record<string, FormViewErrorType[]>;
+export type FormConstraints = Record<string, Constraint[]>;
 
-export function UseForm(): any {
-    const context = React.useContext<FormContextType | undefined>(FormContext);
+export type FormState = {
+    response: unknown;
+    constraints: FormConstraints;
+    errors: FormErrors;
+    success: boolean;
+};
+
+export type FormAction =
+    | {
+    action: 'constraints';
+    payload: {
+        name?: string;
+        constraints: Constraint[];
+    };
+}
+    | { action: 'validate'; payload?: string }
+    | { action: 'response'; payload: unknown }
+    | { action: 'errors'; payload: FormErrors }
+    | { action: 'error'; payload: FormErrors }
+    | { action: 'success'; payload: boolean };
+
+export type FormRef = {
+    getFormData: () => FormData;
+    setFormData: (data: FormData) => void;
+    setValue: (name: string, value: FormValue) => void;
+    setValues: (data: Record<string, FormValue>) => void;
+    setErrors: (errors: FormErrors) => void;
+    success: () => void;
+    reset: () => void;
+    submit: () => void;
+};
+
+export type FormContextType = [
+    [FormState, Dispatch<FormAction>],
+    RefObject<FormRef | null>,
+    RefObject<HTMLFormElement | null>
+];
+
+export type FormProps = Omit<
+    React.FormHTMLAttributes<HTMLFormElement>,
+    'children' | 'method' | 'onReset' | 'onSubmit'
+> & {
+    children?: ReactNode;
+    onSubmit?: (data: FormData) => void;
+    onBeforeSubmit?: (data: FormData) => void;
+    onReset?: () => void;
+    method?: 'GET' | 'POST';
+    ref?: Ref<FormRef>;
+};
+
+type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+const isFormControl = (element: Element | Node): element is FormControl => (
+    element instanceof HTMLInputElement
+    || element instanceof HTMLSelectElement
+    || element instanceof HTMLTextAreaElement
+);
+
+const createInitialState = (): FormState => ({
+    response: null,
+    constraints: {},
+    errors: {},
+    success: false
+});
+
+const FormContext = React.createContext<FormContextType | undefined>(undefined);
+
+export function UseForm(): FormContextType {
+    const context = React.useContext(FormContext);
     if (!context) {
-        throw new Error("useForm must be used in Form");
+        throw new Error("UseForm must be used within a Form.");
     }
 
     return context;
 }
 
-type FormStatePayload = {
-    action: string;
-    payload: any;
-}
-
-type FormState = {
-    response?: any;
-    constraints?: any;
-    errors?: { [key: string]: FormViewErrorType[] };
-    success?: boolean;
-}
-
-type FormProps = {
-    children?: any,
-    onComplete?: () => void,
-    onError?: Function,
-    onSubmit?: (data: FormData) => void,
-    onBeforeSubmit?: (data: FormData) => void,
-    onReset?: () => void,
-    action?: string,
-    method?: 'GET' | 'POST',
-    className?: string,
-    data?: FormData,
-    name?: string,
-    id?: string,
-    ref?: RefObject<FormRef | undefined | null>
-}
-
-export type FormRef = {
-    getFormData: () => FormData,
-    setFormData: (data: FormData) => void,
-    setValue: (name: string, value: string | string[] | null) => void,
-    setValues: (data: { [key: string]: string }) => void,
-    setErrors: Function,
-    success: () => void,
-    reset: Function,
-    submit: Function
-};
-
 export const nameToId = (name: string, index: number | null = null) => (
-    name?.replace(/[\[\]]/gi, '_')
+    name.replace(/[\[\]]/gi, '_')
         .replace(/_+/gi, '_')
         .replace(/([a-zA-Z])(?=[A-Z])/g, '$1_')
     + (index ?? '')
 ).toLowerCase();
 
-export const Form = ({
-                                    id,
-                                    children,
-                                    data,
-                                    onError,
-                                    onBeforeSubmit,
-                                    onSubmit: onSubmitCallback,
-                                    onReset: onResetCallback,
-                                    ref,
-                                    ...props
-                                }: FormProps) => {
+export const Form = (
+    {
+        id,
+        children,
+        onBeforeSubmit,
+        onSubmit: onSubmitCallback,
+        onReset: onResetCallback,
+        ref,
+        ...props
+    }: FormProps) => {
     const formElementRef = useRef<HTMLFormElement | null>(null);
+    const formApiRef = useRef<FormRef | null>(null);
 
-    const initialState: FormState = {
-        response: null,
-        constraints: {},
-        errors: {}
-    };
+    const getFormData = (): FormData => new FormData(formElementRef.current || undefined);
 
-    const setValue = (name: string, value: string | string[] | null) => {
-        const element = formElementRef.current?.elements.namedItem(name);
-        if (!element) {
-            console.warn('Cannot Set Value on missing Form Element with name: ' + name);
+    const setValue = (name: string, value: FormValue): void => {
+        const namedElement = formElementRef.current?.elements.namedItem(name);
+        if (!namedElement) {
+            console.warn('Cannot set value on missing form element with name: ' + name);
             return;
         }
 
-        let elements = [];
+        const elements: FormControl[] = namedElement instanceof RadioNodeList
+            ? Array.from(namedElement).filter(isFormControl)
+            : isFormControl(namedElement) ? [namedElement] : [];
 
-        if(element instanceof RadioNodeList) {
-            elements = [...element];
-        } else if(element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
-            elements = [element];
-        } else {
-            throw new Error('Cannot Set Value on missing Form Element with name: ' + name);
+        if (!elements.length) {
+            throw new Error('Cannot set value on unsupported form element with name: ' + name);
         }
 
         elements.forEach(element => {
-            switch (element.type) {
-                case FormViewTypeEnum.Checkbox:
-                case FormViewTypeEnum.Radio: {
-                    if (value !== null && !(value instanceof Array)) {
-                        value = [value];
-                    }
-
-                    element.checked = value?.includes(element.value) ?? false;
-
-                    break;
-                }
-                default:
-                    if (value instanceof Array) {
-                        throw new Error('Invalid Value');
-                    }
-
-                    element.value = value || '';
+            if (
+                element instanceof HTMLInputElement
+                && [FormViewTypeEnum.Checkbox, FormViewTypeEnum.Radio].includes(element.type as FormViewTypeEnum)
+            ) {
+                const values = Array.isArray(value) ? value : value === null ? [] : [value];
+                element.checked = values.includes(element.value);
+                return;
             }
+
+            if (element instanceof HTMLSelectElement && element.multiple) {
+                const values = Array.isArray(value) ? value : value === null ? [] : [value];
+                Array.from(element.options).forEach(option => {
+                    option.selected = values.includes(option.value);
+                });
+                return;
+            }
+
+            if (Array.isArray(value)) {
+                throw new Error('Cannot assign multiple values to a single-value form element.');
+            }
+
+            element.value = value ?? '';
         });
     };
 
-    const handler: FormRef = {
-        getFormData: () => new FormData(formElementRef.current || undefined),
-        setFormData: (data: FormData) => {
-            [...formElementRef.current?.elements || []].forEach((inputEl: any) => {
-                const value: any = data.get(inputEl.name);
+    const setFormData = (data: FormData): void => {
+        Array.from(formElementRef.current?.elements || []).forEach(element => {
+            if (!isFormControl(element) || !element.name) {
+                return;
+            }
 
-                switch (inputEl.tagName.toLowerCase()) {
-                    case 'select': {
-                        if (inputEl.multiple) {
-                            [...(inputEl as HTMLSelectElement).options].forEach((element: HTMLOptionElement) => {
-                                element.selected = data.getAll(inputEl.name).includes(element.value);
-                            })
-                        } else {
-                            inputEl.value = value;
-                        }
-                        break;
-                    }
-                    default: {
-                        switch (inputEl.type) {
-                            case 'checkbox':
-                                inputEl.checked = !!value;
-                                break;
-                            default:
-                                inputEl.value = value;
-                                break;
-                        }
-                    }
-                }
+            const values = data.getAll(element.name)
+                .filter((value): value is string => typeof value === 'string');
 
-            });
-        },
-        setValue,
-        setValues: (data: { [key: string]: string }) => {
-            Object.keys(data).map(k => setValue(k, data[k]));
-        },
-        setErrors: (errors: { [key: string]: FormViewErrorType[] }) => {
-            const [, dispatch] = context;
-            dispatch({action: 'errors', payload: errors});
-        },
-        reset: () => {
-            formElementRef.current?.reset();
-        },
-        success: () => {
-            const [, dispatch] = context;
-            dispatch({action: 'success', payload: true});
-        },
-        submit: () => formElementRef.current?.requestSubmit()
+            if (element instanceof HTMLSelectElement && element.multiple) {
+                Array.from(element.options).forEach(option => {
+                    option.selected = values.includes(option.value);
+                });
+                return;
+            }
+
+            if (
+                element instanceof HTMLInputElement
+                && [FormViewTypeEnum.Checkbox, FormViewTypeEnum.Radio].includes(element.type as FormViewTypeEnum)
+            ) {
+                element.checked = values.includes(element.value);
+                return;
+            }
+
+            if (element instanceof HTMLInputElement && element.type === 'file') {
+                return;
+            }
+
+            const value = data.get(element.name);
+            element.value = typeof value === 'string' ? value : '';
+        });
     };
 
-    useImperativeHandle(ref, (): FormRef => handler);
-    useEffect(() => {
-        const handleFormResetEvent = () => {
-            onResetCallback && onResetCallback()
-        }
-
-        const formElement = formElementRef?.current;
-        formElement?.addEventListener('reset', handleFormResetEvent);
-        return () => {
-            formElement?.removeEventListener('reset', handleFormResetEvent);
-        }
-    }, []);
-
     const validateField = (name: string, constraints: Constraint[]) => {
-        const formData = handler.getFormData();
+        const formData = getFormData();
         for (const constraint of constraints) {
             if (!constraint.isValid(formData.get(name) || null)) {
                 return {valid: false, message: constraint.getMessage()};
@@ -189,101 +196,105 @@ export const Form = ({
         }
 
         return {valid: true, message: null};
-    }
+    };
 
-    const context = useReducer((state: FormState, command: FormStatePayload): FormState => {
-        const {action, payload} = command;
-        switch (action) {
+    const reducer = (state: FormState, command: FormAction): FormState => {
+        switch (command.action) {
             case 'constraints': {
-                const {name, constraints} = payload;
-                return {
-                    ...state,
-                    constraints: {
-                        ...(state.constraints || {}),
-                        [name]: constraints
-                    }
-                }
-            }
-            case 'validate': {
-                const {valid, message} = validateField(payload, state.constraints[payload] || []);
-                const errors = state.errors || {};
-                const formName = payload as string;
-                if (valid) {
-                    delete errors[formName];
-                } else {
-                    errors[formName] = [...(errors[formName] || []), {message: message || 'Error'}];
-                }
-
-                if (!Object.keys(errors).length) {
+                const {name, constraints} = command.payload;
+                if (!name) {
                     return state;
                 }
 
                 return {
                     ...state,
-                    errors
+                    constraints: {
+                        ...state.constraints,
+                        [name]: constraints
+                    }
                 };
             }
-            case 'response': {
-                return {
-                    ...state,
-                    response: payload
+            case 'validate': {
+                const name = command.payload;
+                if (!name) {
+                    return state;
                 }
-            }
-            case 'errors': {
-                return {
-                    ...state,
-                    errors: payload || []
-                }
-            }
-            case 'error': {
-                const errors = {...state.errors, ...payload};
-                return {
-                    ...state,
-                    errors: errors
-                }
-            }
-            case 'success': {
-                return {
-                    ...state,
-                    success: payload
-                }
-            }
-        }
 
-        return state;
-    }, initialState as FormState);
-    const onSubmit = (e: any) => {
-        e.preventDefault();
-        const [form, dispatch] = context;
-        let errors: any = {};
-        for (const [name, constraints] of Object.entries<[any, Constraint[]]>(form.constraints)) {
+                const {valid, message} = validateField(name, state.constraints[name] || []);
+                const errors = {...state.errors};
+
+                if (valid) {
+                    delete errors[name];
+                } else {
+                    errors[name] = [{message: message || 'Error'}];
+                }
+
+                return {...state, errors};
+            }
+            case 'response':
+                return {...state, response: command.payload};
+            case 'errors':
+                return {...state, errors: command.payload};
+            case 'error':
+                return {...state, errors: {...state.errors, ...command.payload}};
+            case 'success':
+                return {...state, success: command.payload};
+        }
+    };
+
+    const formContext = useReducer(reducer, undefined, createInitialState);
+    const [formState, dispatch] = formContext;
+
+    const handler: FormRef = {
+        getFormData,
+        setFormData,
+        setValue,
+        setValues: values => {
+            Object.entries(values).forEach(([name, value]) => setValue(name, value));
+        },
+        setErrors: errors => dispatch({action: 'errors', payload: errors}),
+        reset: () => formElementRef.current?.reset(),
+        success: () => dispatch({action: 'success', payload: true}),
+        submit: () => formElementRef.current?.requestSubmit()
+    };
+
+    formApiRef.current = handler;
+    useImperativeHandle(ref, () => handler);
+
+    useEffect(() => {
+        const formElement = formElementRef.current;
+        const handleFormResetEvent = () => onResetCallback?.();
+
+        formElement?.addEventListener('reset', handleFormResetEvent);
+        return () => formElement?.removeEventListener('reset', handleFormResetEvent);
+    }, [onResetCallback]);
+
+    const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
+        event.preventDefault();
+
+        const errors: FormErrors = {};
+        Object.entries(formState.constraints).forEach(([name, constraints]) => {
             const {valid, message} = validateField(name, constraints);
             if (!valid) {
-                errors[name] = [message];
+                errors[name] = [{message: message || 'Error'}];
             }
-        }
+        });
 
-        if (Object.values(errors).length) {
+        if (Object.keys(errors).length) {
             dispatch({action: 'errors', payload: errors});
             return;
         }
 
-        const formData = new FormData(formElementRef?.current || undefined);
-
-        onBeforeSubmit && onBeforeSubmit(formData);
-
-        if (onSubmitCallback) {
-            onSubmitCallback(formData)
-
-            return;
-        }
-
-        // formElementRef?.current?.submit();
-    }
+        const formData = new FormData(event.currentTarget);
+        onBeforeSubmit?.(formData);
+        onSubmitCallback?.(formData);
+    };
 
     return (
-        <FormContext.Provider value={[context, ref, formElementRef]}>
-            <form id={id} ref={formElementRef} onSubmit={onSubmit} {...props}>{children}</form>
+        <FormContext.Provider value={[formContext, formApiRef, formElementRef]}>
+            <form id={id} ref={formElementRef} onSubmit={handleSubmit} {...props}>
+                {children}
+            </form>
         </FormContext.Provider>
-    )
-}
+    );
+};

@@ -43,7 +43,7 @@ const ChoiceOption = (
         view: FormViewType,
         choice: ChoiceType,
     } & ChoiceProps) => {
-    const elementName = view.full_name;
+    const elementName = view.full_name || '';
     const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
     const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label;
     const elementId = nameToId(elementName || '', choiceValue);
@@ -54,6 +54,7 @@ const ChoiceOption = (
 
     const choiceAttributes = {
         id: elementId,
+        ...(choice.attr instanceof Function ? choice.attr(view) : choice.attr) || {},
         ...(view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) || {},
     }
 
@@ -117,7 +118,7 @@ const Choice = (
     React.JSX.Element => {
     constraints = constraints || [];
 
-    const elementName = view.full_name;
+    const elementName = view.full_name || '';
     const [[formState, dispatch], formRef] = UseForm();
     const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;

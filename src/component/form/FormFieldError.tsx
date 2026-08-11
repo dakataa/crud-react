@@ -8,7 +8,7 @@ const FormFieldError = ({name, className}: { name: string | string[], className?
 
     name = name instanceof Array ? name : [name];
 
-    const errorMessages = [].concat(...name.map((name) => form?.errors[name] || []));
+    const errorMessages: FormViewErrorType[] = name.flatMap(name => form.errors[name] || []);
     if (!errorMessages.length) {
         return null;
     }
