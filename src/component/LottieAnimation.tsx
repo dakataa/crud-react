@@ -14,7 +14,7 @@ const LottieAnimation = ({
     width?: number | `${number}%`;
     height?: number | `${number}%`;
     className?: string;
-    options?: AnimationConfig;
+    options?: Omit<AnimationConfig, "container">;
 
 }) => {
     const elementRef = useRef<HTMLDivElement | null>(null);
@@ -56,7 +56,7 @@ const LottieAnimation = ({
 
             animation.destroy();
         }
-    }, []);
+    }, [animationData]);
 
     return (
         <div className={className} ref={elementRef} style={{width: width, height: height}}>

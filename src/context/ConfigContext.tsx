@@ -20,6 +20,7 @@ export type Config = {
     templates?: { [path:string]: () => Promise<any> },
     locale?: string,
     currency?: string,
+    timezone?: string,
     options?:  {
         // Standard HTML Elements
         HTMLTableElement: HTMLAttributes<HTMLTableElement>,

@@ -94,12 +94,13 @@ CrudConfiguration({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Crud
-      config={{
-        templates,
-        currency: 'BGN',
-        locale: 'bg',
-        env: import.meta.env.CRUD_ENV,
-      }}
+        config={{
+            templates,
+            currency: 'BGN',
+            locale: 'bg',
+            timezone: 'UTC',
+            env: import.meta.env.CRUD_ENV,
+        }}
     >
       <Router>
         <Route element={<MainLayout><Outlet /></MainLayout>}>
@@ -424,6 +425,7 @@ If you need custom rendering around the form schema:
 import {
   CrudForm,
   FormFieldViewLoader,
+  FormGroup,
   FormRest,
   FormRestError,
   FormViewProvider,
@@ -434,8 +436,86 @@ Useful helpers:
 
 - `UseFormView()`: access the current form view node
 - `FormFieldViewLoader`: render fields from the current schema node
+- `FormGroup`: render the current schema node or one of its direct children
 - `FormRest`: render non-explicitly-rendered fields
 - `FormRestError`: render non-explicitly-rendered errors
+
+### `FormGroup`
+
+`FormGroup` renders one node from the form schema exposed by the nearest
+`FormViewProvider`. In a standard add/edit screen, `CrudForm` supplies this
+provider automatically.
+
+```tsx
+import { FormGroup } from '@dakataa/crud-react';
+
+export default function ArticleFields() {
+  return (
+    <>
+      <FormGroup name="title" />
+      <FormGroup name="content" />
+    </>
+  );
+}
+```
+
+The `name` prop selects a direct child of the current schema node. If `name` is
+omitted, the current node itself is rendered. Container nodes are traversed
+recursively; leaf nodes use the standard field group with its label, input,
+validation error, and help text.
+
+#### Props
+
+The component accepts the exported `FormGroupProps` type:
+
+```ts
+export type FormGroupProps = {
+  name?: string;
+  options?: Omit<FormViewType, 'type'>;
+  optional?: boolean;
+};
+```
+
+Consumers can import it with
+`import type { FormGroupProps } from '@dakataa/crud-react'`.
+
+`FormGroupProps` describes the complete props object. The table below shows the
+type of each individual property; therefore `options` is listed with its own
+`Omit<FormViewType, 'type'>` type.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | current view | Selects a direct child of the current form view. Dotted paths are not supported. |
+| `options` | `Omit<FormViewType, 'type'>` | `{}` | Applies shallow schema overrides for this render. The field type cannot be changed. |
+| `optional` | `boolean` | `false` | Returns `null` when the selected child is missing instead of throwing an error. |
+
+Use `options` to customize the selected schema node without changing the
+backend response:
+
+```tsx
+<FormGroup
+  name="price"
+  options={{
+    label: 'Unit price',
+    help: 'Enter the amount before tax.',
+    attr: { className: 'form-control text-end' },
+  }}
+/>
+```
+
+Overrides are shallow. Supplying an object-valued property such as `attr` or
+`children` replaces that property completely; it is not deep-merged.
+
+For schemas where a field is conditional, opt into missing-field handling
+explicitly:
+
+```tsx
+<FormGroup name="companyNumber" optional />
+```
+
+Without `optional`, a missing child throws
+`Missing Provided Form View to Form Group: companyNumber`. Rendering outside a
+`FormViewProvider` throws `UseFormView must be used within a FormViewProvider.`
 
 ## Hooks and contexts
 

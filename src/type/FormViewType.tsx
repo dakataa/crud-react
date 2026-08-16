@@ -25,8 +25,8 @@ export type FormViewType = {
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
     preferred_choices?: { [key: string]: any };
-    choice_attr?: { [key: string]: string } | Function;
-    attr?: { [key: string]: string } | Function;
+    choice_attr?: { [key: string]: string|number|boolean|Function } | Function;
+    attr?: { [key: string]: string|number|boolean|Function } | Function;
     value?: string;
     data?: any;
     rendered?: boolean;

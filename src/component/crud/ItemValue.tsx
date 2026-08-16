@@ -3,31 +3,38 @@ import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 import React from "react";
 import {UseListItem} from "@crud-react/context/ListItemContext.tsx";
 import Translation from "@crud-react/component/Translation.tsx";
+import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
 
 const ItemValue = ({column, namespace}: {
     column: ColumnType;
     namespace?: string;
 }) => {
     const {data} = UseListItem();
+    const {actionRequest: currentActionRequest} = UseCurrentActionRequest()
 
-    if(!data) {
+    if (!data) {
         return null;
     }
 
-    let value = data;
+    const value = column.useFlatKey
+        ? data[column.field]
+        : column.field.split('.').reduce<unknown>((currentValue, key) => {
+            if (typeof currentValue !== 'object' || currentValue === null) {
+                return undefined;
+            }
 
-    if(column.useFlatKey) {
-        value = value?.[column.field];
-    } else {
-        column.field.split('.').forEach((key) => {
-            value = value?.[key];
-        });
-    }
+            return (currentValue as Record<string, unknown>)[key];
+        }, data);
 
     return (
-        <DynamicView namespace={namespace} data={data} prefix={"list"} view={column.field}>
+        <DynamicView
+            namespace={namespace}
+            data={data}
+            prefix={currentActionRequest.action.name || "list"}
+            view={column.field}
+        >
             {
-                Array.isArray(value) ? value.join(', ')  : <Translation>{value?.toString()}</Translation>
+                Array.isArray(value) ? value.join(', ') : <Translation>{value == null ? undefined : String(value)}</Translation>
             }
         </DynamicView>
     )

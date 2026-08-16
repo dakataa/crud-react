@@ -116,7 +116,7 @@ export function CurrentActionRequestProvider({actionRequest, name, ref, ...props
     };
 
     useEffect(() => {
-        setCurrentActionRequest({...actionRequest, query: { ...actionRequest.query, _ts: update}});
+        setCurrentActionRequest({...currentActionRequest, query: { ...currentActionRequest.query, _ts: update}});
     }, [update]);
 
     useEffect(() => {

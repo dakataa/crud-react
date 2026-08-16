@@ -132,7 +132,7 @@ export function AlertProvider({children}: PropsWithChildren) {
         } else {
             setTimeout(() => {
                 modalRef.current?.close().finally(reset);
-            }, alertConfig.timeout || 1000);
+            }, alertConfig.timeout || 5000);
         }
 
         if (modalRef.current?.isOpen()) {

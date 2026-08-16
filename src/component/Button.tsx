@@ -25,31 +25,38 @@ export default (
 
     const {isLoading} = UsePreloaderProvider() || {};
     const loader = UsePreloader() || form || 'form';
-    const buttonRef = ref || useRef<HTMLButtonElement>(null);
+    const internalButtonRef = useRef<HTMLButtonElement>(null);
+    const buttonRef = ref ?? internalButtonRef;
     const [disabled, setDisabled] = useState(autoDisableOnInvalid || false);
+    const isSubmitButton = type && type === "submit";
+    const [connectedForm, setConnectedForm] = useState<HTMLFormElement | null>();
 
-    preload = preload || (type === 'submit' && isLoading?.(loader));
+    preload = preload || (isSubmitButton && isLoading?.(loader));
 
     useEffect(() => {
-        if (!autoDisableOnInvalid) {
+        if (!autoDisableOnInvalid || !isSubmitButton) {
+            setDisabled(false);
             return;
         }
 
-        const formEl = buttonRef.current?.closest('form');
-        const fieldsetEl = buttonRef.current?.closest('fieldset, form');
+        if (!connectedForm) {
+            return;
+        }
+
+        const fieldsetEl = buttonRef.current?.closest('fieldset') || connectedForm;
         const onChange = () => {
             if (!buttonRef.current) {
                 return;
             }
 
-            setDisabled(!formEl?.checkValidity() || false);
+            setDisabled(!connectedForm?.checkValidity() || false);
         }
 
         const observerSelector = "input, select, textarea";
         const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
+            mutations.forEach((mutation)  => {
                 [...mutation.addedNodes, ...mutation.removedNodes, mutation.target].forEach((node: Node) => {
-                    if(!(node instanceof Element)) {
+                    if (!(node instanceof Element)) {
                         return;
                     }
 
@@ -60,36 +67,66 @@ export default (
             });
         });
 
-        fieldsetEl?.addEventListener('input', onChange)
+        fieldsetEl.addEventListener('input', onChange)
 
-        if(formEl) {
-            observer.observe(formEl, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ["hidden", "style", "class"]
-            });
-        }
+        observer.observe(connectedForm, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["hidden", "style", "class"]
+        });
 
-        setTimeout(onChange, 150);
+        onChange();
 
         return () => {
             observer.disconnect();
-            fieldsetEl?.removeEventListener('input', onChange);
+            fieldsetEl.removeEventListener('input', onChange);
         }
-    }, []);
+
+    }, [connectedForm, autoDisableOnInvalid, isSubmitButton]);
 
     useEffect(() => {
+        if (!autoDisableOnInvalid || !isSubmitButton) {
+            return;
+        }
+
         if (!buttonRef.current) {
             return;
         }
 
-        buttonRef.current.disabled = props.disabled || preload || disabled;
+        const currentForm =
+            buttonRef.current.form ??
+            buttonRef.current.closest('form');
 
-    }, [preload]);
+        if (currentForm) {
+            setConnectedForm(currentForm);
+            return;
+        }
+
+        const documentObserver = new MutationObserver(() => {
+            const currentForm = buttonRef.current?.form;
+
+            if (!currentForm) {
+                return;
+            }
+
+            documentObserver.disconnect();
+
+            setConnectedForm(currentForm);
+        });
+
+        documentObserver.observe(buttonRef.current.ownerDocument.body, {
+            childList: true,
+            subtree: true,
+        });
+
+        return () => {
+            documentObserver.disconnect();
+        }
+    }, [form, isSubmitButton, autoDisableOnInvalid])
 
     return (
-        <button form={form} type={type} disabled={disabled} {...props} ref={buttonRef}>
+        <button {...props} form={form} type={type} disabled={props.disabled ?? Boolean(preload || disabled)}  ref={buttonRef}>
             <BaseButtonContent preload={preload} {...props}>{children}</BaseButtonContent>
         </button>
     );

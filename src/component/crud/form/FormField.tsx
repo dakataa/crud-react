@@ -7,6 +7,7 @@ import {FormViewProvider, UseFormView} from "@crud-react/component/crud/form/For
 import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
 import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 import Textarea from "@crud-react/component/form/Textarea.tsx";
+import {AnimationConfigWithPath} from "lottie-web";
 
 const FormFieldSelector = ({view, ref}: {
     view: FormViewType,
@@ -57,7 +58,7 @@ const FormFieldSelector = ({view, ref}: {
 
 const FormField = ({name, options, ref}: {
     name?: string;
-    options?: FormViewType;
+    options?: Partial<FormViewType>;
     size?: 'lg' | 'sm',
     ref?: React.RefObject<HTMLInputElement | HTMLSelectElement>
 }) => {

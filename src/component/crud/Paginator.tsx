@@ -1,9 +1,8 @@
-import Link from "@crud-react/component/Link.tsx";
 import {UseList} from "@crud-react/context/ListContext.tsx";
 import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
-import {UseActions} from "@crud-react/context/ActionContext.tsx";
 import React, {ChangeEvent} from "react";
 import Translation from "@crud-react/component/Translation.tsx";
+import ActionLink from "@crud-react/component/crud/ActionLink.tsx";
 
 const PageItem = ({page, active = false, title, children, className}: {
     page: number | string,
@@ -12,7 +11,6 @@ const PageItem = ({page, active = false, title, children, className}: {
     children?: any
     className?: string
 }) => {
-    const {generateActionLink} = UseActions();
     const {onClick} = UseList();
     const {actionRequest} = UseCurrentActionRequest();
     const pageAction = {
@@ -23,12 +21,10 @@ const PageItem = ({page, active = false, title, children, className}: {
         }
     };
 
-    const url = generateActionLink(pageAction);
-
     return (
         <li className={`page-item ${active ? 'active' : ''} ${className || ''}`}>
-            <Link
-                to={url.toString()}
+            <ActionLink
+                action={pageAction}
                 {...(onClick && {
                     onClick: (e) => {
                         onClick(pageAction, e);
@@ -39,7 +35,7 @@ const PageItem = ({page, active = false, title, children, className}: {
                 title={title}
             >
                 {children || page}
-            </Link>
+            </ActionLink>
         </li>
     )
 }

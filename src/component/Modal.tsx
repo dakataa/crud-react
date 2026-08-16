@@ -163,6 +163,10 @@ const Modal = AsTemplate(forwardRef(({
 
     return createPortal((
         <>
+            {backdrop && (
+                <div ref={modalBackdropRef}
+                     className={["modal-backdrop", "fade", ...(backdropVisible ? ['show'] : [])].filter(v => v).join(' ')}></div>
+            )}
             <div ref={modalRef}
                  className={["modal", (size && "modal-" + size), animation && animation, className].filter(v => v).join(' ')}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
@@ -197,10 +201,6 @@ const Modal = AsTemplate(forwardRef(({
                     </div>
                 </div>
             </div>
-            {backdrop && (
-                <div ref={modalBackdropRef}
-                     className={["modal-backdrop", "fade", ...(backdropVisible ? ['show'] : [])].filter(v => v).join(' ')}></div>
-            )}
         </>
     ), document.body);
 }), {name: 'modal'});

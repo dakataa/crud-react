@@ -1,32 +1,30 @@
 import React, {PropsWithChildren} from "react";
-import {UseList} from "@crud-react/context/ListContext.tsx";
 
-export type ListItemContextType = {
+export type ListItemContextType<
+    TData = Record<string, any>
+> = {
     index: number;
+    id?: string | number;
+    data: TData;
 }
 
 const ListItemContext = React.createContext<ListItemContextType | undefined>(undefined);
 
-export function UseListItem() {
+export function UseListItem<
+    TData = Record<string, any>
+>() {
     const context = React.useContext<ListItemContextType | undefined>(ListItemContext);
     if (context === undefined) {
         throw new Error("UseListItem must be within ListItemProvider")
     }
 
-    const {index} = context;
-    const {data, primaryColumn} = UseList();
-
-    return {
-        index,
-        id: data?.entity?.data.items[index][primaryColumn?.field || ''] ?? null,
-        data: data?.entity?.data.items[index] ?? null
-    }
+    return context as ListItemContextType<TData>;
 }
 
-export function ListItemProvider({index, ...props}: { index: number } & PropsWithChildren) {
+export function ListItemProvider({children, ...props}: ListItemContextType & PropsWithChildren) {
     return (
-        <ListItemContext.Provider value={{index}}>
-            {props.children}
+        <ListItemContext.Provider value={props}>
+            {children}
         </ListItemContext.Provider>
     );
 }

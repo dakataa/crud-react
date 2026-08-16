@@ -4,13 +4,14 @@ import {UseActions} from "@crud-react/context/ActionContext.tsx";
 import {UseList} from "@crud-react/context/ListContext.tsx";
 import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
 import Translation from "@crud-react/component/Translation.tsx";
+import {ButtonContentProps} from "@crud-react/component/BaseButtonContent.tsx";
 
 const ActionLink = ({children, action, className, onClick, ...props}: {
     action: ActionRequestType;
     className?: string;
     children?: ReactNode;
     onClick?: (e: SyntheticEvent) => void;
-}) => {
+} & React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & ButtonContentProps) => {
     const {generateActionLink} = UseActions();
     const {onClick: listOnClick} = UseList(false);
 
