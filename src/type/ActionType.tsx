@@ -4,7 +4,7 @@ export enum ActionVisibility {
     List  = 'list',
     Object = 'object',
     Internal = 'internal'
-};
+}
 
 export type ActionType = {
     entity: string;

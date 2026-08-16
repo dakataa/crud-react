@@ -51,6 +51,7 @@ export {UseActions, ActionProvider, WithActionProviderContext} from "./context/A
 export type {AlertConfigType, Animation, Result} from "./context/AlertContext.tsx";
 export type {ActionRequestType} from "./type/ActionRequestType.tsx";
 export type {ActionType} from "./type/ActionType.tsx";
+export {ActionVisibility} from "./type/ActionType.tsx";
 export type {RouteType} from "./type/RouteType.tsx";
 
 export {default as HttpException} from "./component/error/HttpException.tsx";
