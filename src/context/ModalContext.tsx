@@ -82,7 +82,7 @@ export function ModalProvider(props: PropsWithChildren) {
         }}>
             {props.children}
             {currentModal && (
-                <ErrorBoundary preventDefault={true} fallback={(error) => {
+                <ErrorBoundary fallback={(error) => {
                     dispatch(null);
                     openAlert({
                         title: error?.detail ?? 'Unknown Error',

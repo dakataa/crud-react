@@ -5,6 +5,7 @@ import {CrudRequester} from "@crud-react/Crud.tsx";
 import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
 import {RouteType} from "@crud-react/type/RouteType.tsx";
 import {convertObjectToURLSearchParams, convertURLSearchParamsToObject} from "@dakataa/requester";
+import {addPathPrefix, removePathPrefix} from "@crud-react/helper/PathUtils.ts";
 
 window.history.pushState = new Proxy(window.history.pushState, {
     apply: (target, thisArg, argArray: any) => {
@@ -25,8 +26,6 @@ const STORAGE_KEY = 'actions';
 
 // Pre-compiled RegExp constants
 const RE_CRUD_PARAMS = /{(.*?)}/gi;
-const RE_LEADING_TRAILING_SLASH = /^\/|\/$'/g;
-const RE_LEADING_SLASH = /^\//;
 const RE_PATH_PARAMS = /\/[{:](\w+)}?/g;
 const RE_REPLACE_PARAMS = /[{:](\w+)}?/g;
 const RE_TRAILING_SLASH = /\/$/g;
@@ -104,19 +103,11 @@ export function UseActions(safe: boolean = true) {
     }
 
     const internalToExternalPath = (path: string) => {
-        if (config.link?.prefix) {
-            path = '/' + config.link.prefix.replaceAll(RE_LEADING_TRAILING_SLASH, '') + path;
-        }
-
-        return path;
+        return addPathPrefix(path, config.link?.prefix);
     }
 
     const externalToInternalPath = (path: string) => {
-        if (config.link?.prefix) {
-            path = path.replace(new RegExp('^/' + config.link.prefix.replace(RE_LEADING_SLASH, '') + '(/)?'), '/');
-        }
-
-        return path;
+        return removePathPrefix(path, config.link?.prefix);
     }
 
     const navigate = (to: string, replace?: boolean) => {

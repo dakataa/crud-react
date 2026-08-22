@@ -148,7 +148,7 @@ const CrudLoader = ({path, preloader}: {
         throw new Exception(500, 'Invalid Configuration.');
 
     const {link} = UseConfig();
-    const {getActionRequestByPath, actions} = UseActions();
+    const {getActionRequestByPath, externalToInternalPath, actions} = UseActions();
     const [actionRequest, setActionRequest] = useState<ActionRequestType | undefined | null>(undefined);
     const currentKey = actionRequest ? [
         actionRequest.action.entity,
@@ -158,9 +158,7 @@ const CrudLoader = ({path, preloader}: {
 
     path ??= link?.path ?? (location.pathname + location.search);
 
-    if (link?.prefix) {
-        path = path.replace(new RegExp('^/' + link.prefix.replace(new RegExp('^/'), '') + '(/)?'), '/');
-    }
+    path = externalToInternalPath(path);
 
     useEffect(() => {
         setActionRequest(getActionRequestByPath(path));

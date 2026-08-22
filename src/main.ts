@@ -118,6 +118,7 @@ export {default as Money} from "./component/Money.tsx";
 export {default as Dropdown, DropdownContent, DropdownButton} from "./component/Dropdown"
 
 export {maskEmail, capitalize, titlize} from "./helper/StringUtils.tsx"
+export {normalizePathPrefix, addPathPrefix, removePathPrefix} from "./helper/PathUtils.ts"
 
 // Lottie
 export {default as LottieAnimation} from "./component/LottieAnimation.tsx";

@@ -4,8 +4,9 @@ import ErrorBoundary from "@crud-react/component/error/ErrorBoundary.tsx";
 import Error from "@crud-react/layout/default/Error.tsx";
 import CrudProvider from "@crud-react/context/CrudProvider.tsx";
 import {Config, Environment, Templates} from "@crud-react/context/ConfigContext.tsx";
-import {ActionProvider} from "@crud-react/context/ActionContext.tsx";
+import {ActionProvider, UseActions} from "@crud-react/context/ActionContext.tsx";
 import {CurrentActionCollectionProvider} from "@crud-react/component/crud/CrudLoader.tsx";
+import {normalizePathPrefix} from "@crud-react/helper/PathUtils.ts";
 
 let requester: Requester | null = null;
 const globalConfig: { templates?: Templates } = {};
@@ -28,6 +29,16 @@ const CrudRequester = (): Requester => {
     return requester;
 }
 
+const CrudErrorBoundary = ({children, fallback}: PropsWithChildren<{fallback: ReactElement}>) => {
+    const {location} = UseActions();
+
+    return (
+        <ErrorBoundary fallback={fallback} resetKeys={[location.pathname, location.search]}>
+            {children}
+        </ErrorBoundary>
+    );
+};
+
 const Crud = (
     {children, config, errorFallback}: {
         errorFallback?: ReactElement,
@@ -35,15 +46,17 @@ const Crud = (
     } & PropsWithChildren) => {
 
     const templates = Object.assign(globalConfig.templates ?? {}, config?.templates ?? {});
+    const homePath = normalizePathPrefix(config?.link?.prefix) || '/';
+    const resolvedErrorFallback = errorFallback ?? <Error homePath={homePath}/>;
 
     return (
         <ActionProvider>
             <CurrentActionCollectionProvider>
-                <ErrorBoundary fallback={errorFallback ?? <Error/>}>
+                <CrudErrorBoundary fallback={resolvedErrorFallback}>
                     <CrudProvider config={{...(config || {env: Environment.DEV}), templates}}>
                         {children}
                     </CrudProvider>
-                </ErrorBoundary>
+                </CrudErrorBoundary>
             </CurrentActionCollectionProvider>
         </ActionProvider>
     );

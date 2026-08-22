@@ -1,5 +1,6 @@
 import React from "react";
 import {UseFormView} from "@crud-react/component/crud/form/Form.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const FormHelp = (
     {
@@ -22,7 +23,7 @@ const FormHelp = (
                     className={"form-text"}
                     {...(view.help_attr && (view.help_attr instanceof Function ? view.help_attr() : view.help_attr))}
                 >
-                    {view.help}
+                    <Translation>{view.help}</Translation>
                 </div>
             )}
         </>

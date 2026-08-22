@@ -1,13 +1,20 @@
 import * as React from 'react';
-import {PropsWithChildren, useState} from 'react';
+import {PropsWithChildren} from 'react';
 import Exception from "@crud-react/component/error/Exception.tsx";
 import HttpException from "@crud-react/component/error/HttpException.tsx";
+import DefaultError from "@crud-react/layout/default/Error.tsx";
+
+type ErrorFallback = React.ReactElement | ((error: Exception | null) => void);
 
 type ErrorBoundaryProps = {
-    fallback?: React.ReactElement | ((error: Exception | null) => void);
-    parentErrorBoundaryContext?: ErrorBoundaryContextType | undefined;
-    preventDefault?: boolean;
+    fallback?: ErrorFallback;
+    resetKeys?: readonly unknown[];
     children?: any;
+}
+
+type ErrorBoundaryHandlerProps = Omit<ErrorBoundaryProps, 'fallback'> & {
+    fallback: ErrorFallback;
+    handleUnhandledRejections: boolean;
 }
 
 type ErrorBoundaryState = {
@@ -15,87 +22,112 @@ type ErrorBoundaryState = {
     error: Exception | null
 }
 
-type ErrorBoundaryContextType = {
-    defaultPrevented: boolean;
-    setPreventDefault: (v: boolean) => void;
-}
+const initialState: ErrorBoundaryState = {
+    hasError: false,
+    error: null
+};
 
-const ErrorBoundaryContext = React.createContext<ErrorBoundaryContextType | undefined>(undefined);
+const resetKeysChanged = (previous?: readonly unknown[], current?: readonly unknown[]) => {
+    if (!previous || !current) {
+        return false;
+    }
+
+    return previous.length !== current.length || previous.some((value, index) => !Object.is(value, current[index]));
+};
+
+const normalizeError = (error: unknown): Exception => {
+    if (error instanceof Exception) {
+        return error;
+    }
+
+    if (error instanceof Error) {
+        return new Exception(0, error.message || 'Unknown Error', undefined, error.name);
+    }
+
+    if (typeof error === 'object' && error !== null) {
+        const candidate = error as Partial<Exception> & {status?: unknown};
+        const detail = typeof candidate.detail === 'string' ? candidate.detail : 'Unknown Error';
+        const name = typeof candidate.name === 'string' ? candidate.name : undefined;
+
+        if (typeof candidate.status === 'number') {
+            return new HttpException(candidate.status, detail, candidate.trace, name);
+        }
+
+        return new Exception(candidate.code, detail, candidate.trace, name);
+    }
+
+    return new Exception(0, 'Unknown Error');
+};
+
+const ErrorBoundaryContext = React.createContext(false);
 
 export function UseErrorBoundary() {
-    return React.useContext<ErrorBoundaryContextType | undefined>(ErrorBoundaryContext);
+    return React.useContext(ErrorBoundaryContext);
 }
 
 export function ErrorBoundaryContextProvider({...props}: PropsWithChildren) {
-    const [defaultPrevented, setPreventDefault] = useState(false);
-
     return (
-        <ErrorBoundaryContext.Provider value={{defaultPrevented, setPreventDefault}}>
+        <ErrorBoundaryContext.Provider value={true}>
             {props.children}
         </ErrorBoundaryContext.Provider>
     );
 }
 
-class ErrorBoundaryHandler extends React.Component<ErrorBoundaryProps & { defaultPrevented?: boolean}, ErrorBoundaryState> {
-    constructor(props: ErrorBoundaryProps) {
+class ErrorBoundaryHandler extends React.Component<ErrorBoundaryHandlerProps, ErrorBoundaryState> {
+    constructor(props: ErrorBoundaryHandlerProps) {
         super(props);
-        this.state = {
-            hasError: false,
-            error: null
-        };
+        this.state = initialState;
     }
 
+    private resetErrorBoundary = () => {
+        this.setState(initialState);
+    };
+
     private promiseRejectionHandler = (e: PromiseRejectionEvent) => {
-        if (this.props.preventDefault || this.props.defaultPrevented) {
-            this.props.parentErrorBoundaryContext?.setPreventDefault(true);
-        }
-
-        if(this.props.defaultPrevented) {
-            return;
-        }
-
         if(e.type === 'unhandledrejection' && (e.reason === undefined || typeof e.reason === 'string')) {
             return;
         }
 
         this.setState({
-            ...this.state,
             hasError: true,
-            error: e.reason
+            error: normalizeError(e.reason)
         })
     };
 
     componentDidMount() {
-        window.addEventListener('unhandledrejection', this.promiseRejectionHandler);
+        if (this.props.handleUnhandledRejections) {
+            window.addEventListener('unhandledrejection', this.promiseRejectionHandler);
+        }
     }
 
     componentWillUnmount() {
-        window.removeEventListener('unhandledrejection', this.promiseRejectionHandler);
+        if (this.props.handleUnhandledRejections) {
+            window.removeEventListener('unhandledrejection', this.promiseRejectionHandler);
+        }
     }
 
-    static getDerivedStateFromError(error: any) {
+    static getDerivedStateFromError(error: unknown) {
         // Update state so the next render will show the fallback UI.
-        if (error instanceof Error) {
-            error = new HttpException(0, error.message)
-        }
-
         return {
             hasError: true,
-            error: error
+            error: normalizeError(error)
         };
     }
 
-    componentDidCatch(error: any, info: any) {
+    componentDidCatch(error: unknown, info: unknown) {
         // Todo: Log error
         console.log('error', error);
     }
 
-    componentDidUpdate(prevProps: Readonly<ErrorBoundaryProps & {
-        defaultPrevented?: boolean
-    }>, prevState: Readonly<ErrorBoundaryState>, snapshot?: any) {
+    componentDidUpdate(prevProps: Readonly<ErrorBoundaryHandlerProps>, prevState: Readonly<ErrorBoundaryState>, snapshot?: unknown) {
+
+        if (this.state.hasError && resetKeysChanged(prevProps.resetKeys, this.props.resetKeys)) {
+            this.resetErrorBoundary();
+            return;
+        }
 
         if(this.state.error?.detail !== prevState.error?.detail) {
-            if (this.state.hasError && !this.props.defaultPrevented) {
+            if (this.state.hasError) {
                 if (this.props.fallback instanceof Function) {
                     this.props.fallback(this.state.error);
                 }
@@ -104,43 +136,36 @@ class ErrorBoundaryHandler extends React.Component<ErrorBoundaryProps & { defaul
     }
 
     render() {
-        if (this.state.hasError && !this.props.defaultPrevented) {
-            if(this.props.fallback) {
-                if (React.isValidElement(this.props.fallback)) {
-                    // You can render any custom fallback UI
-                    return React.cloneElement<any>(
-                        this.props.fallback, {
-                            error: this.state.error,
-                            children: this.props.children
-                        }
-                    );
-                }
-
+        if (this.state.hasError) {
+            if (React.isValidElement(this.props.fallback)) {
+                // You can render any custom fallback UI
+                return React.cloneElement<any>(
+                    this.props.fallback, {
+                        error: this.state.error,
+                        resetErrorBoundary: this.resetErrorBoundary
+                    }
+                );
             }
+
+            return null;
         }
 
         return this.props.children;
     }
 }
 
-const ErrorBoundaryInner = ({children, ...props}: ErrorBoundaryProps) => {
-    const errorBoundaryContext = UseErrorBoundary();
-
-    return (
-        <ErrorBoundaryHandler {...props} defaultPrevented={errorBoundaryContext?.defaultPrevented || false}>
-            {children}
-        </ErrorBoundaryHandler>
-    )
-}
-
-const ErrorBoundary = ({children, ...props}: ErrorBoundaryProps) => {
-    const parentErrorBoundaryContext = UseErrorBoundary();
+const ErrorBoundary = ({children, fallback = <DefaultError/>, ...props}: ErrorBoundaryProps) => {
+    const hasParentErrorBoundary = UseErrorBoundary();
 
     return (
         <ErrorBoundaryContextProvider>
-            <ErrorBoundaryInner {...props} parentErrorBoundaryContext={parentErrorBoundaryContext}>
+            <ErrorBoundaryHandler
+                {...props}
+                fallback={fallback}
+                handleUnhandledRejections={!hasParentErrorBoundary}
+            >
                 {children}
-            </ErrorBoundaryInner>
+            </ErrorBoundaryHandler>
         </ErrorBoundaryContextProvider>
     )
 }

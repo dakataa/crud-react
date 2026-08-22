@@ -111,7 +111,7 @@ const Paginator = () => {
 					</nav>
 				</>
             }
-            {totalResults > Math.min(...maxResultChoices) && (
+            {hasPagination && totalResults > Math.min(...maxResultChoices) && (
                 <select onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     onClick?.({
                         ...actionRequest,

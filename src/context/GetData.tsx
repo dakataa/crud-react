@@ -7,6 +7,7 @@ import {CrudRequester} from "@crud-react/Crud.tsx";
 import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
 import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
+import error from "@crud-react/layout/default/Error.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -52,6 +53,7 @@ const GetData = (
     const loading = useRef<AbortController | null>(null);
     const [refresh, setRefresh] = useState(1);
     const bodyData = JSON.stringify(body instanceof FormData ? convertFormDataToObject(body) : body)
+
     path = externalToInternalPath(path);
 
     const update = useCallback(() => {
@@ -107,7 +109,6 @@ const GetData = (
     useEffect(() => {
         update();
     }, [refresh, path, bodyData, bodyType, method]);
-
 
     const cancel = () => {
         loading.current?.abort('canceled');
