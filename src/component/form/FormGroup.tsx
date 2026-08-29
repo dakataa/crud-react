@@ -21,13 +21,19 @@ export const FormGroup = (
 
     view.type = type || view.type;
 
+    const classes = [
+        'mb-3',
+        ...(isCheckbox ? ['form-check'] : []),
+        ...(className?.split(' ') || [])
+    ].filter(v => v);
+
     return (
         <>
             {view.type === FormViewTypeEnum.Hidden ? (
                 <FormField/>
             ) : (
                 <div
-                    className={[...(className?.split(' ') || [(isCheckbox ? 'form-check' : 'mb-3')])].filter(v => v).join(' ')}
+                    className={classes.join(' ')}
                 >
                     {!isCheckbox && (<FormLabel view={view}/>)}
                     <FormField size={size}/>
