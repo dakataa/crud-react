@@ -7,7 +7,6 @@ import {CrudRequester} from "@crud-react/Crud.tsx";
 import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
 import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
-import error from "@crud-react/layout/default/Error.tsx";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -64,16 +63,21 @@ const GetData = (
 
         cancel();
 
-        loading.current = new AbortController();
+        const controller = new AbortController();
+        loading.current = controller;
 
         CrudRequester()
             .fetch({
                 url: path,
                 method: method || Method.GET,
                 body: body,
-                signal: loading.current?.signal,
+                signal: controller.signal,
             })
             .then(({data, response}) => {
+                if (controller.signal.aborted) {
+                    return;
+                }
+
                 const primaryStatus = Math.floor(response.status / 100) * 100;
 
                 // if (response.redirected && !['cors'].includes(response.type)) {
@@ -92,7 +96,18 @@ const GetData = (
                     throw new HttpException(response.status, response.statusText, data);
                 }
             })
+            .catch((error: unknown) => {
+                // Check this request's signal: a newer request may already be loading.
+                if (controller.signal.aborted) {
+                    return;
+                }
+
+                throw error;
+            })
             .finally(() => {
+                if (loading.current === controller) {
+                    loading.current = null;
+                }
             });
         return () => {
             enabled.current = loadOnInit;
