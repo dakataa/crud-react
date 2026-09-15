@@ -6,9 +6,27 @@ import HttpException from "@crud-react/component/error/HttpException.tsx";
 import {CrudRequester} from "@crud-react/Crud.tsx";
 import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
 import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
-import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
+import {Method, RequestBodyType} from "@dakataa/requester";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
+
+const bodyFiles = new WeakMap<Blob, number>();
+let nextBodyFileId = 0;
+
+const serializeBody = (body: FormData | string | { [key: string]: any } | undefined) => JSON.stringify(
+    body instanceof FormData ? Array.from(body.entries()) : body,
+    (_key, value) => {
+        if (value instanceof Blob) {
+            if (!bodyFiles.has(value)) {
+                bodyFiles.set(value, ++nextBodyFileId);
+            }
+
+            return {fileId: bodyFiles.get(value)};
+        }
+
+        return value;
+    }
+);
 
 export type GetDataType = {
     url: string;
@@ -50,12 +68,23 @@ const GetData = (
     const [results, setResults] = useState<{ data: ListType | ModifyType, response: Response } | undefined>();
 
     const loading = useRef<AbortController | null>(null);
-    const [refresh, setRefresh] = useState(1);
-    const bodyData = JSON.stringify(body instanceof FormData ? convertFormDataToObject(body) : body)
+    const [refresh, setRefresh] = useState(0);
+    const bodyData = serializeBody(body);
 
     path = externalToInternalPath(path);
 
-    const update = useCallback(() => {
+    const cancel = useCallback(() => {
+        loading.current?.abort('canceled');
+        loading.current = null;
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            enabled.current = loadOnInit;
+        };
+    }, []);
+
+    useEffect(() => {
         if (!enabled.current) {
             enabled.current = true;
             return;
@@ -71,6 +100,7 @@ const GetData = (
                 url: path,
                 method: method || Method.GET,
                 body: body,
+                bodyType,
                 signal: controller.signal,
             })
             .then(({data, response}) => {
@@ -80,21 +110,21 @@ const GetData = (
 
                 const primaryStatus = Math.floor(response.status / 100) * 100;
 
-                // if (response.redirected && !['cors'].includes(response.type)) {
-                if (response.redirected) {
-                    if (primaryStatus === 200) {
-                        const newURL = internalToExternalPath(new URL(response.url).pathname);
-                        navigate(newURL);
+                if (response.redirected && primaryStatus === 200) {
+                    const redirectURL = new URL(response.url);
+                    const redirectPath = redirectURL.pathname + redirectURL.search + redirectURL.hash;
+                    if (redirectPath !== path) {
+                        navigate(internalToExternalPath(redirectPath));
                         return;
                     }
                 }
 
-                setResults({data, response});
-
-                const isForm = data instanceof Object && data.hasOwnProperty('form');
+                const isForm = data !== null && typeof data === 'object' && Object.prototype.hasOwnProperty.call(data, 'form');
                 if ([400, 500].includes(primaryStatus) && isForm === false) {
                     throw new HttpException(response.status, response.statusText, data);
                 }
+
+                setResults({data, response});
             })
             .catch((error: unknown) => {
                 // Check this request's signal: a newer request may already be loading.
@@ -110,25 +140,12 @@ const GetData = (
                 }
             });
         return () => {
-            enabled.current = loadOnInit;
-        }
-    }, [refresh, path, bodyData, bodyType, method])
-
-    useEffect(() => {
-        return () => {
-            cancel();
-            enabled.current = loadOnInit;
-        }
-    }, []);
-
-    useEffect(() => {
-        update();
-    }, [refresh, path, bodyData, bodyType, method]);
-
-    const cancel = () => {
-        loading.current?.abort('canceled');
-        loading.current = null;
-    }
+            controller.abort('canceled');
+            if (loading.current === controller) {
+                loading.current = null;
+            }
+        };
+    }, [refresh, path, bodyData, bodyType, method, cancel]);
 
     return {
         url: path,
@@ -136,7 +153,7 @@ const GetData = (
         results: results?.data,
         response: results?.response,
         refresh: () => {
-            setRefresh(Date.now());
+            setRefresh(value => value + 1);
         },
         cancel
     }
@@ -163,14 +180,22 @@ const DataProvider = ({suspense, children}: {
     suspense?: ReactNode
 }) => {
     const {actionRequest} = UseCurrentActionRequest();
-    const {generateActionLink} = UseActions();
+    const {generateActionLink, externalToInternalPath} = UseActions();
     const parentDataProvider = UseDataProvider();
-    const url = generateActionLink(actionRequest);
+    const url = externalToInternalPath(generateActionLink(actionRequest));
 
     if (parentDataProvider?.url === url) {
         return children;
     }
 
+    return <RequestDataProvider actionRequest={actionRequest} suspense={suspense}>{children}</RequestDataProvider>;
+}
+
+const RequestDataProvider = ({actionRequest, suspense, children}: {
+    actionRequest: ActionRequestType;
+    children: ReactNode;
+    suspense?: ReactNode;
+}) => {
     const data = GetDataByAction({
         actionRequest
     });
@@ -179,7 +204,7 @@ const DataProvider = ({suspense, children}: {
 
     return (
         <DataContextProvider data={data}>
-            {suspense && !data?.results ? suspense : children}
+            {suspense && !data?.response ? suspense : children}
         </DataContextProvider>
     );
 }

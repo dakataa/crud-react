@@ -188,14 +188,19 @@ export function UseActions(safe: boolean = true) {
 }
 
 export function ActionProvider(props: PropsWithChildren) {
-    let initActions: ActionType[] | null = null;
-    try {
-        const data = sessionStorage.getItem(STORAGE_KEY);
-        initActions = JSON.parse(atob(data || '')) as ActionType[];
-    } catch (e) {
-    }
+    const [actions, setActions] = useState<ActionType[] | null>(() => {
+        try {
+            const data = sessionStorage.getItem(STORAGE_KEY);
+            if (!data) {
+                return null;
+            }
 
-    const [actions, setActions] = useState<ActionType[] | null>(initActions);
+            const bytes = Uint8Array.from(atob(data), character => character.charCodeAt(0));
+            return JSON.parse(new TextDecoder().decode(bytes)) as ActionType[];
+        } catch {
+            return null;
+        }
+    });
     const [location, setLocation] = useState<URL>(new URL(document.location.href));
 
     useEffect(() => {
@@ -215,7 +220,7 @@ export function ActionProvider(props: PropsWithChildren) {
     }, []);
 
     useEffect(() => {
-        if (initActions) {
+        if (actions) {
             return;
         }
 
@@ -224,8 +229,14 @@ export function ActionProvider(props: PropsWithChildren) {
                 return;
             }
 
-            sessionStorage.setItem(STORAGE_KEY, btoa(JSON.stringify(data)));
             setActions(data);
+            try {
+                const bytes = new TextEncoder().encode(JSON.stringify(data));
+                const encoded = btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''));
+                sessionStorage.setItem(STORAGE_KEY, encoded);
+            } catch {
+                // Storage is optional; fetched actions must remain usable.
+            }
         }).catch((e) => {
             console.log('error', e);
         }).finally(() => {

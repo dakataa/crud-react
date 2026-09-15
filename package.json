@@ -71,6 +71,7 @@
 		"babel-plugin-transform-imports": "^2.0.0",
 		"bootstrap": "^5.3.5",
 		"dotenv": "^16.4.5",
+		"jsdom": "^26.1.0",
 		"path": "^0.12.7",
 		"sass": "^1.81.0",
 		"source-map-explorer": "^2.5.3",

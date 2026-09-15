@@ -30,6 +30,7 @@ export type FormAction =
         constraints: Constraint[];
     };
 }
+    | { action: 'remove-constraints'; payload?: string }
     | { action: 'validate'; payload?: string }
     | { action: 'response'; payload: unknown }
     | { action: 'errors'; payload: FormErrors }
@@ -213,6 +214,19 @@ export const Form = (
                         [name]: constraints
                     }
                 };
+            }
+            case 'remove-constraints': {
+                const name = command.payload;
+                if (!name) {
+                    return state;
+                }
+
+                const constraints = {...state.constraints};
+                const errors = {...state.errors};
+                delete constraints[name];
+                delete errors[name];
+
+                return {...state, constraints, errors};
             }
             case 'validate': {
                 const name = command.payload;

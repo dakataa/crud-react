@@ -119,7 +119,7 @@ const Choice = (
     constraints = constraints || [];
 
     const elementName = view.full_name || '';
-    const [[formState, dispatch], formRef] = UseForm();
+    const [[formState, dispatch], formRef, formElementRef] = UseForm();
     const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;
     const attr = {
@@ -136,11 +136,17 @@ const Choice = (
         dispatch({
             action: 'constraints',
             payload: {
-                name: view.full_name,
+                name: elementName,
                 constraints: constraints
             }
         });
-    }, [])
+
+        return () => {
+            if (!elementName || !formElementRef.current?.elements.namedItem(elementName)) {
+                dispatch({action: 'remove-constraints', payload: elementName});
+            }
+        };
+    }, [elementName, dispatch, formElementRef])
 
     const validate = (value: any) => {
         dispatch({action: 'validate', payload: view.full_name});
