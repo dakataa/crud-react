@@ -33,7 +33,11 @@ const Translation = ({children, translationKey, domain, properties = {}}: Transl
     );
 
     if (key !== undefined) {
-        return translate(key, {domain, properties});
+        const translated = translate(key, {domain, properties});
+
+        return translated === key
+            ? (children ?? translated)
+            : translated;
     }
 
     return children;
