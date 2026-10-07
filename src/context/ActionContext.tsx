@@ -220,10 +220,6 @@ export function ActionProvider(props: PropsWithChildren) {
     }, []);
 
     useEffect(() => {
-        if (actions) {
-            return;
-        }
-
         CrudRequester().get({url: '/_crud/actions'}).then(({status, data}) => {
             if (status !== 200) {
                 return;

@@ -31,7 +31,7 @@ const serializeBody = (body: FormData | string | { [key: string]: any } | undefi
 export type GetDataType = {
     url: string;
     status: number;
-    results: any;
+    results: unknown;
     response?: Response;
     refresh: () => void;
     cancel: () => void;
@@ -59,7 +59,7 @@ const GetData = (
     }: GetDataProps & {
         path: string
         method?: Method,
-        body?: FormData | string | { [key: string]: any },
+        body?: FormData | string | { [key: string]: unknown },
         bodyType?: RequestBodyType,
     }): GetDataType => {
 

@@ -13,7 +13,7 @@ import {ModifyType} from "@crud-react/type/ModifyType.tsx";
 import {FormViewErrorType, FormViewType} from "@crud-react/type/FormViewType.tsx";
 import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
 import Button from "@crud-react/component/Button.tsx";
-import {UseDataProvider} from "@crud-react/context/GetData.tsx";
+import {GetDataType, UseDataProvider} from "@crud-react/context/GetData.tsx";
 import {default as T} from "@crud-react/component/Translation.tsx";
 import {ExceptionType} from "@crud-react/type/ExceptionType.tsx";
 import {UseActions} from "@crud-react/context/ActionContext.tsx";
@@ -190,7 +190,7 @@ const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = fals
     const actionURL = generateActionLink(actionRequest);
     const [data, setData] = useState<ModifyType | null>(null)
     const formRef = useRef<FormRef | null>(null);
-    const dataProvider = UseDataProvider();
+    const dataProvider  = UseDataProvider() as GetDataType & { results: ModifyType };
 
     const {startLoading, stopLoading} = UsePreloaderProvider() || {};
     const preloaderTimeout = useRef<number | null>(null);
