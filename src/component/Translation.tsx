@@ -1,28 +1,42 @@
 import React, {PropsWithChildren} from "react";
-import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
 
-
-export type TranslationProps = {
+export type TranslationOptions = {
     domain?: string;
-    translationKey?: string;
-    properties?: { [key: string]: string | number | null }
+    properties?: { [key: string]: string | number | null };
 };
 
-const Translation = ({children, translationKey, domain, properties, ...props}: TranslationProps & PropsWithChildren) => {
-    properties ??= {};
+export type TranslationFunction = (key: string, options?: TranslationOptions) => string;
 
-    if(typeof children === "boolean") {
-        return;
+const identityTranslation: TranslationFunction = key => key;
+
+export function UseTranslate(): TranslationFunction {
+    return UseConfig().translate ?? identityTranslation;
+}
+
+export type TranslationProps = TranslationOptions & {
+    translationKey?: string;
+};
+
+const Translation = ({children, translationKey, domain, properties = {}}: TranslationProps & PropsWithChildren) => {
+    const {translate} = UseConfig();
+
+    if (!translate) {
+        return children ?? translationKey;
     }
 
-    return (
-        <DynamicView
-            view={"Translation"}
-            props={{...props, domain, translationKey, properties}}
-        >
-            {children}
-        </DynamicView>
-    )
+    const parts = React.Children.toArray(children);
+    const key = translationKey ?? (
+        parts.length > 0 && parts.every(part => typeof part === "string" || typeof part === "number")
+            ? parts.join("")
+            : undefined
+    );
+
+    if (key !== undefined) {
+        return translate(key, {domain, properties});
+    }
+
+    return children;
 }
 
 export default Translation;

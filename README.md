@@ -148,6 +148,10 @@ type Config = {
   templates?: { [path: string]: () => Promise<any> };
   locale?: string;
   currency?: string;
+  translate?: (key: string, options?: {
+    domain?: string;
+    properties?: { [key: string]: string | number | null };
+  }) => string;
   options?: {
     HTMLTableElement: React.HTMLAttributes<HTMLTableElement>;
     GridView: React.HTMLAttributes<HTMLDivElement>;
@@ -161,10 +165,31 @@ type Config = {
 - `templates`: runtime template overrides merged with global templates
 - `locale`: used by components such as `Money`
 - `currency`: default currency for money formatting
+- `translate`: used by `Translation` and form components for labels, help text, placeholders, tooltips (`title`), accessible labels (`aria-label`, `aria-description`), and choice group labels. `Translation` calls this callback directly; it no longer loads a template. It translates `translationKey` when provided, otherwise joins text children into a single key, and forwards `domain` and `properties`. Without this callback, children are preserved; when children are absent, the translation key is returned unchanged. Children containing React elements are preserved unless an explicit translation key is provided.
 - `link.prefix`: useful when the CRUD UI is mounted under a sub-path such as `/admin`
 - `link.path`: lets you force `CrudLoader` to resolve a custom path instead of `location.pathname + location.search`
 - `options.HTMLTableElement`: default props for generated tables
 - `options.GridView`: default props for the `GridView` wrapper
+
+Connect your translation library once when configuring `Crud`. Forms can then pass translation keys directly:
+
+```tsx
+<Crud config={{
+  translate: (key, options) => t(key, {
+    ...options?.properties,
+    ...(options?.domain ? {ns: options.domain} : {}),
+  }),
+  templates,
+}}>
+  <FormGroup name="vat" options={{
+    label: 'VAT',
+    attr: {'aria-label': 'Registered for VAT'},
+    label_attr: {title: 'Registered for VAT'},
+  }}/>
+</Crud>
+```
+
+Custom form templates can use `UseTranslate()` where they render text that needs translation. Form attribute objects are passed through; only the specific text properties above are translated at their render sites.
 
 ## Backend contract
 

@@ -95,14 +95,14 @@ const GetData = (
         const controller = new AbortController();
         loading.current = controller;
 
-        CrudRequester()
-            .fetch({
-                url: path,
-                method: method || Method.GET,
-                body: body,
-                bodyType,
-                signal: controller.signal,
-            })
+        const requester = CrudRequester();
+        const request = {url: path, body, signal: controller.signal};
+        const isMultipartBody = body instanceof FormData && (!bodyType || bodyType === RequestBodyType.FormData);
+        const pendingRequest = method === Method.POST && !isMultipartBody
+            ? requester.post({...request, bodyType})
+            : requester.fetch({...request, method: method || Method.GET});
+
+        pendingRequest
             .then(({data, response}) => {
                 if (controller.signal.aborted) {
                     return;

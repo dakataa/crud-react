@@ -1,4 +1,5 @@
 import React, {HTMLAttributes, PropsWithChildren} from "react";
+import type {TranslationFunction} from "@crud-react/component/Translation.tsx";
 
 export enum Environment {
     PROD = 'prod',
@@ -21,6 +22,7 @@ export type Config = {
     locale?: string,
     currency?: string,
     timezone?: string,
+    translate?: TranslationFunction,
     options?:  {
         // Standard HTML Elements
         HTMLTableElement: HTMLAttributes<HTMLTableElement>,

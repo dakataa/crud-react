@@ -1,5 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
 import {UseForm} from "./Form";
+import {UseTranslate} from "@crud-react/component/Translation.tsx";
 import {Constraint} from "./constraint/Contraint";
 import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType";
 import {UseFormSettings} from "@crud-react/component/form/FormSetting.tsx";
@@ -50,8 +51,10 @@ const Input = ({
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
     const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(view.data)));
-    const attr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
+    const translate = UseTranslate();
+    const attr = {...(view.attr instanceof Function ? view.attr() : view.attr) || {}};
     const settings = UseFormSettings();
+    const placeholder = "placeholder" in attr ? attr.placeholder : settings?.placeholder || view?.placeholder;
 
     let type = view.type;
     let value = view.data;
@@ -98,8 +101,11 @@ const Input = ({
                 ...(errorMessages.length ? ['is-invalid'] : [])
             ].filter(v => v).join(' ')}
             defaultChecked={view?.checked}
-            placeholder={settings?.placeholder || view?.placeholder || undefined}
             {...attr}
+            placeholder={typeof placeholder === "string" ? translate(placeholder) : placeholder}
+            title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
+            aria-label={typeof attr["aria-label"] === "string" ? translate(attr["aria-label"]) : attr["aria-label"]}
+            aria-description={typeof attr["aria-description"] === "string" ? translate(attr["aria-description"]) : attr["aria-description"]}
             {...(attr.inputmode === "decimal" && {step: "any"})}
         />
     </>
