@@ -39,6 +39,10 @@ export type GetDataType = {
 
 export type GetDataProps = {
     loadOnInit?: boolean;
+    /** Handles the error locally instead of propagating it to the global handler. */
+    onError?: (error: unknown) => void;
+    /** Propagates unhandled errors by default; false suppresses them without a callback. */
+    throwOnError?: boolean;
 }
 
 export type GetDataByActionRequestProps = GetDataProps & {
@@ -55,7 +59,9 @@ const GetData = (
         method,
         body,
         bodyType,
-        loadOnInit = true
+        loadOnInit = true,
+        onError,
+        throwOnError = true
     }: GetDataProps & {
         path: string
         method?: Method,
@@ -64,6 +70,7 @@ const GetData = (
     }): GetDataType => {
 
     const enabled = useRef(loadOnInit);
+    const onErrorRef = useRef(onError);
     const {navigate, externalToInternalPath, internalToExternalPath} = UseActions(false);
     const [results, setResults] = useState<{ data: ListType | ModifyType, response: Response } | undefined>();
 
@@ -85,6 +92,10 @@ const GetData = (
     }, []);
 
     useEffect(() => {
+        onErrorRef.current = onError;
+    }, [onError]);
+
+    useEffect(() => {
         if (!enabled.current) {
             enabled.current = true;
             return;
@@ -94,6 +105,8 @@ const GetData = (
 
         const controller = new AbortController();
         loading.current = controller;
+        // Keep the handler tied to this request without reloading when callback identity changes.
+        const handleError = onErrorRef.current;
 
         CrudRequester()
             .fetch({
@@ -132,7 +145,14 @@ const GetData = (
                     return;
                 }
 
-                throw error;
+                if (handleError) {
+                    handleError(error);
+                    return;
+                }
+
+                if (throwOnError) {
+                    throw error;
+                }
             })
             .finally(() => {
                 if (loading.current === controller) {
@@ -145,7 +165,7 @@ const GetData = (
                 loading.current = null;
             }
         };
-    }, [refresh, path, bodyData, bodyType, method, cancel]);
+    }, [refresh, path, bodyData, bodyType, method, cancel, throwOnError]);
 
     return {
         url: path,
@@ -161,7 +181,9 @@ const GetData = (
 
 const GetDataByAction = ({
                              actionRequest,
-                             loadOnInit = true
+                             loadOnInit = true,
+                             onError,
+                             throwOnError = true
                          }: GetDataByActionRequestProps): GetDataType | null => {
     const {generateActionLink} = UseActions();
     const path = generateActionLink(actionRequest);
@@ -171,7 +193,9 @@ const GetDataByAction = ({
         method: actionRequest.method,
         body: actionRequest.body,
         bodyType: actionRequest.bodyType,
-        loadOnInit
+        loadOnInit,
+        onError,
+        throwOnError
     });
 }
 
