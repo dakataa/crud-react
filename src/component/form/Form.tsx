@@ -235,6 +235,10 @@ export const Form = (
                 }
 
                 const {valid, message} = validateField(name, state.constraints[name] || []);
+                // Keep state stable when validation has no error to add or remove.
+                if (valid && state.errors[name] === undefined) {
+                    return state;
+                }
                 const errors = {...state.errors};
 
                 if (valid) {

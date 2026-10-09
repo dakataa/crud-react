@@ -1,5 +1,6 @@
-import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
+import React, {ChangeEvent, KeyboardEvent, useCallback, useEffect, useLayoutEffect, useRef} from "react";
 import {UseForm} from "./Form";
+import {UseTranslate} from "@crud-react/component/Translation.tsx";
 import {Constraint} from "./constraint/Contraint";
 import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType";
 import {UseFormSettings} from "@crud-react/component/form/FormSetting.tsx";
@@ -9,7 +10,7 @@ export type FormFieldProps = {
     className?: string;
     constraints?: Constraint[];
     onChange?: (value?: string | number | object) => void;
-    ref?: React.RefObject<HTMLInputElement>;
+    ref?: React.RefObject<HTMLInputElement | null>;
 }
 
 export type InputProps = {} & FormFieldProps;
@@ -23,6 +24,13 @@ const Input = ({
     React.JSX.Element => {
 
     const elementFullName = view.full_name;
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const setInputRef = useCallback((element: HTMLInputElement | null) => {
+        inputRef.current = element;
+        if (ref) {
+            ref.current = element;
+        }
+    }, [ref]);
     const [[formState, dispatch], , formElementRef] = UseForm();
     const errorMessages = formState?.errors[elementFullName || ''] || [];
 
@@ -49,9 +57,13 @@ const Input = ({
 
     const isCheckbox = ['checkbox', 'radio'].includes(view.type);
     const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
-    const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(view.data)));
-    const attr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
+    const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(
+        isCheckbox ? [view.data, view.checked] : view.data
+    )));
+    const translate = UseTranslate();
+    const attr = {...(view.attr instanceof Function ? view.attr() : view.attr) || {}};
     const settings = UseFormSettings();
+    const placeholder = "placeholder" in attr ? attr.placeholder : settings?.placeholder || view?.placeholder;
 
     let type = view.type;
     let value = view.data;
@@ -71,14 +83,22 @@ const Input = ({
         attr.required = 'required';
     }
 
+    // Hidden inputs share value/defaultValue in the DOM. React would restore the
+    // backend default on every render, so initialize them only when loading data.
+    useLayoutEffect(() => {
+        if (type === FormViewTypeEnum.Hidden && inputRef.current) {
+            inputRef.current.value = value ?? '';
+        }
+    }, [key, type]);
+
     return <>
         <input
-            ref={ref}
+            ref={setInputRef}
             id={view.id}
             key={key}
             name={elementFullName}
             type={type}
-            defaultValue={value}
+            defaultValue={type === FormViewTypeEnum.Hidden ? undefined : value}
             aria-invalid={!errorMessages.length}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
                 if (attr.onChange instanceof Function) {
@@ -98,8 +118,11 @@ const Input = ({
                 ...(errorMessages.length ? ['is-invalid'] : [])
             ].filter(v => v).join(' ')}
             defaultChecked={view?.checked}
-            placeholder={settings?.placeholder || view?.placeholder || undefined}
             {...attr}
+            placeholder={typeof placeholder === "string" ? translate(placeholder) : placeholder}
+            title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
+            aria-label={typeof attr["aria-label"] === "string" ? translate(attr["aria-label"]) : attr["aria-label"]}
+            aria-description={typeof attr["aria-description"] === "string" ? translate(attr["aria-description"]) : attr["aria-description"]}
             {...(attr.inputmode === "decimal" && {step: "any"})}
         />
     </>

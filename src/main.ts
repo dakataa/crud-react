@@ -64,8 +64,8 @@ export {default as Button} from "./component/Button.tsx"
 export type {ButtonPropsType} from "./component/Button.tsx"
 export type {ButtonContentProps} from "./component/BaseButtonContent.tsx"
 
-export {default as Translation} from "./component/Translation.tsx";
-export type {TranslationProps} from "./component/Translation.tsx";
+export {default as Translation, UseTranslate} from "./component/Translation.tsx";
+export type {TranslationProps, TranslationFunction, TranslationOptions} from "./component/Translation.tsx";
 export {default as ActionLink} from "./component/crud/ActionLink.tsx";
 export {default as ItemAction} from "./component/crud/ItemAction.tsx";
 export {default as IsListItemActionGranted, useListItemActionGranted} from "./component/crud/IsListItemActionGranted.tsx";

@@ -1,4 +1,4 @@
-import {Form as BaseForm, FormRef, UseForm} from "@crud-react/component/form/Form.tsx";
+import {Form as BaseForm, FormRef, FormValue, UseForm} from "@crud-react/component/form/Form.tsx";
 import React, {
     forwardRef,
     PropsWithChildren,
@@ -31,8 +31,8 @@ export type ModifyFormRefType = {
 
 export type FormViewContextType = {
     form: FormViewType,
-    setValue?: (name: string, value: string) => void,
-    setValues?: (data: { [key: string]: string }) => void,
+    setValue?: (name: string | null, value: FormValue) => void,
+    setValues?: (data: Record<string, FormValue>) => void,
     setRendered?: (e: FormViewType, id: string) => void,
     unsetRendered?: (e: FormViewType, id: string) => void,
     canRender?: (e: FormViewType, id: string) => boolean,
@@ -65,7 +65,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
     const [, formRef] = UseForm();
     const formGroup = UseFormGroup();
 
-    const setValue = (name: string | null, value: string | string[]) => {
+    const setValue = (name: string | null, value: FormValue) => {
         const childView = name ? name.split('.').reduce((result: FormViewType | null, v: string) => {
             return result?.children?.[v] || null;
         }, view) : view;
@@ -73,8 +73,6 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
         if (!childView?.full_name) {
             return;
         }
-
-        childView.data = value;
 
         formRef.current?.setValue(childView.full_name, value)
     };
@@ -107,7 +105,7 @@ export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChi
             return formGroup?.view.full_name === e.full_name || parentFormViewContext?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
         },
         setValue,
-        setValues: (data: { [key: string]: string }) => {
+        setValues: (data: Record<string, FormValue>) => {
             Object.keys(data).map(k => setValue(k, data[k]));
         },
         getElements: () => renderedFormElements.current,
