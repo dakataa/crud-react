@@ -133,7 +133,9 @@ const Choice = (
     const errorMessages = formState?.errors[elementName || ''] || [];
     const isInvalid = !!errorMessages.length;
     const attr = {...(view.attr instanceof Function ? view.attr() : view.attr) || {}};
-    const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(view.data)));
+    const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(
+        view.expanded ? view.data : view.value || view.data
+    )));
     const classes = [
         ...((attr.class || '').split(' ') || []),
         ...((className || '').split(' ') || []),
@@ -163,7 +165,7 @@ const Choice = (
 
     if (view?.expanded) {
         return (
-            <>
+            <Fragment key={key}>
                 {typeof view.placeholder === 'string' && (
                     <>
                         <ChoiceOption
@@ -190,7 +192,7 @@ const Choice = (
                         </Fragment>
                     )
                 )}
-            </>
+            </Fragment>
         );
     } else {
         return (
