@@ -1,12 +1,13 @@
-import {FormViewProvider, UseFormView} from "@crud-react/component/crud/form/Form.tsx";
-import React, {PropsWithChildren} from "react";
-import {FormViewType} from "@crud-react/type/FormViewType.tsx";
-import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
+import { FormViewProvider, UseFormView } from '@crud-react/component/crud/form/Form.tsx';
+import React, { PropsWithChildren } from 'react';
+import { FormViewType } from '@crud-react/type/FormViewType.tsx';
+import { hasInitialOverride, markInitialOverride } from '@crud-react/component/form/formView.ts';
+import FormGroupViewLoader from '@crud-react/component/crud/form/FormGroupViewLoader.tsx';
 
 type FormGroupContextType = {
     id: string;
     view: FormViewType;
-}
+};
 
 const FormGroupContext = React.createContext<FormGroupContextType | undefined>(undefined);
 
@@ -26,9 +27,13 @@ export function UseFormGroup(): FormGroupContextType | undefined {
  * @internal Consumers should render {@link FormGroup} instead of creating this
  * context directly.
  */
-export function FormGroupProvider({id, view, children}: FormGroupContextType & PropsWithChildren) {
+export function FormGroupProvider({
+    id,
+    view,
+    children
+}: FormGroupContextType & PropsWithChildren) {
     return (
-        <FormGroupContext.Provider value={{id: id, view: view}}>
+        <FormGroupContext.Provider value={{ id: id, view: view }}>
             {children}
         </FormGroupContext.Provider>
     );
@@ -52,7 +57,7 @@ export type FormGroupProps = {
      * `attr` and `children` replace the corresponding property rather than being
      * deep-merged.
      */
-    options?: Omit<FormViewType, "type">;
+    options?: Omit<FormViewType, 'type'>;
 
     /**
      * Return `null` when the requested view is missing instead of throwing.
@@ -92,14 +97,22 @@ export type FormGroupProps = {
  * />
  * ```
  */
-const FormGroup = ({name, options, optional = false}: FormGroupProps) => {
-    const {form} = UseFormView();
+const FormGroup = ({ name, options, optional = false }: FormGroupProps) => {
+    const { form } = UseFormView();
     const view = name ? form?.children?.[name] : form;
 
-    const compiledView = {...view, ...(options || {})} as FormViewType;
+    const compiledView = { ...view, ...(options || {}) } as FormViewType;
+
+    if (
+        view &&
+        (hasInitialOverride(view) ||
+            (options && ['data', 'value', 'checked'].some((key) => key in options)))
+    ) {
+        markInitialOverride(compiledView);
+    }
 
     if (!compiledView?.type) {
-        if(optional) {
+        if (optional) {
             return null;
         }
 
@@ -108,10 +121,9 @@ const FormGroup = ({name, options, optional = false}: FormGroupProps) => {
 
     return (
         <FormViewProvider view={compiledView}>
-            <FormGroupViewLoader/>
+            <FormGroupViewLoader />
         </FormViewProvider>
     );
-}
-
+};
 
 export default FormGroup;

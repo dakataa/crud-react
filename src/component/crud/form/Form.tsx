@@ -1,173 +1,149 @@
-import {Form as BaseForm, FormRef, UseForm} from "@crud-react/component/form/Form.tsx";
+import { Form as BaseForm, UseForm } from "@crud-react/component/form/Form.tsx";
+import type { FormProps, FormRef, FormValue } from "@crud-react/component/form/Form.tsx";
+import type { PropsWithChildren, ReactNode } from "react";
 import React, {
     forwardRef,
-    PropsWithChildren,
-    ReactNode,
     useEffect,
     useId,
     useImperativeHandle,
+    useCallback,
+    useLayoutEffect,
+    useSyncExternalStore,
     useRef,
     useState
 } from "react";
-import {ModifyType} from "@crud-react/type/ModifyType.tsx";
-import {FormViewErrorType, FormViewType} from "@crud-react/type/FormViewType.tsx";
-import {convertFormDataToObject, Method, RequestBodyType} from "@dakataa/requester";
+import type { ModifyType } from "@crud-react/type/ModifyType.tsx";
+import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
+import { Method, RequestBodyType } from "@dakataa/requester";
 import Button from "@crud-react/component/Button.tsx";
-import {UseDataProvider} from "@crud-react/context/GetData.tsx";
-import {default as T} from "@crud-react/component/Translation.tsx";
-import {ExceptionType} from "@crud-react/type/ExceptionType.tsx";
-import {UseActions} from "@crud-react/context/ActionContext.tsx";
-import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
+import { UseDataProvider } from "@crud-react/context/GetData.tsx";
+import { default as T } from "@crud-react/component/Translation.tsx";
+import type { ExceptionType } from "@crud-react/type/ExceptionType.tsx";
+import { UseActions } from "@crud-react/context/ActionContext.tsx";
+import { UseCurrentActionRequest } from "@crud-react/component/crud/CrudLoader.tsx";
 import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
 import FormRest from "@crud-react/component/crud/form/FormRest.tsx";
 import FormRestError from "@crud-react/component/crud/form/FormRestError.tsx";
-import {UseFormGroup} from "@crud-react/component/crud/form/FormGroup.tsx";
-import {AsTemplate, Block} from "@crud-react/component/templating/Template.tsx";
-import {Preloader, UsePreloaderProvider} from "@crud-react/component/Preloader.tsx";
+import { UseFormGroup } from "@crud-react/component/crud/form/FormGroup.tsx";
+import { AsTemplate, Block } from "@crud-react/component/templating/Template.tsx";
+import { formSessionKey } from "@crud-react/component/form/formSession.ts";
+import { formDefaults, formErrors } from "@crud-react/component/form/formView.ts";
+import type { FormSubmission, FormSyncMode } from "@crud-react/component/form/FormStore.ts";
+import { Preloader, UsePreloaderProvider } from "@crud-react/component/Preloader.tsx";
+import type { PendingFormSubmission } from "./FormRequestError.tsx";
+import FormRequestError from "./FormRequestError.tsx";
 
 export type ModifyFormRefType = {
-    getFormRef: () => FormRef | null
+    getFormRef: () => FormRef | null;
 };
 
 export type FormViewContextType = {
-    form: FormViewType,
-    setValue?: (name: string, value: string) => void,
-    setValues?: (data: { [key: string]: string }) => void,
-    setRendered?: (e: FormViewType, id: string) => void,
-    unsetRendered?: (e: FormViewType, id: string) => void,
-    canRender?: (e: FormViewType, id: string) => boolean,
-    getElements?: () => { [key: string]: string },
-    allowDuplicates?: boolean,
-    getParentViewContext: () => FormViewContextType | null,
-    getRootViewContext: () => FormViewContextType,
-    setRenderedError: (name: string) => void;
-    isRenderedError: (name: string) => boolean;
-    getRenderedErrors: () => string[];
-}
+    form: FormViewType;
+    setValue: (name: string | null, value: FormValue) => void;
+    setValues: (data: Record<string, FormValue>) => void;
+    allowDuplicates?: boolean;
+};
 
 const FormViewContext = React.createContext<FormViewContextType | undefined>(undefined);
 
-export const FormViewProvider = ({view, allowDuplicates, children}: PropsWithChildren & {
-    view: FormViewType,
-    allowDuplicates?: boolean
+export const FormViewProvider = ({
+    view,
+    allowDuplicates,
+    children,
+    syncMode = "refresh",
+    submission
+}: PropsWithChildren & {
+    view: FormViewType;
+    allowDuplicates?: boolean;
+    syncMode?: FormSyncMode;
+    submission?: FormSubmission;
 }) => {
-    const parentFormViewContext = UseParentFormView();
-    const {
-        form: parentFormView,
-        getParentViewContext,
-        getElements,
-        allowDuplicates: parentAllowDuplicates,
-        unsetRendered: parentUnsetRendered
-    } = parentFormViewContext || {};
-
-    const renderedFormElements = useRef<{ [key: string]: string }>(getElements?.() || {});
-    const renderedErrors = useRef<string[]>([]);
-    const [, formRef] = UseForm();
+    const parent = UseParentFormView();
+    const { store, apiRef } = UseForm();
     const formGroup = UseFormGroup();
+    const root = !parent;
+    useLayoutEffect(() => {
+        if (root) {
+            store.reconcile(formDefaults(view, store.getInitialValue), syncMode, submission);
+            store.setErrors(formErrors(view), submission, true);
+            store.setSubmitting(false);
+        }
+    }, [store, root, view, syncMode, submission]);
+    const setValue = (name: string | null, value: FormValue) => {
+        const child = name
+            ? name
+                  .split(".")
+                  .reduce<FormViewType | undefined>((node, part) => node?.children?.[part], view)
+            : view;
+        let fullName = child?.full_name;
 
-    const setValue = (name: string | null, value: string | string[]) => {
-        const childView = name ? name.split('.').reduce((result: FormViewType | null, v: string) => {
-            return result?.children?.[v] || null;
-        }, view) : view;
+        if (!fullName && view.full_name && name) {
+            const childPath = name
+                .split(".")
+                .map((part) => {
+                    return `[${part}]`;
+                })
+                .join("");
 
-        if (!childView?.full_name) {
-            return;
+            fullName = view.full_name + childPath;
         }
 
-        childView.data = value;
-
-        formRef.current?.setValue(childView.full_name, value)
+        if (fullName) {
+            apiRef.current?.setValue(fullName, value);
+        }
     };
 
-    const getRootViewContext = () => {
-        return parentFormViewContext?.getRootViewContext() || parentFormViewContext || context;
-    };
-
-    const context = {
+    const context: FormViewContextType = {
         form: view,
-        setRendered: (e: FormViewType, id: string) => {
-            if (e.full_name && renderedFormElements.current[e.full_name] === undefined) {
-                renderedFormElements.current[e.full_name] = id;
-                // console.log('set', e.full_name, id, renderedFormElements.current);
-            }
-        },
-        unsetRendered: (e: FormViewType, id: string) => {
-            if (e.full_name && renderedFormElements.current[e.full_name] === id) {
-                delete renderedFormElements.current[e.full_name];
-                // console.log('unset', e.full_name, id, renderedFormElements.current);
-            }
-
-            parentUnsetRendered?.(e, id);
-        },
-        canRender: (e: FormViewType, id: string) => {
-            if (allowDuplicates) {
-                return true;
-            }
-            // console.log('can', e.full_name, parentFormViewContext?.form.full_name, id, can);
-            return formGroup?.view.full_name === e.full_name || parentFormViewContext?.form.full_name === e.full_name || Object.values(renderedFormElements.current).includes(id);
-        },
         setValue,
-        setValues: (data: { [key: string]: string }) => {
-            Object.keys(data).map(k => setValue(k, data[k]));
+        setValues: (values) => {
+            return Object.entries(values).forEach(([name, value]) => setValue(name, value));
         },
-        getElements: () => renderedFormElements.current,
-        allowDuplicates,
-        getParentViewContext: () => {
-            return parentFormViewContext || null;
-        },
-        getRootViewContext,
-        setRenderedError: (name: string) => {
-            if (!renderedErrors.current.includes(name)) {
-                renderedErrors.current.push(name);
-            }
-        },
-        isRenderedError: (name: string) => {
-            return renderedErrors.current.includes(name);
-        },
-        getRenderedErrors: () => {
-            return renderedErrors.current;
-        }
+        allowDuplicates
     };
 
     return (
         <FormViewContext.Provider value={context}>
-            <FormRenderer>
+            <FormRenderer
+                view={view}
+                allowDuplicates={
+                    !!allowDuplicates ||
+                    formGroup?.view.full_name === view.full_name ||
+                    parent?.form.full_name === view.full_name
+                }>
                 {children}
             </FormRenderer>
         </FormViewContext.Provider>
     );
-}
+};
 
-const FormRenderer = ({children}: PropsWithChildren) => {
-    const uniqueId = useId();
-    const [id, setId] = useState<string|null>(null)
-    const {form: view, unsetRendered, setRendered, canRender} = UseFormView();
-    const randomId = function(length = 6) {
-        return Math.random().toString(36).substring(2, length+2);
-    };
+const FormRenderer = ({
+    children,
+    view,
+    allowDuplicates
+}: PropsWithChildren & {
+    view: FormViewType;
+    allowDuplicates: boolean;
+}) => {
+    const id = useId();
+    const { store } = UseForm();
+    const name = view.full_name || "";
+    const getOwner = useCallback(() => store.getRendering().elements[name], [store, name]);
+    const owner = useSyncExternalStore(store.subscribeRendering, getOwner, getOwner);
+    useLayoutEffect(() => (name ? store.registerView(name, id) : undefined), [store, name, id]);
 
-
-    useEffect(() => {
-        setRendered?.(view, uniqueId);
-        setId(uniqueId);
-
-        return () => {
-            unsetRendered?.(view, uniqueId);
-            setId(null);
-        }
-    }, []);
-
-    if (!id || !canRender?.(view, id)) {
-        return <></>;
+    if (name && !allowDuplicates && owner !== id) {
+        return null;
     }
 
     return <>{children}</>;
-}
+};
 
 export function UseFormView(): FormViewContextType {
     const context = React.useContext<FormViewContextType | undefined>(FormViewContext);
+
     if (!context) {
-        throw new Error('UseFormView must be used within a FormViewProvider.');
+        throw new Error("UseFormView must be used within a FormViewProvider.");
     }
 
     return context;
@@ -177,164 +153,206 @@ export function UseParentFormView(): FormViewContextType | undefined {
     return React.useContext<FormViewContextType | undefined>(FormViewContext);
 }
 
-const Form = AsTemplate(forwardRef(({onSuccess, onError, onLoad, embedded = false}: {
-    onSuccess?: (data: any) => Promise<void>;
-    onError?: (data: ExceptionType) => void;
-    onLoad?: () => void;
-    embedded?: boolean;
-    children?: ReactNode;
-}, ref) => {
-    const {navigate, generateLink, generateActionLink} = UseActions();
-    const {actionRequest, setActionRequest, refresh} = UseCurrentActionRequest();
+const Form = AsTemplate(
+    forwardRef(
+        (
+            {
+                onSuccess,
+                onError,
+                onLoad,
+                onStateChange,
+                embedded = false
+            }: {
+                onSuccess?: (data: any) => Promise<void>;
+                onError?: (data: ExceptionType) => boolean | void;
+                onLoad?: () => void;
+                onStateChange?: FormProps["onStateChange"];
+                embedded?: boolean;
+                children?: ReactNode;
+            },
+            ref
+        ) => {
+            const { navigate, generateLink, generateActionLink } = UseActions();
+            const { actionRequest, setActionRequest } = UseCurrentActionRequest();
 
-    const actionURL = generateActionLink(actionRequest);
-    const [data, setData] = useState<ModifyType | null>(null)
-    const formRef = useRef<FormRef | null>(null);
-    const dataProvider = UseDataProvider();
+            const actionURL = generateActionLink(actionRequest);
+            const sessionKey = formSessionKey(actionRequest);
+            const [loaded, setLoaded] = useState<{
+                data: ModifyType;
+                session: string;
+                mode: FormSyncMode;
+                submission?: FormSubmission;
+            } | null>(null);
+            const data = loaded?.session === sessionKey ? loaded.data : null;
+            const submitted = useRef<PendingFormSubmission | null>(null);
+            const lastSubmitTime = useRef(0);
+            const processedResponse = useRef<unknown>(undefined);
+            const formRef = useRef<FormRef | null>(null);
+            const dataProvider = UseDataProvider();
 
-    const {startLoading, stopLoading} = UsePreloaderProvider() || {};
-    const preloaderTimeout = useRef<number | null>(null);
-    const [formData, setFormData] = useState<FormData|null>(null);
+            const { startLoading, stopLoading } = UsePreloaderProvider() || {};
 
-    useImperativeHandle(ref, () => ({
-        getFormRef: (): FormRef | null => formRef.current
-    }));
+            useImperativeHandle(ref, () => {
+                return {
+                    getFormRef: (): FormRef | null => formRef.current
+                };
+            });
 
-    const getFormErrors = (view: FormViewType): { [key: string]: FormViewErrorType[] } => {
-        let result = (view.errors || []).reduce((errors: { [key: string]: FormViewErrorType[] }, error) => {
-            const origin = error.origin || view.full_name || '';
-            return {...errors, [origin]: [...(errors[origin] || []), error]};
-        }, {});
+            const onSubmit = (formData: FormData, snapshot: FormSubmission) => {
+                startLoading?.(formView?.full_name || "form");
+                submitted.current = { session: sessionKey, snapshot };
+                lastSubmitTime.current = Math.max(Date.now(), lastSubmitTime.current + 1);
+                formData.set("_ts", String(lastSubmitTime.current));
+                setActionRequest({
+                    ...actionRequest,
+                    method: Method.POST,
+                    body: formData,
+                    bodyType: RequestBodyType.FormData
+                });
+            };
 
+            useEffect(() => {
+                if (onLoad) {
+                    onLoad();
+                }
+            }, []);
 
-        for (let [, child] of Object.entries(view?.children || [])) {
-            result = {...result, ...getFormErrors(child)};
-        }
+            useEffect(() => {
+                const response = dataProvider?.results;
+                const view = response?.form?.modify?.view;
 
-        return result;
-    };
+                if (!view || processedResponse.current === response) {
+                    return;
+                }
 
-    const onSubmit = (formData: FormData) => {
-        startLoading?.(formView?.full_name || 'form');
-        preloaderTimeout.current = setTimeout(() => stopLoading?.(formView?.full_name || 'form'), 250);
-        formData.append('_ts', Date.now().toString());
+                processedResponse.current = response;
+                const snapshot =
+                    submitted.current?.session === sessionKey
+                        ? submitted.current.snapshot
+                        : undefined;
+                const errors = formErrors(view);
+                const saved =
+                    !!view.submitted && dataProvider?.status === 200 && !Object.keys(errors).length;
+                let mode: FormSyncMode = "refresh";
 
-        setFormData(formData);
-    }
+                if (snapshot) {
+                    mode = saved ? "saved" : "invalid";
+                }
 
-    useEffect(() => {
-        if(!formData) {
-            return;
-        }
+                setLoaded({ data: response, session: sessionKey, mode, submission: snapshot });
+                stopLoading?.(view.full_name || "form");
 
-        preloaderTimeout.current && clearTimeout(preloaderTimeout.current);
+                if (!snapshot) {
+                    return;
+                }
 
-        setActionRequest({
-            ...actionRequest,
-            method: Method.POST,
-            body: formData,
-            bodyType: RequestBodyType.FormData
-        })
-    }, [formData ? JSON.stringify(convertFormDataToObject(formData)) : null]);
+                submitted.current = null;
 
-    useEffect(() => {
-        if (onLoad) {
-            onLoad();
-        }
-    }, []);
+                if (!saved) {
+                    return;
+                }
 
-    useEffect(() => {
-        const formView = dataProvider?.results?.form?.modify?.view;
-        if (!formView) {
-            return;
-        }
+                formRef.current?.success();
 
-        const data = dataProvider.results;
-        const errors = getFormErrors(formView);
+                const afterSuccess = () => {
+                    if (response.redirect && !embedded) {
+                        navigate(
+                            generateLink(response.redirect.route, {
+                                ...(actionRequest.parameters || {}),
+                                ...response.redirect.parameters
+                            }),
+                            true
+                        );
+                    }
+                };
 
-        setData(data);
-        stopLoading?.(formView?.full_name || 'form');
-        formRef.current?.setErrors(errors);
+                const result = onSuccess?.(response);
 
+                if (result instanceof Promise) {
+                    result.then(afterSuccess, () => {
+                        // A rejected success callback cancels navigation.
+                    });
+                } else {
+                    afterSuccess();
+                }
+            }, [dataProvider?.results, sessionKey]);
 
-        if (!formView.submitted || dataProvider?.status !== 200 || Object.entries(errors).length) {
-            return;
-        }
+            const formView = data?.form?.modify?.view;
 
-        // If try to re-draw the submitted form without form data.
-        if(!formData) {
-            refresh();
-            return;
-        }
-
-        formRef.current?.success();
-
-        const doAfter = () => {
-            if (data.redirect && !embedded) {
-                navigate(generateLink(data.redirect.route, {...(actionRequest.parameters || {}), ...data.redirect.parameters}), true);
+            if (!formView) {
+                return;
             }
-        }
 
-        if (onSuccess) {
-            const onSuccessReturn = onSuccess(data);
-            if(onSuccessReturn instanceof Promise) {
-                onSuccessReturn.then(() => doAfter());
-            } else {
-                doAfter();
-            }
-        } else {
-            doAfter();
-        }
+            const blockPrefixes = [
+                (formView.name || "form") + "Field",
+                ...(formView.block_prefixes || [])
+            ];
 
-    }, [dataProvider?.results])
+            return (
+                <Preloader loader={formView.full_name}>
+                    <BaseForm
+                        key={sessionKey}
+                        ref={formRef}
+                        id={formView.id || "form"}
+                        name={formView.name || "form"}
+                        action={actionURL}
+                        method={"POST"}
+                        onStateChange={onStateChange}
+                        onSubmit={onSubmit}>
+                        <FormRequestError
+                            session={sessionKey}
+                            pending={submitted}
+                            loader={formView.full_name || "form"}
+                            onError={onError}
+                        />
+                        <FormViewProvider
+                            view={formView}
+                            syncMode={loaded?.mode}
+                            submission={loaded?.submission}>
+                            <Block name={"content"}>
+                                <DynamicView
+                                    key={formView.id || "form"}
+                                    view={blockPrefixes}
+                                    prefix={"modify/form"}
+                                    data={formView}>
+                                    <Block name={"messages"}>
+                                        {Object.keys(data?.messages || {}).map(
+                                            (messageType, index) => {
+                                                return (
+                                                    <div
+                                                        key={"alert-" + messageType}
+                                                        className={[
+                                                            "alert",
+                                                            "alert-" + messageType
+                                                        ].join(" ")}>
+                                                        {(
+                                                            data?.messages[messageType] || [
+                                                                "Item was saved successful."
+                                                            ]
+                                                        ).join(" ")}
+                                                    </div>
+                                                );
+                                            }
+                                        )}
+                                    </Block>
 
-    const formView = data?.form?.modify?.view;
+                                    <FormRestError className={"alert alert-danger"} />
+                                    <FormRest />
 
-    if (!formView) {
-        return;
-    }
-
-    const blockPrefixes = [(formView.name || 'form') + 'Field', ...formView.block_prefixes || []];
-
-    return (
-        <Preloader loader={formView.full_name}>
-            <BaseForm
-                ref={formRef}
-                id={formView.id || 'form'}
-                name={formView.name || 'form'}
-                action={actionURL}
-                method={"POST"}
-                onSubmit={onSubmit}
-            >
-                <FormViewProvider view={formView}>
-                    <Block name={"content"}>
-                        <DynamicView
-                            key={formView.id || 'form'}
-                            view={blockPrefixes}
-                            prefix={"modify/form"}
-                            data={formView}
-                        >
-                            <Block name={"messages"}>
-                                {Object.keys(data?.messages || {}).map((messageType, index) => (
-                                    <div key={"alert-" + messageType}
-                                         className={['alert', 'alert-' + messageType].join(' ')}>
-                                        {(data?.messages[messageType] || ['Item was saved successful.']).join(' ')}
-                                    </div>
-                                ))}
+                                    <Block name={"actions"}>
+                                        <Button type={"submit"} className={"btn btn-primary"}>
+                                            <T>Save</T>
+                                        </Button>
+                                    </Block>
+                                </DynamicView>
                             </Block>
-
-                            <FormRestError className={"alert alert-danger"}/>
-                            <FormRest/>
-
-                            <Block name={"actions"}>
-                                <Button type={"submit"} className={"btn btn-primary"}><T>Save</T></Button>
-                            </Block>
-                        </DynamicView>
-                    </Block>
-                </FormViewProvider>
-            </BaseForm>
-        </Preloader>
-    )
-}), {name: 'form'});
+                        </FormViewProvider>
+                    </BaseForm>
+                </Preloader>
+            );
+        }
+    ),
+    { name: "form" }
+);
 
 export default Form;

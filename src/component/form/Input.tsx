@@ -1,9 +1,10 @@
-import React, {ChangeEvent, KeyboardEvent, useEffect, useRef} from "react";
-import {UseForm} from "./Form";
-import {UseTranslate} from "@crud-react/component/Translation.tsx";
-import {Constraint} from "./constraint/Contraint";
-import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType";
-import {UseFormSettings} from "@crud-react/component/form/FormSetting.tsx";
+import React from 'react';
+import { useFormField } from './Form.tsx';
+import { UseTranslate } from '@crud-react/component/Translation.tsx';
+import { Constraint } from './constraint/Contraint';
+import { FormViewType, FormViewTypeEnum } from '@crud-react/type/FormViewType';
+import { UseFormSettings } from './FormSetting.tsx';
+import { controlAttributes, inputToken, isSelection, selectedValues } from './formView.ts';
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -11,104 +12,110 @@ export type FormFieldProps = {
     constraints?: Constraint[];
     onChange?: (value?: string | number | object) => void;
     ref?: React.RefObject<HTMLInputElement>;
-}
+};
+export type InputProps = FormFieldProps;
 
-export type InputProps = {} & FormFieldProps;
-
-const Input = ({
-                   view,
-                   constraints,
-                   onChange,
-                   ref
-               }: InputProps):
-    React.JSX.Element => {
-
-    const elementFullName = view.full_name;
-    const [[formState, dispatch], , formElementRef] = UseForm();
-    const errorMessages = formState?.errors[elementFullName || ''] || [];
-
-    useEffect(() => {
-        dispatch({
-            action: 'constraints',
-            payload: {
-                name: elementFullName,
-                constraints: constraints || []
-            }
-        });
-
-        return () => {
-            if (!elementFullName || !formElementRef.current?.elements.namedItem(elementFullName)) {
-                dispatch({action: 'remove-constraints', payload: elementFullName});
-            }
-        };
-    }, [elementFullName, dispatch, formElementRef])
-
-    const validate = (value: string | number | object) => {
-        dispatch({action: 'validate', payload: elementFullName});
-        onChange?.(value);
-    }
-
-    const isCheckbox = ['checkbox', 'radio'].includes(view.type);
-    const defaultFieldClassName = isCheckbox ? 'form-check-input' : 'form-control';
-    const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(view.data)));
+const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Element => {
+    const field = useFormField(view, constraints);
     const translate = UseTranslate();
-    const attr = {...(view.attr instanceof Function ? view.attr() : view.attr) || {}};
     const settings = UseFormSettings();
-    const placeholder = "placeholder" in attr ? attr.placeholder : settings?.placeholder || view?.placeholder;
+    const attr = { ...((view.attr instanceof Function ? view.attr() : view.attr) || {}) };
+    const selection = isSelection(view);
+    const token = inputToken(view);
+    const placeholder =
+        'placeholder' in attr ? attr.placeholder : settings?.placeholder || view.placeholder;
+    let type = attr.type ?? view.type;
 
-    let type = view.type;
-    let value = view.data;
-
-    if ([FormViewTypeEnum.Date, FormViewTypeEnum.Birthday, FormViewTypeEnum.Datetime].includes(type as FormViewTypeEnum)) {
-        const localDate = value?.date ? new Date(value.date) : null;
-        if (localDate) {
-            const dateZoneOffset = localDate.getTimezoneOffset() * 60000
-            const utcDate = new Date(localDate.getTime() - dateZoneOffset);
-            value = utcDate.toISOString().split('T').shift();
-        }
-
-        type = type === FormViewTypeEnum.Datetime ? 'datetime-local' : 'date';
+    if ([FormViewTypeEnum.Date, FormViewTypeEnum.Birthday].includes(type as FormViewTypeEnum)) {
+        type = 'date';
     }
 
-    if (view.required) {
-        attr.required = 'required';
+    if (type === FormViewTypeEnum.Datetime) {
+        type = 'datetime-local';
     }
 
-    return <>
+    const className =
+        attr.className ??
+        settings?.className ??
+        [
+            selection ? 'form-check-input' : 'form-control',
+            settings?.size ? 'form-control-' + settings.size : null,
+            settings?.extraClassName,
+            field.errors.length ? 'is-invalid' : null
+        ]
+            .filter(Boolean)
+            .join(' ');
+
+    return (
         <input
+            {...controlAttributes(attr)}
             ref={ref}
-            id={view.id}
-            key={key}
-            name={elementFullName}
+            id={view.id ?? attr.id}
+            name={view.full_name}
             type={type}
-            defaultValue={value}
-            aria-invalid={!errorMessages.length}
-            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+            required={attr.required ?? view.required}
+            disabled={attr.disabled ?? view.disabled}
+            aria-invalid={!!field.errors.length}
+            className={className}
+            {...(type !== 'file' && { value: selection ? token : (field.value ?? '') })}
+            {...(selection && { checked: selectedValues(field.value).includes(token) })}
+            onChange={(event) => {
                 if (attr.onChange instanceof Function) {
-                    attr.onChange(e);
+                    attr.onChange(event);
                 }
 
-                if (e.defaultPrevented) {
+                if (event.defaultPrevented) {
                     return;
                 }
 
-                validate({value: e.target.value});
+                if (type === "file") {
+                    field.changeNative(
+                        event.target.multiple
+                            ? Array.from(event.target.files || [])
+                            : (event.target.files?.[0] ?? null)
+                    );
+                    onChange?.({ value: event.target.files });
+
+                    return;
+                }
+
+                const value = field.change((current) => {
+                    if (!selection) {
+                        return event.target.value;
+                    }
+
+                    if (!view.multiple) {
+                        return event.target.checked ? token : null;
+                    }
+
+                    const selected = selectedValues(current);
+
+                    if (event.target.checked) {
+                        return [...selected, token];
+                    }
+
+                    return selected.filter((item) => item !== token);
+                });
+                onChange?.({
+                    value,
+                    ...(selection && { targetValue: token, checked: event.target.checked })
+                });
             }}
-            className={settings?.className || [
-                defaultFieldClassName,
-                settings?.size ? 'form-control-' + settings.size : null,
-                settings?.extraClassName,
-                ...(errorMessages.length ? ['is-invalid'] : [])
-            ].filter(v => v).join(' ')}
-            defaultChecked={view?.checked}
-            {...attr}
             placeholder={typeof placeholder === "string" ? translate(placeholder) : placeholder}
             title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
-            aria-label={typeof attr["aria-label"] === "string" ? translate(attr["aria-label"]) : attr["aria-label"]}
-            aria-description={typeof attr["aria-description"] === "string" ? translate(attr["aria-description"]) : attr["aria-description"]}
-            {...(attr.inputmode === "decimal" && {step: "any"})}
+            aria-label={
+                typeof attr["aria-label"] === "string"
+                    ? translate(attr["aria-label"])
+                    : attr["aria-label"]
+            }
+            aria-description={
+                typeof attr["aria-description"] === "string"
+                    ? translate(attr["aria-description"])
+                    : attr["aria-description"]
+            }
+            {...(attr.inputmode === 'decimal' && { step: 'any' })}
         />
-    </>
-}
+    );
+};
 
 export default Input;

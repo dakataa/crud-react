@@ -1,49 +1,48 @@
-import React from "react";
-import FormLabel from "@crud-react/component/form/FormLabel.tsx";
-import FormHelp from "@crud-react/component/form/FormHelp.tsx";
-import FormField from "@crud-react/component/crud/form/FormField.tsx";
-import {FormViewType, FormViewTypeEnum} from "@crud-react/type/FormViewType.tsx";
-import FormError from "@crud-react/component/crud/form/FormError.tsx";
+import React from 'react';
+import FormLabel from '@crud-react/component/form/FormLabel.tsx';
+import FormHelp from '@crud-react/component/form/FormHelp.tsx';
+import FormField from '@crud-react/component/crud/form/FormField.tsx';
+import { FormViewType, FormViewTypeEnum } from '@crud-react/type/FormViewType.tsx';
+import FormError from '@crud-react/component/crud/form/FormError.tsx';
 
-export const FormGroup = (
-    {
-        view,
-        className,
-        size,
-        type,
-    }: {
-        view: FormViewType;
-        className?: string;
-        size?: 'lg' | 'sm'
-        type?: string
-    }) => {
-    const isCheckbox = [FormViewTypeEnum.Checkbox, FormViewTypeEnum.Radio].includes(view.type as FormViewTypeEnum);
+export const FormGroup = ({
+    view,
+    className,
+    size,
+    type
+}: {
+    view: FormViewType;
+    className?: string;
+    size?: 'lg' | 'sm';
+    type?: string;
+}) => {
+    const isCheckbox = [FormViewTypeEnum.Checkbox, FormViewTypeEnum.Radio].includes(
+        view.type as FormViewTypeEnum
+    );
 
-    view.type = type || view.type;
+    view = { ...view, type: type || view.type };
 
     const classes = [
         'mb-3',
         ...(isCheckbox ? ['form-check'] : []),
         ...(className?.split(' ') || [])
-    ].filter(v => v);
+    ].filter((v) => v);
 
     return (
         <>
             {view.type === FormViewTypeEnum.Hidden ? (
-                <FormField/>
+                <FormField options={type ? { type } : undefined} />
             ) : (
-                <div
-                    className={classes.join(' ')}
-                >
-                    {!isCheckbox && (<FormLabel view={view}/>)}
-                    <FormField size={size}/>
-                    {isCheckbox && (<FormLabel view={view}/>)}
-                    <FormError className={"invalid-feedback"}/>
-                    <FormHelp/>
+                <div className={classes.join(" ")}>
+                    {!isCheckbox && <FormLabel view={view} />}
+                    <FormField size={size} options={type ? { type } : undefined} />
+                    {isCheckbox && <FormLabel view={view} />}
+                    <FormError className={"invalid-feedback"} />
+                    <FormHelp />
                 </div>
             )}
         </>
     );
-}
+};
 
 export default FormGroup;
