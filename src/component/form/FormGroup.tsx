@@ -1,9 +1,9 @@
-import React from 'react';
-import FormLabel from '@crud-react/component/form/FormLabel.tsx';
-import FormHelp from '@crud-react/component/form/FormHelp.tsx';
-import FormField from '@crud-react/component/crud/form/FormField.tsx';
-import { FormViewType, FormViewTypeEnum } from '@crud-react/type/FormViewType.tsx';
-import FormError from '@crud-react/component/crud/form/FormError.tsx';
+import FormLabel from "@crud-react/component/form/FormLabel.tsx";
+import FormHelp from "@crud-react/component/form/FormHelp.tsx";
+import FormField from "@crud-react/component/crud/form/FormField.tsx";
+import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
+import { FormViewTypeEnum } from "@crud-react/type/FormViewType.tsx";
+import FormError from "@crud-react/component/crud/form/FormError.tsx";
 
 export const FormGroup = ({
     view,
@@ -13,7 +13,7 @@ export const FormGroup = ({
 }: {
     view: FormViewType;
     className?: string;
-    size?: 'lg' | 'sm';
+    size?: "lg" | "sm";
     type?: string;
 }) => {
     const isCheckbox = [FormViewTypeEnum.Checkbox, FormViewTypeEnum.Radio].includes(
@@ -23,9 +23,9 @@ export const FormGroup = ({
     view = { ...view, type: type || view.type };
 
     const classes = [
-        'mb-3',
-        ...(isCheckbox ? ['form-check'] : []),
-        ...(className?.split(' ') || [])
+        "mb-3",
+        ...(isCheckbox ? ["form-check"] : []),
+        ...(className?.split(" ") || [])
     ].filter((v) => v);
 
     return (

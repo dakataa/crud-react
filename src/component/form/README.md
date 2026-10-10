@@ -292,6 +292,8 @@ errors are handled by the request provider, before the form is available.
 - `UseFormView()` exposes `form`, relative setters and `allowDuplicates`.
   Rendering and error ownership are tracked automatically; manual methods such
   as `setRendered` and `setErrorRendered` are removed.
+- The unused `Choice.prototype` prop is removed. Collection prototypes remain
+  defined by `FormViewType.prototype`.
 
 `FormSubmission.fields` and `collectionNames` identify the controls participating
 in a submit. `store.snapshot()` defaults to all cached values; pass the participating

@@ -316,24 +316,22 @@ const Form = AsTemplate(
                                     prefix={"modify/form"}
                                     data={formView}>
                                     <Block name={"messages"}>
-                                        {Object.keys(data?.messages || {}).map(
-                                            (messageType, index) => {
-                                                return (
-                                                    <div
-                                                        key={"alert-" + messageType}
-                                                        className={[
-                                                            "alert",
-                                                            "alert-" + messageType
-                                                        ].join(" ")}>
-                                                        {(
-                                                            data?.messages[messageType] || [
-                                                                "Item was saved successful."
-                                                            ]
-                                                        ).join(" ")}
-                                                    </div>
-                                                );
-                                            }
-                                        )}
+                                        {Object.keys(data?.messages || {}).map((messageType) => {
+                                            return (
+                                                <div
+                                                    key={"alert-" + messageType}
+                                                    className={[
+                                                        "alert",
+                                                        "alert-" + messageType
+                                                    ].join(" ")}>
+                                                    {(
+                                                        data?.messages[messageType] || [
+                                                            "Item was saved successful."
+                                                        ]
+                                                    ).join(" ")}
+                                                </div>
+                                            );
+                                        })}
                                     </Block>
 
                                     <FormRestError className={"alert alert-danger"} />

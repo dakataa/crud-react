@@ -1,8 +1,8 @@
-import React, { Fragment, useCallback } from 'react';
-import { nameToId, useFormField } from './Form.tsx';
-import { FormFieldProps } from './Input.tsx';
-import { ChoiceGroupType, ChoiceType, FormViewType } from '@crud-react/type/FormViewType';
-import Translation, { UseTranslate } from '@crud-react/component/Translation.tsx';
+import React, { useCallback } from "react";
+import { nameToId, useFormField } from "./Form.tsx";
+import type { FormFieldProps } from "./Input.tsx";
+import type { ChoiceGroupType, ChoiceType, FormViewType } from "@crud-react/type/FormViewType";
+import Translation, { UseTranslate } from "@crud-react/component/Translation.tsx";
 import {
     controlAttributes,
     choiceName,
@@ -10,19 +10,18 @@ import {
     selectionRules,
     stringValue,
     initialFieldValue
-} from './formView.ts';
+} from "./formView.ts";
 
-export type ChoiceProps = Omit<FormFieldProps, 'ref'> & {
+export type ChoiceProps = Omit<FormFieldProps, "ref"> & {
     choiceValueTransform?: (choice: ChoiceType) => unknown;
     choiceLabelTransform?: Function;
-    prototype?: string;
     ref?: React.Ref<HTMLSelectElement>;
 };
 
 function useChoiceField(
     view: FormViewType,
-    constraints: ChoiceProps['constraints'],
-    transform: ChoiceProps['choiceValueTransform']
+    constraints: ChoiceProps["constraints"],
+    transform: ChoiceProps["choiceValueTransform"]
 ) {
     const initialize = useCallback(
         (node: FormViewType) => initialFieldValue(node, transform),
@@ -90,7 +89,7 @@ const ChoiceOption = ({
         ...((view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) ||
             {})
     };
-    const id = attr.id ?? nameToId(view.full_name || '', token);
+    const id = attr.id ?? nameToId(view.full_name || "", token);
 
     return (
         <>
@@ -173,7 +172,7 @@ const ChoiceOption = ({
                         : attr["aria-description"]
                 }
             />
-            {label != null && label !== '' && (
+            {label != null && label !== "" && (
                 <label
                     {...labelAttr}
                     htmlFor={id}
@@ -233,7 +232,40 @@ const Choice = ({
     const translate = UseTranslate();
     const attr = { ...((view.attr instanceof Function ? view.attr() : view.attr) || {}) };
     const { onChange: containerOnChange, ...containerAttr } = attr;
-    const choices = Object.values(view.choices || []).flatMap((choice) => 'choices' in choice ? choice.choices : [choice]);
+    const optionProps = { view, constraints, onChange, choiceValueTransform, choiceLabelTransform };
+
+    if (view.expanded) {
+        return (
+            <>
+                {typeof view.placeholder === "string" && (
+                    <ChoiceOption
+                        {...optionProps}
+                        choice={{ label: view.placeholder, value: null }}
+                    />
+                )}
+                {Object.values(view.choices || []).map((choice, index) => {
+                    if ("choices" in choice) {
+                        return (
+                            <ChoiceGroupOption key={choice.label} {...optionProps} group={choice} />
+                        );
+                    }
+
+                    return (
+                        <div
+                            key={String(choice.value ?? index)}
+                            className="form-check"
+                            {...containerAttr}>
+                            <ChoiceOption {...optionProps} choice={choice} />
+                        </div>
+                    );
+                })}
+            </>
+        );
+    }
+
+    const choices = Object.values(view.choices || []).flatMap((choice) =>
+        "choices" in choice ? choice.choices : [choice]
+    );
     const tokens = choices.map((choice) => {
         return stringValue(
             choice.value ?? (choice.label instanceof Function ? choice.label(choice) : choice.label)
@@ -241,48 +273,18 @@ const Choice = ({
     });
 
     if (view.placeholder) {
-        tokens.push('');
+        tokens.push("");
     }
 
     const missing = selectedValues(field.value).filter((value) => !tokens.includes(value));
-    const optionProps = { view, constraints, onChange, choiceValueTransform, choiceLabelTransform };
     let selectValue: string | string[];
 
     if (view.multiple) {
         selectValue = selectedValues(field.value);
     } else if (Array.isArray(field.value)) {
-        selectValue = field.value[0] ?? '';
+        selectValue = field.value[0] ?? "";
     } else {
-        selectValue = field.value ?? '';
-    }
-
-    if (view.expanded) {
-        return (
-            <>
-                {typeof view.placeholder === 'string' && (
-                    <ChoiceOption
-                        {...optionProps}
-                        choice={{ label: view.placeholder, value: null }}
-                    />
-                )}
-                {Object.values(view.choices || []).map((choice, index) => {
-                    return (
-                        <Fragment
-                            key={
-                                "choices" in choice ? choice.label : String(choice.value ?? index)
-                            }>
-                            {'choices' in choice ? (
-                                <ChoiceGroupOption {...optionProps} group={choice} />
-                            ) : (
-                                <div className="form-check" {...containerAttr}>
-                                    <ChoiceOption {...optionProps} choice={choice} />
-                                </div>
-                            )}
-                        </Fragment>
-                    );
-                })}
-            </>
-        );
+        selectValue = field.value ?? "";
     }
 
     return (
@@ -343,15 +345,12 @@ const Choice = ({
                 </option>
             )}
             {Object.values(view.choices || []).map((choice, index) => {
+                if ("choices" in choice) {
+                    return <SelectGroupOption key={choice.label} view={view} group={choice} />;
+                }
+
                 return (
-                    <Fragment
-                        key={"choices" in choice ? choice.label : String(choice.value ?? index)}>
-                        {'choices' in choice ? (
-                            <SelectGroupOption view={view} group={choice} />
-                        ) : (
-                            <SelectOption view={view} choice={choice} />
-                        )}
-                    </Fragment>
+                    <SelectOption key={String(choice.value ?? index)} view={view} choice={choice} />
                 );
             })}
         </select>

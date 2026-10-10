@@ -1,7 +1,7 @@
-import { UseFormView } from '@crud-react/component/crud/form/Form.tsx';
-import FormFieldError from '@crud-react/component/form/FormFieldError.tsx';
-import { UseForm } from '@crud-react/component/form/Form.tsx';
-import React, { useEffect, useRef } from 'react';
+import { UseFormView } from "@crud-react/component/crud/form/Form.tsx";
+import FormFieldError from "@crud-react/component/form/FormFieldError.tsx";
+import { UseForm } from "@crud-react/component/form/Form.tsx";
+import { useEffect, useRef } from "react";
 
 const FormError = ({
     name,
@@ -12,21 +12,21 @@ const FormError = ({
 }) => {
     const { form } = UseFormView();
     const { store } = UseForm();
-    const id = useRef(Symbol('error'));
+    const id = useRef(Symbol("error"));
 
     const views = name
         ? (name instanceof Array ? name : [name]).map((name) => {
               const childView = name ? form.children?.[name] : form;
 
               if (!childView) {
-                  throw new Error('Missing Form View for FormError: ' + (name || ''));
+                  throw new Error("Missing Form View for FormError: " + (name || ""));
               }
 
               return childView;
           })
         : [form];
 
-    const names = views.map((view) => view.full_name || '').filter(Boolean);
+    const names = views.map((view) => view.full_name || "").filter(Boolean);
     const namesKey = JSON.stringify(names);
     useEffect(() => {
         const cleanup = names.map((name) => store.registerError(name, id.current));

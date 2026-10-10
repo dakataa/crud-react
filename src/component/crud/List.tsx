@@ -1,35 +1,30 @@
-import { formSessionKey } from '@crud-react/component/form/formSession.ts';
-import React, {
-    ComponentType,
-    FC,
-    PropsWithChildren,
-    ReactElement,
-    SyntheticEvent,
-    useRef
-} from 'react';
-import { convertFormDataToObject } from '@dakataa/requester';
-import GridView from '@crud-react/component/crud/GridView.tsx';
-import Paginator from '@crud-react/component/crud/Paginator.tsx';
-import { Form, FormRef, nameToId } from '@crud-react/component/form/Form.tsx';
-import Dropdown, { DropdownButton, DropdownContent } from '@crud-react/component/Dropdown.tsx';
-import Button from '@crud-react/component/Button.tsx';
-import FormGroupViewLoader from '@crud-react/component/crud/form/FormGroupViewLoader.tsx';
-import { objectRemoveEmpty } from '@crud-react/helper/ObjectUtils.tsx';
-import DynamicView from '@crud-react/component/crud/DynamicView.tsx';
-import { ActionVisibility } from '@crud-react/type/ActionType.tsx';
-import { default as T } from '@crud-react/component/Translation.tsx';
-import { UseActions } from '@crud-react/context/ActionContext.tsx';
-import FiltersView from '@crud-react/component/crud/FiltersView.tsx';
-import { BatchActionsProvider } from '@crud-react/component/crud/batch/BatchActionsContext.tsx';
-import BatchActionSelector from '@crud-react/component/crud/batch/BatchActionSelector.tsx';
-import { ListProvider, UseList } from '@crud-react/context/ListContext.tsx';
+import { formSessionKey } from "@crud-react/component/form/formSession.ts";
+import type { ComponentType, FC, PropsWithChildren, ReactElement, SyntheticEvent } from "react";
+import React, { useRef } from "react";
+import { convertFormDataToObject } from "@dakataa/requester";
+import GridView from "@crud-react/component/crud/GridView.tsx";
+import Paginator from "@crud-react/component/crud/Paginator.tsx";
+import type { FormRef } from "@crud-react/component/form/Form.tsx";
+import { Form, nameToId } from "@crud-react/component/form/Form.tsx";
+import Dropdown, { DropdownButton, DropdownContent } from "@crud-react/component/Dropdown.tsx";
+import Button from "@crud-react/component/Button.tsx";
+import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
+import { objectRemoveEmpty } from "@crud-react/helper/ObjectUtils.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import { ActionVisibility } from "@crud-react/type/ActionType.tsx";
+import { default as T } from "@crud-react/component/Translation.tsx";
+import { UseActions } from "@crud-react/context/ActionContext.tsx";
+import FiltersView from "@crud-react/component/crud/FiltersView.tsx";
+import { BatchActionsProvider } from "@crud-react/component/crud/batch/BatchActionsContext.tsx";
+import BatchActionSelector from "@crud-react/component/crud/batch/BatchActionSelector.tsx";
+import { ListProvider, UseList } from "@crud-react/context/ListContext.tsx";
 // import CustomUserItem from "../../../crud/test/product/default/list/CustomItem.tsx";
-import ActionLink from './ActionLink.tsx';
-import { UseCurrentActionRequest } from '@crud-react/component/crud/CrudLoader.tsx';
-import { FormViewProvider } from '@crud-react/component/crud/form/Form.tsx';
-import { AsTemplate, Block } from '@crud-react/component/templating/Template.tsx';
-import { ActionRequestType } from '@crud-react/type/ActionRequestType.tsx';
-import { WithDataProvider } from '@crud-react/context/GetData.tsx';
+import ActionLink from "./ActionLink.tsx";
+import { UseCurrentActionRequest } from "@crud-react/component/crud/CrudLoader.tsx";
+import { FormViewProvider } from "@crud-react/component/crud/form/Form.tsx";
+import { AsTemplate, Block } from "@crud-react/component/templating/Template.tsx";
+import type { ActionRequestType } from "@crud-react/type/ActionRequestType.tsx";
+import { WithDataProvider } from "@crud-react/context/GetData.tsx";
 
 type ListPropsType = {
     embedded?: boolean;
@@ -85,14 +80,14 @@ const ListInner = AsTemplate(
             handleBatchAction
         } = UseList();
 
-        const { actionRequest, setActionRequest } = UseCurrentActionRequest();
+        const { actionRequest } = UseCurrentActionRequest();
         const { location } = UseActions();
         const filterFormRef = useRef<FormRef | null>(null);
         const listActions = getActions?.(ActionVisibility.List);
 
         const entity = actionRequest.action.entity;
         if (!entity) {
-            throw new Error('Invalid Entity');
+            throw new Error("Invalid Entity");
         }
 
         return (
@@ -177,7 +172,7 @@ const ListInner = AsTemplate(
                                                 </div>
                                             </DropdownContent>
                                         </Dropdown>
-                                        {location.searchParams.has('filter') && (
+                                        {location.searchParams.has("filter") && (
                                             <Button
                                                 onClick={() => {
                                                     filterFormRef.current?.reset();
@@ -217,7 +212,7 @@ const ListInner = AsTemplate(
             </section>
         );
     },
-    { name: 'list' }
+    { name: "list" }
 );
 
 export { List as default, ListInner, WithListProvider };

@@ -1,8 +1,8 @@
-import type { Constraint } from './constraint/Contraint';
-import type { FormErrors, FormState, FormValue } from './Form.tsx';
-import type { FormDefaults } from './formView.ts';
-import { fieldName, initialFieldValue } from './formView.ts';
-import type { FormViewType } from '@crud-react/type/FormViewType.tsx';
+import type { Constraint } from "./constraint/Contraint";
+import type { FormErrors, FormState, FormValue } from "./Form.tsx";
+import type { FormDefaults } from "./formView.ts";
+import { fieldName, initialFieldValue } from "./formView.ts";
+import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
 
 type Listener = () => void;
 export type FormSubmission = {
@@ -12,16 +12,15 @@ export type FormSubmission = {
     fields: string[];
     collectionNames: string[];
 };
-export type FormSyncMode = 'refresh' | 'invalid' | 'saved';
+export type FormSyncMode = "refresh" | "invalid" | "saved";
 export type FieldSnapshot = {
     value: FormValue | undefined;
     errors: FormErrors[string];
     dirty: boolean;
 };
-export type FieldKind = 'scalar' | 'selection' | 'multiple';
+export type FieldKind = "scalar" | "selection" | "multiple";
 
 type FieldRegistration = {
-    kind: FieldKind;
     constraints: Constraint[];
 };
 
@@ -40,15 +39,15 @@ const equal = (a: FormValue | undefined, b: FormValue | undefined) => {
     return a.every((value, index) => value === b[index]);
 };
 
-const copy = (value: FormValue): FormValue => Array.isArray(value) ? [...value] : value;
+const copy = (value: FormValue): FormValue => (Array.isArray(value) ? [...value] : value);
 
 function convertFieldValue(value: FormValue, kind: FieldKind): FormValue {
-    if (kind === 'multiple') {
+    if (kind === "multiple") {
         if (Array.isArray(value)) {
             return value;
         }
 
-        if (value == null || value === '') {
+        if (value == null || value === "") {
             return [];
         }
 
@@ -56,7 +55,7 @@ function convertFieldValue(value: FormValue, kind: FieldKind): FormValue {
     }
 
     if (Array.isArray(value)) {
-        const emptyValue = kind === 'scalar' ? '' : null;
+        const emptyValue = kind === "scalar" ? "" : null;
 
         return value[0] ?? emptyValue;
     }
@@ -168,7 +167,7 @@ export class FormStore {
     getNames = () => [...this.values.keys()];
 
     getInitialValue = (view: FormViewType): FormValue => {
-        const initialize = this.initializers.get(fieldName(view.full_name || ''));
+        const initialize = this.initializers.get(fieldName(view.full_name || ""));
 
         return initialize ? initialize(view) : initialFieldValue(view);
     };
@@ -193,18 +192,18 @@ export class FormStore {
 
         if (
             [...this.deletedPrefixes].some(
-                (prefix) => name === prefix || name.startsWith(prefix + '[')
+                (prefix) => name === prefix || name.startsWith(prefix + "[")
             )
         ) {
             return false;
         }
 
         return [...this.collections].every(([collection, items]) => {
-            if (!name.startsWith(collection + '[')) {
+            if (!name.startsWith(collection + "[")) {
                 return true;
             }
 
-            const item = name.slice(collection.length + 1).split(']')[0];
+            const item = name.slice(collection.length + 1).split("]")[0];
 
             return items.includes(item);
         });
@@ -281,7 +280,7 @@ export class FormStore {
             const current = this.defaults.get(name);
             let merged = value ?? current;
 
-            if (kind === 'multiple') {
+            if (kind === "multiple") {
                 const currentValues = Array.isArray(current) ? current : [];
                 const initialValues = Array.isArray(value) ? value : [];
 
@@ -296,7 +295,7 @@ export class FormStore {
         }
 
         const registrations = this.registrations.get(name) || new Map();
-        registrations.set(owner, { kind, constraints });
+        registrations.set(owner, { constraints });
         this.registrations.set(name, registrations);
         this.refreshConstraints(name);
 
@@ -340,8 +339,8 @@ export class FormStore {
     setValue = (name: string, value: FormValue) => {
         name = fieldName(name);
 
-        if (Array.isArray(value) && this.getKind(name) === 'scalar') {
-            throw new Error('Cannot assign multiple values to a single-value form element.');
+        if (Array.isArray(value) && this.getKind(name) === "scalar") {
+            throw new Error("Cannot assign multiple values to a single-value form element.");
         }
 
         if (equal(this.values.get(name), value)) {
@@ -408,7 +407,7 @@ export class FormStore {
         const names = Object.keys(this.state.constraints).filter(isActive);
 
         return names
-            .map((name) => readValue ? this.validate(name, readValue(name)) : this.validate(name))
+            .map((name) => (readValue ? this.validate(name, readValue(name)) : this.validate(name)))
             .every(Boolean);
     };
 
@@ -503,7 +502,7 @@ export class FormStore {
         );
         this.collectionVersions.set(name, ++this.revision);
         [...this.values.keys()]
-            .filter((key) => key === prefix || key.startsWith(prefix + '['))
+            .filter((key) => key === prefix || key.startsWith(prefix + "["))
             .forEach((key) => {
                 this.values.delete(key);
                 this.versions.set(key, this.revision);
@@ -512,7 +511,7 @@ export class FormStore {
                 this.notifyField(key);
             });
         [...this.collections.keys()]
-            .filter((key) => key.startsWith(prefix + '['))
+            .filter((key) => key.startsWith(prefix + "["))
             .forEach((key) => {
                 this.collections.delete(key);
                 this.collectionListeners.get(key)?.forEach((listener) => listener());
@@ -548,14 +547,14 @@ export class FormStore {
         participated: boolean,
         submission?: FormSubmission
     ) {
-        if (mode === 'saved' && submission) {
+        if (mode === "saved" && submission) {
             return participated && version <= submission.revision;
         }
 
-        return mode === 'refresh' && untouched;
+        return mode === "refresh" && untouched;
     }
 
-    reconcile(defaults: FormDefaults, mode: FormSyncMode = 'refresh', submission?: FormSubmission) {
+    reconcile(defaults: FormDefaults, mode: FormSyncMode = "refresh", submission?: FormSubmission) {
         Object.entries(defaults.collections).forEach(([name, items]) => {
             const previous = this.collectionDefaults.get(name);
             const current = this.collections.get(name);
@@ -570,7 +569,7 @@ export class FormStore {
                 submission
             );
 
-            if (!previous || mode !== 'invalid') {
+            if (!previous || mode !== "invalid") {
                 this.collectionDefaults.set(name, [...items]);
             }
 
@@ -582,7 +581,7 @@ export class FormStore {
 
                 if (accept) {
                     [...this.deletedPrefixes]
-                        .filter((prefix) => prefix.startsWith(name + '['))
+                        .filter((prefix) => prefix.startsWith(name + "["))
                         .forEach((prefix) => this.deletedPrefixes.delete(prefix));
                 }
             }
@@ -590,7 +589,7 @@ export class FormStore {
         Object.entries(defaults.values).forEach(([name, incoming]) => {
             const participated = submission?.fields.includes(name) ?? true;
 
-            if (mode === 'saved' && participated) {
+            if (mode === "saved" && participated) {
                 this.localDefaults.delete(name);
             }
 
@@ -606,14 +605,14 @@ export class FormStore {
                 submission
             );
 
-            if (!this.defaults.has(name) || mode !== 'invalid') {
+            if (!this.defaults.has(name) || mode !== "invalid") {
                 this.defaults.set(name, copy(value));
             }
 
             if ((!this.values.has(name) || accept) && !this.isDeleted(name)) {
                 this.values.set(name, copy(value));
 
-                if (mode === 'saved' && accept) {
+                if (mode === "saved" && accept) {
                     this.nativeDirty.delete(name);
                 }
             }

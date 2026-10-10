@@ -1,7 +1,6 @@
-import { useFormErrors } from '@crud-react/component/form/Form';
-import React from 'react';
-import { FormViewErrorType } from '@crud-react/type/FormViewType.tsx';
-import Translation from '@crud-react/component/Translation.tsx';
+import { useFormErrors } from "@crud-react/component/form/Form";
+import type { FormViewErrorType } from "@crud-react/type/FormViewType.tsx";
+import Translation from "@crud-react/component/Translation.tsx";
 
 const FormFieldError = ({ name, className }: { name: string | string[]; className?: string }) => {
     name = name instanceof Array ? name : [name];

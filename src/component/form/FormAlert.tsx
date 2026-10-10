@@ -1,4 +1,3 @@
-import React from "react";
 import { useFormErrors } from "@crud-react/component/form/Form";
 import Translation from "@crud-react/component/Translation.tsx";
 
