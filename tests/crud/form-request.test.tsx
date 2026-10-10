@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { DataContextProvider, GetDataByAction } from "../src/context/GetData.tsx";
-import { FormStore } from "../src/component/form/FormStore.ts";
-import CrudForm from "../src/component/crud/form/Form.tsx";
-import type { FormProps } from "../src/component/form/Form.tsx";
-import PreloaderProvider from "../src/component/Preloader.tsx";
-import { ConfigProvider } from "../src/context/ConfigContext.tsx";
+import { DataContextProvider, GetDataByAction } from "@crud-react/context/GetData.tsx";
+import { FormStore } from "@crud-react/component/form/FormStore.ts";
+import CrudForm from "@crud-react/component/crud/form/Form.tsx";
+import type { FormProps } from "@crud-react/component/form/Form.tsx";
+import PreloaderProvider from "@crud-react/component/Preloader.tsx";
+import { ConfigProvider } from "@crud-react/context/ConfigContext.tsx";
 
 const request = vi.hoisted(() => {
     return {

@@ -5,6 +5,7 @@ import type {
 } from "@crud-react/type/FormViewType.tsx";
 import { FormViewTypeEnum } from "@crud-react/type/FormViewType.tsx";
 import type { FormValue } from "./Form.tsx";
+import { choiceToken, selectionTokens } from "./formChoices.ts";
 
 const initialOverrides = new WeakSet<FormViewType>();
 
@@ -87,8 +88,9 @@ export function initialFieldValue(
             "choices" in choice ? choice.choices : [choice]
         );
         const selected = choices.flatMap((choice) => {
-            const value = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
-            const token = stringValue(value);
+            const token = choiceValueTransform
+                ? stringValue(choiceValueTransform(choice))
+                : choiceToken(choice);
 
             if (view.checked instanceof Function && view.checked(token)) {
                 return [token];
@@ -111,15 +113,7 @@ export function initialFieldValue(
     const value = view.value ?? view.data;
 
     if (view.multiple) {
-        if (Array.isArray(value)) {
-            return value.map(stringValue);
-        }
-
-        if (value == null || value === "") {
-            return [];
-        }
-
-        return [stringValue(value)];
+        return selectionTokens(Array.isArray(value) ? value.map(stringValue) : stringValue(value));
     }
 
     if (
@@ -160,9 +154,13 @@ export function initialFieldValue(
         );
 
         if (first) {
-            return stringValue(
-                first.value ?? (first.label instanceof Function ? first.label(first) : first.label)
-            );
+            if (first.value == null) {
+                return stringValue(
+                    first.label instanceof Function ? first.label(first) : first.label
+                );
+            }
+
+            return choiceToken(first);
         }
     }
 

@@ -7,11 +7,11 @@ import {
     useFormField,
     useFormValue,
     useFormValues
-} from "../src/component/form/Form.tsx";
-import type { FormRef, FormValueField } from "../src/component/form/Form.tsx";
-import type { FormStore } from "../src/component/form/FormStore.ts";
-import type { FormViewType } from "../src/type/FormViewType.tsx";
-import { NotBlank } from "../src/component/form/constraint/NotBlank.tsx";
+} from "@crud-react/component/form/Form.tsx";
+import type { FormRef, FormValueField } from "@crud-react/component/form/Form.tsx";
+import type { FormStore } from "@crud-react/component/form/FormStore.ts";
+import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
+import { NotBlank } from "@crud-react/component/form/constraint/NotBlank.tsx";
 
 let store: FormStore;
 

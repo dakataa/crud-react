@@ -490,6 +490,7 @@ Useful helpers:
 - `UseFormView()`: access the current form view node
 - `useFormValue(field)`: observe one store value without registering a control
 - `useFormValues(fields)`: observe several values for dependent UI or calculations
+- `choiceToken`, `choiceList`, `selectionTokens`: normalize choices and selection values
 - `FormFieldViewLoader`: render fields from the current schema node
 - `FormGroup`: render the current schema node or one of its direct children
 - `FormRest`: render non-explicitly-rendered fields
@@ -797,6 +798,26 @@ If you want, the next useful step is to split this README into:
 - a `/docs` folder with standalone guides such as `backend-contract.md`, `templates.md`, `forms.md`, and `recipes.md`
 
 That usually makes the onboarding flow easier for new users.
+
+## Tests
+
+Tests live in `tests/`, grouped by the behavior they verify:
+
+- `tests/form/`: form APIs, controls, values, state and value lifecycle.
+- `tests/form/choices.test.tsx`: choice helpers, selection, placeholders and transforms.
+- `tests/crud/`: CRUD form requests and response handling.
+
+Use descriptive file names without repeating the feature folder name. Add related
+cases to the existing file and organize them with shallow `describe` groups.
+Split large files by behavior within their feature folder when needed. A test
+that uses a Choice control to verify a general form API stays with that API.
+
+```bash
+npm test
+npm run test:form
+npm run test:crud
+npm test -- tests/form/choices.test.tsx
+```
 
 ## Code style
 

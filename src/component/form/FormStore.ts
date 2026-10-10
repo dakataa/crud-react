@@ -2,6 +2,7 @@ import type { Constraint } from "./constraint/Contraint";
 import type { FormErrors, FormState, FormValue } from "./Form.tsx";
 import type { FormDefaults } from "./formView.ts";
 import { equalFormValue, fieldName, initialFieldValue } from "./formView.ts";
+import { selectionTokens } from "./formChoices.ts";
 import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
 
 type Listener = () => void;
@@ -31,15 +32,7 @@ const copy = (value: FormValue): FormValue => (Array.isArray(value) ? [...value]
 
 function convertFieldValue(value: FormValue, kind: FieldKind): FormValue {
     if (kind === "multiple") {
-        if (Array.isArray(value)) {
-            return value;
-        }
-
-        if (value == null || value === "") {
-            return [];
-        }
-
-        return [value];
+        return selectionTokens(value);
     }
 
     if (Array.isArray(value)) {

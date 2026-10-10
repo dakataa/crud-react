@@ -1,10 +1,10 @@
 import React, { createRef, StrictMode, useState } from "react";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { Form, UseForm } from "../src/component/form/Form.tsx";
-import type { FormRef, FormState } from "../src/component/form/Form.tsx";
-import type { FormStore } from "../src/component/form/FormStore.ts";
-import { NotBlank } from "../src/component/form/constraint/NotBlank.tsx";
+import { Form, UseForm } from "@crud-react/component/form/Form.tsx";
+import type { FormRef, FormState } from "@crud-react/component/form/Form.tsx";
+import type { FormStore } from "@crud-react/component/form/FormStore.ts";
+import { NotBlank } from "@crud-react/component/form/constraint/NotBlank.tsx";
 
 let store: FormStore;
 

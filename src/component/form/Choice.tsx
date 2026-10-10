@@ -3,6 +3,7 @@ import { nameToId, useFormField } from "./Form.tsx";
 import type { FormFieldProps } from "./Input.tsx";
 import type { ChoiceGroupType, ChoiceType, FormViewType } from "@crud-react/type/FormViewType";
 import Translation, { UseTranslate } from "@crud-react/component/Translation.tsx";
+import { choiceToken } from "./formChoices.ts";
 import {
     controlAttributes,
     choiceName,
@@ -39,7 +40,7 @@ const SelectOption = ({ choice }: { view: FormViewType; choice: ChoiceType }) =>
     return (
         <option
             {...controlAttributes(attr)}
-            value={stringValue(choice.value ?? label)}
+            value={choice.value == null ? stringValue(label) : choiceToken(choice)}
             title={typeof attr.title === "string" ? translate(attr.title) : attr.title}>
             <Translation>{label}</Translation>
         </option>
@@ -53,7 +54,11 @@ const SelectGroupOption = ({ view, group }: { view: FormViewType; group: ChoiceG
         <optgroup label={translate(group.label)}>
             {group.choices.map((choice, index) => {
                 return (
-                    <SelectOption key={String(choice.value ?? index)} view={view} choice={choice} />
+                    <SelectOption
+                        key={choice.value == null ? index : choiceToken(choice)}
+                        view={view}
+                        choice={choice}
+                    />
                 );
             })}
         </optgroup>
@@ -70,7 +75,9 @@ const ChoiceOption = ({
 }: ChoiceProps & { choice: ChoiceType }) => {
     const field = useChoiceField(view, constraints, choiceValueTransform);
     const translate = UseTranslate();
-    const token = stringValue(choiceValueTransform ? choiceValueTransform(choice) : choice.value);
+    const token = choiceValueTransform
+        ? stringValue(choiceValueTransform(choice))
+        : choiceToken(choice);
     let label: React.ReactNode;
 
     if (choiceLabelTransform) {
@@ -208,7 +215,7 @@ const ChoiceGroupOption = ({ view, group, ...props }: ChoiceProps & { group: Cho
             {group.choices.map((choice, index) => {
                 return (
                     <ChoiceOption
-                        key={String(choice.value ?? index)}
+                        key={choice.value == null ? index : choiceToken(choice)}
                         view={view}
                         choice={choice}
                         {...props}
@@ -252,7 +259,7 @@ const Choice = ({
 
                     return (
                         <div
-                            key={String(choice.value ?? index)}
+                            key={choice.value == null ? index : choiceToken(choice)}
                             className="form-check"
                             {...containerAttr}>
                             <ChoiceOption {...optionProps} choice={choice} />
@@ -267,9 +274,13 @@ const Choice = ({
         "choices" in choice ? choice.choices : [choice]
     );
     const tokens = choices.map((choice) => {
-        return stringValue(
-            choice.value ?? (choice.label instanceof Function ? choice.label(choice) : choice.label)
-        );
+        if (choice.value == null) {
+            return stringValue(
+                choice.label instanceof Function ? choice.label(choice) : choice.label
+            );
+        }
+
+        return choiceToken(choice);
     });
 
     if (view.placeholder) {
@@ -350,7 +361,11 @@ const Choice = ({
                 }
 
                 return (
-                    <SelectOption key={String(choice.value ?? index)} view={view} choice={choice} />
+                    <SelectOption
+                        key={choice.value == null ? index : choiceToken(choice)}
+                        view={view}
+                        choice={choice}
+                    />
                 );
             })}
         </select>

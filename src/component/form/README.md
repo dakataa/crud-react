@@ -180,6 +180,29 @@ observer renders; changes to other fields do not trigger them either.
 
 Call both hooks inside `Form`, including below `CrudForm`'s form provider.
 
+## Choice helpers
+
+`choiceToken`, `choiceList` and `selectionTokens` are pure helpers exported from
+`@dakataa/crud-react`. They do not require a form context:
+
+```tsx
+import { choiceList, choiceToken, selectionTokens } from "@dakataa/crud-react";
+
+const choice = { value: 42, label: "Apartment" };
+choiceToken(choice); // "42"; function values are called with the choice
+choiceList(choice); // [choice]; null/undefined become []
+choiceList([choice]).map(choiceToken); // ["42"]
+selectionTokens("42"); // ["42"]
+selectionTokens(""); // []
+selectionTokens([""]); // [""]; array tokens, including empty ones, are preserved
+```
+
+`choiceToken` converts null/undefined values to `""` and preserves numeric zero as
+`"0"`. It does not apply `choiceValueTransform` or fall back to the choice label;
+the control decides those rules. `selectionTokens` treats scalar null/undefined
+and `""` as no selection. Both list helpers return existing arrays unchanged;
+treat them as read-only or copy them before modification.
+
 ## useFormField: custom controls
 
 `useFormField(view, constraints?, initialize?)` binds a control to the form store. The view

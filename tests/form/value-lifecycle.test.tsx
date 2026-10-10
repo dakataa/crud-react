@@ -1,11 +1,11 @@
 import React, { createRef, StrictMode } from "react";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { Form } from "../src/component/form/Form.tsx";
-import type { FormRef } from "../src/component/form/Form.tsx";
-import { FormViewProvider } from "../src/component/crud/form/Form.tsx";
-import Input from "../src/component/form/Input.tsx";
-import type { FormViewType } from "../src/type/FormViewType.tsx";
+import { Form } from "@crud-react/component/form/Form.tsx";
+import type { FormRef } from "@crud-react/component/form/Form.tsx";
+import { FormViewProvider } from "@crud-react/component/crud/form/Form.tsx";
+import Input from "@crud-react/component/form/Input.tsx";
+import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
 
 // These tests exercise field reconciliation without loading the surrounding CRUD application.
 vi.mock("@crud-react/Crud.tsx", () => ({ CrudRequester: vi.fn() }));

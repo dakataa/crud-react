@@ -34,6 +34,7 @@
         "analyze": "source-map-explorer 'build/static/js/*.js'",
         "test": "vitest run",
         "test:form": "vitest run tests/form",
+        "test:crud": "vitest run tests/crud",
         "lint:fix": "eslint . --fix",
         "format": "prettier . --write",
         "format:check": "prettier . --check"
