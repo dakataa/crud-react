@@ -15,6 +15,7 @@ import type { FieldKind, FormSubmission } from "./FormStore.ts";
 import { FormStore } from "./FormStore.ts";
 import {
     choiceName,
+    equalFormValue,
     fieldName,
     hasInitialOverride,
     initialFieldValue,
@@ -24,6 +25,7 @@ import {
 } from "./formView.ts";
 
 export type FormValue = string | string[] | null;
+export type FormValueField = string | FormViewType | null | undefined;
 export type FormErrors = Record<string, FormViewErrorType[]>;
 export type FormConstraints = Record<string, Constraint[]>;
 
@@ -121,6 +123,56 @@ export function useFormState(): FormState {
     const { store } = UseForm();
 
     return useSyncExternalStore(store.subscribeState, store.getState, store.getState);
+}
+
+/** Observes a value without registering a control or subscribing to its errors. */
+export function useFormValue(field?: FormValueField): FormValue | undefined {
+    return useFormValues([field])[0];
+}
+
+/** Observes values in the supplied order; unchanged values retain the same snapshot. */
+export function useFormValues(
+    fields: readonly FormValueField[]
+): readonly (FormValue | undefined)[] {
+    const { store } = UseForm();
+    const names = fields.map((field) => {
+        const name = typeof field === "string" ? field : field?.full_name;
+
+        return fieldName(name || "");
+    });
+    const namesKey = JSON.stringify(names);
+    const observer = useMemo(() => {
+        const subscribedNames = [...new Set(names.filter(Boolean))];
+        let snapshot: readonly (FormValue | undefined)[] | undefined;
+
+        const subscribe = (listener: () => void) => {
+            const cleanups = subscribedNames.map((name) => store.subscribeField(name, listener));
+
+            return () => {
+                cleanups.forEach((cleanup) => cleanup());
+            };
+        };
+
+        const getSnapshot = () => {
+            const values = names.map((name) => (name ? store.getValue(name) : undefined));
+            const previous = snapshot;
+
+            if (
+                previous &&
+                values.every((value, index) => equalFormValue(value, previous[index]))
+            ) {
+                return previous;
+            }
+
+            snapshot = values;
+
+            return snapshot;
+        };
+
+        return { subscribe, getSnapshot };
+    }, [store, namesKey]);
+
+    return useSyncExternalStore(observer.subscribe, observer.getSnapshot, observer.getSnapshot);
 }
 
 function FormStateObserver({

@@ -109,9 +109,9 @@ not subscribe to changes. Prefer `apiRef` for imperative reads and setters;
 `store.getValue(name)` and `store.getState()` read snapshots without subscribing.
 
 `useFormState()` subscribes to `errors`, `constraints`, `success` and `submitting`.
-Use `useFormField()` for reactive field values and `useFormErrors(names)` for
-selected errors. Field edits do not rerender unrelated controls or components
-that only call `UseForm()`.
+Use `useFormField()` to bind a control, `useFormValue()` / `useFormValues()` to
+observe values, and `useFormErrors(names)` for selected errors. Field edits do not
+rerender unrelated controls or components that only call `UseForm()`.
 
 To observe the form from a parent outside its context, use `onStateChange`.
 Both `Form` and `CrudForm` accept it:
@@ -143,6 +143,42 @@ the callback alone does not notify again. It receives `errors`, `constraints`,
 updates can produce one notification with the final committed state. Use hooks
 inside the form context and this callback for surrounding UI. The inherited HTML
 `onChange` remains the native field change event.
+
+## useFormValue / useFormValues: dependent UI
+
+These hooks observe store values without registering controls, changing defaults
+or adding validation rules. Use them for conditional fields and computed totals:
+
+```tsx
+import { useFormValue, useFormValues } from "@dakataa/crud-react";
+
+export function ArticleSummary() {
+    const type = useFormValue("article[type]");
+    const [price, quantity] = useFormValues(["article[price]", "article[quantity]"]);
+    const total = Number(price ?? 0) * Number(quantity ?? 0);
+
+    return (
+        <output>
+            {type}: {total}
+        </output>
+    );
+}
+```
+
+Each argument can be a full HTML field name or a `FormViewType` with `full_name`.
+`useFormValue(view)` and `useFormValues([firstView, secondView])` work as well.
+Names ending in `[]` identify the same logical field as their normalized name.
+Missing names/views return `undefined`; values explicitly set to `null` remain `null`.
+The hooks do not initialize values from `view.data`; a bound control, a backend
+view provider or a setter supplies the value to the store.
+
+`useFormValues()` returns a readonly array in the supplied order, including duplicate
+fields. Its array reference stays stable while the observed values are unchanged,
+even when equivalent field lists are created inline. Treat the returned values as
+read-only. Error, dirty-state and submission-status changes do not trigger value
+observer renders; changes to other fields do not trigger them either.
+
+Call both hooks inside `Form`, including below `CrudForm`'s form provider.
 
 ## useFormField: custom controls
 

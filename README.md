@@ -488,6 +488,8 @@ import {
 Useful helpers:
 
 - `UseFormView()`: access the current form view node
+- `useFormValue(field)`: observe one store value without registering a control
+- `useFormValues(fields)`: observe several values for dependent UI or calculations
 - `FormFieldViewLoader`: render fields from the current schema node
 - `FormGroup`: render the current schema node or one of its direct children
 - `FormRest`: render non-explicitly-rendered fields

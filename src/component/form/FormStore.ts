@@ -1,7 +1,7 @@
 import type { Constraint } from "./constraint/Contraint";
 import type { FormErrors, FormState, FormValue } from "./Form.tsx";
 import type { FormDefaults } from "./formView.ts";
-import { fieldName, initialFieldValue } from "./formView.ts";
+import { equalFormValue, fieldName, initialFieldValue } from "./formView.ts";
 import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
 
 type Listener = () => void;
@@ -26,18 +26,6 @@ type FieldRegistration = {
 
 const EMPTY_ERRORS: FormErrors[string] = [];
 const EMPTY_ITEMS: string[] = [];
-
-const equal = (a: FormValue | undefined, b: FormValue | undefined) => {
-    if (a === b) {
-        return true;
-    }
-
-    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) {
-        return false;
-    }
-
-    return a.every((value, index) => value === b[index]);
-};
 
 const copy = (value: FormValue): FormValue => (Array.isArray(value) ? [...value] : value);
 
@@ -141,7 +129,7 @@ export class FormStore {
                 errors: this.state.errors[name] || EMPTY_ERRORS,
                 dirty:
                     this.nativeDirty.has(name) ||
-                    !equal(this.values.get(name), this.defaults.get(name))
+                    !equalFormValue(this.values.get(name), this.defaults.get(name))
             });
         }
 
@@ -250,7 +238,7 @@ export class FormStore {
             }
 
             if (this.defaults.has(name) && !this.localDefaults.has(name)) {
-                const untouched = equal(this.values.get(name), this.defaults.get(name));
+                const untouched = equalFormValue(this.values.get(name), this.defaults.get(name));
                 this.defaults.set(name, copy(value));
 
                 if (untouched) {
@@ -264,7 +252,7 @@ export class FormStore {
         if (override && !this.overriddenDefaults.has(name)) {
             this.overriddenDefaults.add(name);
             this.localDefaults.set(name, copy(value));
-            const untouched = equal(this.values.get(name), this.defaults.get(name));
+            const untouched = equalFormValue(this.values.get(name), this.defaults.get(name));
             this.defaults.set(name, copy(value));
 
             if (untouched) {
@@ -287,7 +275,7 @@ export class FormStore {
                 merged = [...new Set([...currentValues, ...initialValues])];
             }
 
-            if (merged !== undefined && !equal(current, merged)) {
+            if (merged !== undefined && !equalFormValue(current, merged)) {
                 this.defaults.set(name, copy(merged));
                 this.values.set(name, copy(merged));
                 this.notifyField(name);
@@ -343,7 +331,7 @@ export class FormStore {
             throw new Error("Cannot assign multiple values to a single-value form element.");
         }
 
-        if (equal(this.values.get(name), value)) {
+        if (equalFormValue(this.values.get(name), value)) {
             return;
         }
 
@@ -558,7 +546,7 @@ export class FormStore {
         Object.entries(defaults.collections).forEach(([name, items]) => {
             const previous = this.collectionDefaults.get(name);
             const current = this.collections.get(name);
-            const untouched = equal(current, previous);
+            const untouched = equalFormValue(current, previous);
             const version = this.collectionVersions.get(name) || 0;
             const participated = submission?.collectionNames.includes(name) ?? true;
             const accept = this.shouldAcceptIncoming(
@@ -574,7 +562,7 @@ export class FormStore {
             }
 
             if (!current || accept) {
-                if (!equal(current, items)) {
+                if (!equalFormValue(current, items)) {
                     this.collections.set(name, [...items]);
                     this.collectionListeners.get(name)?.forEach((listener) => listener());
                 }
@@ -595,7 +583,7 @@ export class FormStore {
 
             const value = this.localDefaults.has(name) ? this.localDefaults.get(name)! : incoming;
             const current = this.values.get(name);
-            const untouched = equal(current, this.defaults.get(name));
+            const untouched = equalFormValue(current, this.defaults.get(name));
             const version = this.versions.get(name) || 0;
             const accept = this.shouldAcceptIncoming(
                 mode,

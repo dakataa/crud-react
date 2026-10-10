@@ -94,6 +94,8 @@ export {
     nameToId,
     useFormField,
     useFormState,
+    useFormValue,
+    useFormValues,
     useFormErrors
 } from "./component/form/Form.tsx";
 export type {
@@ -103,7 +105,8 @@ export type {
     FormProps,
     FormRef,
     FormState,
-    FormValue
+    FormValue,
+    FormValueField
 } from "./component/form/Form.tsx";
 export { default as BaseFormGroup } from "./component/form/FormGroup.tsx";
 export { default as BaseFormFieldError } from "./component/form/FormFieldError.tsx";

@@ -26,6 +26,18 @@ export const choiceName = (view: FormViewType) => {
 
 export const stringValue = (value: unknown): string => (value == null ? "" : String(value));
 
+export function equalFormValue(a: FormValue | undefined, b: FormValue | undefined): boolean {
+    if (a === b) {
+        return true;
+    }
+
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) {
+        return false;
+    }
+
+    return a.every((value, index) => value === b[index]);
+}
+
 export const selectedValues = (value: FormValue | undefined): string[] => {
     if (Array.isArray(value)) {
         return value;
