@@ -1,17 +1,18 @@
-import React from 'react';
-import { useFormField } from './Form.tsx';
-import { UseTranslate } from '@crud-react/component/Translation.tsx';
-import { Constraint } from './constraint/Contraint';
-import { FormViewType, FormViewTypeEnum } from '@crud-react/type/FormViewType';
-import { UseFormSettings } from './FormSetting.tsx';
-import { controlAttributes, inputToken, isSelection, selectedValues } from './formView.ts';
+import React from "react";
+import { useFormField } from "./Form.tsx";
+import { UseTranslate } from "@crud-react/component/Translation.tsx";
+import type { Constraint } from "./constraint/Contraint";
+import type { FormViewType } from "@crud-react/type/FormViewType";
+import { FormViewTypeEnum } from "@crud-react/type/FormViewType";
+import { UseFormSettings } from "./FormSetting.tsx";
+import { controlAttributes, inputToken, isSelection, selectedValues } from "./formView.ts";
 
 export type FormFieldProps = {
     view: FormViewType;
     className?: string;
     constraints?: Constraint[];
     onChange?: (value?: string | number | object) => void;
-    ref?: React.RefObject<HTMLInputElement>;
+    ref?: React.RefObject<HTMLInputElement | null>;
 };
 export type InputProps = FormFieldProps;
 
@@ -23,28 +24,28 @@ const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Elem
     const selection = isSelection(view);
     const token = inputToken(view);
     const placeholder =
-        'placeholder' in attr ? attr.placeholder : settings?.placeholder || view.placeholder;
+        "placeholder" in attr ? attr.placeholder : settings?.placeholder || view.placeholder;
     let type = attr.type ?? view.type;
 
     if ([FormViewTypeEnum.Date, FormViewTypeEnum.Birthday].includes(type as FormViewTypeEnum)) {
-        type = 'date';
+        type = "date";
     }
 
     if (type === FormViewTypeEnum.Datetime) {
-        type = 'datetime-local';
+        type = "datetime-local";
     }
 
     const className =
         attr.className ??
         settings?.className ??
         [
-            selection ? 'form-check-input' : 'form-control',
-            settings?.size ? 'form-control-' + settings.size : null,
+            selection ? "form-check-input" : "form-control",
+            settings?.size ? "form-control-" + settings.size : null,
             settings?.extraClassName,
-            field.errors.length ? 'is-invalid' : null
+            field.errors.length ? "is-invalid" : null
         ]
             .filter(Boolean)
-            .join(' ');
+            .join(" ");
 
     return (
         <input
@@ -57,7 +58,7 @@ const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Elem
             disabled={attr.disabled ?? view.disabled}
             aria-invalid={!!field.errors.length}
             className={className}
-            {...(type !== 'file' && { value: selection ? token : (field.value ?? '') })}
+            {...(type !== "file" && { value: selection ? token : (field.value ?? "") })}
             {...(selection && { checked: selectedValues(field.value).includes(token) })}
             onChange={(event) => {
                 if (attr.onChange instanceof Function) {
@@ -113,7 +114,7 @@ const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Elem
                     ? translate(attr["aria-description"])
                     : attr["aria-description"]
             }
-            {...(attr.inputmode === 'decimal' && { step: 'any' })}
+            {...(attr.inputmode === "decimal" && { step: "any" })}
         />
     );
 };
