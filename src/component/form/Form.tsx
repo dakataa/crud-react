@@ -58,7 +58,7 @@ export type FormProps = Omit<
     "children" | "method" | "onReset" | "onSubmit"
 > & {
     children?: ReactNode;
-    onSubmit?: (data: FormData, submission: FormSubmission) => void;
+    onSubmit?: (data: FormData, submission: FormSubmission, runtime: FormContextType) => void;
     onBeforeSubmit?: (data: FormData) => void;
     onReset?: () => void;
     onStateChange?: (state: FormState) => void;
@@ -555,7 +555,7 @@ export const Form = ({
 
         if (onSubmitCallback) {
             store.setSubmitting(true);
-            onSubmitCallback(formData, submission);
+            onSubmitCallback(formData, submission, runtime);
         }
     };
 

@@ -32,6 +32,7 @@ export { default as FormField } from "./component/crud/form/FormField.tsx";
 export { default as FormLabel } from "./component/crud/form/FormLabel.tsx";
 export { default as FormRest } from "./component/crud/form/FormRest.tsx";
 export { default as FormError } from "./component/crud/form/FormError.tsx";
+export type { FormErrorProps } from "./component/crud/form/FormError.tsx";
 export { default as FormRestError } from "./component/crud/form/FormRestError.tsx";
 
 export { default as DynamicView, UseDynamicView } from "./component/crud/DynamicView.tsx";
@@ -111,6 +112,7 @@ export type {
 } from "./component/form/Form.tsx";
 export { default as BaseFormGroup } from "./component/form/FormGroup.tsx";
 export { default as BaseFormFieldError } from "./component/form/FormFieldError.tsx";
+export type { FormFieldErrorProps as BaseFormFieldErrorProps } from "./component/form/FormFieldError.tsx";
 export { default as BaseFormLabel } from "./component/form/FormLabel.tsx";
 export { default as BaseFormHelp } from "./component/form/FormHelp.tsx";
 export {

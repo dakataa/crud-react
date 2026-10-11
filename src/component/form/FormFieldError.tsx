@@ -1,8 +1,16 @@
 import { useFormErrors } from "@crud-react/component/form/Form";
 import type { FormViewErrorType } from "@crud-react/type/FormViewType.tsx";
 import Translation from "@crud-react/component/Translation.tsx";
+import type { HTMLAttributes } from "react";
 
-const FormFieldError = ({ name, className }: { name: string | string[]; className?: string }) => {
+export type FormFieldErrorProps = Omit<
+    HTMLAttributes<HTMLDivElement>,
+    "children" | "dangerouslySetInnerHTML"
+> & {
+    name: string | string[];
+};
+
+const FormFieldError = ({ name, ...attributes }: FormFieldErrorProps) => {
     name = name instanceof Array ? name : [name];
 
     const errorMessages: FormViewErrorType[] = useFormErrors(name);
@@ -12,7 +20,7 @@ const FormFieldError = ({ name, className }: { name: string | string[]; classNam
     }
 
     return (
-        <div className={className}>
+        <div {...attributes}>
             <ul className={"mb-0"}>
                 {errorMessages.map((error: FormViewErrorType, i: number) => {
                     return (

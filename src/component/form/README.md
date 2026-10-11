@@ -47,18 +47,45 @@ export function ArticleForm() {
 `Form` handles validation and builds native `FormData`. Its `onSubmit` callback
 handles saving; the base component does not send a network request itself.
 
-| `Form` prop                  | Purpose                                                          |
-| ---------------------------- | ---------------------------------------------------------------- |
-| `onSubmit(data, submission)` | Receives `FormData` and a snapshot of the submitted draft.       |
-| `onBeforeSubmit(data)`       | Adjusts the payload after validation, before `onSubmit`.         |
-| `onReset()`                  | Runs after the initial values and form state are restored.       |
-| `onStateChange(state)`       | Observes the initial state and later committed state changes.    |
-| `ref`                        | Exposes `FormRef`.                                               |
-| `method`                     | `'GET'` or `'POST'`; saving is handled by `onSubmit`.            |
-| HTML attributes              | Supports `id`, `name`, `action`, `className`, `noValidate`, etc. |
+| `Form` prop                           | Purpose                                                                         |
+| ------------------------------------- | ------------------------------------------------------------------------------- |
+| `onSubmit(data, submission, runtime)` | Receives `FormData`, a snapshot of the submitted draft, and stable form access. |
+| `onBeforeSubmit(data)`                | Adjusts the payload after validation, before `onSubmit`.                        |
+| `onReset()`                           | Runs after the initial values and form state are restored.                      |
+| `onStateChange(state)`                | Observes the initial state and later committed state changes.                   |
+| `ref`                                 | Exposes `FormRef`.                                                              |
+| `method`                              | `'GET'` or `'POST'`; saving is handled by `onSubmit`.                           |
+| HTML attributes                       | Supports `id`, `name`, `action`, `className`, `noValidate`, etc.                |
 
 `submission` has `revision`, `values` and `collections`; ordinary submit handlers
 can use only the first argument. `FormValue` is `string | string[] | null`.
+
+`runtime` is the same object returned by `UseForm()`: `store`, `apiRef` and
+`elementRef`. Use it to manage a manual request from outside the form context:
+
+```tsx
+<Form
+    onSubmit={async (data, submission, { store }) => {
+        try {
+            await saveArticle(data);
+            store.setSuccess(true);
+        } catch {
+            store.setErrors(
+                { "article[title]": [{ message: "Could not save the article." }] },
+                submission
+            );
+        } finally {
+            store.setSubmitting(false);
+        }
+    }}>
+    <Input view={titleView} />
+    <button type="submit">Save</button>
+</Form>
+```
+
+`saveArticle` is your request function. `setErrors(errors, submission)` ignores
+server errors for values edited after that submission. Existing callbacks can
+continue to use only `data` or `data, submission`.
 
 ## FormRef: read and update values
 
@@ -270,6 +297,18 @@ newer edits. `allowDuplicates` permits multiple renderers for the same field.
 | `FormError` / `FormRestError`      | Renders selected errors / errors without an inline renderer.                                                                        |
 | `UseCollection()`                  | Provides `items`, `addItem`, `removeItem` and `isPrototype` inside a collection.                                                    |
 | `UseCollectionItem()`              | Provides the current row's `index` and `removeItem`.                                                                                |
+
+`FormError` accepts standard `<div>` attributes, including `id`, `role`,
+`aria-*`, `data-*`, `className`, `style` and event handlers. They are applied to
+the error container, which renders only when the selected fields have errors.
+`BaseFormFieldError` supports the same attributes with full field names.
+Both components own their error content, so `children` and
+`dangerouslySetInnerHTML` are excluded. `role` and live-region attributes are
+opt-in; no announcement role is added by default.
+
+```tsx
+<FormError name="code" id="verification-code-error" role="alert" className="alert alert-danger" />
+```
 
 For example, inside an add/edit form template:
 

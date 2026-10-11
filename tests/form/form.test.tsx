@@ -1136,6 +1136,61 @@ it("stable UseForm access is separate from reactive useFormState", () => {
     expect(runtime!.store.getValue("form[title]")).toBe("draft");
 });
 
+it("submit callbacks receive stable form access to complete manual requests", () => {
+    const ref = createRef<FormRef>();
+    let runtime: ReturnType<typeof UseForm> | undefined;
+
+    function Access() {
+        runtime = UseForm();
+
+        return null;
+    }
+
+    function Status() {
+        const { submitting, success } = useFormState();
+
+        return <output>{submitting ? "submitting" : String(success)}</output>;
+    }
+
+    const onSubmit = vi.fn();
+    const result = render(
+        <Form ref={ref} onSubmit={onSubmit}>
+            <Access />
+            <Status />
+            <Input view={textView("123456")} />
+        </Form>
+    );
+    const element = result.container.querySelector("form")!;
+
+    fireEvent.submit(element);
+
+    const [data, submission, access] = onSubmit.mock.calls[0];
+    expect(data.get("form[title]")).toBe("123456");
+    expect(submission.values["form[title]"]).toBe("123456");
+    expect(access).toBe(runtime);
+    expect(access.apiRef.current).toBe(ref.current);
+    expect(access.elementRef.current).toBe(element);
+    expect(result.getByRole("status").textContent).toBe("submitting");
+
+    act(() => {
+        access.store.setErrors({ "form[title]": [{ message: "Invalid code" }] }, submission);
+        access.apiRef.current.setValue("form[title]", "");
+        access.store.setSubmitting(false);
+    });
+
+    expect((result.getByRole("textbox") as HTMLInputElement).value).toBe("");
+    expect(access.store.getState().errors["form[title]"]).toEqual([{ message: "Invalid code" }]);
+    expect(result.getByRole("status").textContent).toBe("false");
+
+    fireEvent.submit(element);
+    expect(onSubmit.mock.calls[1][2]).toBe(access);
+
+    act(() => {
+        access.store.setSuccess(true);
+    });
+    expect(result.getByRole("status").textContent).toBe("true");
+});
+
 it("custom checkbox groups validate their bracket-suffixed binding after edits", () => {
     const onSubmit = vi.fn();
     const rules = [constraint((value) => Array.isArray(value) && value.length > 0, "Choose a tag")];
