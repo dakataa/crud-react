@@ -63,17 +63,24 @@ const FormFieldSelector = ({
 const FormField = ({
     name,
     options,
+    optional = false,
     ref
 }: {
     name?: string;
     options?: Partial<FormViewType>;
     size?: "lg" | "sm";
+    /** Return null when the requested view is missing. Defaults to false. */
+    optional?: boolean;
     ref?: React.RefObject<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>;
 }) => {
     const { form } = UseFormView();
     const view = name ? form.children?.[name] : form;
 
     if (!view) {
+        if (optional) {
+            return null;
+        }
+
         throw new Error("Missing Form View for FormField" + (name ? ": " + name : ""));
     }
 

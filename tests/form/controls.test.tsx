@@ -14,6 +14,67 @@ vi.mock("@crud-react/component/crud/CrudLoader.tsx", () => ({ UseCurrentActionRe
 
 afterEach(cleanup);
 
+it.each([undefined, false])("throws for a missing CRUD field when optional is %s", (optional) => {
+    const view: FormViewType = { type: "form", full_name: "form" };
+
+    expect(() => {
+        render(
+            <Form>
+                <FormViewProvider view={view}>
+                    <FormField name="field" optional={optional} />
+                </FormViewProvider>
+            </Form>
+        );
+    }).toThrow("Missing Form View for FormField: field");
+});
+
+it("optional CRUD fields follow schema availability and preserve required validation", () => {
+    const formRef = createRef<FormRef>();
+    const fieldRef = createRef<HTMLInputElement>();
+    const missing: FormViewType = { type: "form", full_name: "form" };
+    const present: FormViewType = {
+        ...missing,
+        children: {
+            field: { type: "text", full_name: "form[field]", data: "", required: true }
+        }
+    };
+    const tree = (view: FormViewType) => (
+        <Form ref={formRef}>
+            <FormViewProvider view={view}>
+                <FormField
+                    name="field"
+                    optional
+                    options={{ placeholder: "Enter a value" }}
+                    ref={fieldRef}
+                />
+            </FormViewProvider>
+        </Form>
+    );
+    const result = render(tree(missing));
+
+    expect(result.queryByRole("textbox")).toBeNull();
+    expect(fieldRef.current).toBeNull();
+    expect(formRef.current!.getFormData().has("form[field]")).toBe(false);
+
+    result.rerender(tree(present));
+
+    const input = result.getByRole("textbox") as HTMLInputElement;
+    expect(fieldRef.current).toBe(input);
+    expect(input.placeholder).toBe("Enter a value");
+    expect(input.required).toBe(true);
+    expect(input.validity.valueMissing).toBe(true);
+
+    fireEvent.change(input, { target: { value: "entered" } });
+
+    expect(formRef.current!.getFormData().get("form[field]")).toBe("entered");
+
+    result.rerender(tree(missing));
+
+    expect(result.queryByRole("textbox")).toBeNull();
+    expect(fieldRef.current).toBeNull();
+    expect(formRef.current!.getFormData().has("form[field]")).toBe(false);
+});
+
 it.each(["text", "textarea", "choice"])("accepts a nullable CRUD field ref for %s", (type) => {
     const ref = createRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>();
     const view: FormViewType = {

@@ -631,11 +631,17 @@ explicitly:
 
 ```tsx
 <FormGroup name="companyNumber" optional />
+<FormField name="companyNumber" optional />
 ```
 
 Without `optional`, a missing child throws
 `Missing Provided Form View to Form Group: companyNumber`. Rendering outside a
 `FormViewProvider` throws `UseFormView must be used within a FormViewProvider.`
+
+`FormField` also accepts `optional`, which defaults to `false`. When the named
+child is missing, it returns `null` if `optional` is set; otherwise it throws
+`Missing Form View for FormField: companyNumber`. Existing fields still render
+normally, including their `required` validation.
 
 ## Hooks and contexts
 

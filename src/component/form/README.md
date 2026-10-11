@@ -335,8 +335,10 @@ export function ArticleFields() {
 }
 ```
 
-`FormGroup`'s `optional` returns `null` for a missing child. Its `options` are
-shallow overrides and cannot change `type`. Relative setters support dotted
+`FormGroup` and `FormField` accept `optional`, which defaults to `false` and returns
+`null` for a missing child when enabled. It does not change an existing field's
+`required` validation. `FormGroup`'s `options` are shallow overrides and cannot
+change `type`. Relative setters support dotted
 paths, such as `address.street`; `FormGroup` and `FormField` select direct children.
 `CrudForm.onSuccess` may return a promise; redirect navigation waits for it.
 `CrudForm.onError(error)` handles failed submissions locally: HTTP errors carry
