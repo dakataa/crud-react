@@ -359,6 +359,21 @@ Without `onError`, the request provider's existing error handling applies. Retur
 Here `showError` is your application's notification function. Initial loading
 errors are handled by the request provider, before the form is available.
 
+## Schema attributes
+
+Form controls, choices, labels and help text accept common HTML attribute names
+through `attr`, `choice_attr`, `label_attr` and `help_attr`. For example,
+`autocomplete`, `inputmode`, `readonly`, `tabindex`, `class` and `for` are mapped
+to their React prop names before rendering. If both names are supplied, the
+explicit React name takes priority regardless of property order. Values and
+unmapped names, including `data-*` and `aria-*`, are preserved.
+
+Attribute objects may also be callbacks. They receive their owning view (or
+choice for `choice.attr`) as their argument and `this`. `resolveAttribute(view, key)`
+returns a property's value or callback result without changing it. Components
+use `{}` for missing attribute objects and normalize their names when spreading
+them onto JSX elements. Both select and expanded choices pass the choice to `choice.attr`.
+
 ## Value lifecycle
 
 - Hiding a managed field preserves its draft. Unmounted and disabled controls

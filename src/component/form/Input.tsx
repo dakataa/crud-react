@@ -5,7 +5,13 @@ import type { Constraint } from "./constraint/Contraint";
 import type { FormViewType } from "@crud-react/type/FormViewType";
 import { FormViewTypeEnum } from "@crud-react/type/FormViewType";
 import { UseFormSettings } from "./FormSetting.tsx";
-import { controlAttributes, inputToken, isSelection, selectedValues } from "./formView.ts";
+import {
+    controlAttributes,
+    inputToken,
+    isSelection,
+    resolveAttribute,
+    selectedValues
+} from "./formView.ts";
 
 export type FormFieldProps = {
     view: FormViewType;
@@ -20,7 +26,7 @@ const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Elem
     const field = useFormField(view, constraints);
     const translate = UseTranslate();
     const settings = UseFormSettings();
-    const attr = { ...((view.attr instanceof Function ? view.attr() : view.attr) || {}) };
+    const attr = resolveAttribute(view, "attr") || {};
     const selection = isSelection(view);
     const token = inputToken(view);
     const placeholder =
@@ -35,8 +41,9 @@ const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Elem
         type = "datetime-local";
     }
 
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
     const className =
-        attr.className ??
+        attrClassName ??
         settings?.className ??
         [
             selection ? "form-check-input" : "form-control",
@@ -114,7 +121,7 @@ const Input = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Elem
                     ? translate(attr["aria-description"])
                     : attr["aria-description"]
             }
-            {...(attr.inputmode === "decimal" && { step: "any" })}
+            {...((Object.hasOwn(attr, "inputMode") ? attr.inputMode : attr.inputmode) === "decimal" && { step: "any" })}
         />
     );
 };

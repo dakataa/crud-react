@@ -1,9 +1,9 @@
 import React from 'react';
 import { useFormField } from './Form.tsx';
 import { UseTranslate } from '@crud-react/component/Translation.tsx';
-import { Constraint } from './constraint/Contraint';
-import { FormViewType } from '@crud-react/type/FormViewType';
-import { controlAttributes } from './formView.ts';
+import type { Constraint } from './constraint/Contraint';
+import type { FormViewType } from '@crud-react/type/FormViewType';
+import { controlAttributes, resolveAttribute } from './formView.ts';
 import { UseFormSettings } from './FormSetting.tsx';
 
 export type FormFieldProps = {
@@ -19,7 +19,8 @@ const Textarea = ({ view, constraints, onChange, ref }: InputProps): React.JSX.E
     const field = useFormField(view, constraints);
     const translate = UseTranslate();
     const settings = UseFormSettings();
-    const attr = { ...((view.attr instanceof Function ? view.attr() : view.attr) || {}) };
+    const attr = resolveAttribute(view, "attr") || {};
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
     const placeholder =
         'placeholder' in attr ? attr.placeholder : settings?.placeholder || view.placeholder;
 
@@ -46,7 +47,7 @@ const Textarea = ({ view, constraints, onChange, ref }: InputProps): React.JSX.E
                 onChange?.({ value: event.target.value });
             }}
             className={
-                attr.className ??
+                attrClassName ??
                 settings?.className ??
                 [
                     "form-control",
