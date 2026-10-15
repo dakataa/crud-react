@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties } from "react";
 
 export type FormAttributes = {
     [key: string]: string | number | boolean | Function | CSSProperties | undefined;
@@ -41,30 +41,30 @@ export type FormViewType = {
 };
 
 export enum FormViewTypeEnum {
-    Form = 'form',
-    Input = 'input',
-    Money = 'money',
-    Hidden = 'hidden',
-    Number = 'number',
-    Text = 'text',
-    Textarea = 'textarea',
-    Tel = 'tel',
-    Checkbox = 'checkbox',
-    Radio = 'radio',
-    Integer = 'integer',
-    Password = 'password',
-    Email = 'email',
-    Choice = 'choice',
-    Enum = 'enum',
-    Entity = 'entity',
-    Collection = 'collection',
-    Repeated = 'repeated',
-    Datetime = 'datetime',
-    Date = 'date',
-    Time = 'time',
-    Currency = 'currency',
-    Language = 'language',
-    Birthday = 'birthday'
+    Form = "form",
+    Input = "input",
+    Money = "money",
+    Hidden = "hidden",
+    Number = "number",
+    Text = "text",
+    Textarea = "textarea",
+    Tel = "tel",
+    Checkbox = "checkbox",
+    Radio = "radio",
+    Integer = "integer",
+    Password = "password",
+    Email = "email",
+    Choice = "choice",
+    Enum = "enum",
+    Entity = "entity",
+    Collection = "collection",
+    Repeated = "repeated",
+    Datetime = "datetime",
+    Date = "date",
+    Time = "time",
+    Currency = "currency",
+    Language = "language",
+    Birthday = "birthday"
 }
 
 export type FormViewErrorType = {
@@ -83,7 +83,7 @@ export type ChoiceType = {
 
 export type ChoiceGroupType = {
     label: string;
-    choices: ChoiceType[];
+    choices: ChoiceType[] | Record<string, ChoiceType>;
 };
 
 export type ChoiceUnionType = ChoiceType[] | ChoiceGroupType[];

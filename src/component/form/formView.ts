@@ -85,7 +85,7 @@ export function initialFieldValue(
 
     if (view.expanded && view.checked instanceof Function) {
         const choices = Object.values(view.choices || []).flatMap((choice) =>
-            "choices" in choice ? choice.choices : [choice]
+            "choices" in choice ? Object.values(choice.choices) : [choice]
         );
         const selected = choices.flatMap((choice) => {
             const token = choiceValueTransform
@@ -146,7 +146,7 @@ export function initialFieldValue(
 
     if (!view.expanded && view.choices && !view.placeholder && (value == null || value === "")) {
         const choices = Object.values(view.choices).flatMap((choice) =>
-            "choices" in choice ? choice.choices : [choice]
+            "choices" in choice ? Object.values(choice.choices) : [choice]
         );
         const first = choices.find(
             (choice) =>

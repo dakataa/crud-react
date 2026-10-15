@@ -72,9 +72,14 @@ describe("Choice helpers", () => {
 });
 
 describe("Choice rendering and selection", () => {
-    it.each([false, true])(
-        "preserves grouped choice controls and their selection when reordered (expanded=%s)",
-        (expanded) => {
+    it.each([
+        { expanded: false, keyed: false },
+        { expanded: true, keyed: false },
+        { expanded: false, keyed: true },
+        { expanded: true, keyed: true }
+    ])(
+        "preserves grouped choices when reordered (expanded=$expanded, keyed=$keyed)",
+        ({ expanded, keyed }) => {
             const ref = createRef<FormRef>();
             const first = { value: "a", label: "A" };
             const second = { value: "b", label: "B" };
@@ -85,8 +90,8 @@ describe("Choice rendering and selection", () => {
                 data: "a",
                 expanded,
                 choices: [
-                    { label: "Main", choices: [first] },
-                    { label: "Other", choices: [second, third] }
+                    { label: "Main", choices: keyed ? { a: first } : [first] },
+                    { label: "Other", choices: keyed ? { b: second, c: third } : [second, third] }
                 ]
             };
             const tree = (schema: FormViewType) => (
@@ -109,8 +114,11 @@ describe("Choice rendering and selection", () => {
                 tree({
                     ...view,
                     choices: [
-                        { label: "Other", choices: [third, second] },
-                        { label: "Main", choices: [first] }
+                        {
+                            label: "Other",
+                            choices: keyed ? { c: third, b: second } : [third, second]
+                        },
+                        { label: "Main", choices: keyed ? { a: first } : [first] }
                     ]
                 })
             );

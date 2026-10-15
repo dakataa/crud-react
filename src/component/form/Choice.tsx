@@ -52,7 +52,7 @@ const SelectGroupOption = ({ view, group }: { view: FormViewType; group: ChoiceG
 
     return (
         <optgroup label={translate(group.label)}>
-            {group.choices.map((choice, index) => {
+            {Object.values(group.choices).map((choice, index) => {
                 return (
                     <SelectOption
                         key={choice.value == null ? index : choiceToken(choice)}
@@ -212,7 +212,7 @@ const ChoiceGroupOption = ({ view, group, ...props }: ChoiceProps & { group: Cho
             <label className="form-label">
                 <Translation>{group.label}</Translation>
             </label>
-            {group.choices.map((choice, index) => {
+            {Object.values(group.choices).map((choice, index) => {
                 return (
                     <ChoiceOption
                         key={choice.value == null ? index : choiceToken(choice)}
@@ -271,7 +271,7 @@ const Choice = ({
     }
 
     const choices = Object.values(view.choices || []).flatMap((choice) =>
-        "choices" in choice ? choice.choices : [choice]
+        "choices" in choice ? Object.values(choice.choices) : [choice]
     );
     const tokens = choices.map((choice) => {
         if (choice.value == null) {
