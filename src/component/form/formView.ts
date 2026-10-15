@@ -148,15 +148,12 @@ export function initialFieldValue(
         const choices = Object.values(view.choices).flatMap((choice) =>
             "choices" in choice ? choice.choices : [choice]
         );
-        const first = choices.find(
-            (choice) =>
-                !(choice.attr instanceof Function ? choice.attr(choice) : choice.attr)?.disabled
-        );
+        const first = choices.find((choice) => !resolveAttribute(choice, "attr")?.disabled);
 
         if (first) {
             if (first.value == null) {
                 return stringValue(
-                    first.label instanceof Function ? first.label(first) : first.label
+                    resolveAttribute(first, "label")
                 );
             }
 
@@ -258,11 +255,58 @@ export function formErrors(view: FormViewType): Record<string, FormViewErrorType
     return result;
 }
 
+const attributeNames: Record<string, string> = {
+    "accept-charset": "acceptCharset",
+    accesskey: "accessKey",
+    autocapitalize: "autoCapitalize",
+    autocomplete: "autoComplete",
+    autocorrect: "autoCorrect",
+    autofocus: "autoFocus",
+    class: "className",
+    colspan: "colSpan",
+    contenteditable: "contentEditable",
+    enctype: "encType",
+    enterkeyhint: "enterKeyHint",
+    for: "htmlFor",
+    formaction: "formAction",
+    formenctype: "formEncType",
+    formmethod: "formMethod",
+    formnovalidate: "formNoValidate",
+    formtarget: "formTarget",
+    inputmode: "inputMode",
+    maxlength: "maxLength",
+    minlength: "minLength",
+    novalidate: "noValidate",
+    readonly: "readOnly",
+    rowspan: "rowSpan",
+    spellcheck: "spellCheck",
+    tabindex: "tabIndex"
+};
+
+/** Resolve one property, passing its owner to callbacks without changing the result. */
+export function resolveAttribute<T, K extends keyof T>(view: T, name: K) {
+    const value = view[name];
+
+    return typeof value === "function" ? value.call(view, view) : value;
+}
+
+/** Accept HTML attribute names while giving explicitly supplied React names priority. */
+export function normalizeAttributes(attr: Record<string, any>): Record<string, any> {
+
+    return Object.fromEntries(
+        Object.entries(attr).map(([name, value]) => {
+            const reactName = Object.hasOwn(attributeNames, name) ? attributeNames[name] : name;
+
+            return [reactName, Object.hasOwn(attr, reactName) ? attr[reactName] : value];
+        })
+    );
+}
+
 /** Value ownership belongs to the binding; decorative attributes remain extensible. */
 export function controlAttributes(attr: Record<string, any>): Record<string, any> {
     const { value, defaultValue, checked, defaultChecked, name, selected, ...rest } = attr;
 
-    return rest;
+    return normalizeAttributes(rest);
 }
 
 // Native validity must also be correct before a queued React render commits.

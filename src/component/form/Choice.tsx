@@ -6,6 +6,8 @@ import Translation, { UseTranslate } from "@crud-react/component/Translation.tsx
 import { choiceToken } from "./formChoices.ts";
 import {
     controlAttributes,
+    normalizeAttributes,
+    resolveAttribute,
     choiceName,
     selectedValues,
     selectionRules,
@@ -34,8 +36,8 @@ function useChoiceField(
 
 const SelectOption = ({ choice }: { view: FormViewType; choice: ChoiceType }) => {
     const translate = UseTranslate();
-    const attr = (choice.attr instanceof Function ? choice.attr(choice) : choice.attr) || {};
-    const label = choice.label instanceof Function ? choice.label(choice) : choice.label;
+    const attr = resolveAttribute(choice, "attr") || {};
+    const label = resolveAttribute(choice, "label");
 
     return (
         <option
@@ -82,20 +84,18 @@ const ChoiceOption = ({
 
     if (choiceLabelTransform) {
         label = choiceLabelTransform(choice);
-    } else if (choice.label instanceof Function) {
-        label = choice.label(choice);
     } else {
-        label = choice.label;
+        label = resolveAttribute(choice, "label");
     }
 
-    const labelAttr =
-        (view.label_attr instanceof Function ? view.label_attr() : view.label_attr) || {};
-    const viewAttr = (view.attr instanceof Function ? view.attr() : view.attr) || {};
+    const labelAttr = resolveAttribute(view, "label_attr") || {};
+    const viewAttr = resolveAttribute(view, "attr") || {};
     const attr = {
-        ...((choice.attr instanceof Function ? choice.attr(view) : choice.attr) || {}),
-        ...((view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) ||
-            {})
+        ...resolveAttribute(choice, "attr"),
+        ...resolveAttribute(view, "choice_attr")
     };
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
+    const labelClassName = Object.hasOwn(labelAttr, "className") ? labelAttr.className : labelAttr.class;
     const id = attr.id ?? nameToId(view.full_name || "", token);
 
     return (
@@ -134,7 +134,7 @@ const ChoiceOption = ({
                 }
                 aria-invalid={!!field.errors.length}
                 className={
-                    attr.className ??
+                    attrClassName ??
                     ["form-check-input", field.errors.length ? "is-invalid" : null]
                         .filter(Boolean)
                         .join(" ")
@@ -181,9 +181,9 @@ const ChoiceOption = ({
             />
             {label != null && label !== "" && (
                 <label
-                    {...labelAttr}
+                    {...normalizeAttributes(labelAttr)}
                     htmlFor={id}
-                    className={labelAttr.className ?? "form-check-label"}
+                    className={labelClassName ?? "form-check-label"}
                     aria-label={
                         typeof labelAttr["aria-label"] === "string"
                             ? translate(labelAttr["aria-label"])
@@ -237,7 +237,8 @@ const Choice = ({
 }: ChoiceProps): React.JSX.Element => {
     const field = useChoiceField(view, constraints, choiceValueTransform);
     const translate = UseTranslate();
-    const attr = { ...((view.attr instanceof Function ? view.attr() : view.attr) || {}) };
+    const attr = resolveAttribute(view, "attr") || {};
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
     const { onChange: containerOnChange, ...containerAttr } = attr;
     const optionProps = { view, constraints, onChange, choiceValueTransform, choiceLabelTransform };
 
@@ -261,7 +262,7 @@ const Choice = ({
                         <div
                             key={choice.value == null ? index : choiceToken(choice)}
                             className="form-check"
-                            {...containerAttr}>
+                            {...normalizeAttributes(containerAttr)}>
                             <ChoiceOption {...optionProps} choice={choice} />
                         </div>
                     );
@@ -275,9 +276,7 @@ const Choice = ({
     );
     const tokens = choices.map((choice) => {
         if (choice.value == null) {
-            return stringValue(
-                choice.label instanceof Function ? choice.label(choice) : choice.label
-            );
+            return stringValue(resolveAttribute(choice, "label"));
         }
 
         return choiceToken(choice);
@@ -325,7 +324,7 @@ const Choice = ({
                 onChange?.({ value });
             }}
             className={[
-                attr.className || attr.class,
+                attrClassName,
                 className,
                 "form-select",
                 field.errors.length ? "is-invalid" : null
