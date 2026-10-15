@@ -1,25 +1,37 @@
-import {UseForm} from "@crud-react/component/form/Form";
-import React from "react";
-import {FormViewErrorType} from "@crud-react/type/FormViewType.tsx";
+import { useFormErrors } from "@crud-react/component/form/Form";
+import type { FormViewErrorType } from "@crud-react/type/FormViewType.tsx";
 import Translation from "@crud-react/component/Translation.tsx";
+import type { HTMLAttributes } from "react";
 
-const FormFieldError = ({name, className}: { name: string | string[], className?: string }) => {
-    const [[form]] = UseForm() || {};
+export type FormFieldErrorProps = Omit<
+    HTMLAttributes<HTMLDivElement>,
+    "children" | "dangerouslySetInnerHTML"
+> & {
+    name: string | string[];
+};
 
+const FormFieldError = ({ name, ...attributes }: FormFieldErrorProps) => {
     name = name instanceof Array ? name : [name];
 
-    const errorMessages: FormViewErrorType[] = name.flatMap(name => form.errors[name] || []);
+    const errorMessages: FormViewErrorType[] = useFormErrors(name);
+
     if (!errorMessages.length) {
         return null;
     }
 
     return (
-        <div className={className}>
+        <div {...attributes}>
             <ul className={"mb-0"}>
-                {errorMessages.map((error: FormViewErrorType, i: number) => <li key={i}><Translation>{error.message}</Translation></li>)}
+                {errorMessages.map((error: FormViewErrorType, i: number) => {
+                    return (
+                        <li key={i}>
+                            <Translation>{error.message}</Translation>
+                        </li>
+                    );
+                })}
             </ul>
         </div>
-    )
-}
+    );
+};
 
-export default FormFieldError
+export default FormFieldError;

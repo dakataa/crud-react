@@ -1,7 +1,13 @@
+import type { CSSProperties } from 'react';
+
+export type FormAttributes = {
+    [key: string]: string | number | boolean | Function | CSSProperties | undefined;
+};
+
 export type FormViewType = {
     id?: string;
     name?: string;
-    full_name?: string
+    full_name?: string;
     label?: string | undefined;
     label_attr?: { [key: string]: string } | Function;
     label_html?: boolean;
@@ -25,14 +31,14 @@ export type FormViewType = {
     children?: { [key: string]: FormViewType };
     choices?: ChoiceUnionType;
     preferred_choices?: { [key: string]: any };
-    choice_attr?: { [key: string]: string|number|boolean|Function } | Function;
-    attr?: { [key: string]: string|number|boolean|Function } | Function;
+    choice_attr?: FormAttributes | Function;
+    attr?: FormAttributes | Function;
     value?: string;
     data?: any;
     rendered?: boolean;
     prototype?: FormViewType;
     prototype_name?: string;
-}
+};
 
 export enum FormViewTypeEnum {
     Form = 'form',
@@ -58,7 +64,7 @@ export enum FormViewTypeEnum {
     Time = 'time',
     Currency = 'currency',
     Language = 'language',
-    Birthday = 'birthday',
+    Birthday = 'birthday'
 }
 
 export type FormViewErrorType = {
@@ -66,20 +72,18 @@ export type FormViewErrorType = {
     origin?: string | null;
     messageParameters?: { [key: string]: string };
     messageTemplate?: string;
-}
+};
 
 export type ChoiceType = {
     value: string | number | null | Function;
     label: string | ((v: ChoiceType) => string);
-    attr?: {
-        [key: string]: { [key: string]: string }
-    } & { disabled?: boolean, readonly?: boolean } | Function;
-    data?: { [key: string]: any }
-}
+    attr?: FormAttributes | Function;
+    data?: { [key: string]: any };
+};
 
 export type ChoiceGroupType = {
     label: string;
     choices: ChoiceType[];
-}
+};
 
 export type ChoiceUnionType = ChoiceType[] | ChoiceGroupType[];

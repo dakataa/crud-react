@@ -1,52 +1,53 @@
-import React, {HTMLAttributes, PropsWithChildren} from "react";
-import type {TranslationFunction} from "@crud-react/component/Translation.tsx";
+import React, { HTMLAttributes, PropsWithChildren } from 'react';
+import type { TranslationFunction } from '@crud-react/component/Translation.tsx';
 
 export enum Environment {
     PROD = 'prod',
     DEV = 'dev',
-    TEST = 'test',
+    TEST = 'test'
 }
 
 export type ConfigLink = {
-    path?: string,
-    prefix?: string,
-    includePrefix?: boolean,
-}
+    path?: string;
+    prefix?: string;
+    includePrefix?: boolean;
+};
 
-export type Templates = { [path:string]: () => Promise<any> };
+export type Templates = { [path: string]: () => Promise<any> };
 
 export type Config = {
-    env?: Environment | string,
-    link?: ConfigLink,
-    templates?: { [path:string]: () => Promise<any> },
-    locale?: string,
-    currency?: string,
-    timezone?: string,
-    translate?: TranslationFunction,
-    options?:  {
+    env?: Environment | string;
+    link?: ConfigLink;
+    templates?: { [path: string]: () => Promise<any> };
+    locale?: string;
+    currency?: string;
+    timezone?: string;
+    translate?: TranslationFunction;
+    options?: {
         // Standard HTML Elements
-        HTMLTableElement: HTMLAttributes<HTMLTableElement>,
+        HTMLTableElement?: HTMLAttributes<HTMLTableElement>;
         // Crud Components
-        GridView: HTMLAttributes<HTMLDivElement>,
-    },
-}
+        GridView?: HTMLAttributes<HTMLDivElement>;
+    };
+};
 
 const ConfigContext = React.createContext<Config>({
-    env: Environment.PROD,
+    env: Environment.PROD
 });
 
 export function UseConfig(): Config {
     return React.useContext<Config>(ConfigContext);
 }
 
-export function ConfigProvider({config, ...props}: { config: Config } & PropsWithChildren) {
+export function ConfigProvider({ config, ...props }: { config: Config } & PropsWithChildren) {
     const parentConfig = UseConfig();
 
     return (
-        <ConfigContext.Provider value={{
-            ...parentConfig || {},
-            ...config,
-        }}>
+        <ConfigContext.Provider
+            value={{
+                ...(parentConfig || {}),
+                ...config
+            }}>
             {props.children}
         </ConfigContext.Provider>
     );

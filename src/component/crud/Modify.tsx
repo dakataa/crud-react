@@ -1,137 +1,155 @@
-import React, {ComponentType, ReactNode} from "react";
-import {UseActions} from "@crud-react/context/ActionContext.tsx";
-import Form from "@crud-react/component/crud/form/Form.tsx";
-import {ModifyType} from "@crud-react/type/ModifyType.tsx";
-import {UseDataProvider, WithDataProvider} from "@crud-react/context/GetData.tsx";
-import Modal from "@crud-react/component/Modal.tsx";
-import {Icon as AlertIcon, UseAlert} from "@crud-react/context/AlertContext.tsx";
-import {ExceptionType} from "@crud-react/type/ExceptionType.tsx";
-import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
-import Link from "@crud-react/component/Link.tsx";
-import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
-import {AsTemplate, Block, Extend} from "@crud-react/component/templating/Template.tsx";
-import Button from "@crud-react/component/Button.tsx";
-import Translation, {default as T} from "@crud-react/component/Translation.tsx";
-import {UseModal} from "@crud-react/context/ModalContext.tsx";
+import React, { ComponentType, ReactNode } from 'react';
+import { UseActions } from '@crud-react/context/ActionContext.tsx';
+import Form from '@crud-react/component/crud/form/Form.tsx';
+import { ModifyType } from '@crud-react/type/ModifyType.tsx';
+import { UseDataProvider, WithDataProvider } from '@crud-react/context/GetData.tsx';
+import Modal from '@crud-react/component/Modal.tsx';
+import { Icon as AlertIcon, UseAlert } from '@crud-react/context/AlertContext.tsx';
+import { ExceptionType } from '@crud-react/type/ExceptionType.tsx';
+import DynamicView from '@crud-react/component/crud/DynamicView.tsx';
+import Link from '@crud-react/component/Link.tsx';
+import { UseCurrentActionRequest } from '@crud-react/component/crud/CrudLoader.tsx';
+import { AsTemplate, Block, Extend } from '@crud-react/component/templating/Template.tsx';
+import Button from '@crud-react/component/Button.tsx';
+import Translation, { default as T } from '@crud-react/component/Translation.tsx';
+import { UseModal } from '@crud-react/context/ModalContext.tsx';
 
-const DefaultModifyTemplate = AsTemplate(({children}: {
-    children?: ReactNode;
-    results?: ModifyType;
-}) => {
-    const {actionRequest: currentAction} = UseCurrentActionRequest();
-    const {getAction, generateLink} = UseActions();
-    const listAction = getAction(currentAction.action.entity, 'list', currentAction.action.namespace);
+const DefaultModifyTemplate = AsTemplate(
+    ({ children }: { children?: ReactNode; results?: ModifyType }) => {
+        const { actionRequest: currentAction } = UseCurrentActionRequest();
+        const { getAction, generateLink } = UseActions();
+        const listAction = getAction(
+            currentAction.action.entity,
+            'list',
+            currentAction.action.namespace
+        );
 
-    return (
-        <section className="edit">
-            <header>
-                <h2 className="title">
-                    {listAction && (
-                        <Link to={generateLink(listAction.route, currentAction.parameters)}>&larr;</Link>
-                    )}
-                    <Block name={"title"}/>
-                </h2>
-                <nav>
-                    <Block name={"navigation"}/>
-                </nav>
-            </header>
+        return (
+            <section className="edit">
+                <header>
+                    <h2 className="title">
+                        {listAction && (
+                            <Link to={generateLink(listAction.route, currentAction.parameters)}>
+                                &larr;
+                            </Link>
+                        )}
+                        <Block name={"title"} />
+                    </h2>
+                    <nav>
+                        <Block name={"navigation"} />
+                    </nav>
+                </header>
 
-            <main>
-                <Block name={"content"}/>
-                <Block name={"actions"}/>
-            </main>
-            {/*{children}*/}
-        </section>
-    )
-}, {name: 'modify'});
+                <main>
+                    <Block name={"content"} />
+                    <Block name={"actions"} />
+                </main>
+                {/*{children}*/}
+            </section>
+        );
+    },
+    { name: 'modify' }
+);
 
-const Modify = WithDataProvider(({template, children, onSuccess, modal}: {
-    template?: ComponentType;
-    children?: ReactNode;
-    onSuccess?: (event: CustomEvent, data: ModifyType) => void;
-    modal?: boolean;
-}) => {
+const Modify = WithDataProvider(
+    ({
+        template,
+        children,
+        onSuccess,
+        modal
+    }: {
+        template?: ComponentType;
+        children?: ReactNode;
+        onSuccess?: (event: CustomEvent, data: ModifyType) => void;
+        modal?: boolean;
+    }) => {
+        const { open: openAlert } = UseAlert();
+        const { closeModal } = UseModal();
+        const dataProvider = UseDataProvider();
+        const ComponentTemplate = modal ? Modal : template || DefaultModifyTemplate;
 
-    const {open: openAlert} = UseAlert();
-    const {closeModal} = UseModal();
-    const dataProvider = UseDataProvider();
-    const ComponentTemplate = modal ? Modal : (template || DefaultModifyTemplate);
+        if (!dataProvider) {
+            return;
+        }
 
-    if (!dataProvider) {
-        return;
+        return (
+            <ComponentTemplate>
+                <Extend name={"title"}>
+                    <Translation>{dataProvider?.results?.title || 'Title'}</Translation>
+                </Extend>
+
+                <Extend name={"navigation"}>
+                    <DynamicView view={"navigation"} prefix={"modify"} />
+                </Extend>
+
+                <Extend name={"content"}>
+                    <DynamicView view={"content"} prefix={"modify"}>
+                        <Form
+                            onSuccess={(data: ModifyType) => {
+                                return new Promise((resolve, reject) => {
+                                    closeModal();
+
+                                    const event = new CustomEvent("success", {
+                                        detail: data,
+                                        cancelable: true
+                                    });
+
+                                    onSuccess?.(event, data);
+
+                                    if (event.defaultPrevented) {
+                                        return reject();
+                                    }
+
+                                    openAlert({
+                                        title: "Success",
+                                        text:
+                                            Object.values(data.messages?.success ?? []).join(" ") ??
+                                            "Item was saved successful!",
+                                        icon: AlertIcon.success,
+                                        actions: {
+                                            close: {
+                                                label: "OK"
+                                            }
+                                        },
+                                        onResult: () => {
+                                            resolve();
+                                        }
+                                    });
+                                });
+                            }}
+                            onError={(error: ExceptionType) => {
+                                if (error.status === 401) {
+                                    return false;
+                                }
+
+                                openAlert({
+                                    title: error.status + " " + error.detail,
+                                    text: error.detail,
+                                    icon: AlertIcon.denied,
+                                    actions: {
+                                        close: {
+                                            label: "OK"
+                                        }
+                                    }
+                                });
+                            }}
+                            embedded={modal}>
+                            <Extend name={"actions"} />
+                        </Form>
+                    </DynamicView>
+                </Extend>
+                <Extend name={"actions"}>
+                    <Button
+                        type={"submit"}
+                        className={"btn btn-primary"}
+                        form={dataProvider?.results?.form?.modify?.view.full_name || "modify"}>
+                        <T>Submit</T>
+                    </Button>
+                </Extend>
+                {children}
+            </ComponentTemplate>
+        );
     }
-
-    return (
-        <ComponentTemplate>
-            <Extend name={"title"}>
-                <Translation>{dataProvider?.results?.title || 'Title'}</Translation>
-            </Extend>
-
-            <Extend name={"navigation"}>
-                <DynamicView view={"navigation"} prefix={"modify"}/>
-            </Extend>
-
-            <Extend name={"content"}>
-                <DynamicView view={"content"} prefix={"modify"}>
-                    <Form
-                        onSuccess={(data: ModifyType) => new Promise((resolve, reject) => {
-                            closeModal();
-
-                            const event = new CustomEvent('success', {detail: data, cancelable: true})
-
-                            onSuccess?.(event, data);
-
-                            if (event.defaultPrevented) {
-                                return reject();
-                            }
-
-                            openAlert({
-                                title: 'Success',
-                                text: Object.values(data.messages?.success ?? []).join(' ') ?? 'Item was saved successful!',
-                                icon: AlertIcon.success,
-                                actions: {
-                                    close: {
-                                        label: 'OK'
-                                    }
-                                },
-                                onResult: () => {
-                                    resolve();
-                                }
-                            });
-                        })}
-                        onError={(error: ExceptionType) => {
-                            openAlert({
-                                title: error.status + ' ' + error.detail,
-                                text: error.detail,
-                                icon: AlertIcon.denied,
-                                actions: {
-                                    close: {
-                                        label: 'OK'
-                                    }
-                                }
-                            });
-                        }}
-                        onLoad={() => {
-
-                        }}
-                        embedded={modal}
-                    >
-                        <Extend name={"actions"}/>
-                    </Form>
-                </DynamicView>
-            </Extend>
-            <Extend name={"actions"}>
-                <Button
-                    type={"submit"}
-                    className={"btn btn-primary"}
-                    form={dataProvider?.results?.form?.modify?.view.full_name || "modify"}
-                >
-                    <T>Submit</T>
-                </Button>
-            </Extend>
-            {children}
-        </ComponentTemplate>
-    );
-});
+);
 
 export default Modify;

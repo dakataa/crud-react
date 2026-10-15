@@ -1,12 +1,13 @@
-import {FormViewProvider, UseFormView} from "@crud-react/component/crud/form/Form.tsx";
-import React, {PropsWithChildren} from "react";
-import {FormViewType} from "@crud-react/type/FormViewType.tsx";
+import { FormViewProvider, UseFormView } from "@crud-react/component/crud/form/Form.tsx";
+import type { PropsWithChildren } from "react";
+import React from "react";
+import type { FormViewType } from "@crud-react/type/FormViewType.tsx";
+import { hasInitialOverride, markInitialOverride } from "@crud-react/component/form/formView.ts";
 import FormGroupViewLoader from "@crud-react/component/crud/form/FormGroupViewLoader.tsx";
 
 type FormGroupContextType = {
-    id: string;
     view: FormViewType;
-}
+};
 
 const FormGroupContext = React.createContext<FormGroupContextType | undefined>(undefined);
 
@@ -26,12 +27,8 @@ export function UseFormGroup(): FormGroupContextType | undefined {
  * @internal Consumers should render {@link FormGroup} instead of creating this
  * context directly.
  */
-export function FormGroupProvider({id, view, children}: FormGroupContextType & PropsWithChildren) {
-    return (
-        <FormGroupContext.Provider value={{id: id, view: view}}>
-            {children}
-        </FormGroupContext.Provider>
-    );
+export function FormGroupProvider({ view, children }: FormGroupContextType & PropsWithChildren) {
+    return <FormGroupContext.Provider value={{ view }}>{children}</FormGroupContext.Provider>;
 }
 
 /** Props accepted by {@link FormGroup}. */
@@ -92,26 +89,33 @@ export type FormGroupProps = {
  * />
  * ```
  */
-const FormGroup = ({name, options, optional = false}: FormGroupProps) => {
-    const {form} = UseFormView();
+const FormGroup = ({ name, options, optional = false }: FormGroupProps) => {
+    const { form } = UseFormView();
     const view = name ? form?.children?.[name] : form;
 
-    const compiledView = {...view, ...(options || {})} as FormViewType;
+    const compiledView = { ...view, ...(options || {}) } as FormViewType;
+
+    if (
+        view &&
+        (hasInitialOverride(view) ||
+            (options && ["data", "value", "checked"].some((key) => key in options)))
+    ) {
+        markInitialOverride(compiledView);
+    }
 
     if (!compiledView?.type) {
-        if(optional) {
+        if (optional) {
             return null;
         }
 
-        throw new Error('Missing Provided Form View to Form Group' + (name ? ': ' + name : ''));
+        throw new Error("Missing Provided Form View to Form Group" + (name ? ": " + name : ""));
     }
 
     return (
         <FormViewProvider view={compiledView}>
-            <FormGroupViewLoader/>
+            <FormGroupViewLoader />
         </FormViewProvider>
     );
-}
-
+};
 
 export default FormGroup;
