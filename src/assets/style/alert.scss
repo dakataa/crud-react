@@ -1,22 +1,9 @@
-.modal-alert {
-    --animation-transform: null;
-    --animation-transition: null;
+.modal {
     --animation-keyframes: animation-open-default;
-    --animation-keyframes-duration: .3s;
-    --animation-timeout-progress: 1s;
-    --modal-alert-vertical-gutter: 1.5rem;
-    --modal-alert-icon-size: 92px;
-    --bs-modal-zindex: 1150;
-
-    transition: var(--animation-transition);
-    transform: var(--animation-transform);
-
-    +.modal-backdrop {
-      --bs-backdrop-zindex: 1100;
-    }
+    --animation-keyframes-duration: 0.3s;
 
     &.fade {
-        animation: animation-open-fade;
+        animation: animation-open-fade 0.15s ease-in-out;
     }
 
     &.scale,
@@ -25,14 +12,29 @@
         animation: var(--animation-keyframes) var(--animation-keyframes-duration) ease-in-out;
     }
 
-
-    &.show {
-        --animation-transform: none;
-    }
-
     &.close {
         animation-direction: reverse;
         animation-duration: calc(var(--animation-keyframes-duration) / 2);
+    }
+}
+
+.modal-alert {
+    --animation-transform: null;
+    --animation-transition: null;
+    --animation-timeout-progress: 1s;
+    --modal-alert-vertical-gutter: 1.5rem;
+    --modal-alert-icon-size: 92px;
+    --bs-modal-zindex: 1150;
+
+    transition: var(--animation-transition);
+    transform: var(--animation-transform);
+
+    + .modal-backdrop {
+        --bs-backdrop-zindex: 1100;
+    }
+
+    &.show {
+        --animation-transform: none;
     }
 
     .btn-close {
@@ -55,7 +57,7 @@
     .modal-alert-progress {
         background: var(--bs-primary);
         animation: animation-progress var(--animation-timeout-progress) linear;
-        height: .25rem;
+        height: 0.25rem;
         position: absolute;
         bottom: 0;
     }
@@ -71,7 +73,6 @@
     }
 }
 
-
 @keyframes animation-open-default {
     0% {
         transform: scale(0.7);
@@ -83,7 +84,7 @@
     }
 
     80% {
-        transform: scale(.95);
+        transform: scale(0.95);
     }
 
     100% {
