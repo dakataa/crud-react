@@ -13,6 +13,10 @@ const useListItemActionGranted = () => {
     const {results: data}: { results?: ViewType | ListType } = UseDataProvider() || {};
 
     const isListItemGranted = useCallback(({permission, id}: IsGrantedProps): boolean => {
+        if(permission === null) {
+            return true;
+        }
+
         return typeof(permission) === "string" && Object.values(data?.entity.acl[permission] || []).map(a => a.toString()).includes(id?.toString() || '');
     }, [data]);
 
@@ -26,7 +30,7 @@ const IsListItemActionGranted = ({permission, children, id: itemId}: IsGrantedPr
     const {isListItemGranted} = useListItemActionGranted();
     const {id} = itemId ? {id: itemId} : UseListItem();
 
-    if (!isListItemGranted({permission, id})) {
+    if (permission !== null && !isListItemGranted({permission, id})) {
         return;
     }
 
