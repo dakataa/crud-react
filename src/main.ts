@@ -115,6 +115,7 @@ export { default as BaseFormFieldError } from "./component/form/FormFieldError.t
 export type { FormFieldErrorProps as BaseFormFieldErrorProps } from "./component/form/FormFieldError.tsx";
 export { default as BaseFormLabel } from "./component/form/FormLabel.tsx";
 export { default as BaseFormHelp } from "./component/form/FormHelp.tsx";
+export { resolveAttribute } from "./component/form/formView.ts";
 export {
     default as Choice,
     ChoiceOption,
