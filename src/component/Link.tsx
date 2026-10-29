@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
-import BaseButtonContent, {ButtonContentProps} from "./BaseButtonContent.tsx";
+import BaseButtonContent from "./BaseButtonContent.tsx";
+import type {ButtonContentProps} from "./BaseButtonContent.tsx";
 import {UseActions} from "@crud-react/context/ActionContext.tsx";
 import {UseDataLoaderIndicator} from "@crud-react/context/LoaderContext.tsx";
 
@@ -47,10 +48,11 @@ export default ({to, children, onClick, ...props}: {
     }, [isLoading]);
 
     useEffect(() => {
-        anchorRef?.current?.addEventListener('click', onClickEvent);
+        const anchor = anchorRef.current;
+        anchor?.addEventListener('click', onClickEvent);
 
         return () => {
-            anchorRef?.current?.removeEventListener('click', onClickEvent);
+            anchor?.removeEventListener('click', onClickEvent);
         };
     }, [to, onClick]);
 

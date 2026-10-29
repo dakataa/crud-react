@@ -26,6 +26,7 @@ The library provides:
 9. [Hooks and contexts](#hooks-and-contexts)
 10. [Core components](#core-components)
 11. [Troubleshooting](#troubleshooting)
+12. [Code style](#code-style)
 
 ## How it works
 
@@ -67,48 +68,52 @@ If your project does not already include Bootstrap styles, add your theme or Boo
 ## Quick start
 
 ```tsx
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import {
-  Crud,
-  CrudConfiguration,
-  CrudLoader,
-  MainLayout,
-  Outlet,
-  Route,
-  Router,
-} from '@dakataa/crud-react';
+    Crud,
+    CrudConfiguration,
+    CrudLoader,
+    MainLayout,
+    Outlet,
+    Route,
+    Router
+} from "@dakataa/crud-react";
 
-const templates = import.meta.glob('./crud/**');
+const templates = import.meta.glob("./crud/**");
 
 CrudConfiguration({
-  connection: {
-    baseURL: 'https://project.local',
-    headers: {
-      Accept: 'application/json',
+    connection: {
+        baseURL: "https://project.local",
+        headers: {
+            Accept: "application/json"
+        }
     },
-  },
-  templates,
+    templates
 });
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Crud
-        config={{
-            templates,
-            currency: 'BGN',
-            locale: 'bg',
-            timezone: 'UTC',
-            env: import.meta.env.CRUD_ENV,
-        }}
-    >
-      <Router>
-        <Route element={<MainLayout><Outlet /></MainLayout>}>
-          <Route path="*" element={<CrudLoader />} />
-        </Route>
-      </Router>
-    </Crud>
-  </StrictMode>
+createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+        <Crud
+            config={{
+                templates,
+                currency: "BGN",
+                locale: "bg",
+                timezone: "UTC",
+                env: import.meta.env.CRUD_ENV
+            }}>
+            <Router>
+                <Route
+                    element={
+                        <MainLayout>
+                            <Outlet />
+                        </MainLayout>
+                    }>
+                    <Route path="*" element={<CrudLoader />} />
+                </Route>
+            </Router>
+        </Crud>
+    </StrictMode>
 );
 ```
 
@@ -122,16 +127,16 @@ There are two configuration layers:
 ### `CrudConfiguration`
 
 ```ts
-import { CrudConfiguration } from '@dakataa/crud-react';
+import { CrudConfiguration } from "@dakataa/crud-react";
 
 CrudConfiguration({
-  connection: {
-    baseURL: 'https://crud-api.local',
-    headers: {
-      Accept: 'application/json',
+    connection: {
+        baseURL: "https://crud-api.local",
+        headers: {
+            Accept: "application/json"
+        }
     },
-  },
-  templates: import.meta.glob('./crud/**'),
+    templates: import.meta.glob("./crud/**")
 });
 ```
 
@@ -139,23 +144,26 @@ CrudConfiguration({
 
 ```ts
 type Config = {
-  env?: 'prod' | 'dev' | 'test' | string;
-  link?: {
-    path?: string;
-    prefix?: string;
-    includePrefix?: boolean;
-  };
-  templates?: { [path: string]: () => Promise<any> };
-  locale?: string;
-  currency?: string;
-  translate?: (key: string, options?: {
-    domain?: string;
-    properties?: { [key: string]: string | number | null };
-  }) => string;
-  options?: {
-    HTMLTableElement: React.HTMLAttributes<HTMLTableElement>;
-    GridView: React.HTMLAttributes<HTMLDivElement>;
-  };
+    env?: "prod" | "dev" | "test" | string;
+    link?: {
+        path?: string;
+        prefix?: string;
+        includePrefix?: boolean;
+    };
+    templates?: { [path: string]: () => Promise<any> };
+    locale?: string;
+    currency?: string;
+    translate?: (
+        key: string,
+        options?: {
+            domain?: string;
+            properties?: { [key: string]: string | number | null };
+        }
+    ) => string;
+    options?: {
+        HTMLTableElement: React.HTMLAttributes<HTMLTableElement>;
+        GridView: React.HTMLAttributes<HTMLDivElement>;
+    };
 };
 ```
 
@@ -174,18 +182,23 @@ type Config = {
 Connect your translation library once when configuring `Crud`. Forms can then pass translation keys directly:
 
 ```tsx
-<Crud config={{
-  translate: (key, options) => t(key, {
-    ...options?.properties,
-    ...(options?.domain ? {ns: options.domain} : {}),
-  }),
-  templates,
-}}>
-  <FormGroup name="vat" options={{
-    label: 'VAT',
-    attr: {'aria-label': 'Registered for VAT'},
-    label_attr: {title: 'Registered for VAT'},
-  }}/>
+<Crud
+    config={{
+        translate: (key, options) =>
+            t(key, {
+                ...options?.properties,
+                ...(options?.domain ? { ns: options.domain } : {})
+            }),
+        templates
+    }}>
+    <FormGroup
+        name="vat"
+        options={{
+            label: "VAT",
+            attr: { "aria-label": "Registered for VAT" },
+            label_attr: { title: "Registered for VAT" }
+        }}
+    />
 </Crud>
 ```
 
@@ -207,17 +220,17 @@ Each action looks like this:
 
 ```ts
 type ActionType = {
-  entity: string;
-  namespace?: string;
-  name: string;
-  title?: string;
-  visibility?: 'list' | 'object' | 'internal';
-  permission?: string;
-  route?: {
-    path: string;
-    defaults?: { [key: string]: string };
-    methods?: string[];
-  };
+    entity: string;
+    namespace?: string;
+    name: string;
+    title?: string;
+    visibility?: "list" | "object" | "internal";
+    permission?: string;
+    route?: {
+        path: string;
+        defaults?: { [key: string]: string };
+        methods?: string[];
+    };
 };
 ```
 
@@ -225,26 +238,26 @@ Example:
 
 ```json
 [
-  {
-    "entity": "Article",
-    "namespace": "blog",
-    "name": "list",
-    "title": "Articles",
-    "visibility": "list",
-    "route": {
-      "path": "/article"
+    {
+        "entity": "Article",
+        "namespace": "blog",
+        "name": "list",
+        "title": "Articles",
+        "visibility": "list",
+        "route": {
+            "path": "/article"
+        }
+    },
+    {
+        "entity": "Article",
+        "namespace": "blog",
+        "name": "edit",
+        "title": "Edit article",
+        "visibility": "object",
+        "route": {
+            "path": "/article/{id}/edit"
+        }
     }
-  },
-  {
-    "entity": "Article",
-    "namespace": "blog",
-    "name": "edit",
-    "title": "Edit article",
-    "visibility": "object",
-    "route": {
-      "path": "/article/{id}/edit"
-    }
-  }
 ]
 ```
 
@@ -254,24 +267,24 @@ The default list view expects a payload compatible with:
 
 ```ts
 type ListType = {
-  title: string | null;
-  entity: {
-    name: string;
-    columns: ColumnType[];
-    primaryColumn: ColumnType;
-    data: {
-      items: Array<{ [key: string]: any }>;
-      meta: ListMetaType;
+    title: string | null;
+    entity: {
+        name: string;
+        columns: ColumnType[];
+        primaryColumn: ColumnType;
+        data: {
+            items: Array<{ [key: string]: any }>;
+            meta: ListMetaType;
+        };
+        acl: { [key: string]: Array<number | string> };
     };
-    acl: { [key: string]: Array<number | string> };
-  };
-  form: {
-    [key: string]: FormType;
-    filter: FormType;
-    batch: FormType;
-  };
-  sort: { [key: string]: 'ASC' | 'DESC' | null };
-  action: { [key: string]: ActionType };
+    form: {
+        [key: string]: FormType;
+        filter: FormType;
+        batch: FormType;
+    };
+    sort: { [key: string]: "ASC" | "DESC" | null };
+    action: { [key: string]: ActionType };
 };
 ```
 
@@ -289,11 +302,11 @@ The default add/edit view expects:
 
 ```ts
 type ModifyType = {
-  title: string | null;
-  object: { [key: string]: any } | null;
-  form: { [key: string]: FormType };
-  messages: { [key: string]: string[] };
-  redirect?: RedirectType;
+    title: string | null;
+    object: { [key: string]: any } | null;
+    form: { [key: string]: FormType };
+    messages: { [key: string]: string[] };
+    redirect?: RedirectType;
 };
 ```
 
@@ -306,7 +319,7 @@ Dynamic views are loaded from the `templates` object you pass through `CrudConfi
 Typical setup:
 
 ```ts
-const templates = import.meta.glob('./crud/**');
+const templates = import.meta.glob("./crud/**");
 ```
 
 The resolver looks for files in this order:
@@ -335,37 +348,44 @@ View names are normalized to PascalCase, so:
 ### Minimal override example
 
 ```tsx
-import { AsTemplate, Block, Extend, Parent, Translation as T } from '@dakataa/crud-react';
+import { AsTemplate, Block, Extend, Parent, Translation as T } from "@dakataa/crud-react";
 
-export default AsTemplate(() => {
-  return (
-    <section className="custom-list">
-      <header>
-        <Block name="title">
-          <h2><T>Custom list title</T></h2>
-        </Block>
-      </header>
+export default AsTemplate(
+    () => {
+        return (
+            <section className="custom-list">
+                <header>
+                    <Block name="title">
+                        <h2>
+                            <T>Custom list title</T>
+                        </h2>
+                    </Block>
+                </header>
 
-      <main>
-        <Block name="content" />
-      </main>
-    </section>
-  );
-}, { name: 'list' });
+                <main>
+                    <Block name="content" />
+                </main>
+            </section>
+        );
+    },
+    { name: "list" }
+);
 ```
 
 Example of extending an existing template block:
 
 ```tsx
-import { Extend, Parent } from '@dakataa/crud-react';
+import { Extend, Parent } from "@dakataa/crud-react";
 
 export default function CustomModifyNavigation() {
-  return (
-    <Extend name="navigation">
-      <Parent />
-      <a href="/help" className="btn btn-sm btn-outline-secondary">Help</a>
-    </Extend>
-  );
+    return (
+        <Extend name="navigation">
+            <Parent />
+            <a href="/help" className="btn btn-sm btn-outline-secondary">
+                Help
+            </a>
+        </Extend>
+    );
 }
 ```
 
@@ -374,16 +394,21 @@ export default function CustomModifyNavigation() {
 The package exports its own lightweight router:
 
 ```tsx
-import { Router, Route, Outlet } from '@dakataa/crud-react';
+import { Router, Route, Outlet } from "@dakataa/crud-react";
 ```
 
 Example:
 
 ```tsx
 <Router>
-  <Route element={<MainLayout><Outlet /></MainLayout>}>
-    <Route path="*" element={<CrudLoader />} />
-  </Route>
+    <Route
+        element={
+            <MainLayout>
+                <Outlet />
+            </MainLayout>
+        }>
+        <Route path="*" element={<CrudLoader />} />
+    </Route>
 </Router>
 ```
 
@@ -405,15 +430,14 @@ If your admin panel lives under `/admin`, configure a prefix:
 
 ```tsx
 <Crud
-  config={{
-    link: {
-      prefix: 'admin',
-    },
-  }}
->
-  <Router>
-    <Route path="*" element={<CrudLoader />} />
-  </Router>
+    config={{
+        link: {
+            prefix: "admin"
+        }
+    }}>
+    <Router>
+        <Route path="*" element={<CrudLoader />} />
+    </Router>
 </Crud>
 ```
 
@@ -422,6 +446,10 @@ This lets internal CRUD routes stay backend-friendly while browser URLs include 
 ## Forms
 
 The add/edit screens are driven by `form.modify.view`.
+
+See the [Form API reference](src/component/form/README.md) for props, hooks,
+value lifecycle and short implementation examples. Version 2 removes the tuple
+`UseForm` API; see the [migration notes](src/component/form/README.md#migration-from-v1).
 
 Default behavior:
 
@@ -435,10 +463,10 @@ Default behavior:
 ### Default form rendering
 
 ```tsx
-import { Modify } from '@dakataa/crud-react';
+import { Modify } from "@dakataa/crud-react";
 
 export default function EditArticle() {
-  return <Modify />;
+    return <Modify />;
 }
 ```
 
@@ -448,22 +476,89 @@ If you need custom rendering around the form schema:
 
 ```tsx
 import {
-  CrudForm,
-  FormFieldViewLoader,
-  FormGroup,
-  FormRest,
-  FormRestError,
-  FormViewProvider,
-} from '@dakataa/crud-react';
+    CrudForm,
+    FormFieldViewLoader,
+    FormGroup,
+    FormRest,
+    FormRestError,
+    FormViewProvider
+} from "@dakataa/crud-react";
 ```
 
 Useful helpers:
 
 - `UseFormView()`: access the current form view node
+- `useFormValue(field)`: observe one store value without registering a control
+- `useFormValues(fields)`: observe several values for dependent UI or calculations
+- `choiceToken`, `choiceList`, `selectionTokens`: normalize choices and selection values
 - `FormFieldViewLoader`: render fields from the current schema node
 - `FormGroup`: render the current schema node or one of its direct children
 - `FormRest`: render non-explicitly-rendered fields
 - `FormRestError`: render non-explicitly-rendered errors
+
+### Current values and field lifecycle
+
+`FormView` describes the backend schema and initial values. Treat its nodes as
+immutable: modifying `UseFormView().form.data` does not update an editable field.
+The base `Form` owns current values and collection rows, so hiding and remounting
+fields preserves drafts, additions, and deletions. A field subscribes to its own
+value and errors rather than rerendering the entire form on each edit.
+
+Use `UseFormView().setValue(relativeName, value)` or the existing `FormRef`
+`setValue`, `setValues`, and `setFormData` methods for programmatic changes.
+Values can be set while a field is unmounted. `setValue()` followed immediately
+by `getFormData()` or `submit()` sees the updated values. Ordinary native inputs
+in custom templates continue to participate in native submission; use the
+binding hook when their drafts must also survive unmounting.
+
+```tsx
+import { useFormField, UseFormView } from "@dakataa/crud-react";
+
+function CustomTitle() {
+    const { form: view } = UseFormView();
+    const field = useFormField(view);
+
+    return (
+        <input
+            name={field.name}
+            value={Array.isArray(field.value) ? "" : (field.value ?? "")}
+            aria-invalid={field.errors.length > 0}
+            onChange={(event) => {
+                field.change(event.target.value);
+            }}
+        />
+    );
+}
+```
+
+The hook returns `value`, `errors`, `dirty`, the HTML `name`, and `change`.
+`change` also accepts a function of the current value for grouped selections.
+Checkbox/radio components control `checked` separately from their submitted
+option token. File inputs remain native; reset clears their selection, and
+remounting their DOM node does not restore the browser file picker.
+
+`FormField` and `FormGroup` still shallowly apply `options` without mutating the
+backend node. An override of `data`, `value`, or `checked` supplies a local
+initial default once per field/session. Update a current value through the form
+API rather than changing that override. Binding-owned HTML attributes (`value`,
+`defaultValue`, `checked`, `defaultChecked`, and `name`) cannot be overridden via
+`attr`. Existing event callbacks are composed with the binding; preventing the
+change event cancels the edit.
+
+A refresh of the same record updates pristine fields and the reset baseline
+while retaining drafts and local collection changes. An invalid submit keeps
+the original baseline and applies backend errors. A successful submit adopts
+persisted values as the new baseline, retaining any edits made after submission.
+Collection responses must retain stable row names; row identity is never inferred
+from its position. Changing the edited record starts a new form session. Filter
+forms start a new session when the applied query changes, excluding refresh
+`_ts` parameters.
+
+Both a native reset button and `FormRef.reset()` restore the current baseline,
+including collection rows, and clear errors and submission status. Preserving a
+cached value does not automatically submit it: unmounted and disabled controls
+are excluded, while mounted hidden controls, repeated names, native controls,
+files, and the submit button retain standard `FormData` behavior.
 
 ### `FormGroup`
 
@@ -472,15 +567,15 @@ Useful helpers:
 provider automatically.
 
 ```tsx
-import { FormGroup } from '@dakataa/crud-react';
+import { FormGroup } from "@dakataa/crud-react";
 
 export default function ArticleFields() {
-  return (
-    <>
-      <FormGroup name="title" />
-      <FormGroup name="content" />
-    </>
-  );
+    return (
+        <>
+            <FormGroup name="title" />
+            <FormGroup name="content" />
+        </>
+    );
 }
 ```
 
@@ -495,9 +590,9 @@ The component accepts the exported `FormGroupProps` type:
 
 ```ts
 export type FormGroupProps = {
-  name?: string;
-  options?: Omit<FormViewType, 'type'>;
-  optional?: boolean;
+    name?: string;
+    options?: Omit<FormViewType, "type">;
+    optional?: boolean;
 };
 ```
 
@@ -508,23 +603,23 @@ Consumers can import it with
 type of each individual property; therefore `options` is listed with its own
 `Omit<FormViewType, 'type'>` type.
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | current view | Selects a direct child of the current form view. Dotted paths are not supported. |
-| `options` | `Omit<FormViewType, 'type'>` | `{}` | Applies shallow schema overrides for this render. The field type cannot be changed. |
-| `optional` | `boolean` | `false` | Returns `null` when the selected child is missing instead of throwing an error. |
+| Prop       | Type                         | Default      | Description                                                                         |
+| ---------- | ---------------------------- | ------------ | ----------------------------------------------------------------------------------- |
+| `name`     | `string`                     | current view | Selects a direct child of the current form view. Dotted paths are not supported.    |
+| `options`  | `Omit<FormViewType, 'type'>` | `{}`         | Applies shallow schema overrides for this render. The field type cannot be changed. |
+| `optional` | `boolean`                    | `false`      | Returns `null` when the selected child is missing instead of throwing an error.     |
 
 Use `options` to customize the selected schema node without changing the
 backend response:
 
 ```tsx
 <FormGroup
-  name="price"
-  options={{
-    label: 'Unit price',
-    help: 'Enter the amount before tax.',
-    attr: { className: 'form-control text-end' },
-  }}
+    name="price"
+    options={{
+        label: "Unit price",
+        help: "Enter the amount before tax.",
+        attr: { className: "form-control text-end" }
+    }}
 />
 ```
 
@@ -536,11 +631,17 @@ explicitly:
 
 ```tsx
 <FormGroup name="companyNumber" optional />
+<FormField name="companyNumber" optional />
 ```
 
 Without `optional`, a missing child throws
 `Missing Provided Form View to Form Group: companyNumber`. Rendering outside a
 `FormViewProvider` throws `UseFormView must be used within a FormViewProvider.`
+
+`FormField` also accepts `optional`, which defaults to `false`. When the named
+child is missing, it returns `null` if `optional` is set; otherwise it throws
+`Missing Form View for FormField: companyNumber`. Existing fields still render
+normally, including their `required` validation.
 
 ## Hooks and contexts
 
@@ -562,7 +663,7 @@ Fetch arbitrary data through the configured CRUD requester.
 
 ```tsx
 const { results, status, refresh, cancel } = GetData({
-  path: '/article',
+    path: "/article"
 });
 ```
 
@@ -572,12 +673,12 @@ Fetch data using an `ActionRequest`.
 
 ```tsx
 const data = GetDataByAction({
-  actionRequest: {
-    action: {
-      entity: 'Article',
-      name: 'list',
-    },
-  },
+    actionRequest: {
+        action: {
+            entity: "Article",
+            name: "list"
+        }
+    }
 });
 ```
 
@@ -585,12 +686,13 @@ Returned shape:
 
 ```ts
 type GetDataType = {
-  url: string;
-  status: number;
-  results: any;
-  response?: Response;
-  refresh: () => void;
-  cancel: () => void;
+    url: string;
+    status: number;
+    results: any;
+    response?: Response;
+    refresh: () => void;
+    cancel: () => void;
+    registerErrorHandler?: (handler: (error: unknown) => boolean) => () => void;
 };
 ```
 
@@ -702,3 +804,66 @@ If you want, the next useful step is to split this README into:
 - a `/docs` folder with standalone guides such as `backend-contract.md`, `templates.md`, `forms.md`, and `recipes.md`
 
 That usually makes the onboarding flow easier for new users.
+
+## Tests
+
+Tests live in `tests/`, grouped by the behavior they verify:
+
+- `tests/form/`: form APIs, controls, values, state and value lifecycle.
+- `tests/form/choices.test.tsx`: choice helpers, selection, placeholders and transforms.
+- `tests/crud/`: CRUD form requests and response handling.
+
+Use descriptive file names without repeating the feature folder name. Add related
+cases to the existing file and organize them with shallow `describe` groups.
+Split large files by behavior within their feature folder when needed. A test
+that uses a Choice control to verify a general form API stays with that API.
+
+```bash
+npm test
+npm run test:form
+npm run test:crud
+npm test -- tests/form/choices.test.tsx
+```
+
+## Code style
+
+This project and the related React projects use the same formatting profile:
+
+- Four spaces, UTF-8, LF line endings, and a final newline.
+- Double quotes by default, semicolons, no trailing commas, and a target line width of 100.
+- Braces for all control statements, no nested ternaries, and top-level `import type` declarations.
+- Concise bodies for simple arrow functions; multiline blocks for multiple statements or complex logic.
+
+`.editorconfig` provides basic editor settings. `.prettierrc.json` controls formatting,
+and `eslint.code-style.js` defines the shared code rules. ESLint uses
+`eslint-config-prettier` to disable formatting rules that conflict with Prettier.
+The formatter and ESLint versions are pinned in `package.json`.
+
+For specific files, use the project-local tools:
+
+```bash
+npm exec -- eslint --fix path/to/file.tsx
+npm exec -- prettier --write path/to/file.tsx
+npm exec -- eslint path/to/file.tsx
+npm exec -- prettier --check path/to/file.tsx
+```
+
+Repository-wide commands are available as `npm run format`, `npm run format:check`,
+`npm run lint`, and `npm run lint:fix`. The checks also report legacy code that
+has not yet adopted this profile. Format edited files during normal work;
+repository-wide style migration should be a separate change.
+
+### PhpStorm
+
+1. Enable EditorConfig support under **Settings → Editor → Code Style**.
+2. Open **Settings → Languages & Frameworks → JavaScript → Prettier**.
+3. Select the project's `node_modules/prettier` package. Enable **Run on save** and
+   **Run on 'Reformat Code' action**. If necessary, select manual configuration to
+   expose the reformat setting. Use `**/*.{js,jsx,ts,tsx,cjs,mjs,json,css,scss}` as the
+   file pattern and keep the repository's `.prettierignore` enabled.
+4. Enable automatic ESLint configuration under **JavaScript → Code Quality Tools → ESLint**.
+
+Other editors and agents should use the same project-local formatter, ESLint,
+and configuration files. When adding a related project, copy the shared
+`.editorconfig`, `.prettierrc.json`, `.prettierignore`, and `eslint.code-style.js`,
+import the code rules into its ESLint configuration, and pin the same tool versions.

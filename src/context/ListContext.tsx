@@ -1,69 +1,80 @@
-import React, {PropsWithChildren, SyntheticEvent} from "react";
-import {ListType} from "@crud-react/type/ListType.tsx";
-import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
-import {ActionType, ActionVisibility} from "@crud-react/type/ActionType.tsx";
-import {GetDataType, UseDataProvider} from "@crud-react/context/GetData.tsx";
-import {UseCurrentActionRequest} from "@crud-react/component/crud/CrudLoader.tsx";
-import {UseActions} from "@crud-react/context/ActionContext.tsx";
-import {UseModal} from "@crud-react/context/ModalContext.tsx";
-import {Icon, Result, UseAlert} from "@crud-react/context/AlertContext.tsx";
-import {objectRemoveEmpty} from "@crud-react/helper/ObjectUtils.tsx";
-import {CrudRequester} from "@crud-react/Crud.tsx";
-import {Method, RequestBodyType} from "@dakataa/requester";
-import {ColumnType} from "@crud-react/type/ColumnType.tsx";
-import {ChoiceType, FormViewType} from "@crud-react/type/FormViewType.tsx";
+import type { PropsWithChildren, SyntheticEvent } from "react";
+import type { ListType } from "@crud-react/type/ListType.tsx";
+import type { ActionRequestType } from "@crud-react/type/ActionRequestType.tsx";
+import type { ActionType } from "@crud-react/type/ActionType.tsx";
+import type { GetDataType } from "@crud-react/context/GetData.tsx";
+import type { Result } from "@crud-react/context/AlertContext.tsx";
+import type { ColumnType } from "@crud-react/type/ColumnType.tsx";
+import type { ChoiceType, FormViewType } from "@crud-react/type/FormViewType.tsx";
+import React from "react";
+import { ActionVisibility } from "@crud-react/type/ActionType.tsx";
+import { UseDataProvider } from "@crud-react/context/GetData.tsx";
+import { UseCurrentActionRequest } from "@crud-react/component/crud/CrudLoader.tsx";
+import { UseActions } from "@crud-react/context/ActionContext.tsx";
+import { UseModal } from "@crud-react/context/ModalContext.tsx";
+import { Icon, UseAlert } from "@crud-react/context/AlertContext.tsx";
+import { objectRemoveEmpty } from "@crud-react/helper/ObjectUtils.tsx";
+import { CrudRequester } from "@crud-react/Crud.tsx";
+import { Method, RequestBodyType } from "@dakataa/requester";
+import { choiceToken } from "@crud-react/component/form/formChoices.ts";
 
 export type ListContextPropsType = {
     embedded?: boolean;
     onClick?: (props: ActionRequestType, event?: SyntheticEvent) => void;
-}
+};
 
 const ListItemContext = React.createContext<ListContextPropsType | undefined>(undefined);
 
 type ListItemRow = Record<string, string | number | null>;
 
-export function UseList(safe: boolean = true) {
+export function UseList<Item extends object = ListItemRow>(safe: boolean = true) {
     const context = React.useContext<ListContextPropsType | undefined>(ListItemContext);
     if (context === undefined) {
         if (safe) {
-            throw new Error("UseList must be within ListProvider")
+            throw new Error("UseList must be within ListProvider");
         }
 
         return {};
     }
 
-    const dataProvider = UseDataProvider() as GetDataType & { response: ListType };
+    const dataProvider = UseDataProvider() as GetDataType & { results: ListType };
     if (!dataProvider) {
         throw new Error("No Data provided. Use DataProvider.");
     }
 
-    const {results: data, refresh} = dataProvider;
+    const { results: data, refresh } = dataProvider;
 
-    const {actionRequest: currentActionRequest, setActionRequest} = UseCurrentActionRequest();
-    const {generateActionLink, navigate} = UseActions()
-    const {openModal} = UseModal();
-    const {open: openAlert} = UseAlert();
-    const {embedded, onClick: onAction} = context;
+    const { actionRequest: currentActionRequest, setActionRequest } = UseCurrentActionRequest();
+    const { generateActionLink, navigate } = UseActions();
+    const { openModal } = UseModal();
+    const { open: openAlert } = UseAlert();
+    const { embedded, onClick: onAction } = context;
 
     const primaryColumn = data?.entity?.primaryColumn;
-    const columns = (data?.entity?.columns || []).filter((c: ColumnType) => c.visible).filter((c: ColumnType) => c.group !== false);
+    const columns = (data?.entity?.columns || [])
+        .filter((c: ColumnType) => c.visible)
+        .filter((c: ColumnType) => c.group !== false);
     const actions = Object.values(data?.action || []) as ActionType[];
     const getActions = (visibility: ActionVisibility) => {
-        return (Object.values(data?.action ?? []) as ActionType[]).filter(a => a.visibility === visibility && a.name !== currentActionRequest.action.name);
-    }
+        return (Object.values(data?.action ?? []) as ActionType[]).filter(
+            (a) => a.visibility === visibility && a.name !== currentActionRequest.action.name
+        );
+    };
 
     const getAction = (actionName: string): ActionType | undefined => {
-        return (Object.values(data?.action ?? []) as ActionType[]).filter(a => a.name === actionName).shift();
-    }
+        return (Object.values(data?.action ?? []) as ActionType[])
+            .filter((a) => a.name === actionName)
+            .shift();
+    };
 
     const getActionRequests = (visibility: ActionVisibility) => {
-        return getActions(visibility).map(action => (
-            {
+        return getActions(visibility).map((action) => {
+            return {
                 ...currentActionRequest,
                 action
-            }
-        ));
-    }
+            };
+        });
+    };
 
     const getActionRequest = (actionName: string): ActionRequestType | undefined => {
         const action = getAction(actionName);
@@ -75,23 +86,29 @@ export function UseList(safe: boolean = true) {
         return {
             ...currentActionRequest,
             action
-        }
-    }
+        };
+    };
 
-    const objectActions = actions.filter((a: ActionType) => a.visibility === ActionVisibility.Object);
+    const objectActions = actions.filter(
+        (a: ActionType) => a.visibility === ActionVisibility.Object
+    );
     const columnsTotal = columns.length + (actions.length ? 1 : 0);
 
-    const items: ListItemRow[] = data?.entity?.data.items ?? [];
+    const items = (data?.entity?.data.items ?? []) as Item[];
 
-    const filterData = ({newAction, excludeFilterParameters, clear}: {
-        newAction?: ActionRequestType,
-        excludeFilterParameters?: [string],
-        clear?: boolean
+    const filterData = ({
+        newAction,
+        excludeFilterParameters,
+        clear
+    }: {
+        newAction?: ActionRequestType;
+        excludeFilterParameters?: [string];
+        clear?: boolean;
     }): void => {
-        const filterAction = {...(newAction || currentActionRequest)};
+        const filterAction = { ...(newAction || currentActionRequest) };
         excludeFilterParameters?.forEach((key) => {
             delete filterAction.query?.filter?.[key];
-        })
+        });
 
         if (clear) {
             delete filterAction.query?.filter;
@@ -103,7 +120,7 @@ export function UseList(safe: boolean = true) {
             const url = generateActionLink(filterAction);
             navigate(url);
         }
-    }
+    };
 
     const handleAction = (actionRequest: ActionRequestType, event?: SyntheticEvent) => {
         if (onAction?.(actionRequest, event)) {
@@ -112,7 +129,10 @@ export function UseList(safe: boolean = true) {
 
         event?.preventDefault();
 
-        actionRequest.parameters = {...(actionRequest.parameters || {}), ...(currentActionRequest.parameters || {})}
+        actionRequest.parameters = {
+            ...(actionRequest.parameters || {}),
+            ...(currentActionRequest.parameters || {})
+        };
         actionRequest.parameters = objectRemoveEmpty(actionRequest.parameters as object);
         if (!Object.keys(actionRequest.parameters as object).length) {
             actionRequest.parameters = undefined;
@@ -125,23 +145,26 @@ export function UseList(safe: boolean = true) {
         }
 
         switch (actionRequest.action.name) {
-            case 'list': {
-                return filterData({newAction: actionRequest});
+            case "list": {
+                return filterData({ newAction: actionRequest });
             }
-            case 'delete': {
+            case "delete": {
                 openAlert({
-                    title: 'Are you sure?',
+                    title: "Are you sure?",
                     icon: Icon.confirm,
                     onResult: (result: Result) => {
                         if (result.isConfirmed) {
-                            CrudRequester().fetch({
-                                url: generateActionLink(actionRequest),
-                                method: Method.DELETE
-                            }).catch((e) => {
-                                console.log('error', e);
-                            }).finally(() => {
-                                refresh?.();
-                            });
+                            CrudRequester()
+                                .fetch({
+                                    url: generateActionLink(actionRequest),
+                                    method: Method.DELETE
+                                })
+                                .catch((e) => {
+                                    console.log("error", e);
+                                })
+                                .finally(() => {
+                                    refresh?.();
+                                });
                         }
                     }
                 });
@@ -153,7 +176,7 @@ export function UseList(safe: boolean = true) {
             openModal({
                 action: actionRequest,
                 props: {
-                    size: 'lg',
+                    size: "lg",
                     onClose: () => {
                         refresh?.();
                     }
@@ -163,62 +186,93 @@ export function UseList(safe: boolean = true) {
             return;
         }
 
-        filterData({newAction: actionRequest});
-    }
+        filterData({ newAction: actionRequest });
+    };
 
     const handleBatchAction = (method: string, ids: any, data: FormData): Promise<void> => {
         return new Promise((resolve, reject) => {
             openAlert({
-                title: 'Are you sure?',
+                title: "Are you sure?",
                 icon: Icon.confirm,
                 onResult: (result: Result) => {
                     if (result.isConfirmed) {
-                        CrudRequester().post({
-                            url: generateActionLink(currentActionRequest),
-                            body: data,
-                            bodyType: RequestBodyType.FormData
-                        }).catch(() => {
-                            reject();
-                        }).finally(() => {
-                            refresh?.();
-                            resolve();
-                        });
+                        CrudRequester()
+                            .post({
+                                url: generateActionLink(currentActionRequest),
+                                body: data,
+                                bodyType: RequestBodyType.FormData
+                            })
+                            .catch(() => {
+                                reject();
+                            })
+                            .finally(() => {
+                                refresh?.();
+                                resolve();
+                            });
                     } else {
                         reject();
                     }
                 }
             });
         });
-    }
+    };
 
-    const getValue = (view: FormViewType) => {
+    const getValue = (view: FormViewType): string | number | null => {
         if (view.choices !== undefined) {
-            const choices = view.choices?.reduce<ChoiceType[]>((result, c) => ([...result, ...('choices' in c ? c.choices : [c])]), []).reduce<{
-                [key: string]: string
-            }>((result, choice) => {
-                const choiceValue = choice.value instanceof Function ? choice.value(choice) : choice.value;
-                const choiceLabel = choice.label instanceof Function ? choice.label(choice) : choice.label
-                return ({...result, [choiceValue]: choiceLabel})
-            }, {});
+            const choices = view.choices
+                ?.reduce<ChoiceType[]>(
+                    (result, c) => [
+                        ...result,
+                        ...("choices" in c ? Object.values(c.choices) : [c])
+                    ],
+                    []
+                )
+                .reduce<{
+                    [key: string]: string;
+                }>((result, choice) => {
+                    const choiceValue = choiceToken(choice);
+                    const choiceLabel =
+                        choice.label instanceof Function ? choice.label(choice) : choice.label;
+                    return { ...result, [choiceValue]: choiceLabel };
+                }, {});
 
-            return (view.choices ? Object.values(view.data instanceof Object ? view.data : [view.data]).map((k: any) => choices[k] ?? k).join(', ') : view.data);
-        } else if (view.checked !== undefined) {
-            return view.checked ? 'Yes' : 'No';
+            return (
+                Object.values(view.data instanceof Object ? view.data : [view.data])
+                    .map((k: any) => choices[k] ?? k)
+                    .join(", ") || null
+            );
         }
 
-        return view.data;
-    }
+        const children = Object.values(view.children || {});
+        if (children.length > 0) {
+            return (
+                children
+                    .map(getValue)
+                    .filter((value) => value !== null)
+                    .join(", ") || null
+            );
+        }
+
+        if (view.data == null || view.data === "") {
+            return null;
+        }
+
+        if (view.checked !== undefined) {
+            return view.checked ? "Yes" : "No";
+        }
+
+        return typeof view.data === "string" || typeof view.data === "number" ? view.data : null;
+    };
 
     const appliedFilters = Object.values<FormViewType>(data?.form?.filter?.view?.children || [])
-        .filter(item => item.data !== null)
         .map((item) => {
             return {
                 label: item.label,
                 value: getValue(item),
                 formView: item
             };
-        });
-
+        })
+        .filter((item) => item.value !== null);
 
     return {
         data,
@@ -237,12 +291,16 @@ export function UseList(safe: boolean = true) {
         getActionRequest,
         handleBatchAction,
         appliedFilters
-    }
+    };
 }
 
-export function ListProvider({embedded, onClick, children}: ListContextPropsType & PropsWithChildren) {
+export function ListProvider({
+    embedded,
+    onClick,
+    children
+}: ListContextPropsType & PropsWithChildren) {
     return (
-        <ListItemContext.Provider value={{embedded, onClick}}>
+        <ListItemContext.Provider value={{ embedded, onClick }}>
             {children}
         </ListItemContext.Provider>
     );
