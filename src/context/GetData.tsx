@@ -1,21 +1,15 @@
-import React, {
-    ComponentType,
-    FC,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useRef,
-    useState
-} from 'react';
-import { ListType } from '@crud-react/type/ListType.tsx';
-import { ModifyType } from '@crud-react/type/ModifyType.tsx';
-import { UseActions } from '@crud-react/context/ActionContext.tsx';
-import HttpException from '@crud-react/component/error/HttpException.tsx';
-import { CrudRequester } from '@crud-react/Crud.tsx';
-import { UseCurrentActionRequest } from '@crud-react/component/crud/CrudLoader.tsx';
-import { ActionRequestType } from '@crud-react/type/ActionRequestType.tsx';
-import { Method, RequestBodyType } from '@dakataa/requester';
-import { formErrors } from '@crud-react/component/form/formView.ts';
+import type { ComponentType, FC, ReactNode } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { ListType } from "@crud-react/type/ListType.tsx";
+import type { ModifyType } from "@crud-react/type/ModifyType.tsx";
+import { UseActions } from "@crud-react/context/ActionContext.tsx";
+import HttpException from "@crud-react/component/error/HttpException.tsx";
+import { CrudRequester } from "@crud-react/Crud.tsx";
+import { UseCurrentActionRequest } from "@crud-react/component/crud/CrudLoader.tsx";
+import type { ActionRequestType } from "@crud-react/type/ActionRequestType.tsx";
+import type { RequestBodyType } from "@dakataa/requester";
+import { Method } from "@dakataa/requester";
+import { formErrors } from "@crud-react/component/form/formView.ts";
 
 const GetDataContext = React.createContext<GetDataType | null>(null);
 
@@ -77,7 +71,7 @@ const GetData = ({
 }: GetDataProps & {
     path: string;
     method?: Method;
-    body?: FormData | string | { [key: string]: any };
+    body?: FormData | string | { [key: string]: unknown };
     bodyType?: RequestBodyType;
 }): GetDataType => {
     const enabled = useRef(loadOnInit);
@@ -95,7 +89,7 @@ const GetData = ({
     path = externalToInternalPath(path);
 
     const cancel = useCallback(() => {
-        loading.current?.abort('canceled');
+        loading.current?.abort("canceled");
         loading.current = null;
     }, []);
 
@@ -165,7 +159,7 @@ const GetData = ({
 
                 if ([400, 500].includes(primaryStatus) && !isValidationResponse) {
                     const detail =
-                        typeof data?.detail === 'string' ? data.detail : response.statusText;
+                        typeof data?.detail === "string" ? data.detail : response.statusText;
                     const trace = Array.isArray(data?.trace) ? data.trace : undefined;
 
                     throw new HttpException(response.status, detail, trace);
@@ -202,7 +196,7 @@ const GetData = ({
                 }
             });
         return () => {
-            controller.abort('canceled');
+            controller.abort("canceled");
 
             if (loading.current === controller) {
                 loading.current = null;

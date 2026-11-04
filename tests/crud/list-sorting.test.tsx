@@ -17,11 +17,16 @@ import GridView from "@crud-react/component/crud/GridView.tsx";
 import List from "@crud-react/component/crud/List.tsx";
 import Link from "@crud-react/component/Link.tsx";
 
-const mocks = vi.hoisted(() => ({ fetch: vi.fn(), click: vi.fn(), embedded: false }));
+const mocks = vi.hoisted(() => ({
+    fetch: vi.fn(),
+    get: vi.fn(),
+    click: vi.fn(),
+    embedded: false
+}));
 
 vi.mock("@crud-react/Crud.tsx", () => ({
     CRUD_NAMESPACE: "sorting-test",
-    CrudRequester: () => ({ fetch: mocks.fetch })
+    CrudRequester: () => ({ fetch: mocks.fetch, get: mocks.get })
 }));
 vi.mock("@crud-react/component/crud/ViewLoader.tsx", () => ({
     ViewLoader: () => <TestList />
@@ -82,12 +87,17 @@ function PropertyTabs() {
 
 beforeEach(() => {
     mocks.fetch.mockReset();
+    mocks.get.mockReset();
     mocks.click.mockReset();
     window.history.replaceState(null, "", "/items");
     sessionStorage.setItem(
         "actions",
         btoa(JSON.stringify([{ name: "list", entity: "item", route: { path: "/items" } }]))
     );
+    mocks.get.mockResolvedValue({
+        status: 200,
+        data: [{ name: "list", entity: "item", route: { path: "/items" } }]
+    });
     Requester.namespace ??= {};
     Requester.namespace["sorting-test"] = {};
     mocks.fetch.mockImplementation(async ({ url }: { url: string }) => {
@@ -151,20 +161,18 @@ it.each([
 
 it.each([false, true])("sorts a nested list in an Activity tab (revisit=%s)", async (revisit) => {
     const user = userEvent.setup();
-    sessionStorage.setItem(
-        "actions",
-        btoa(
-            JSON.stringify([
-                { name: "view", entity: "property", route: { path: "/properties/{id}" } },
-                {
-                    name: "list",
-                    entity: "buildingTransaction",
-                    namespace: "dashboard/building/transaction",
-                    route: { path: "/buildings/{building_id}/transactions" }
-                }
-            ])
-        )
-    );
+    const actions = [
+        { name: "view", entity: "property", route: { path: "/properties/{id}" } },
+        {
+            name: "list",
+            entity: "buildingTransaction",
+            namespace: "dashboard/building/transaction",
+            route: { path: "/buildings/{building_id}/transactions" }
+        }
+    ];
+
+    sessionStorage.setItem("actions", btoa(JSON.stringify(actions)));
+    mocks.get.mockResolvedValue({ status: 200, data: actions });
     const screen = render(
         <ConfigProvider config={{}}>
             <ActionProvider>
