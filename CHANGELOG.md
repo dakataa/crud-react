@@ -75,7 +75,7 @@ Renamed public exports:
 
 1. Update `@dakataa/crud-react` to `^2.0.0` and `@dakataa/requester` to `^3.0.0`.
 2. Apply the API changes above. For custom forms, follow the
-   [Form API migration guide](https://github.com/dakataa/crud-react/blob/v2.0.0/src/component/form/README.md#migration-from-v1).
+   [Form API migration guide](https://github.com/dakataa/crud-react/blob/2.0.0/src/component/form/README.md#migration-from-v1).
 3. Check saving, validation, conditional fields, collections, translations, filters,
    sorting and modal navigation in your application.
 
