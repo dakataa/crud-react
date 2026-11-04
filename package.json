@@ -8,7 +8,8 @@
     "module": "dist/crud-react.js",
     "types": "dist/main.d.ts",
     "files": [
-        "dist"
+        "dist",
+        "CHANGELOG.md"
     ],
     "repository": {
         "type": "git",
