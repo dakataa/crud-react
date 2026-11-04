@@ -1,5 +1,6 @@
 import {ViewLoader} from "@crud-react/component/crud/ViewLoader.tsx";
-import React, {PropsWithChildren, ReactElement, useEffect, useImperativeHandle, useReducer, useState} from "react";
+import React, {useEffect, useImperativeHandle, useReducer, useRef, useState} from "react";
+import type {PropsWithChildren, ReactElement} from "react";
 import {UseActions} from "@crud-react/context/ActionContext.tsx";
 import HttpException from "@crud-react/component/error/HttpException.tsx";
 import Requester from "@dakataa/requester";
@@ -8,7 +9,7 @@ import {CRUD_NAMESPACE} from "@crud-react/Crud.tsx";
 import {NamespaceProvider} from "@crud-react/context/NamespaceContext.tsx";
 import {DataProvider} from "@crud-react/context/GetData.tsx";
 import {UseConfig} from "@crud-react/context/ConfigContext.tsx";
-import {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
+import type {ActionRequestType} from "@crud-react/type/ActionRequestType.tsx";
 
 type CurrentActionRequestContextType = {
     actionRequest: ActionRequestType,
@@ -97,8 +98,15 @@ export function CurrentActionRequestProvider({actionRequest, name, ref, ...props
         action: action
     };
 
+    const [currentActionRequest, setCurrentActionRequest] = useState(actionRequest);
+    const actionRequestKey = JSON.stringify(actionRequest);
+    const previousActionRequestKey = useRef(actionRequestKey);
+
     const refresh = () => {
-        setUpdate(Date.now());
+        setCurrentActionRequest(current => ({
+            ...current,
+            query: { ...current.query, _ts: Date.now() }
+        }));
     }
 
     useImperativeHandle(ref, () => {
@@ -107,8 +115,6 @@ export function CurrentActionRequestProvider({actionRequest, name, ref, ...props
         }
     }, []);
 
-    const [update, setUpdate] = useState(1);
-    const [currentActionRequest, setCurrentActionRequest] = useState(actionRequest);
     const context = {
         actionRequest: currentActionRequest,
         setActionRequest: setCurrentActionRequest,
@@ -116,12 +122,14 @@ export function CurrentActionRequestProvider({actionRequest, name, ref, ...props
     };
 
     useEffect(() => {
-        setCurrentActionRequest({...currentActionRequest, query: { ...currentActionRequest.query, _ts: update}});
-    }, [update]);
+        // Activity replays effects; only changed incoming props should replace local sorting/filters.
+        if (previousActionRequestKey.current === actionRequestKey) {
+            return;
+        }
 
-    useEffect(() => {
+        previousActionRequestKey.current = actionRequestKey;
         setCurrentActionRequest(actionRequest);
-    }, [JSON.stringify(actionRequest)])
+    }, [actionRequestKey])
 
     useEffect(() => {
         set(name, context);
@@ -144,8 +152,9 @@ const CrudLoader = ({path, preloader}: {
     errorFallback?: ReactElement,
     preloader?: ReactElement
 }) => {
-    if (!Requester.namespace[CRUD_NAMESPACE])
+    if (!Requester.namespace[CRUD_NAMESPACE]) {
         throw new Exception(500, 'Invalid Configuration.');
+    }
 
     const {link} = UseConfig();
     const {getActionRequestByPath, externalToInternalPath, actions} = UseActions();

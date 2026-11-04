@@ -1,98 +1,77 @@
-import React, {ChangeEvent, useEffect} from "react";
-import {UseForm} from "./Form";
-import {UseTranslate} from "@crud-react/component/Translation.tsx";
-import {Constraint} from "./constraint/Contraint";
-import {FormViewType} from "@crud-react/type/FormViewType";
-import {UseFormSettings} from "@crud-react/component/form/FormSetting.tsx";
+import React from 'react';
+import { useFormField } from './Form.tsx';
+import { UseTranslate } from '@crud-react/component/Translation.tsx';
+import type { Constraint } from './constraint/Contraint';
+import type { FormViewType } from '@crud-react/type/FormViewType';
+import { controlAttributes, resolveAttribute } from './formView.ts';
+import { UseFormSettings } from './FormSetting.tsx';
 
 export type FormFieldProps = {
     view: FormViewType;
     className?: string;
     constraints?: Constraint[];
-    onChange?: Function;
-    ref?: React.RefObject<HTMLInputElement>;
-}
+    onChange?: (value: { value: string }) => void;
+    ref?: React.Ref<HTMLTextAreaElement>;
+};
+export type InputProps = FormFieldProps;
 
-export type InputProps = {} & FormFieldProps;
-
-const Textarea = ({
-                   view,
-                   constraints,
-                   onChange,
-                   ref
-               }: InputProps):
-    React.JSX.Element => {
-
-    const [[formState, dispatch], , formElementRef] = UseForm();
-    const elementFullName = view.full_name;
-    const errorMessages = formState?.errors[elementFullName || ''] || [];
-
-    useEffect(() => {
-        dispatch({
-            action: 'constraints',
-            payload: {
-                name: elementFullName,
-                constraints: constraints || []
-            }
-        });
-
-        return () => {
-            if (!elementFullName || !formElementRef.current?.elements.namedItem(elementFullName)) {
-                dispatch({action: 'remove-constraints', payload: elementFullName});
-            }
-        };
-    }, [elementFullName, dispatch, formElementRef])
-
-    const validate = (value: any) => {
-        dispatch({action: 'validate', payload: elementFullName});
-        onChange && onChange(value);
-    }
-
-    const defaultFieldClassName = 'form-control';
-    const key = btoa(encodeURIComponent(elementFullName + JSON.stringify(view.data)));
+const Textarea = ({ view, constraints, onChange, ref }: InputProps): React.JSX.Element => {
+    const field = useFormField(view, constraints);
     const translate = UseTranslate();
-    const attr = {...(view.attr instanceof Function ? view.attr() : view.attr) || {}};
     const settings = UseFormSettings();
-    const placeholder = "placeholder" in attr ? attr.placeholder : settings?.placeholder || view?.placeholder;
+    const attr = resolveAttribute(view, "attr") || {};
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
+    const placeholder =
+        'placeholder' in attr ? attr.placeholder : settings?.placeholder || view.placeholder;
 
-    const defaultValue = view.data;
-
-    if(view.required) {
-        attr.required = 'required';
-    }
-
-    return <>
+    return (
         <textarea
+            {...controlAttributes(attr)}
             ref={ref}
-            id={view.id}
-            key={key}
-            name={elementFullName}
-            defaultValue={defaultValue}
-            aria-invalid={!errorMessages.length}
-            onInput={(e: ChangeEvent<HTMLInputElement>) => {
-                if(attr.onChange instanceof Function) {
-                    attr.onChange(e);
+            id={view.id ?? attr.id}
+            name={view.full_name}
+            required={attr.required ?? view.required}
+            disabled={attr.disabled ?? view.disabled}
+            value={Array.isArray(field.value) ? "" : (field.value ?? "")}
+            aria-invalid={!!field.errors.length}
+            onChange={(event) => {
+                if (attr.onChange instanceof Function) {
+                    attr.onChange(event);
                 }
 
-                if(e.defaultPrevented){
+                if (event.defaultPrevented) {
                     return;
                 }
 
-                validate({value: e.target.value});
+                field.change(event.target.value);
+                onChange?.({ value: event.target.value });
             }}
-            className={settings?.className || [
-                defaultFieldClassName,
-                settings?.size ? 'form-control-' + settings.size : null,
-                settings?.extraClassName,
-                ...(errorMessages.length ? ['is-invalid'] : [])
-            ].filter(v => v).join(' ')}
-            {...attr}
+            className={
+                attrClassName ??
+                settings?.className ??
+                [
+                    "form-control",
+                    settings?.size ? "form-control-" + settings.size : null,
+                    settings?.extraClassName,
+                    field.errors.length ? "is-invalid" : null
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+            }
             placeholder={typeof placeholder === "string" ? translate(placeholder) : placeholder}
             title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
-            aria-label={typeof attr["aria-label"] === "string" ? translate(attr["aria-label"]) : attr["aria-label"]}
-            aria-description={typeof attr["aria-description"] === "string" ? translate(attr["aria-description"]) : attr["aria-description"]}
+            aria-label={
+                typeof attr["aria-label"] === "string"
+                    ? translate(attr["aria-label"])
+                    : attr["aria-label"]
+            }
+            aria-description={
+                typeof attr["aria-description"] === "string"
+                    ? translate(attr["aria-description"])
+                    : attr["aria-description"]
+            }
         />
-    </>
-}
+    );
+};
 
 export default Textarea;

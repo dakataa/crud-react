@@ -1,231 +1,374 @@
-import React, {Fragment, useEffect} from "react";
-import {nameToId, UseForm} from "./Form";
-import {FormFieldProps} from "@crud-react/component/form/Input";
-import {ChoiceGroupType, ChoiceType, FormViewType} from "@crud-react/type/FormViewType";
-import Translation, {UseTranslate} from "@crud-react/component/Translation.tsx";
+import React, { useCallback } from "react";
+import { nameToId, useFormField } from "./Form.tsx";
+import type { FormFieldProps } from "./Input.tsx";
+import type { ChoiceGroupType, ChoiceType, FormViewType } from "@crud-react/type/FormViewType";
+import Translation, { UseTranslate } from "@crud-react/component/Translation.tsx";
+import { choiceToken } from "./formChoices.ts";
+import {
+    controlAttributes,
+    normalizeAttributes,
+    resolveAttribute,
+    choiceName,
+    selectedValues,
+    selectionRules,
+    stringValue,
+    initialFieldValue
+} from "./formView.ts";
 
-export type ChoiceProps = {
+export type ChoiceProps = Omit<FormFieldProps, "ref"> & {
+    choiceValueTransform?: (choice: ChoiceType) => unknown;
+    choiceLabelTransform?: Function;
+    ref?: React.Ref<HTMLSelectElement>;
+};
+
+function useChoiceField(
     view: FormViewType,
-    choiceValueTransform?: Function,
-    choiceLabelTransform?: Function
-    prototype?: string
-} & FormFieldProps;
+    constraints: ChoiceProps["constraints"],
+    transform: ChoiceProps["choiceValueTransform"]
+) {
+    const initialize = useCallback(
+        (node: FormViewType) => initialFieldValue(node, transform),
+        [transform]
+    );
 
-const SelectOption = ({view, choice}: { view: FormViewType, choice: ChoiceType }) => {
+    return useFormField(view, constraints, view.expanded && transform ? initialize : undefined);
+}
+
+const SelectOption = ({ choice }: { view: FormViewType; choice: ChoiceType }) => {
     const translate = UseTranslate();
-    const attr = (choice.attr instanceof Function ? choice.attr(choice) : choice.attr) || {};
-    const choiceLabel = choice.label instanceof Function ? choice.label(choice) : choice.label
+    const attr = resolveAttribute(choice, "attr") || {};
+    const label = resolveAttribute(choice, "label");
+
     return (
         <option
-            value={choice.value || choiceLabel}
-            {...attr}
-            title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
-        >
-            <Translation>{choiceLabel}</Translation>
+            {...controlAttributes(attr)}
+            value={choice.value == null ? stringValue(label) : choiceToken(choice)}
+            title={typeof attr.title === "string" ? translate(attr.title) : attr.title}>
+            <Translation>{label}</Translation>
         </option>
-    )
-}
+    );
+};
 
-const SelectGroupOption = ({view, group}: { view: FormViewType, group: ChoiceGroupType }) => {
+const SelectGroupOption = ({ view, group }: { view: FormViewType; group: ChoiceGroupType }) => {
     const translate = UseTranslate();
+
     return (
         <optgroup label={translate(group.label)}>
-            {Object.values(group.choices).map((c, index) => (
-                <SelectOption key={index} view={view} choice={c}/>
-            ))}
+            {Object.values(group.choices).map((choice, index) => {
+                return (
+                    <SelectOption
+                        key={choice.value == null ? index : choiceToken(choice)}
+                        view={view}
+                        choice={choice}
+                    />
+                );
+            })}
         </optgroup>
-    )
-}
+    );
+};
 
-const ChoiceOption = (
-    {
-        view,
-        choice,
-        choiceValueTransform,
-        choiceLabelTransform,
-    }: {
-        view: FormViewType,
-        choice: ChoiceType,
-    } & ChoiceProps) => {
+const ChoiceOption = ({
+    view,
+    choice,
+    constraints,
+    onChange,
+    choiceValueTransform,
+    choiceLabelTransform
+}: ChoiceProps & { choice: ChoiceType }) => {
+    const field = useChoiceField(view, constraints, choiceValueTransform);
     const translate = UseTranslate();
-    const elementName = view.full_name || '';
-    const choiceValue = choiceValueTransform ? choiceValueTransform(choice) : choice.value;
-    const choiceLabel = choiceLabelTransform ? choiceLabelTransform(choice) : choice.label;
-    const elementId = nameToId(elementName || '', choiceValue);
+    const token = choiceValueTransform
+        ? stringValue(choiceValueTransform(choice))
+        : choiceToken(choice);
+    let label: React.ReactNode;
 
-    const labelAttr = (view.label_attr instanceof Function ? view.label_attr() : view.label_attr) || {};
+    if (choiceLabelTransform) {
+        label = choiceLabelTransform(choice);
+    } else {
+        label = resolveAttribute(choice, "label");
+    }
 
-    const choiceAttributes = {
-        id: elementId,
-        ...(choice.attr instanceof Function ? choice.attr(view) : choice.attr) || {},
-        ...(view.choice_attr instanceof Function ? view.choice_attr(view) : view.choice_attr) || {},
+    const labelAttr = resolveAttribute(view, "label_attr") || {};
+    const viewAttr = resolveAttribute(view, "attr") || {};
+    const attr = {
+        ...resolveAttribute(choice, "attr"),
+        ...resolveAttribute(view, "choice_attr")
     };
-
-    const checked = view.checked instanceof Function ? view.checked(choiceValue) : view.checked;
-
-    const data = view?.data;
-    const defaultChecked = data instanceof Array ? data.includes(choiceValue) : data == choiceValue;
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
+    const labelClassName = Object.hasOwn(labelAttr, "className") ? labelAttr.className : labelAttr.class;
+    const id = attr.id ?? nameToId(view.full_name || "", token);
 
     return (
         <>
             <input
-                defaultValue={choiceValue}
-                type={view?.multiple ? 'checkbox' : 'radio'}
-                defaultChecked={checked || defaultChecked}
-                name={(elementName || '') + (view?.multiple ? '[]' : '')}
-                id={elementId}
-                className={"form-check-input"}
-                checked={checked}
-                {...choiceAttributes}
-                title={typeof choiceAttributes.title === "string" ? translate(choiceAttributes.title) : choiceAttributes.title}
-                aria-label={typeof choiceAttributes["aria-label"] === "string" ? translate(choiceAttributes["aria-label"]) : choiceAttributes["aria-label"]}
-                aria-description={typeof choiceAttributes["aria-description"] === "string" ? translate(choiceAttributes["aria-description"]) : choiceAttributes["aria-description"]}
-                // onChange={(e) => {
-                //     return validate({`
-                //         value: (view?.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value,
-                //         targetValue: e.target.value,
-                //         checked: e.target.checked
-                //     })
-                // }}
+                {...controlAttributes(attr)}
+                ref={(element) => {
+                    if (element) {
+                        selectionRules.set(element, {
+                            required: !!view.required,
+                            multiple: !!view.multiple,
+                            override: attr.required == null ? undefined : !!attr.required,
+                            emptyPlaceholder: !view.multiple && token === ""
+                        });
+                    }
+
+                    if (attr.ref instanceof Function) {
+                        attr.ref(element);
+                    } else if (attr.ref) {
+                        attr.ref.current = element;
+                    }
+                }}
+                id={id}
+                value={token}
+                type={view.multiple ? "checkbox" : "radio"}
+                name={choiceName(view)}
+                checked={
+                    !view.multiple && token === ""
+                        ? field.value == null || field.value === ""
+                        : selectedValues(field.value).includes(token)
+                }
+                disabled={attr.disabled ?? view.disabled}
+                required={
+                    attr.required ??
+                    (view.required && (!view.multiple || selectedValues(field.value).length === 0))
+                }
+                aria-invalid={!!field.errors.length}
+                className={
+                    attrClassName ??
+                    ["form-check-input", field.errors.length ? "is-invalid" : null]
+                        .filter(Boolean)
+                        .join(" ")
+                }
+                onChange={(event) => {
+                    if (viewAttr.onChange instanceof Function) {
+                        viewAttr.onChange(event);
+                    }
+
+                    if (attr.onChange instanceof Function) {
+                        attr.onChange(event);
+                    }
+
+                    if (event.defaultPrevented) {
+                        return;
+                    }
+
+                    const value = field.change((current) => {
+                        if (!view.multiple) {
+                            return token;
+                        }
+
+                        const selected = selectedValues(current);
+
+                        if (event.target.checked) {
+                            return [...selected, token];
+                        }
+
+                        return selected.filter((item) => item !== token);
+                    });
+                    onChange?.({ value, targetValue: token, checked: event.target.checked });
+                }}
+                title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
+                aria-label={
+                    typeof attr["aria-label"] === "string"
+                        ? translate(attr["aria-label"])
+                        : attr["aria-label"]
+                }
+                aria-description={
+                    typeof attr["aria-description"] === "string"
+                        ? translate(attr["aria-description"])
+                        : attr["aria-description"]
+                }
             />
-            {choiceLabel?.length > 0 && (
+            {label != null && label !== "" && (
                 <label
-                    htmlFor={choiceAttributes.id}
-                    className={"form-check-label"}
-                    {...labelAttr}
-                    title={typeof labelAttr.title === "string" ? translate(labelAttr.title) : labelAttr.title}
-                    aria-label={typeof labelAttr["aria-label"] === "string" ? translate(labelAttr["aria-label"]) : labelAttr["aria-label"]}
-                    aria-description={typeof labelAttr["aria-description"] === "string" ? translate(labelAttr["aria-description"]) : labelAttr["aria-description"]}
-                >
-                    <Translation>{choiceLabel}</Translation>
+                    {...normalizeAttributes(labelAttr)}
+                    htmlFor={id}
+                    className={labelClassName ?? "form-check-label"}
+                    aria-label={
+                        typeof labelAttr["aria-label"] === "string"
+                            ? translate(labelAttr["aria-label"])
+                            : labelAttr["aria-label"]
+                    }
+                    aria-description={
+                        typeof labelAttr["aria-description"] === "string"
+                            ? translate(labelAttr["aria-description"])
+                            : labelAttr["aria-description"]
+                    }
+                    title={
+                        typeof labelAttr.title === "string"
+                            ? translate(labelAttr.title)
+                            : labelAttr.title
+                    }>
+                    <Translation>{label}</Translation>
                 </label>
             )}
         </>
-    )
-}
+    );
+};
 
-const ChoiceGroupOption = ({view, group, ...props}: { view: FormViewType, group: ChoiceGroupType } & ChoiceProps) => {
+const ChoiceGroupOption = ({ view, group, ...props }: ChoiceProps & { group: ChoiceGroupType }) => {
     return (
-        <div className={"form-group"}>
-            <label className={"form-label"}><Translation>{group.label}</Translation></label>
-            {Object.values(group.choices).map((c, index) => (
-                <ChoiceOption key={index} view={view} choice={c} {...props}/>
-            ))}
+        <div className="form-group">
+            <label className="form-label">
+                <Translation>{group.label}</Translation>
+            </label>
+            {Object.values(group.choices).map((choice, index) => {
+                return (
+                    <ChoiceOption
+                        key={choice.value == null ? index : choiceToken(choice)}
+                        view={view}
+                        choice={choice}
+                        {...props}
+                    />
+                );
+            })}
         </div>
-    )
-}
+    );
+};
 
-const Choice = (
-    {
-        view,
-        constraints,
-        className,
-        onChange,
-        choiceValueTransform,
-        choiceLabelTransform,
-    }: ChoiceProps):
-    React.JSX.Element => {
-    constraints = constraints || [];
-
+const Choice = ({
+    view,
+    constraints,
+    className,
+    onChange,
+    choiceValueTransform,
+    choiceLabelTransform,
+    ref
+}: ChoiceProps): React.JSX.Element => {
+    const field = useChoiceField(view, constraints, choiceValueTransform);
     const translate = UseTranslate();
-    const elementName = view.full_name || '';
-    const [[formState, dispatch], formRef, formElementRef] = UseForm();
-    const errorMessages = formState?.errors[elementName || ''] || [];
-    const isInvalid = !!errorMessages.length;
-    const attr = {...(view.attr instanceof Function ? view.attr() : view.attr) || {}};
-    const key = btoa(encodeURIComponent(view.full_name + JSON.stringify(
-        view.expanded ? view.data : view.value || view.data
-    )));
-    const classes = [
-        ...((attr.class || '').split(' ') || []),
-        ...((className || '').split(' ') || []),
-        ...(isInvalid ? ['is-invalid'] : [])
-    ];
+    const attr = resolveAttribute(view, "attr") || {};
+    const attrClassName = Object.hasOwn(attr, "className") ? attr.className : attr.class;
+    const { onChange: containerOnChange, ...containerAttr } = attr;
+    const optionProps = { view, constraints, onChange, choiceValueTransform, choiceLabelTransform };
 
-    useEffect(() => {
-        dispatch({
-            action: 'constraints',
-            payload: {
-                name: elementName,
-                constraints: constraints
-            }
-        });
-
-        return () => {
-            if (!elementName || !formElementRef.current?.elements.namedItem(elementName)) {
-                dispatch({action: 'remove-constraints', payload: elementName});
-            }
-        };
-    }, [elementName, dispatch, formElementRef])
-
-    const validate = (value: any) => {
-        dispatch({action: 'validate', payload: view.full_name});
-        onChange && onChange(value);
-    }
-
-    if (view?.expanded) {
+    if (view.expanded) {
         return (
-            <Fragment key={key}>
-                {typeof view.placeholder === 'string' && (
-                    <>
-                        <ChoiceOption
-                            view={view}
-                            choice={{label: view.placeholder, value: null}}
-                        />
-                    </>
+            <>
+                {typeof view.placeholder === "string" && (
+                    <ChoiceOption
+                        {...optionProps}
+                        choice={{ label: view.placeholder, value: null }}
+                    />
                 )}
-                {Object.values(view.choices || []).map((choice: ChoiceType & ChoiceGroupType, index: number) => (
-                        <Fragment key={index}>
-                            {choice.choices !== undefined ?
-                                <ChoiceGroupOption
-                                    view={view}
-                                    group={choice as ChoiceGroupType}
-                                    choiceLabelTransform={choiceLabelTransform}
-                                    choiceValueTransform={choiceValueTransform}/> :
-                                <div className={"form-check"} {...attr} title={typeof attr.title === "string" ? translate(attr.title) : attr.title}>
-                                    <ChoiceOption
-                                        view={view}
-                                        choice={choice as ChoiceType}
-                                        choiceLabelTransform={choiceLabelTransform}
-                                        choiceValueTransform={choiceValueTransform}/>
-                                </div>}
-                        </Fragment>
-                    )
-                )}
-            </Fragment>
-        );
-    } else {
-        return (
-            <select
-                key={key}
-                name={elementName}
-                multiple={view.multiple}
-                aria-invalid={isInvalid}
-                onChange={(e) => validate({
-                    value: (view.multiple ? formRef?.current?.getFormData().getAll(elementName) : formRef?.current?.getFormData().get(elementName)) || e.target.value
+                {Object.values(view.choices || []).map((choice, index) => {
+                    if ("choices" in choice) {
+                        return (
+                            <ChoiceGroupOption key={choice.label} {...optionProps} group={choice} />
+                        );
+                    }
+
+                    return (
+                        <div
+                            key={choice.value == null ? index : choiceToken(choice)}
+                            className="form-check"
+                            {...normalizeAttributes(containerAttr)}>
+                            <ChoiceOption {...optionProps} choice={choice} />
+                        </div>
+                    );
                 })}
-                className={[...classes, 'form-select'].join(' ')}
-                {...attr}
-                title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
-                aria-label={typeof attr["aria-label"] === "string" ? translate(attr["aria-label"]) : attr["aria-label"]}
-                aria-description={typeof attr["aria-description"] === "string" ? translate(attr["aria-description"]) : attr["aria-description"]}
-                defaultValue={view.value || view.data}
-            >
-                {view.placeholder && (
-                    <option value={""}>
-                        <Translation>{view.placeholder || ''}</Translation>
-                    </option>
-                )}
-                {Object.values(view.choices || []).map((choice: any, index: number) => (
-                    <Fragment key={index}>
-                        {choice.choices !== undefined ?
-                            <SelectGroupOption view={view} group={choice as ChoiceGroupType}/> :
-                            <SelectOption view={view} choice={choice as ChoiceType}/>}
-                    </Fragment>
-                ))}
-            </select>
-        )
+            </>
+        );
     }
-}
 
-export {Choice as default, ChoiceOption, ChoiceGroupOption, SelectOption, SelectGroupOption};
+    const choices = Object.values(view.choices || []).flatMap((choice) =>
+        "choices" in choice ? Object.values(choice.choices) : [choice]
+    );
+    const tokens = choices.map((choice) => {
+        if (choice.value == null) {
+            return stringValue(resolveAttribute(choice, "label"));
+        }
+
+        return choiceToken(choice);
+    });
+
+    if (view.placeholder) {
+        tokens.push("");
+    }
+
+    const missing = selectedValues(field.value).filter((value) => !tokens.includes(value));
+    let selectValue: string | string[];
+
+    if (view.multiple) {
+        selectValue = selectedValues(field.value);
+    } else if (Array.isArray(field.value)) {
+        selectValue = field.value[0] ?? "";
+    } else {
+        selectValue = field.value ?? "";
+    }
+
+    return (
+        <select
+            {...controlAttributes(attr)}
+            ref={ref}
+            id={view.id ?? attr.id}
+            name={view.full_name}
+            multiple={view.multiple}
+            required={attr.required ?? view.required}
+            disabled={attr.disabled ?? view.disabled}
+            aria-invalid={!!field.errors.length}
+            value={selectValue}
+            onChange={(event) => {
+                if (attr.onChange instanceof Function) {
+                    attr.onChange(event);
+                }
+
+                if (event.defaultPrevented) {
+                    return;
+                }
+
+                const value = view.multiple
+                    ? Array.from(event.target.selectedOptions).map((option) => option.value)
+                    : event.target.value;
+                field.change(value);
+                onChange?.({ value });
+            }}
+            className={[
+                attrClassName,
+                className,
+                "form-select",
+                field.errors.length ? "is-invalid" : null
+            ]
+                .filter(Boolean)
+                .join(" ")}
+            title={typeof attr.title === "string" ? translate(attr.title) : attr.title}
+            aria-label={
+                typeof attr["aria-label"] === "string"
+                    ? translate(attr["aria-label"])
+                    : attr["aria-label"]
+            }
+            aria-description={
+                typeof attr["aria-description"] === "string"
+                    ? translate(attr["aria-description"])
+                    : attr["aria-description"]
+            }>
+            {missing.map((value) => {
+                return (
+                    <option key={value} value={value} hidden>
+                        {value}
+                    </option>
+                );
+            })}
+            {view.placeholder && (
+                <option value="">
+                    <Translation>{view.placeholder}</Translation>
+                </option>
+            )}
+            {Object.values(view.choices || []).map((choice, index) => {
+                if ("choices" in choice) {
+                    return <SelectGroupOption key={choice.label} view={view} group={choice} />;
+                }
+
+                return (
+                    <SelectOption
+                        key={choice.value == null ? index : choiceToken(choice)}
+                        view={view}
+                        choice={choice}
+                    />
+                );
+            })}
+        </select>
+    );
+};
+
+export { Choice as default, ChoiceOption, ChoiceGroupOption, SelectOption, SelectGroupOption };

@@ -1,14 +1,16 @@
-import React, {ComponentType, FC, PropsWithChildren, useEffect, useRef, useState} from "react";
-import Modal, {ModalRefType} from "@crud-react/component/Modal.tsx";
+import type { ComponentType, FC, PropsWithChildren } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import type { ModalRefType } from "@crud-react/component/Modal.tsx";
+import Modal from "@crud-react/component/Modal.tsx";
 import Button from "@crud-react/component/Button.tsx";
-import {default as LottieAnimation} from "@crud-react/component/LottieAnimation.tsx";
-import {Extend} from "@crud-react/component/templating/Template.tsx";
+import { default as LottieAnimation } from "@crud-react/component/LottieAnimation.tsx";
+import { Extend } from "@crud-react/component/templating/Template.tsx";
 
-import '@crud-react/assets/style/alert.scss';
+import "@crud-react/assets/style/alert.scss";
 
 type AlertConfigOptionalType = {
-    [K in keyof AlertConfigType]?: AlertConfigType[K]
-}
+    [K in keyof AlertConfigType]?: AlertConfigType[K];
+};
 
 type AlertContextType = {
     open: (config: AlertConfigOptionalType) => void;
@@ -25,15 +27,15 @@ export enum Icon {
 }
 
 export enum Animation {
-    scale = 'scale',
-    fade = 'fade'
+    scale = "scale",
+    fade = "fade"
 }
 
 export enum Size {
-    small = 'sm',
-    default = 'auto',
-    large = 'lg',
-    extraLarge = 'xl'
+    small = "sm",
+    default = "auto",
+    large = "lg",
+    extraLarge = "xl"
 }
 
 export type AlertAction = {
@@ -51,7 +53,7 @@ export type AlertConfigType = {
     allowClose?: boolean;
     timeout?: number;
     timeoutProgress?: boolean;
-    onResult?: (result: Result) => void
+    onResult?: (result: Result) => void;
 };
 
 export type Result = {
@@ -59,40 +61,52 @@ export type Result = {
     isConfirmed: boolean;
     isCancelled: boolean;
     isDenied: boolean;
-}
+};
 
 export function UseAlert() {
     const context = React.useContext<AlertContextType | undefined>(AlertContext);
     if (context === undefined) {
-        throw new Error("UseAlert must be within AlertProvider")
+        throw new Error("UseAlert must be within AlertProvider");
     }
 
     return context;
 }
 
-type AnimationData = Record<string, unknown>
+type AnimationData = Record<string, unknown>;
 
-export function AlertProvider({children}: PropsWithChildren) {
+export function AlertProvider({ children }: PropsWithChildren) {
     const [alert, setAlert] = useState<AlertConfigType>();
 
     const updates = useRef(0);
     const modalRef = useRef<ModalRefType>(undefined);
+    const closeTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const [animationData, setAnimationData] = useState<AnimationData | null>(null);
 
     useEffect(() => {
         updates.current += 1;
     }, [alert]);
 
-    const animationFiles = import.meta.glob<{ default: AnimationData }>('@crud-react/assets/images/alert/*');
+    useEffect(() => {
+        return () => {
+            clearTimeout(closeTimeout.current);
+        };
+    }, []);
+
+    const animationFiles = import.meta.glob<{ default: AnimationData }>(
+        "@crud-react/assets/images/alert/*"
+    );
 
     const reset = () => {
+        clearTimeout(closeTimeout.current);
         setAnimationData(null);
         setAlert(undefined);
-    }
+    };
 
     const open = (config?: AlertConfigOptionalType): void => {
+        clearTimeout(closeTimeout.current);
+
         const alertConfig = {
-            title: 'Are you confirm?',
+            title: "Are you confirm?",
             icon: Icon.info,
             animation: Animation.scale,
             size: Size.default,
@@ -102,19 +116,21 @@ export function AlertProvider({children}: PropsWithChildren) {
         };
 
         const iconMap = {
-            [Icon.success]: 'success.json',
-            [Icon.denied]: 'denied.json',
-            [Icon.warning]: 'warning.json',
-            [Icon.info]: 'info.json',
-            [Icon.confirm]: 'info.json',
+            [Icon.success]: "success.json",
+            [Icon.denied]: "denied.json",
+            [Icon.warning]: "warning.json",
+            [Icon.info]: "info.json",
+            [Icon.confirm]: "info.json"
         };
 
         if (Object.hasOwn(iconMap, alertConfig.icon)) {
             const iconPath = iconMap[alertConfig.icon as Icon];
-            const iconFilePath = Object.keys(animationFiles).filter(k => k.endsWith(iconPath)).pop()
+            const iconFilePath = Object.keys(animationFiles)
+                .filter((k) => k.endsWith(iconPath))
+                .pop();
             if (iconFilePath) {
                 animationFiles[iconFilePath]?.().then((module) => {
-                    setAnimationData(module.default)
+                    setAnimationData(module.default);
                 });
             }
         }
@@ -122,15 +138,20 @@ export function AlertProvider({children}: PropsWithChildren) {
         if (!alertConfig.actions && !alertConfig.timeoutProgress) {
             alertConfig.actions = {
                 cancel: {
-                    label: 'Cancel',
-                    classList: ['btn-outline-primary']
+                    label: "Cancel",
+                    classList: ["btn-outline-primary"]
                 },
                 confirm: {
-                    label: 'Confirm',
+                    label: "Confirm"
                 }
-            }
-        } else {
-            setTimeout(() => {
+            };
+        }
+
+        if (
+            alertConfig.timeout !== 0 &&
+            (alertConfig.timeoutProgress || (alertConfig.timeout ?? 0) > 0)
+        ) {
+            closeTimeout.current = setTimeout(() => {
                 modalRef.current?.close().finally(reset);
             }, alertConfig.timeout || 5000);
         }
@@ -142,14 +163,14 @@ export function AlertProvider({children}: PropsWithChildren) {
         } else {
             setAlert(alertConfig);
         }
-    }
+    };
 
     const actionHandler = (action: string) => {
         const result: Result = {
             [action]: true,
-            isConfirmed: action === 'confirm',
-            isCancelled: action === 'cancel',
-            isDenied: action === 'deny',
+            isConfirmed: action === "confirm",
+            isCancelled: action === "cancel",
+            isDenied: action === "deny"
         };
 
         alert?.onResult?.(result);
@@ -157,7 +178,7 @@ export function AlertProvider({children}: PropsWithChildren) {
     };
 
     return (
-        <AlertContext.Provider value={{open}}>
+        <AlertContext.Provider value={{ open }}>
             {alert && (
                 <Modal
                     key={updates.current}
@@ -165,14 +186,16 @@ export function AlertProvider({children}: PropsWithChildren) {
                     className={"modal-alert"}
                     animation={alert.animation}
                     open={true}
-                    ref={modalRef}
-                >
-                    <Extend name={"header"}/>
-                    <Extend name={"footer"}/>
+                    ref={modalRef}>
+                    <Extend name={"header"} />
+                    <Extend name={"footer"} />
                     <Extend name={"content"}>
                         <div className={"d-flex flex-column align-items-center"}>
                             {animationData !== null && (
-                                <LottieAnimation className={"modal-alert-icon"} animationData={animationData}/>
+                                <LottieAnimation
+                                    className={"modal-alert-icon"}
+                                    animationData={animationData}
+                                />
                             )}
                             <h3 className={"modal-alert-title"}>{alert.title}</h3>
                             {!!alert.text?.length && (
@@ -181,9 +204,19 @@ export function AlertProvider({children}: PropsWithChildren) {
                             {alert.actions && (
                                 <div className={"d-flex justify-content-center align-items-center"}>
                                     {Object.keys(alert.actions).map((action: string) => (
-                                        <Button key={action}
-                                                className={"btn btn-lg mx-2 " + (alert.actions?.[action].classList ?? ["btn-primary"]).join(' ')}
-                                                onClick={() => actionHandler(action)}>{(alert.actions?.[action] ?? null)?.label || action}</Button>
+                                        <Button
+                                            key={action}
+                                            className={
+                                                "btn btn-lg mx-2 " +
+                                                (
+                                                    alert.actions?.[action].classList ?? [
+                                                        "btn-primary"
+                                                    ]
+                                                ).join(" ")
+                                            }
+                                            onClick={() => actionHandler(action)}>
+                                            {(alert.actions?.[action] ?? null)?.label || action}
+                                        </Button>
                                     ))}
                                 </div>
                             )}
@@ -197,12 +230,11 @@ export function AlertProvider({children}: PropsWithChildren) {
 }
 
 export function WithAlertProvider<P extends object>(Component: ComponentType<P>): FC<P> {
-
     return (props: P) => {
         return (
             <AlertProvider>
-                <Component {...props}/>
+                <Component {...props} />
             </AlertProvider>
-        )
+        );
     };
 }

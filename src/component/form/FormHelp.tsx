@@ -1,6 +1,7 @@
 import React from "react";
 import {UseFormView} from "@crud-react/component/crud/form/Form.tsx";
 import Translation, {UseTranslate} from "@crud-react/component/Translation.tsx";
+import {normalizeAttributes, resolveAttribute} from "./formView.ts";
 
 const FormHelp = (
     {
@@ -17,14 +18,14 @@ const FormHelp = (
         throw new Error('Missing Form View for FormField' + (name ? ': ' + name : ''));
     }
 
-    const helpAttr = (view.help_attr instanceof Function ? view.help_attr() : view.help_attr) || {};
+    const helpAttr = resolveAttribute(view, "help_attr") || {};
 
     return (
         <>
             {view.help && (
                 <div
                     className={"form-text"}
-                    {...helpAttr}
+                    {...normalizeAttributes(helpAttr)}
                     title={typeof helpAttr.title === "string" ? translate(helpAttr.title) : helpAttr.title}
                     aria-label={typeof helpAttr["aria-label"] === "string" ? translate(helpAttr["aria-label"]) : helpAttr["aria-label"]}
                     aria-description={typeof helpAttr["aria-description"] === "string" ? translate(helpAttr["aria-description"]) : helpAttr["aria-description"]}
