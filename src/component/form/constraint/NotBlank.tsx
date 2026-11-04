@@ -1,7 +1,7 @@
-import {Constraint} from "./Contraint";
+import { Constraint } from './Contraint';
 
 export class NotBlank implements Constraint {
-    defaultMessage = 'Value cannot be blank.'
+    defaultMessage = 'Value cannot be blank.';
 
     message: string | null = null;
     options: { message?: string };
@@ -11,7 +11,13 @@ export class NotBlank implements Constraint {
     }
 
     isValid(value: any) {
-        return value;
+        if (typeof File !== 'undefined' && value instanceof File) {
+            return value.name.length > 0;
+        }
+
+        return Array.isArray(value)
+            ? value.length > 0
+            : value != null && String(value).trim() !== '';
     }
 
     getMessage() {
