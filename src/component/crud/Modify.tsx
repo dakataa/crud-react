@@ -1,18 +1,20 @@
-import React, { ComponentType, ReactNode } from 'react';
-import { UseActions } from '@crud-react/context/ActionContext.tsx';
-import Form from '@crud-react/component/crud/form/Form.tsx';
-import { ModifyType } from '@crud-react/type/ModifyType.tsx';
-import { UseDataProvider, WithDataProvider } from '@crud-react/context/GetData.tsx';
-import Modal from '@crud-react/component/Modal.tsx';
-import { Icon as AlertIcon, UseAlert } from '@crud-react/context/AlertContext.tsx';
-import { ExceptionType } from '@crud-react/type/ExceptionType.tsx';
-import DynamicView from '@crud-react/component/crud/DynamicView.tsx';
-import Link from '@crud-react/component/Link.tsx';
-import { UseCurrentActionRequest } from '@crud-react/component/crud/CrudLoader.tsx';
-import { AsTemplate, Block, Extend } from '@crud-react/component/templating/Template.tsx';
-import Button from '@crud-react/component/Button.tsx';
-import Translation, { default as T } from '@crud-react/component/Translation.tsx';
-import { UseModal } from '@crud-react/context/ModalContext.tsx';
+import type { ComponentType, ReactNode } from "react";
+import React from "react";
+import { UseActions } from "@crud-react/context/ActionContext.tsx";
+import Form from "@crud-react/component/crud/form/Form.tsx";
+import type { ModifyType } from "@crud-react/type/ModifyType.tsx";
+import { UseDataProvider, WithDataProvider } from "@crud-react/context/GetData.tsx";
+import Modal from "@crud-react/component/Modal.tsx";
+import { Icon as AlertIcon, UseAlert } from "@crud-react/context/AlertContext.tsx";
+import type { ExceptionType } from "@crud-react/type/ExceptionType.tsx";
+import DynamicView from "@crud-react/component/crud/DynamicView.tsx";
+import Link from "@crud-react/component/Link.tsx";
+import { UseCurrentActionRequest } from "@crud-react/component/crud/CrudLoader.tsx";
+import { AsTemplate, Block, Extend } from "@crud-react/component/templating/Template.tsx";
+import Button from "@crud-react/component/Button.tsx";
+import Translation, { default as T } from "@crud-react/component/Translation.tsx";
+import { UseModal } from "@crud-react/context/ModalContext.tsx";
+import { useIsModal } from "@crud-react/context/ModalScopeContext.tsx";
 
 const DefaultModifyTemplate = AsTemplate(
     ({ children }: { children?: ReactNode; results?: ModifyType }) => {
@@ -20,7 +22,7 @@ const DefaultModifyTemplate = AsTemplate(
         const { getAction, generateLink } = UseActions();
         const listAction = getAction(
             currentAction.action.entity,
-            'list',
+            "list",
             currentAction.action.namespace
         );
 
@@ -48,7 +50,7 @@ const DefaultModifyTemplate = AsTemplate(
             </section>
         );
     },
-    { name: 'modify' }
+    { name: "modify" }
 );
 
 const Modify = WithDataProvider(
@@ -66,7 +68,10 @@ const Modify = WithDataProvider(
         const { open: openAlert } = UseAlert();
         const { closeModal } = UseModal();
         const dataProvider = UseDataProvider();
-        const ComponentTemplate = modal ? Modal : template || DefaultModifyTemplate;
+        const isInsideModal = useIsModal();
+        const renderAsModal = modal ?? isInsideModal;
+        const PageTemplate = template || DefaultModifyTemplate;
+        const ComponentTemplate = renderAsModal ? Modal : PageTemplate;
 
         if (!dataProvider) {
             return;
@@ -75,7 +80,7 @@ const Modify = WithDataProvider(
         return (
             <ComponentTemplate>
                 <Extend name={"title"}>
-                    <Translation>{dataProvider?.results?.title || 'Title'}</Translation>
+                    <Translation>{dataProvider?.results?.title || "Title"}</Translation>
                 </Extend>
 
                 <Extend name={"navigation"}>
@@ -133,7 +138,7 @@ const Modify = WithDataProvider(
                                     }
                                 });
                             }}
-                            embedded={modal}>
+                            embedded={renderAsModal}>
                             <Extend name={"actions"} />
                         </Form>
                     </DynamicView>

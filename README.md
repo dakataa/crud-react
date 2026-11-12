@@ -708,6 +708,11 @@ Open CRUD actions inside modals.
 const { openModal, closeModal } = UseModal();
 ```
 
+### `useIsModal()`
+
+Returns whether the current component belongs to a modal view. See
+[modal context](#modal-and-usemodal) for usage and the distinction from `UseModal()`.
+
 ### `UseAlert()`
 
 Open confirm, success, warning and error dialogs.
@@ -749,6 +754,44 @@ Loads a namespace-aware template file and falls back to children when no overrid
 ### `Modal` and `UseModal`
 
 Render CRUD screens inside nested modals.
+
+Use `useIsModal()` to detect whether a component is inside a modal:
+
+```tsx
+import { Modify, UseModal, useIsModal } from "@dakataa/crud-react";
+
+function EditActions() {
+    const isModal = useIsModal();
+    const { closeModal } = UseModal();
+
+    return isModal ? (
+        <button type="button" onClick={closeModal}>
+            Cancel
+        </button>
+    ) : null;
+}
+
+function Edit() {
+    return <Modify />;
+}
+```
+
+The hook returns `false` outside a modal. For actions opened with `openModal()`,
+it returns `true` in the loaded `Edit`/`View` component itself and its descendants.
+It also returns `true` for children of a directly rendered `<Modal>`, including
+portal content and nested modals. The page behind an open modal remains outside
+that scope and receives `false`.
+
+`UseModal()` controls the modal stack; its `modal` value describes the currently
+open modal and is shared with the underlying page. It does not indicate that the
+calling component belongs to that modal.
+
+`Modify` uses `useIsModal()` when its `modal` prop is omitted. An explicit
+`modal={true}` or `modal={false}` overrides its layout and embedded-form behavior.
+This override does not change the surrounding context: a component rendered
+inside a modal still receives `true` even when a nested `Modify modal={false}`
+uses a page template. Existing `modal` props supplied to loaded views remain
+supported for compatibility.
 
 ### `UseAlert`
 

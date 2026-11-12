@@ -1,6 +1,8 @@
-import React, { PropsWithChildren, RefObject, useEffect, useRef, useState } from 'react';
-import BaseButtonContent, { ButtonContentProps } from './BaseButtonContent.tsx';
-import { UsePreloader, UsePreloaderProvider } from '@crud-react/component/Preloader.tsx';
+import type { PropsWithChildren, RefObject } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import type { ButtonContentProps } from "./BaseButtonContent.tsx";
+import BaseButtonContent from "./BaseButtonContent.tsx";
+import { UsePreloader, UsePreloaderProvider } from "@crud-react/component/Preloader.tsx";
 
 export type ButtonPropsType = {
     loader?: string;
@@ -20,11 +22,11 @@ export default ({
     ...props
 }: ButtonPropsType) => {
     const { isLoading } = UsePreloaderProvider() || {};
-    const loader = UsePreloader() || form || 'form';
+    const loader = UsePreloader() || form || "form";
     const internalButtonRef = useRef<HTMLButtonElement>(null);
     const buttonRef = ref ?? internalButtonRef;
     const [disabled, setDisabled] = useState(autoDisableOnInvalid || false);
-    const isSubmitButton = type && type === 'submit';
+    const isSubmitButton = type && type === "submit";
     const [connectedForm, setConnectedForm] = useState<HTMLFormElement | null>();
 
     preload = preload || (isSubmitButton && isLoading?.(loader));
@@ -39,16 +41,16 @@ export default ({
             return;
         }
 
-        const fieldsetEl = buttonRef.current?.closest('fieldset') || connectedForm;
+        const fieldsetEl = buttonRef.current?.closest("fieldset") || connectedForm;
         const onChange = () => {
             if (!buttonRef.current) {
                 return;
             }
 
-            setDisabled(!connectedForm?.checkValidity() || false);
+            setDisabled(!connectedForm.matches(":valid"));
         };
 
-        const observerSelector = 'input, select, textarea';
+        const observerSelector = "input, select, textarea";
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 [...mutation.addedNodes, ...mutation.removedNodes, mutation.target].forEach(
@@ -68,20 +70,20 @@ export default ({
             });
         });
 
-        fieldsetEl.addEventListener('input', onChange);
+        fieldsetEl.addEventListener("input", onChange);
 
         observer.observe(connectedForm, {
             childList: true,
             subtree: true,
             attributes: true,
-            attributeFilter: ['hidden', 'style', 'class', 'required', 'disabled', 'value']
+            attributeFilter: ["hidden", "style", "class", "required", "disabled", "value"]
         });
 
         onChange();
 
         return () => {
             observer.disconnect();
-            fieldsetEl.removeEventListener('input', onChange);
+            fieldsetEl.removeEventListener("input", onChange);
         };
     }, [connectedForm, autoDisableOnInvalid, isSubmitButton]);
 
@@ -94,7 +96,7 @@ export default ({
             return;
         }
 
-        const currentForm = buttonRef.current.form ?? buttonRef.current.closest('form');
+        const currentForm = buttonRef.current.form ?? buttonRef.current.closest("form");
 
         if (currentForm) {
             setConnectedForm(currentForm);

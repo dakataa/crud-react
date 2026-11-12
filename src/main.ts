@@ -51,6 +51,7 @@ export { Router, Route, Outlet } from "./component/router/Route.tsx";
 export { default as Modal } from "./component/Modal.tsx";
 export type { ModalType } from "./component/Modal.tsx";
 export { ModalProvider, UseModal } from "./context/ModalContext.tsx";
+export { useIsModal } from "./context/ModalScopeContext.tsx";
 export type { ModalActionType, ModalContextType } from "./context/ModalContext.tsx";
 export {
     UseAlert,

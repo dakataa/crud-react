@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.1.0 — Unreleased
+
+### What's new
+
+- **Detect modal context.** The new `useIsModal()` hook tells a component whether
+  it belongs to a modal. It works in loaded CRUD views, directly rendered modals
+  and nested modals, including portal content. The page behind an open modal
+  still receives `false`.
+- **Automatic modal layout.** `Modify` now detects modal context when its `modal`
+  prop is omitted, choosing the modal layout and embedded-form behavior automatically.
+  Explicit `modal={true}` and `modal={false}` still take priority.
+
+### Fixes
+
+- `Button` with `autoDisableOnInvalid` checks form validity without firing `invalid`
+  events during the check. Native validation on submission remains unchanged.
+
 ## 2.0.0 — 2026-11-04
 
 Forms now keep unsaved edits when fields are hidden and shown again, and better
