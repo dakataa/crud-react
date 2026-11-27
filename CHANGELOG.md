@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.0 — Unreleased
+## 2.1.0 — 2026-11-27
 
 ### What's new
 
@@ -11,11 +11,19 @@
 - **Automatic modal layout.** `Modify` now detects modal context when its `modal`
   prop is omitted, choosing the modal layout and embedded-form behavior automatically.
   Explicit `modal={true}` and `modal={false}` still take priority.
+- **Object actions in CRUD views.** `ViewType.action` lists the actions the backend
+  authorizes for the displayed object. An empty array means no actions are available.
 
 ### Fixes
 
 - `Button` with `autoDisableOnInvalid` checks form validity without firing `invalid`
   events during the check. Native validation on submission remains unchanged.
+
+### Compatibility
+
+- `dakataa/crud` v2.1.0 adds the `action` array to standard view responses.
+  Earlier versions omit it. If you construct a `ViewType` yourself, for example
+  in a custom response or a test fixture, include `action: []` when no actions are available.
 
 ## 2.0.0 — 2026-11-04
 
